@@ -13,22 +13,34 @@ class Protocol():
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
         self.sort_Name2Id    : Dict[str,int]   = {} # sort name -> sort id
         self.element_Name2Id : Dict[str,int]   = {} # elem name -> elem id
-        self.sorts_permutations  = []              
-
         self.predicates    : Dict[str,List[str]] = {} # (predname, [argsort1, argsort2, ..])
         self.atom_num      : int                 = 0
         self.atoms         : List[str]           = [] # atom id -> atom name
         self.atom_Name2Id  : Dict[str,int]       = {} # atom name -> atom id
         self.atom_sig      : List[List[str]]     = [] # atom id -> [predname, arg1, arg2,..]
+        self.reachable_states : List[str] = [] 
+        self._sorts_permutations  = []              
 
-        self.reachable_cubes : List[str] = [] 
+        # initialization 
+        self._read(reach_filename)
+        self._init_sorts_permutations()
 
-        # initialize 
-        self.read(reach_filename)
-        self.init_sorts_permutations()
-        
-
-    def read(self, reach_filename: str) -> None:
+    def __str__(self) -> str:
+        lines = []
+        lines.append(str(self.sorts              ))        
+        lines.append(str(self.sort_elements      ))        
+        lines.append(str(self.sort_Name2Id       ))        
+        lines.append(str(self.element_Name2Id    ))        
+        lines.append(str(self.predicates         ))        
+        lines.append(str(self.atom_num           ))        
+        lines.append(str(self.atoms              ))        
+        lines.append(str(self.atom_Name2Id       ))        
+        lines.append(str(self.atom_sig           ))        
+        lines.append(str(self.reachable_states   ))        
+        lines.append(str(self._sorts_permutations))        
+        return '\n'.join(lines)
+    
+    def _read(self, reach_filename: str) -> None:
         with open(reach_filename, 'r') as reach_file:
             for line in reach_file:
                 # read ".s [sort_name] [element1] [element2] ..."
@@ -69,30 +81,31 @@ class Protocol():
                             self.atom_Name2Id[atom]  = id
                             self.atom_sig.append(signature)
                             
-                # read "[reachable_cube]"
+                # read "[reachable_state]"
                 if not line.startswith(".") and not line.startswith("#"):
-                    cube = line.split()[0]
-                    assert( len(cube) == self.atom_num )
-                    self.reachable_cubes.append(cube)
+                    state = line.split()[0]
+                    assert( len(state) == self.atom_num )
+                    self.reachable_states.append(state)
 
-    def init_sorts_permutations(self) -> None:
+    def _init_sorts_permutations(self) -> None:
         all_sorts_permutations = []
         for elements in self.sort_elements:
             element_id_list = list(range(len(elements)))
             sort_permutations = permutations(element_id_list)
             all_sorts_permutations.append(sort_permutations)
         # cartesian product
-        self.sorts_permutations = list(product(*all_sorts_permutations))
-    
-    def orbit_of_cube(self, cube: str) -> List[str]:
-        # cube is a string of 0,1,-
-        assert( len(cube) == self.atom_num )
-        orbit : List[str] = []
-        for permutation in self.sorts_permutations:
-            new_cube = ['-']*len(cube)
-            for (atom_id, bit) in enumerate(cube):
-                if not bit == '-':
-                    assert( bit == '0' or bit == '1' )
+        self._sorts_permutations = list(product(*all_sorts_permutations))
+
+    def permute(self, values : List[str]) -> List[List[str]]:
+        # values is a list of '0', '1', '-'
+        assert( len(values) == self.atom_num )
+        permuted_val_list = [] 
+        keys  = set()
+        for permutation in self._sorts_permutations:
+            new_values = ['-']*len(values)
+            for (atom_id, val) in enumerate(values):
+                if not val == '-':
+                    assert( val == '0' or val == '1' )
                     atom      = self.atoms[atom_id]
                     signature = self.atom_sig[atom_id]
                     predicate = signature[0]
@@ -107,26 +120,10 @@ class Protocol():
                         new_args.append(self.sort_elements[sort_id][new_element_id])
                     new_atom    = atom_format(predicate, new_args) 
                     new_atom_id = self.atom_Name2Id[new_atom]
-                    new_cube[new_atom_id] = bit 
-            orbit.append(''.join(new_cube))
-        return orbit
-
-
-    def print_members(self) -> None:
-         print("sorts: ", self.sorts)
-         print("sort elements: ", self.sort_elements)
-         print("sort name to id: ", self.sort_Name2Id)
-         print("element name to id: ", self.element_Name2Id)
-         print("predicates: ", self.predicates)
-         print("atom number: ", self.atom_num)      
-         print("atoms: ", self.atoms)
-         print("atom name to id: ", self.atom_Name2Id)
-         print("atom signature: ", self.atom_sig)
-         print("reachable cubes: ", self.reachable_cubes)
-         cube = "1---------" 
-         print("orbit of ", cube, " : ", self.orbit_of_cube(cube) )
-         cube = "-0--------" 
-         print("orbit of ", cube, " : ", self.orbit_of_cube(cube) )
-         cube = "10--------" 
-         print("orbit of ", cube, " : ", self.orbit_of_cube(cube) )
-
+                    new_values[new_atom_id] = val 
+            new_key = str(new_values)
+            if not new_key in keys:
+                keys.add(new_key)
+                permuted_val_list.append(new_values)
+        return permuted_val_list
+    

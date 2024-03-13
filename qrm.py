@@ -1,7 +1,7 @@
 import sys
 from os import path
 from protocol import * 
-from prime_implicants import * 
+from prime import PrimeOrbits 
 
 def usage ():
     print("Usage: python3 qrm.py protocol.ptcl [options]")
@@ -20,6 +20,8 @@ if __name__ == '__main__':
 
     reach_filename = sys.argv[1]
     protocol = Protocol(reach_filename)
+    # print(protocol)
 
-    prime_implicants = PrimeImplicants()
-    prime_implicants.generate(protocol)               
+    prime_orbits = PrimeOrbits()
+    prime_orbits.symmetry_aware_enumerate(protocol)               
+    print(prime_orbits)
