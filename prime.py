@@ -1,9 +1,7 @@
-import sys
-import itertools
-from typing import Dict,Tuple,List,Optional,Set
+from typing import Dict,List
 from pysat.card import ITotalizer 
 from pysat.solvers import Cadical153 as SatSolver 
-from protocol import * 
+from protocol import Protocol 
 
 def make_key(values: List[str], protocol : Protocol) -> str:
     predicates = []

@@ -1,6 +1,6 @@
 import sys
 from os import path
-from protocol import * 
+from protocol import Protocol 
 from prime import PrimeOrbits 
 
 def usage ():

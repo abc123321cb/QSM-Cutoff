@@ -1,6 +1,5 @@
-import sys
 import re
-from typing import Dict,Tuple,List,Optional,Set
+from typing import Dict,List,Set
 from itertools import permutations, product
 
 def atom_format(predicate: str, args: List[str]) -> str:
