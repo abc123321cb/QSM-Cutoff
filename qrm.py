@@ -65,8 +65,8 @@ def qrm(args):
         print(prime_orbits)
     elif(minPrime):
         prime_orbits.read(filename)
-        prime_orbits.minimize()
-        print(prime_orbits)
+        minimizer = Minimizer(prime_orbits.orbits)
+        minimizer.solve()
 
 if __name__ == '__main__':
     qrm(sys.argv[1:])
