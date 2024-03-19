@@ -1,5 +1,5 @@
+import ast
 from typing import Dict,List
-from pysat.card import ITotalizer 
 from pysat.solvers import Cadical153 as SatSolver 
 from protocol import Protocol 
 from dualrail import DualRailNegation
@@ -14,17 +14,28 @@ def make_key(values: List[str], protocol : Protocol) -> str:
     predicates.sort()
     return str(predicates)
 
+def literal_format(predicate: str, args: List[str], value : str) -> str:
+    prefix = '~' if value == '1' else '' # negate literal
+    return prefix + predicate + '(' + ', '.join(args) + ')'
+
 class Prime():
     # static members
     count  : int = 0 
-    _atoms    : List[str]
+    _atoms : List[str]
 
-    def __init__(self, values: List[str]) -> None:
+    def __init__(self, values: List[str], prime_str ='' ) -> None:
         self.values : List[str] = values
         self.id     : int = Prime.count
+        self.str    : str = self._set_str(prime_str) if prime_str == '' else prime_str
         Prime.count += 1
 
     def __str__(self) -> str:
+        value_str = ''.join(self.values)
+        lines  = f'{self.id} : {value_str}\n' 
+        lines += f'{self.id} : {self.str}\n'
+        return lines
+    
+    def _set_str(self, prime_str : str) -> str:
         literals = []
         for (atom_id, val) in enumerate(self.values):
             if val == '1':
@@ -32,8 +43,8 @@ class Prime():
             elif val == '0':
                 literals.append('~'+Prime._atoms[atom_id])
         literals.sort()
-        return f'{self.id} : {str(literals)}\n' 
-
+        return f'{str(literals)}'
+        
     @staticmethod
     def setup(protocol : Protocol) -> None:
         Prime._atoms    = protocol.atoms
@@ -46,23 +57,37 @@ class PrimeOrbit():
         self.repr_prime : Prime      
         self.primes     : List[Prime] = []
         self.id         : int = PrimeOrbit.count   
+
+        # quantifier inference
+        self.forall      : List[str] = [] 
+        self.exists      : List[str] = []
+        self.literals    : List[str] = [] 
         self.quantified_form  : str = ""
         self.qcost            : int = 0
         PrimeOrbit.count += 1
 
     def __str__(self) -> str:
         lines  = f'= Orbit {self.id} ========================\n'
-        lines += f'size: {len(self.primes)}\n'
+        lines += f'size : {len(self.primes)}\n'
         for prime in self.primes:
             lines += str(prime) 
+        lines += f'forall : {self.forall}\n'
+        lines += f'exists : {self.exists}\n'
+        lines += f'literals : {self.literals}\n'
+        lines += f'quantified form : {self.quantified_form}\n'
+        lines += f'qcost : {self.qcost}\n'
         lines += '\n\n'
         return lines
 
-    def add_prime(self, prime: Prime):
+    def add_prime(self, prime: Prime) -> None:
         if len(self.primes) == 0:
             self.repr_prime  = prime
         self.primes.append(prime)
 
+    def quantifier_inference(self) -> None:
+        # TODO
+        return
+ 
 class PrimeOrbits():
     def __init__(self) -> None:
         self.orbits      : List[PrimeOrbit] = [] 
@@ -74,6 +99,31 @@ class PrimeOrbits():
         for orbit in self.orbits:
             lines += str(orbit) 
         return lines
+
+    def read(self, filename : str) -> None:
+        with open(filename, 'r') as orb_file: 
+            for line in orb_file:
+                if line.startswith('= Orbit'):
+                    orbit = PrimeOrbit()
+                    size = int(next(orb_file).split(':')[1].strip())
+                    for i in range(size):
+                        values = []
+                        values.extend(next(orb_file).split(':')[1].strip())
+                        print_str =  next(orb_file).split(':')[1].strip()
+                        prime = Prime(values, print_str)
+                        orbit.add_prime(prime)
+                    orbit.forall   = ast.literal_eval(next(orb_file).split(':')[1].strip())
+                    orbit.exists   = ast.literal_eval(next(orb_file).split(':')[1].strip())
+                    orbit.literals = ast.literal_eval(next(orb_file).split(':')[1].strip())
+                    qform = ' | '.join(orbit.literals)
+                    qform = '(' + qform + ')'
+                    if len(orbit.exists):
+                        qform = '(exists ' + ', '.join(orbit.exists) + ' . ' + qform + ')'
+                    if len(orbit.forall):
+                        qform = '(forall ' + ', '.join(orbit.forall) + ' . ' + qform + ')'
+                    orbit.quantified_form = qform
+                    orbit.qcost = len(orbit.forall) + len(orbit.exists) + len(orbit.literals)
+                    self.orbits.append(orbit)
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
         key = make_key(values,protocol)
@@ -106,3 +156,10 @@ class PrimeOrbits():
                     block_clauses  = self._make_orbit(values, protocol)
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
+    
+    def quantifier_inference(self) -> None:
+        for orbit in self.orbits:
+            orbit.quantifier_inference()
+    
+    def minimize(self) -> None:
+        return
