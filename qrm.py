@@ -2,7 +2,8 @@ import sys
 import getopt
 from os import path
 from protocol import Protocol 
-from prime import PrimeOrbits 
+from prime import PrimeOrbits, read_orbits
+from minimize import Minimizer
 
 def usage ():
     print("Usage: python3 qrm.py [options]")
@@ -52,20 +53,20 @@ def qrm(args):
         else:
             usage_and_exit()
 
-    prime_orbits = PrimeOrbits()
     if(genPrime):
         protocol = Protocol(filename)
         if (verbose):
             print(protocol)
+        prime_orbits = PrimeOrbits() 
         prime_orbits.symmetry_aware_enumerate(protocol)               
         print(prime_orbits)
     elif(qfyPrime):
-        prime_orbits.read(filename)
-        prime_orbits.quantifier_inference()
-        print(prime_orbits)
+        orbits = read_orbits(filename)
+        # qInfer = QInference(orbits)
+        print(orbits)
     elif(minPrime):
-        prime_orbits.read(filename)
-        minimizer = Minimizer(prime_orbits.orbits)
+        orbits = read_orbits(filename)
+        minimizer = Minimizer(orbits)
         minimizer.solve()
 
 if __name__ == '__main__':
