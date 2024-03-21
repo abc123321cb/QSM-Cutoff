@@ -89,7 +89,7 @@ class Protocol():
     def _init_sorts_permutations(self) -> None:
         all_sorts_permutations = []
         for elements in self.sort_elements:
-            element_id_list = list(range(len(elements)))
+            element_id_list = range(len(elements))
             sort_permutations = permutations(element_id_list)
             all_sorts_permutations.append(sort_permutations)
         # cartesian product
