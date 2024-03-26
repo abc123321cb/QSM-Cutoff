@@ -1,17 +1,21 @@
 import sys
 import getopt
 from os import path
+from verbose import *
+from util import *
 from protocol import Protocol 
 from prime import PrimeOrbits, read_orbits
 from minimize import Minimizer
 
 def usage ():
-    print("Usage: python3 qrm.py [options]")
-    print(" -h              usage")
-    print(" -v              verbose")
-    print(" -o FILE.ptcl    produce prime orbits")
-    print(" -q FILE.orb     quantify prime orbits")
-    print(" -m FILE.orb     minimize quantified prime orbits")
+    print('Usage: python3 qrm.py [options]')
+    print(' -h              usage')
+    print(' -v LEVEL        set verbose level (defult:0, max: 5)')
+    print(' -o FILE.ptcl    produce prime orbits')
+    print(' -q FILE.orb     quantify prime orbits')
+    print(' -m FILE.orb     minimize quantified prime orbits')
+    print(' -c sat | mc     use sat solver or approximate model counter for coverage estimation (default: sat)')
+    print(' -a              find all minimal solutions (default: off)')
 
 def usage_and_exit():
     usage()
@@ -25,48 +29,47 @@ def file_exist(filename) -> bool:
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "hvo:q:m:")
+        opts, args = getopt.getopt(args, "hv:o:q:m:c:a")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
 
-    verbose  = False
-    genPrime = False
-    qfyPrime = False
-    minPrime = False 
-    filename = ''
-    for (opt, file) in opts:
-        if opt == '-v':
-            verbose = True
-        elif opt == '-o':
-            genPrime = True
-            if file_exist(file):
-                filename = file
-        elif opt == '-q':
-            qfyPrime = True
-            if file_exist(file):
-                filename = file
-        elif opt == '-m':
-            minPrime = True
-            if file_exist(file):
-                filename = file
+    options = QrmOptions()
+    for (optc, optv) in opts:
+        if optc == '-v':
+            options.verbose = int(optv)
+            if options.verbose < 0 or options.verbose > 5:
+                usage_and_exit()
+        elif optc == '-o':
+            options.mode = Mode.gen
+            if file_exist(optv):
+                options.filename = optv
+        elif optc == '-q':
+            options.mode = Mode.qfy
+            if file_exist(optv):
+                options.filename = optv
+        elif optc == '-m':
+            options.mode = Mode.min
+            if file_exist(optv):
+                options.filename = optv
+        elif optc == '-c':
+            if optv == 'sat' or optv == 'mc':
+                options.useMC = optv
+            else:
+                usage_and_exit()
+        elif optc == '-a':
+            options.all_solutions = True
         else:
             usage_and_exit()
 
-    if(genPrime):
-        protocol = Protocol(filename)
-        if (verbose):
-            print(protocol)
+    if(options.mode == Mode.gen):
+        protocol = Protocol(options)
         prime_orbits = PrimeOrbits() 
         prime_orbits.symmetry_aware_enumerate(protocol)               
         print(prime_orbits)
-    elif(qfyPrime):
-        orbits = read_orbits(filename)
-        # qInfer = QInference(orbits)
-        print(orbits)
-    elif(minPrime):
-        orbits = read_orbits(filename)
-        minimizer = Minimizer(orbits)
+    elif(options.mode == Mode.min):
+        orbits = read_orbits(options.filename)
+        minimizer = Minimizer(orbits, options)
         minimizer.solve()
 
 if __name__ == '__main__':

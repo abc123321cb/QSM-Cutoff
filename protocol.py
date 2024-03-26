@@ -1,12 +1,14 @@
 import re
 from typing import Dict,List,Set
 from itertools import permutations, product
+from verbose import *
+from util import *
 
 def atom_format(predicate: str, args: List[str]) -> str:
     return predicate + '(' + ', '.join(args) + ')'
 
 class Protocol():
-    def __init__(self, reach_filename: str) -> None:
+    def __init__(self, options : QrmOptions) -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
@@ -21,11 +23,12 @@ class Protocol():
         self._sorts_permutations  = []              
 
         # initialization 
-        self._read(reach_filename)
+        self._read(options.filename)
         self._init_sorts_permutations()
 
     def __str__(self) -> str:
         lines = []
+        lines.append('')
         lines.append(str(self.sorts              ))        
         lines.append(str(self.sort_elements      ))        
         lines.append(str(self.sort_Name2Id       ))        
@@ -39,9 +42,9 @@ class Protocol():
         lines.append(str(self._sorts_permutations))        
         return '\n'.join(lines)
     
-    def _read(self, reach_filename: str) -> None:
-        with open(reach_filename, 'r') as reach_file:
-            for line in reach_file:
+    def _read(self, filename: str) -> None:
+        with open(filename, 'r') as file:
+            for line in file:
                 # read ".s [sort_name] [element1] [element2] ..."
                 if line.startswith(".s"):
                     new_sort    = line.split()
@@ -89,7 +92,7 @@ class Protocol():
     def _init_sorts_permutations(self) -> None:
         all_sorts_permutations = []
         for elements in self.sort_elements:
-            element_id_list = range(len(elements))
+            element_id_list = list(range(len(elements)))
             sort_permutations = permutations(element_id_list)
             all_sorts_permutations.append(sort_permutations)
         # cartesian product

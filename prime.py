@@ -15,33 +15,6 @@ def make_key(values: List[str], protocol : Protocol) -> str:
     predicates.sort()
     return str(predicates)
 
-def read_orbits(filename: str) -> List[PrimeOrbit]:
-    orbits : List[PrimeOrbit] = []
-    with open(filename, 'r') as orb_file: 
-        for line in orb_file:
-            if line.startswith('= Orbit'):
-                orbit = PrimeOrbit()
-                size = int(next(orb_file).split(':')[1].strip())
-                for i in range(size):
-                    values = []
-                    values.extend(next(orb_file).split(':')[1].strip())
-                    prime_str =  next(orb_file).split(':')[1].strip()
-                    prime = Prime(values, prime_str)
-                    orbit.add_prime(prime)
-                orbit.forall   = ast.literal_eval(next(orb_file).split(':')[1].strip())
-                orbit.exists   = ast.literal_eval(next(orb_file).split(':')[1].strip())
-                orbit.literals = ast.literal_eval(next(orb_file).split(':')[1].strip())
-                qform = ' | '.join(orbit.literals)
-                qform = '(' + qform + ')'
-                if len(orbit.exists):
-                    qform = '(exists ' + ', '.join(orbit.exists) + ' . ' + qform + ')'
-                if len(orbit.forall):
-                    qform = '(forall ' + ', '.join(orbit.forall) + ' . ' + qform + ')'
-                orbit.quantified_form = qform
-                orbit.qcost = len(orbit.forall) + len(orbit.exists) + len(orbit.literals)
-                orbits.append(orbit)
-    return orbits
-
 class Prime():
     # static members
     count  : int = 0 
@@ -140,7 +113,6 @@ class PrimeOrbits():
         atom_num = protocol.atom_num
 
         self._formula = DualRailNegation(protocol)
-        # ub=0 will cover the case when the formula is empty 
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
             for ubound in range(0,atom_num+1):
                 assumptions = self._formula.assume(ubound)
@@ -152,3 +124,29 @@ class PrimeOrbits():
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
     
+def read_orbits(filename: str) -> List[PrimeOrbit]:
+    orbits : List[PrimeOrbit] = []
+    with open(filename, 'r') as orb_file: 
+        for line in orb_file:
+            if line.startswith('= Orbit'):
+                orbit = PrimeOrbit()
+                size = int(next(orb_file).split(':')[1].strip())
+                for i in range(size):
+                    values = []
+                    values.extend(next(orb_file).split(':')[1].strip())
+                    prime_str =  next(orb_file).split(':')[1].strip()
+                    prime = Prime(values, prime_str)
+                    orbit.add_prime(prime)
+                orbit.forall   = ast.literal_eval(next(orb_file).split(':')[1].strip())
+                orbit.exists   = ast.literal_eval(next(orb_file).split(':')[1].strip())
+                orbit.literals = ast.literal_eval(next(orb_file).split(':')[1].strip())
+                qform = ' | '.join(orbit.literals)
+                qform = '(' + qform + ')'
+                if len(orbit.exists):
+                    qform = '(exists ' + ', '.join(orbit.exists) + ' . ' + qform + ')'
+                if len(orbit.forall):
+                    qform = '(forall ' + ', '.join(orbit.forall) + ' . ' + qform + ')'
+                orbit.quantified_form = qform
+                orbit.qcost = len(orbit.forall) + len(orbit.exists) + len(orbit.literals)
+                orbits.append(orbit)
+    return orbits
