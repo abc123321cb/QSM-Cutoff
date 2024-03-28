@@ -98,34 +98,45 @@ class Protocol():
         # cartesian product
         self._sorts_permutations = list(product(*all_sorts_permutations))
 
+    def _get_renamed_atom(self, permutation, atom_id) -> str:
+        atom      = self.atoms[atom_id]
+        signature = self.atom_sig[atom_id]
+        predicate = signature[0]
+        args      = signature[1:]
+        argsorts  = self.predicates[predicate]
+        new_args  = []
+        # get new arguements
+        for (arg_id, arg) in enumerate(args):
+            sort    = argsorts[arg_id]
+            sort_id = self.sort_Name2Id[sort]
+            old_element_id = self.element_Name2Id[arg]
+            new_element_id = permutation[sort_id][old_element_id]
+            new_args.append(self.sort_elements[sort_id][new_element_id])
+        return atom_format(predicate, new_args)
+
+    def _get_permuted_values(self, permutation, values : List[str]) -> List[str]:
+        new_values = ['-']*len(values)
+        for (atom_id, val) in enumerate(values):
+            if not val == '-':
+                new_atom = self._get_renamed_atom(permutation, atom_id)
+                if new_atom in self.atom_Name2Id:
+                    new_atom_id = self.atom_Name2Id[new_atom]
+                    new_values[new_atom_id] = val 
+                else:
+                    return [] # invalid permutation
+        return new_values
+
     def permute(self, values : List[str]) -> List[List[str]]:
         # values is a list of '0', '1', '-'
         assert( len(values) == self.atom_num )
         permuted_val_list = [] 
         keys  = set()
         for permutation in self._sorts_permutations:
-            new_values = ['-']*len(values)
-            for (atom_id, val) in enumerate(values):
-                if not val == '-':
-                    assert( val == '0' or val == '1' )
-                    atom      = self.atoms[atom_id]
-                    signature = self.atom_sig[atom_id]
-                    predicate = signature[0]
-                    args      = signature[1:]
-                    argsorts  = self.predicates[predicate]
-                    new_args  = []
-                    for (arg_id, arg) in enumerate(args):
-                        sort    = argsorts[arg_id]
-                        sort_id = self.sort_Name2Id[sort]
-                        old_element_id = self.element_Name2Id[arg]
-                        new_element_id = permutation[sort_id][old_element_id]
-                        new_args.append(self.sort_elements[sort_id][new_element_id])
-                    new_atom    = atom_format(predicate, new_args) 
-                    new_atom_id = self.atom_Name2Id[new_atom]
-                    new_values[new_atom_id] = val 
-            new_key = str(new_values)
-            if not new_key in keys:
-                keys.add(new_key)
-                permuted_val_list.append(new_values)
+            new_values = self._get_permuted_values(permutation, values)
+            if new_values:
+                new_key = str(new_values)
+                if not new_key in keys:
+                    keys.add(new_key)
+                    permuted_val_list.append(new_values)
         return permuted_val_list
     
