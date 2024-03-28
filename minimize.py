@@ -128,6 +128,8 @@ class Minimizer():
         self._pverbose(f'New level: {level}\n pending : {self.pending}\n solution : {self.solution}')
 
     def _decide_orbit(self) -> None:
+        top = self.decision_stack[-1]
+        self._pverbose(f'Decide in level {top.level} among pending : {self.pending}')
         max_val = 0
         max_id  = -1
         for id in self.pending:
@@ -137,14 +139,12 @@ class Minimizer():
                 max_val = coverage
                 max_id  = id
         assert(max_val > 0 and max_id >=0)
-        top = self.decision_stack[-1]
-        self._pverbose(f'Decide in level {top.level} among pending : {self.pending}')
         top.id = max_id
         top.unpended.append(max_id)
         self.pending.remove(max_id)
         if top.include:
             self.solution.append(max_id)
-        self._pverbose(f'Coverage : {[(i, c) for (i,c) in enumerate(self.cover.coverage)]}')
+        self._pverbose(f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
         self._pverbose(f'Decide {top.id} at level {top.level}')
 
     def _backtrack(self) -> None:
@@ -204,11 +204,9 @@ class Minimizer():
             else:
                 self._backtrack()
                 return self.max_cost 
-
         if cost >= self.ubound:
             self._backtrack()
             return self.max_cost
-
         self._decide_orbit()
         cost1 = self._solve_one()
         if(cost1 == cost):
@@ -233,11 +231,9 @@ class Minimizer():
                 self.optimal_solutions.append(self.solution.copy()) 
                 self._backtrack()
                 return 
-        
         if cost > self.ubound:
             self._backtrack()
             return
-
         self._decide_orbit()
         self._solve_all()
         self._invert_decision()
