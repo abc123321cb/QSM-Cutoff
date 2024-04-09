@@ -31,7 +31,7 @@ class StackLevel():
 class CoverConstraints():
     def __init__(self, orbits : List[PrimeOrbit], atom_num : int, useMC : UseMC) -> None:
         self.sat_solver    = SatSolver() 
-        self.model_counter = GluSolver() if useMC == UseMC.sat  else Counter()
+        self.model_counter = GluSolver() if useMC == UseMC.sat else Counter()
         self.useMC         = useMC
         self.atom_vars : List[int] = []
         self.orbit_vars: List[int] = []
@@ -45,10 +45,27 @@ class CoverConstraints():
         self._init_clauses(orbits)
 
     def _atom_id(self, atom_var : int) -> int:
-        return _atom_var -1
+        return atom_var -1
     def _orbit_id(self, orbit_var : int) -> int:
         return orbit_var - 1 - self.atom_num
     
+    def _init_clauses(self, orbits : List[PrimeOrbit]) -> None:
+        for (orbit_id, orbit) in enumerate(orbits):
+            orbit_var = self.orbit_vars[orbit_id]
+            for prime in orbit.primes:
+                clause = self.get_prime_literals(prime, negate=True) 
+                clause.append(-1*orbit_var)
+                self.sat_solver.add_clause(clause)
+                self.model_counter.add_clause(clause)
+
+    def _count_atom_var(self, assigned) -> int:
+        count = 0
+        for lit in assigned:
+            var = abs(lit)
+            if var <= len(self.atom_vars):
+                count +=1
+        return count
+
     def reset_coverage(self) -> None:
         for (i, _) in enumerate(self.coverage):
             self.coverage[i] = -1
@@ -63,15 +80,6 @@ class CoverConstraints():
                 literals.append(lit)
         return literals
 
-    def _init_clauses(self, orbits : List[PrimeOrbit]) -> None:
-        for (orbit_id, orbit) in enumerate(orbits):
-            orbit_var = self.orbit_vars[orbit_id]
-            for prime in orbit.primes:
-                clause = self.get_prime_literals(prime, negate=True) 
-                clause.append(-1*orbit_var)
-                self.sat_solver.add_clause(clause)
-                self.model_counter.add_clause(clause)
-
     def is_essential(self, orbit : PrimeOrbit, pending, solution) -> bool:
         assumptions = self.get_prime_literals(orbit.repr_prime)
         assumptions += [self.orbit_vars[i] for i in pending  if i != orbit.id]
@@ -85,7 +93,8 @@ class CoverConstraints():
         if self.useMC == UseMC.sat:
             result, assigned = self.model_counter.propagate(assumptions)
             if result:
-                self.coverage[orbit.id] = len(self.coverage) + 1 - len(assigned) 
+                atom_count = self._count_atom_var(assigned)
+                self.coverage[orbit.id] = len(self.atom_vars) +1 - atom_count
             else:
                 self.coverage[orbit.id] = 0 # covered by existing solution 
         return self.coverage[orbit.id] 
@@ -109,7 +118,7 @@ class Minimizer():
     
     def _get_cost(self) -> int:
         s = sum([self.orbits[i].qcost for i in self.solution])
-        self._pverbose(f'Solution : {self.solution} has cost {s}.')
+        self._pverbose(f'\nSolution : {self.solution} has cost {s}.')
         return s
 
     def _invert_decision(self) -> None:
@@ -119,17 +128,18 @@ class Minimizer():
         top._switch_branch()
         if top.include:
             self.solution.append(top.id)
-        self._pverbose(f'Invert decision for {top.id} at level {top.level}')
+        self._pverbose(f'\nInvert decision for {top.id} at level {top.level}')
 
     def _new_level(self) -> None:
         level = len(self.decision_stack)
         start = len(self.solution)
         self.decision_stack.append(StackLevel(level,start))
-        self._pverbose(f'New level: {level}\n pending : {self.pending}\n solution : {self.solution}')
+        self._pverbose(f'\nNew level: {level}\n pending : {self.pending}\n solution : {self.solution}')
 
     def _decide_orbit(self) -> None:
         top = self.decision_stack[-1]
-        self._pverbose(f'Decide in level {top.level} among pending : {self.pending}')
+        self._pverbose(f'\nDecide in level {top.level} among pending : {self.pending}')
+        self._pverbose(f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
         max_val = 0
         max_id  = -1
         for id in self.pending:
@@ -144,12 +154,11 @@ class Minimizer():
         self.pending.remove(max_id)
         if top.include:
             self.solution.append(max_id)
-        self._pverbose(f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
         self._pverbose(f'Decide {top.id} at level {top.level}')
 
     def _backtrack(self) -> None:
         top = self.decision_stack[-1]
-        self._pverbose(f'Before backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}')
+        self._pverbose(f'\nBefore backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}')
         self.pending.extend(top.unpended)
         if (len(self.solution) > top.start):
             del self.solution[top.start:]
@@ -157,7 +166,7 @@ class Minimizer():
         self._pverbose(f'After backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}')
     
     def _reduce(self) -> None:
-        self._pverbose(f'Before reduction : \n pending  : {self.pending}\n solution : {self.solution}')
+        self._pverbose(f'\nBefore reduction : \n pending  : {self.pending}\n solution : {self.solution}')
         has_essential = self._add_essentials()
         has_covered   = self._remove_covered()
         self._pverbose(f'After reduction : \n pending  : {self.pending}\n solution : {self.solution}')
@@ -179,6 +188,7 @@ class Minimizer():
     
     def _remove_covered(self) -> bool:
         covered = set()
+        self._pverbose(f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
         self.cover.reset_coverage()
         for id in self.pending:
             orbit = self.orbits[id]
@@ -188,6 +198,7 @@ class Minimizer():
         removed = minus(self.pending, covered)
         top = self.decision_stack[-1]
         top.unpended.extend(removed)
+        self._pverbose(f'After removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
         self._pverbose(f'Covered at level {top.level} : {covered}')
         return len(covered) > 0
 
