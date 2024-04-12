@@ -5,29 +5,23 @@ from verbose import *
 from util import *
 
 # utils
+quorum_delim = '-'
 def format_atom(predicate: str, args: List[str]) -> str:
     return predicate + '(' + ', '.join(args) + ')'
 
-def split_head_tail1(line : str, delim='') -> Tuple [str, List[str]]:
-    list = line.split(delim)
-    return  (list[1], list[2:])
+def split_head_tail(line: str, head : int, delim=None) -> Tuple [str, List[str]]:
+    lst = line.split(delim)
+    return (lst[head], lst[head+1:])
 
-def split_head_tail0(line: str, delim='') -> Tuple [str, List[str]]:
-    list = line.split(delim)
-    return (list[0], list[1:])
-
-def is_valid_and_new(toCheck : List[str], pool: Set[str]) -> bool:
-    if toCheck:
-        key = str(toCheck)
-        if not key in pool:
-            pool.add(key)
-            return True
+def new_insert(obj, obj_set: Set[str]) -> bool:
+    key = str(obj)
+    if not key in obj_set:
+        obj_set.add(key)
+        return True
     return False
 
-quorum_delim = '_'
-
 class Protocol():
-    def __init__(self, options : QrmOptions) -> None:
+    def __init__(self, options) -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
@@ -49,7 +43,7 @@ class Protocol():
     def _read_sort(self, line : str) -> None:
         # read '.s [sort_name] [element1] [element2] ...'
         sort_id     = len(self.sorts)
-        (sort, elements) = split_head_tail1(line)
+        (sort, elements) = split_head_tail(line, head=1)
         self.sorts.append(sort)
         self.sort_elements.append(elements)
         self.sort_Name2Id[sort] = sort_id
@@ -57,16 +51,16 @@ class Protocol():
             self.element_Name2Id[e]=id
 
     def _read_quorums(self, line : str) -> None:
-        # read '.q [sort] [quorum1] [quorum2] ...' 
-        # quorum format q-n1-n2, q-n1-n3, q-n2-n3
-        (sort, quorums) = split_head_tail1(line) 
+        # read '.q [member sort] [quorum1] [quorum2] ...' 
+        # .q node q-n1-n2 q-n1-n3 q-n2-n3 ...
+        (sort, quorums) = split_head_tail(line, head=1) 
         sort_id = self.sort_Name2Id[sort]
         for quorum in quorums:
             self.quorums[quorum] = sort_id
 
     def _read_predicate(self, line : str) -> None:
         # read '.p [predicate_name] [argsort1] [argsort2] ...'
-        (pred, arg_sorts) = split_head_tail1(line)
+        (pred, arg_sorts) = split_head_tail(line, head=1)
         self.predicates[pred] = arg_sorts 
 
     def _read_atoms(self, line:str) -> None:
@@ -75,11 +69,15 @@ class Protocol():
         self.atom_num = len(atoms)
         assert( len(atoms) == self.atom_num )
         for (id,atom) in enumerate(atoms):
+            predicate = '' 
+            args = []
             match = re.search(r'(\w+)\(([^)]+)\)', atom)
-            assert(match)
-            predicate = match.group(1)
-            args      = match.group(2).split(',')
-            atom      = format_atom(predicate,args)
+            if match:
+                predicate = match.group(1)
+                args      = match.group(2).split(',')
+            else:
+                predicate = atom.strip('( )')
+            atom = format_atom(predicate,args)
             self.atoms.append(atom)
             self.atom_Name2Id[atom]  = id
             signature = [predicate] + args
@@ -98,7 +96,7 @@ class Protocol():
             for line in file:
                 if line.startswith('.s'):
                     self._read_sort(line)
-                if line.startswoth('.q'):
+                if line.startswith('.q'):
                     self._read_quorums(line)
                 if line.startswith('.p'):
                     self._read_predicate(line)                    
@@ -116,7 +114,7 @@ class Protocol():
         # cartesian product
         self._sorts_permutations = list(product(*all_sorts_permutations))
     
-    def _permute_element(self, permutation, sort_id, element) -> str:
+    def _get_renamed_element(self, permutation, sort_id, element) -> str:
         new_element = []
         for e in element:
             old_element_id = self.element_Name2Id[e]
@@ -125,7 +123,7 @@ class Protocol():
         new_element.sort()
         return quorum_delim.join(new_element)
 
-    def _permute_atom(self, permutation, atom_id) -> str:
+    def _get_renamed_atom(self, permutation, atom_id) -> str:
         signature = self.atom_sig[atom_id]
         predicate = signature[0]
         args      = signature[1:]
@@ -135,37 +133,38 @@ class Protocol():
         for (arg_id, arg) in enumerate(args):
             narg = ''
             if arg in self.quorums:
-                (prefix, elements) = split_head_tail0(arg, quorum_delim) 
-                sort_id = self.quorum[arg]
+                (prefix, elements) = split_head_tail(arg, head=0, delim=quorum_delim) 
+                sort_id = self.quorums[arg]
                 narg = (prefix + quorum_delim)
-                narg += self._permute_element(permutation, sort_id, elements)
+                narg += self._get_renamed_element(permutation, sort_id, elements)
             else:
                 sort    = argsorts[arg_id]
                 sort_id = self.sort_Name2Id[sort]
-                narg = self._permute_element(permutation, sort_id, [arg])
+                narg = self._get_renamed_element(permutation, sort_id, [arg])
             new_args.append(narg)       
         return format_atom(predicate, new_args)
 
     def _permute_values(self, permutation, values : List[str]) -> List[str]:
+        # values is a list of '0', '1', '-'
         nvalues = ['-']*len(values)
         for (id, val) in enumerate(values):
-            if val == '0' or '1':
-                atom = self._permute_atom(permutation, id)
-                if atom in self.atom_Name2Id:
-                    nid = self.atom_Name2Id[atom]
-                    nvalues[nid] = val 
-                else:
-                    return [] # invalid permutation
+            if val == '-': # don't care 
+                continue
+            atom = self._get_renamed_atom(permutation, id)
+            if not atom in self.atom_Name2Id: # invalid permutation
+                return []
+            nid = self.atom_Name2Id[atom]
+            nvalues[nid] = val 
         return nvalues
 
-    def permute(self, values : List[str]) -> List[List[str]]:
+    def all_permutations(self, values : List[str]) -> List[List[str]]:
         # values is a list of '0', '1', '-'
         assert( len(values) == self.atom_num )
         values_list = [] 
         values_hash  = set() # avoid repeated insertion
         for perm in self._sorts_permutations:
             nvalues = self._permute_values(perm, values)
-            if is_valid_and_new(toCheck=nvalues, pool=values_hash):
+            if nvalues and new_insert(nvalues, values_hash):
                 values_list.append(nvalues)
         return values_list 
     

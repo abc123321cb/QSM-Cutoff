@@ -6,50 +6,58 @@ from prime import *
 from util import *
 from verbose import *
 
-def minus(target : list, source : set) -> list:
-    temp = target.copy()
-    target.clear()
+def remove_target_from_source(source : list, target : set) -> list:
+    temp = source.copy()
+    source.clear()
     removed = []
     for x in temp:
-        if x not in source:
-            target.append(x)
-        else:
+        if x in target:
             removed.append(x)
+        else:
+            source.append(x)
     return removed
 
 class StackLevel():
-    def __init__(self, level: int, start: int) -> None:
-        self.level      = level
-        self.start      = start 
-        self.orbit_id   = -1 
-        self.include    = True 
+    def __init__(self, level: int, start_idx: int) -> None:
+        self.level                = level
+        self.solution_start_idx   = start_idx
+        self.orbit_id             = -1 
+        self.include_orbit        = True 
         self.unpended : List[int] = [] 
 
     def _switch_branch(self) -> None:
-        self.include = not self.include
+        self.include_orbit = not self.include_orbit
 
 class CoverConstraints():
-    def __init__(self, orbits : List[PrimeOrbit], atom_num : int, useMC : UseMC) -> None:
+    def __init__(self, orbits : List[PrimeOrbit], useMC : UseMC) -> None:
         self.sat_solver    = SatSolver() 
         self.model_counter = GluSolver() if useMC == UseMC.sat else Counter()
         self.useMC         = useMC
         self.atom_vars : List[int] = []
         self.orbit_vars: List[int] = []
-        self.coverage  : List[int] = [] 
+        self.coverage  : List[int] = [-1]*len(orbits) 
         
+        self._init_vars(orbits)
+        self._init_solver(orbits)
+
+    def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
+        literals = []
+        for (id, val) in enumerate(prime.values):
+            lit = self.atom_vars[id]
+            if (val == '1' and negate) or (val == '0' and not negate):
+                literals.append(-1*lit) 
+            elif (val == '1' and not negate) or (val == '0' and negate):
+                literals.append(lit)
+        return literals
+
+    def _init_vars(self, orbits : List[PrimeOrbit]) -> None:
+        atom_num = len(orbits[0].repr_prime.values)
         for atom_id in range(atom_num):
             self.atom_vars.append(atom_id+1)
         for orbit_id in range(len(orbits)):
             self.orbit_vars.append(atom_num + 1 + orbit_id)
-        self.coverage = [-1]*len(orbits)
-        self._init_clauses(orbits)
 
-    def _atom_id(self, atom_var : int) -> int:
-        return atom_var -1
-    def _orbit_id(self, orbit_var : int) -> int:
-        return orbit_var - 1 - self.atom_num
-    
-    def _init_clauses(self, orbits : List[PrimeOrbit]) -> None:
+    def _init_solver(self, orbits : List[PrimeOrbit]) -> None:
         for (orbit_id, orbit) in enumerate(orbits):
             orbit_var = self.orbit_vars[orbit_id]
             for prime in orbit.primes:
@@ -69,16 +77,6 @@ class CoverConstraints():
     def reset_coverage(self) -> None:
         for (i, _) in enumerate(self.coverage):
             self.coverage[i] = -1
-
-    def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
-        literals = []
-        for (id, val) in enumerate(prime.values):
-            lit = self.atom_vars[id]
-            if (val == '1' and negate) or (val == '0' and not negate):
-                literals.append(-1*lit) 
-            elif (val == '1' and not negate) or (val == '0' and negate):
-                literals.append(lit)
-        return literals
 
     def is_essential(self, orbit : PrimeOrbit, pending, solution) -> bool:
         assumptions = self.get_prime_literals(orbit.repr_prime)
@@ -101,9 +99,8 @@ class CoverConstraints():
 
 class Minimizer():
     def __init__(self, orbits: List[PrimeOrbit], options : QrmOptions) -> None: 
-        atom_num = len(orbits[0].repr_prime.values) 
         self.orbits = orbits
-        self.cover  = CoverConstraints(orbits, atom_num, options.useMC)
+        self.cover  = CoverConstraints(orbits, options.useMC)
         self.max_cost = 1 + sum([orbit.qcost for orbit in orbits])
         self.ubound = self.max_cost
         self.decision_stack : List[StackLevel] = []
@@ -112,34 +109,12 @@ class Minimizer():
         self.optimal_solutions : List[List[int]] = []
         self.options = options
 
-    def _pverbose(self, line : str) -> None:
-        if (self.options.verbose):
-            print(line)
-    
     def _get_cost(self) -> int:
         s = sum([self.orbits[i].qcost for i in self.solution])
-        self._pverbose(f'\nSolution : {self.solution} has cost {s}.')
+        vprint(self, f'\nSolution : {self.solution} has cost {s}.', 5)
         return s
 
-    def _invert_decision(self) -> None:
-        top = self.decision_stack[-1]
-        if top.include:
-            assert(top.id == self.solution.pop())
-        top._switch_branch()
-        if top.include:
-            self.solution.append(top.id)
-        self._pverbose(f'\nInvert decision for {top.id} at level {top.level}')
-
-    def _new_level(self) -> None:
-        level = len(self.decision_stack)
-        start = len(self.solution)
-        self.decision_stack.append(StackLevel(level,start))
-        self._pverbose(f'\nNew level: {level}\n pending : {self.pending}\n solution : {self.solution}')
-
-    def _decide_orbit(self) -> None:
-        top = self.decision_stack[-1]
-        self._pverbose(f'\nDecide in level {top.level} among pending : {self.pending}')
-        self._pverbose(f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
+    def _get_max_coverage_id(self) -> int:
         max_val = 0
         max_id  = -1
         for id in self.pending:
@@ -149,58 +124,107 @@ class Minimizer():
                 max_val = coverage
                 max_id  = id
         assert(max_val > 0 and max_id >=0)
-        top.id = max_id
-        top.unpended.append(max_id)
-        self.pending.remove(max_id)
-        if top.include:
-            self.solution.append(max_id)
-        self._pverbose(f'Decide {top.id} at level {top.level}')
+        return max_id
+
+    def _get_initial_phase(self) -> bool:
+        # hot start
+        return True
+
+    def _invert_decision(self) -> None:
+        assert(len(self.decision_stack))
+        top = self.decision_stack[-1]
+        if top.include_orbit:
+            assert(top.orbit_id == self.solution.pop())
+        top._switch_branch()
+        if top.include_orbit:
+            self.solution.append(top.id)
+        vprint(self, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
+
+    def _new_level(self) -> None:
+        level    = len(self.decision_stack)
+        start_id = len(self.solution)
+        self.decision_stack.append(StackLevel(level,start_id))
+        vprint(self, f'\nNew level: {level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+
+    def _decide(self) -> None:
+        # decide orbit id and initial phase
+        assert(len(self.decision_stack))
+        top = self.decision_stack[-1]
+        top.orbit_id      = self._get_max_coverage_id() 
+        top.include_orbit = self._get_initial_phase() 
+        vprint(self, f'\nDecide in level {top.level} among pending : {self.pending}', 5)
+        vprint(self, f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+        vprint(self, f'Decide {top.orbit_id} with phase {top.include_orbit} at level {top.level}', 5)
+        # update pending and solution accordingly
+        top.unpended.append(top.orbit_id)
+        self.pending.remove(top.orbit_id)
+        if top.include_orbit:
+            self.solution.append(top.orbit_id)
+        vprint(self, f'After decision at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
 
     def _backtrack(self) -> None:
+        assert(len(self.decision_stack))
         top = self.decision_stack[-1]
-        self._pverbose(f'\nBefore backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}')
+        vprint(self,f'\nBefore backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        # restore pending and solution
         self.pending.extend(top.unpended)
-        if (len(self.solution) > top.start):
-            del self.solution[top.start:]
+        if len(self.solution) > top.solution_start_idx:
+            del self.solution[top.solution_start_idx:]
         self.decision_stack.pop()
-        self._pverbose(f'After backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}')
+        vprint(self, f'After backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
     
-    def _reduce(self) -> None:
-        self._pverbose(f'\nBefore reduction : \n pending  : {self.pending}\n solution : {self.solution}')
-        has_essential = self._add_essentials()
-        has_covered   = self._remove_covered()
-        self._pverbose(f'After reduction : \n pending  : {self.pending}\n solution : {self.solution}')
-        if has_essential or has_covered:
-            self._reduce()
-    
-    def _add_essentials(self) -> bool:
+    def _collect_essentials(self) -> Set[int]:
         essentials = set()
         for id in self.pending:
             orbit = self.orbits[id]
             if(self.cover.is_essential(orbit, self.pending, self.solution)):
                 essentials.add(id)
-        self.solution += list(essentials)
-        removed = minus(self.pending, essentials)
-        top = self.decision_stack[-1]
-        top.unpended.extend(removed)
-        self._pverbose(f'Essensial at level {top.level} : {essentials}')
-        return len(essentials) > 0
-    
-    def _remove_covered(self) -> bool:
+        if self.options.verbosity >=5:
+            assert(len(self.decision_stack))
+            top = self.decision_stack[-1]
+            vprint(self, f'Essensial at level {top.level} : {essentials}', 5)
+        return essentials
+
+    def _collect_covered(self) -> Set[int]:
+        vprint(self, f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
         covered = set()
-        self._pverbose(f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
         self.cover.reset_coverage()
         for id in self.pending:
             orbit = self.orbits[id]
             coverage = self.cover.get_coverage(orbit, self.solution)
             if coverage == 0:
                 covered.add(id)
-        removed = minus(self.pending, covered)
+        if self.options.verbosity >=5:
+            assert(len(self.decision_stack))
+            top = self.decision_stack[-1]
+            vprint(self, f'After removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+            vprint(self, f'Covered at level {top.level} : {covered}', 5)
+        return covered
+
+    def _unpend(self, to_unpend : Set[int]) -> None:
+        removed = remove_target_from_source(source=self.pending, target=to_unpend) 
+        assert(len(self.decision_stack))
         top = self.decision_stack[-1]
         top.unpended.extend(removed)
-        self._pverbose(f'After removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}')
-        self._pverbose(f'Covered at level {top.level} : {covered}')
+    
+    def _add_essentials(self) -> bool:
+        essentials = self._collect_essentials()
+        self.solution += list(essentials)
+        self._unpend(essentials)
+        return len(essentials) > 0
+    
+    def _remove_covered(self) -> bool:
+        covered = self._collect_covered()
+        self._unpend(covered)
         return len(covered) > 0
+
+    def _reduce(self) -> None:
+        vprint(self, f'\nBefore reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
+        has_essential = self._add_essentials()
+        has_covered   = self._remove_covered()
+        vprint(self, f'After reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
+        if has_essential or has_covered:
+            self._reduce()
 
     def _solve_one(self) -> int: 
         self._new_level()
@@ -218,15 +242,15 @@ class Minimizer():
         if cost >= self.ubound:
             self._backtrack()
             return self.max_cost
-        self._decide_orbit()
+        self._decide()
         cost1 = self._solve_one()
         if(cost1 == cost):
             self._backtrack()
             return cost1
         self._invert_decision()
-        cost0 = self._solve_one()
+        cost2 = self._solve_one()
         self._backtrack()
-        return min(cost1,cost0)
+        return min(cost1,cost2)
 
     def _solve_all(self) -> None:
         self._new_level()
@@ -245,7 +269,7 @@ class Minimizer():
         if cost > self.ubound:
             self._backtrack()
             return
-        self._decide_orbit()
+        self._decide()
         self._solve_all()
         self._invert_decision()
         self._solve_all()
@@ -258,6 +282,7 @@ class Minimizer():
         else:
             self._solve_one()
 
+    def print_final_solution(self) -> None:
         print_banner('Final solutions')
         for (sid, solution) in enumerate(self.optimal_solutions):
             print(f'Solution {sid} : {solution} (length = {len(solution)})')
@@ -266,7 +291,6 @@ class Minimizer():
             for id in solution: 
                 print(f'invariant [I{id}] {self.orbits[id].quantified_form}')
             print('\n')
-        
 
     
         

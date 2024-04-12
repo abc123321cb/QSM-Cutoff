@@ -5,3 +5,7 @@ def print_banner(line : str) -> None:
     print(f'\t\t{line}')
     print(banner)
     print()
+
+def vprint(self, line : str, level:int) -> None:
+    if (self.options.verbosity >= level):
+        print(line)

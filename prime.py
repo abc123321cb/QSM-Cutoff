@@ -1,9 +1,7 @@
-import ast
 from typing import Dict,List
 from pysat.solvers import Cadical153 as SatSolver 
 from protocol import Protocol 
 from dualrail import DualRailNegation
-
 
 def make_key(values: List[str], protocol : Protocol) -> str:
     predicates = []
@@ -20,19 +18,19 @@ class Prime():
     count  : int = 0 
     _atoms : List[str]
 
-    def __init__(self, values: List[str], prime_str ='' ) -> None:
-        self.values : List[str] = values
-        self.id     : int = Prime.count
-        self.str    : str = self._format_str(prime_str) if prime_str == '' else prime_str
+    def __init__(self, values: List[str], literals ='' ) -> None:
+        self.values   : List[str] = values
+        self.id       : int = Prime.count
+        self.literals : str = self._get_literals() if literals == '' else literals 
         Prime.count += 1
 
     def __str__(self) -> str:
         value_str = ''.join(self.values)
         lines  = f'{self.id} : {value_str}\n' 
-        lines += f'{self.id} : {self.str}\n'
+        lines += f'{self.id} : {self.literals}\n'
         return lines
     
-    def _format_str(self, prime_str : str) -> str:
+    def _get_literals(self) -> str:
         literals = []
         for (atom_id, val) in enumerate(self.values):
             if val == '1':
@@ -95,23 +93,26 @@ class PrimeOrbits():
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
         key = make_key(values,protocol)
-        if not key in self._orbit_hash:
-            orbit = PrimeOrbit()
-            self._orbit_hash[key] = orbit
-            self.orbits.append(orbit)
+        #if not key in self._orbit_hash:
+        orbit = PrimeOrbit()
+        self._orbit_hash[key] = orbit
+        self.orbits.append(orbit)
+
         orbit = self._orbit_hash[key]
         block_clauses = []
-        for new_values in protocol.permute(values):
-            clause = self._formula.block(new_values) 
+        for nvalues in protocol.all_permutations(values):
+            clause = self._formula.block(nvalues) 
             block_clauses.append(clause)
-            prime  = Prime(new_values)
+            prime  = Prime(nvalues)
             orbit.add_prime(prime)
         return block_clauses
 
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
+        # setup
         Prime.setup(protocol)
         atom_num = protocol.atom_num
 
+        # emumerate prime orbits
         self._formula = DualRailNegation(protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
             for ubound in range(0,atom_num+1):
@@ -124,29 +125,5 @@ class PrimeOrbits():
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
     
-def read_orbits(filename: str) -> List[PrimeOrbit]:
-    orbits : List[PrimeOrbit] = []
-    with open(filename, 'r') as orb_file: 
-        for line in orb_file:
-            if line.startswith('= Orbit'):
-                orbit = PrimeOrbit()
-                size = int(next(orb_file).split(':')[1].strip())
-                for i in range(size):
-                    values = []
-                    values.extend(next(orb_file).split(':')[1].strip())
-                    prime_str =  next(orb_file).split(':')[1].strip()
-                    prime = Prime(values, prime_str)
-                    orbit.add_prime(prime)
-                orbit.forall   = ast.literal_eval(next(orb_file).split(':')[1].strip())
-                orbit.exists   = ast.literal_eval(next(orb_file).split(':')[1].strip())
-                orbit.literals = ast.literal_eval(next(orb_file).split(':')[1].strip())
-                qform = ' | '.join(orbit.literals)
-                qform = '(' + qform + ')'
-                if len(orbit.exists):
-                    qform = '(exists ' + ', '.join(orbit.exists) + ' . ' + qform + ')'
-                if len(orbit.forall):
-                    qform = '(forall ' + ', '.join(orbit.forall) + ' . ' + qform + ')'
-                orbit.quantified_form = qform
-                orbit.qcost = len(orbit.forall) + len(orbit.exists) + len(orbit.literals)
-                orbits.append(orbit)
-    return orbits
+
+

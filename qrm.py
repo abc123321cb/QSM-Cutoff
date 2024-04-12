@@ -4,7 +4,7 @@ from os import path
 from verbose import *
 from util import *
 from protocol import Protocol 
-from prime import PrimeOrbits, read_orbits
+from prime import PrimeOrbits
 from minimize import Minimizer
 
 def usage ():
@@ -37,8 +37,8 @@ def qrm(args):
     options = QrmOptions()
     for (optc, optv) in opts:
         if optc == '-v':
-            options.verbose = int(optv)
-            if options.verbose < 0 or options.verbose > 5:
+            options.verbosity = int(optv)
+            if options.verbosity < 0 or options.verbosity > 5:
                 usage_and_exit()
         elif optc == '-o':
             options.mode = Mode.gen
@@ -67,10 +67,12 @@ def qrm(args):
         prime_orbits = PrimeOrbits() 
         prime_orbits.symmetry_aware_enumerate(protocol)               
         print(prime_orbits)
+
     elif(options.mode == Mode.min):
         orbits = read_orbits(options.filename)
         minimizer = Minimizer(orbits, options)
         minimizer.solve()
+        minimizer.print_final_solution()
 
 if __name__ == '__main__':
     qrm(sys.argv[1:])
