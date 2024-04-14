@@ -2,7 +2,7 @@ import sys
 import getopt
 from os import path
 from verbose import *
-from util import *
+from util import * 
 from protocol import Protocol 
 from prime import PrimeOrbits
 from minimize import Minimizer
@@ -64,15 +64,13 @@ def qrm(args):
 
     if(options.mode == Mode.gen):
         protocol = Protocol(options)
-        prime_orbits = PrimeOrbits() 
+        prime_orbits = PrimeOrbits(options) 
         prime_orbits.symmetry_aware_enumerate(protocol)               
-        print(prime_orbits)
 
     elif(options.mode == Mode.min):
         orbits = read_orbits(options.filename)
         minimizer = Minimizer(orbits, options)
         minimizer.solve()
-        minimizer.print_final_solution()
 
 if __name__ == '__main__':
     qrm(sys.argv[1:])

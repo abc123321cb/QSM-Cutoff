@@ -1,11 +1,12 @@
-def print_banner(line : str) -> None:
-    banner ='*'*100
-    print()
-    print(banner)
-    print(f'\t\t{line}')
-    print(banner)
-    print()
+def vprint_banner(self, line : str, level=0) -> None:
+    if self.options.verbosity >= level:
+        banner ='='*(len(line)+20)
+        print()
+        print(banner)
+        print(f'\n\t{line}\n')
+        print(banner)
+        print()
 
-def vprint(self, line : str, level:int) -> None:
-    if (self.options.verbosity >= level):
+def vprint(self, line : str, level=0) -> None:
+    if self.options.verbosity >= level:
         print(line)

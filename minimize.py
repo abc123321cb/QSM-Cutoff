@@ -3,7 +3,7 @@ from pysat.solvers import Glucose4 as GluSolver
 from pysat.solvers import Cadical153 as SatSolver
 from pysat.allies.approxmc import Counter
 from prime import *
-from util import *
+from util import QrmOptions, UseMC
 from verbose import *
 
 def remove_target_from_source(source : list, target : set) -> list:
@@ -276,21 +276,23 @@ class Minimizer():
         self._backtrack()
         return 
 
+    def print_final_solution(self) -> None:
+        vprint_banner(self, 'Final solutions')
+        for (sid, solution) in enumerate(self.optimal_solutions):
+            vprint(self, f'Solution {sid} : {solution} (length = {len(solution)})')
+            costs = [self.orbits[i].qcost for i in solution]
+            vprint(self, f'Total cost : {sum(costs)} (individual cost : {costs})')
+            for id in solution: 
+                vprint(self, f'invariant [I{id}] {self.orbits[id].quantified_form}')
+            vprint(self, '\n')
+
     def solve(self) -> None:
         if self.options.all_solutions:
             self._solve_all()
         else:
             self._solve_one()
+        self.print_final_solution()
 
-    def print_final_solution(self) -> None:
-        print_banner('Final solutions')
-        for (sid, solution) in enumerate(self.optimal_solutions):
-            print(f'Solution {sid} : {solution} (length = {len(solution)})')
-            costs = [self.orbits[i].qcost for i in solution]
-            print(f'Total cost : {sum(costs)} (individual cost : {costs})')
-            for id in solution: 
-                print(f'invariant [I{id}] {self.orbits[id].quantified_form}')
-            print('\n')
 
     
         

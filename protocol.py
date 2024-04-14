@@ -1,8 +1,8 @@
 import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
+from util import QrmOptions 
 from verbose import *
-from util import *
 
 # utils
 quorum_delim = '-'
@@ -21,7 +21,7 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
     return False
 
 class Protocol():
-    def __init__(self, options) -> None:
+    def __init__(self, options : QrmOptions) -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
@@ -35,10 +35,28 @@ class Protocol():
         self.quorums       : Dict[str, int]      = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
+        self.options = options
 
         # initialization 
         self._read(options.filename)
         self._init_sorts_permutations()
+        vprint_banner(self, f'Protocol {options.filename}', 3)
+        vprint(self, str(self), 3)
+
+    def __str__(self) -> str:
+        lines = f'sorts: {str(self.sorts)}\n'
+        lines += f'sort elements: {str(self.sort_elements      )}\n' 
+        lines += f'sort name to id: {str(self.sort_Name2Id       )}\n' 
+        lines += f'element name to id: {str(self.element_Name2Id    )}\n' 
+        lines += f'predicates: {str(self.predicates         )}\n' 
+        lines += f'atom number: {str(self.atom_num           )}\n' 
+        lines += f'atoms: {str(self.atoms              )}\n' 
+        lines += f'atom name to id: {str(self.atom_Name2Id       )}\n' 
+        lines += f'atom signature: {str(self.atom_sig           )}\n' 
+        lines += f'quorum: {str(self.quorums            )}\n' 
+        lines += f'reachable states: {str(self.reachable_states   )}\n' 
+        lines += f'permutations: {str(self._sorts_permutations)}\n' 
+        return lines
 
     def _read_sort(self, line : str) -> None:
         # read '.s [sort_name] [element1] [element2] ...'

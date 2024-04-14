@@ -1,11 +1,9 @@
-import ast
-from enum import Enum
 from typing import List
-from prime import PrimeOrbit, Prime
 
+
+from enum import Enum
 Mode  = Enum('Mode', ['gen', 'qfy', 'min']) # generate prime, quantify prime, minimize prime
 UseMC = Enum('UseMC', ['sat', 'appMC'])
-
 class QrmOptions():
     def __init__(self) -> None:
         self.verbosity  = 0
@@ -14,6 +12,8 @@ class QrmOptions():
         self.useMC = UseMC.sat
         self.all_solutions = False 
 
+import ast
+from prime import PrimeOrbit, Prime
 def read_orbits(filename: str) -> List[PrimeOrbit]:
     orbits : List[PrimeOrbit] = []
     with open(filename, 'r') as orb_file: 
