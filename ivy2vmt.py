@@ -203,53 +203,6 @@ class print_module_vmt():
             self.add_constant(sym, True)
     
     def process_defs(self):
-        self.process_defs_v2()
-
-    def process_defs_v0(self):
-        for lf in self.definitions:
-            f = lf.formula.to_constraint()
-            self.add_new_constants(f)
-            label = str(lf.label)
-            res = (f, label, "axiom", "true")
-            self.vmt[label] = res
-            self.defn_labels.append(label)
-            
-            pref = lgu.substitute(f, self.nex2pre)
-            self.add_new_constants(pref)
-            label = "__" + str(lf.label)
-            res = (pref, label, "axiom", "true")
-            self.vmt[label] = res
-            self.defn_labels.append(label)
-            
-    def process_defs_v1(self):
-        for lf in self.definitions:
-#             print(type(lf))
-#             print(lf)
-            sym = lf.defines()
-            label = str(sym)
-            lhs = lf.lhs()
-            rhs = lf.rhs()
-            self.add_new_constants(rhs)
-            args = []
-            if isinstance(lhs, lg.Apply):
-                for arg in lhs.terms:
-                    args.append(arg)
-            self.add_definition(label, sym, args, rhs)
-            
-            sym = lgu.substitute(sym, self.nex2pre)
-            label = str(sym)
-            lhs = lgu.substitute(lf.lhs(), self.nex2pre)
-            rhs = lgu.substitute(lf.rhs(), self.nex2pre)
-            self.add_new_constants(rhs)
-            args = []
-            if isinstance(lhs, lg.Apply):
-                for arg in lhs.terms:
-                    args.append(arg)
-            self.add_definition(label, sym, args, rhs)
-            self.pre.remove(sym)
-            self.defs.add(sym)
-            
-    def process_defs_v2(self):
         for lf in self.definitions:
             sym = lf.defines()
             print("definition: %s" % str(sym))
