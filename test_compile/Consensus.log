@@ -1,19 +1,19 @@
 
 Printing isolate {isolate}:
 sorts      :  {UninterpretedSort('value',): 0}
-pre        :  set()
-nex        :  set()
+pre        :  {Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
+nex        :  {Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
 updated    :  {Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
 glo        :  set()
-vars       :  {Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
-allvars    :  {Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
-nex2pre    :  {}
-pre2nex    :  {}
+vars       :  set()
+allvars    :  {Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
+nex2pre    :  {Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())): Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
+pre2nex    :  {Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())): Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort()))}
 actions    :  {'action_ext:choose'}
 helpers    :  {}
 definitions:  []
 defn_labels:  []
 defs       :  set()
-str        :  {'value': '(declare-sort value 0)', 'chosen': '(declare-fun chosen (value) Bool)', '__chosen': '(declare-fun __chosen (value) Bool)'}
-vmt        :  {'$prop': (And(ForAll(frozenset({Var('V1', UninterpretedSort('value',)), Var('V2', UninterpretedSort('value',))}), Implies(And(Apply(Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V1', UninterpretedSort('value',))), Apply(Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V2', UninterpretedSort('value',)))), Eq(Var('V1', UninterpretedSort('value',)), Var('V2', UninterpretedSort('value',))))),), 'prop', 'invar-property', '0'), '$axiom': (And(), 'axiom', 'axiom', 'true'), '$init': (And(ForAll(frozenset({Var('V0', UninterpretedSort('value',))}), Iff(Apply(Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V0', UninterpretedSort('value',))), Or())),), 'init', 'init', 'true'), 'action_ext:choose': (Exists(frozenset({Var('V__fml:v', UninterpretedSort('value',))}), And(ForAll(frozenset({Var('V0', UninterpretedSort('value',))}), Iff(Apply(Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V0', UninterpretedSort('value',))), Ite(BooleanSort(), And(Eq(Var('V0', UninterpretedSort('value',)), Var('V__fml:v', UninterpretedSort('value',))),), And(), Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V0', UninterpretedSort('value',)))))), ForAll(frozenset({Var('V', UninterpretedSort('value',))}), Not(Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V', UninterpretedSort('value',))),)))), 'action_ext:choose', 'action', 'ext:choose')}
+str        :  {'value': '(declare-sort value 0)', 'chosen': '(declare-fun chosen (value) Bool)', '__chosen': '(declare-fun __chosen (value) Bool)', '__chosenchosen': '(define-fun .chosen ((V0 value)) Bool (! (__chosen V0) :next chosen))'}
+vmt        :  {'$prop': (And(ForAll(frozenset({Var('V2', UninterpretedSort('value',)), Var('V1', UninterpretedSort('value',))}), Implies(And(Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V1', UninterpretedSort('value',))), Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V2', UninterpretedSort('value',)))), Eq(Var('V1', UninterpretedSort('value',)), Var('V2', UninterpretedSort('value',))))),), 'prop', 'invar-property', '0'), '$axiom': (And(), 'axiom', 'axiom', 'true'), '$init': (And(ForAll(frozenset({Var('V0', UninterpretedSort('value',))}), Iff(Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V0', UninterpretedSort('value',))), Or())),), 'init', 'init', 'true'), 'action_ext:choose': (Exists(frozenset({Var('V__fml:v', UninterpretedSort('value',))}), And(ForAll(frozenset({Var('V0', UninterpretedSort('value',))}), Iff(Apply(Const('chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V0', UninterpretedSort('value',))), Ite(BooleanSort(), And(Eq(Var('V0', UninterpretedSort('value',)), Var('V__fml:v', UninterpretedSort('value',))),), And(), Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V0', UninterpretedSort('value',)))))), ForAll(frozenset({Var('V', UninterpretedSort('value',))}), Not(Apply(Const('__chosen', FunctionSort(UninterpretedSort('value',), BooleanSort())), Var('V', UninterpretedSort('value',))),)))), 'action_ext:choose', 'action', 'ext:choose')}
 OK

@@ -54,7 +54,7 @@ class print_module_vmt():
         self.pre2nex = {}
         self.actions = set()
         self.helpers = {}
-        self.definitions = set()
+        self.definitions = []
         self.defn_labels = []
         self.defs = set()
         self.str = {}
@@ -79,14 +79,8 @@ class print_module_vmt():
         for i in range(len(self.mod.updates)):
             if type(self.mod.updates[i]) == ia.DerivedUpdate:
                 defn = self.mod.updates[i].defn
-#                 print("definitions: %s" % str(defn))
-                self.definitions.add(defn)
+                self.definitions.append(defn)
             self.mod.definitions = []
-#         if len(self.mod.definitions) != 0:
-#             print("definitions: %s" % str(self.mod.definitions))
-#             for defn in self.mod.definitions:
-#                 self.definitions.add(defn)
-#             self.mod.definitions = []
             
         with self.mod.theory_context():
             self.process_sig()
@@ -96,8 +90,27 @@ class print_module_vmt():
             self.process_init()
             self.process_actions()
             self.process_global()
-    
+
             self.print_vmt()
+            self.print_verbose()
+
+    def print_verbose(self):
+        print('sorts      : ', self.sorts       ) 
+        print('pre        : ', self.pre         ) 
+        print('nex        : ', self.nex         ) 
+        print('updated    : ', self.updated     ) 
+        print('glo        : ', self.glo         ) 
+        print('vars       : ', self.vars        ) 
+        print('allvars    : ', self.allvars     ) 
+        print('nex2pre    : ', self.nex2pre     ) 
+        print('pre2nex    : ', self.pre2nex     ) 
+        print('actions    : ', self.actions     ) 
+        print('helpers    : ', self.helpers     ) 
+        print('definitions: ', self.definitions ) 
+        print('defn_labels: ', self.defn_labels ) 
+        print('defs       : ', self.defs        ) 
+        print('str        : ', self.str         ) 
+        print('vmt        : ', self.vmt         ) 
             
     def print_vmt(self):
         global outF, outFile
@@ -160,7 +173,7 @@ class print_module_vmt():
             res += '(declare-sort {} 0)'.format(name)
             self.sorts[sort] = 0
             self.str[str(sort)] = res
-            
+
         for sym in ivy_logic.sig.symbols.values():
             if isinstance(sym.sort,UnionSort):
                 assert("todo")
@@ -547,13 +560,11 @@ def print_isolate():
         if len(temporals) > 1:
             raise iu.IvyError(None,'multiple temporal properties in an isolate not supported yet')
         from ivy.ivy_l2s import l2s
-        l2s(mod, temporals[0])
-        mod.concept_spaces = []
-        mod.update_conjs()
-#     ifc.check_fragment()
+        l2s(mod, temporals[0])  # Lauren: ????     
+        mod.concept_spaces = [] # Lauren: ???? 
+        mod.update_conjs()      # Lauren: ???? 
     print_module_vmt(mod)
-    with im.module.theory_context():
-#         ip.print_module(mod)
+    with im.module.theory_context(): # set-up first order theory fragment
         pass
         return
 

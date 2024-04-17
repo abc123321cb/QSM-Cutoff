@@ -4,26 +4,36 @@
 (define-fun .node ((S node)) node (! S :sort 0))
 (define-fun .nodeset ((S nodeset)) nodeset (! S :sort 0))
 
-
-
-
 (declare-fun __didNotVote (node) Bool)
 (declare-fun __leader (node) Bool)
 (declare-fun __vote (node node) Bool)
 (declare-fun __voters (node nodeset) Bool)
-(declare-fun emptyset () nodeset)
+
+(declare-fun didNotVote (node) Bool)
 (declare-fun leader (node) Bool)
-(declare-fun majority (nodeset) Bool)
-(declare-fun member (node nodeset) Bool)
-(declare-fun setOverlap (nodeset nodeset) Bool)
 (declare-fun vote (node node) Bool)
 (declare-fun voters (node nodeset) Bool)
 
-(define-fun .def_didNotVote () Bool (! 
- (let (($v forall V0. didNotVote(V0) = (forall V. ~vote(V0,V))
+(define-fun .didNotVote ((V0 node)) Bool (! (__didNotVote V0) :next didNotVote))
+(define-fun .leader ((V0 node)) Bool (! (__leader V0) :next leader))
+(define-fun .vote ((V0 node) (V1 node)) Bool (! (__vote V0 V1) :next vote))
+(define-fun .voters ((V0 node) (V1 nodeset)) Bool (! (__voters V0 V1) :next voters))
+
+(declare-fun emptyset () nodeset)
+(declare-fun majority (nodeset) Bool)
+(declare-fun member (node nodeset) Bool)
+(declare-fun setOverlap (nodeset nodeset) Bool)
+
+(define-fun .emptyset () nodeset (! emptyset :global true))
+(define-fun .majority ((V0 nodeset)) Bool (! (majority V0) :global true))
+(define-fun .member ((V0 node) (V1 nodeset)) Bool (! (member V0 V1) :global true))
+(define-fun .setOverlap ((V0 nodeset) (V1 nodeset)) Bool (! (setOverlap V0 V1) :global true))
+
+(define-fun .def___didNotVote () Bool (! 
+ (let (($v forall V0. __didNotVote(V0) = (forall V. ~__vote(V0,V))
  ))
  (and $v))
- :definition didNotVote))
+ :definition __didNotVote))
 
 (define-fun .def_didNotVote () Bool (! 
  (let (($v forall V0. didNotVote(V0) = (forall V. ~vote(V0,V))
@@ -32,19 +42,13 @@
  :definition didNotVote))
 
 (define-fun .def_setOverlap () Bool (! 
- (let (($v forall V0,V1. setOverlap(V0,V1) = (exists N. (member(N,V0) & member(N,V1)))
- ))
- (and $v))
- :definition setOverlap))
-
-(define-fun .def_setOverlap () Bool (! 
- (let (($v forall V0,V1. setOverlap(V0,V1) = (exists N. (member(N,V0) & member(N,V1)))
+ (let (($v forall V1,V0. setOverlap(V0,V1) = (exists N. (member(N,V0) & member(N,V1)))
  ))
  (and $v))
  :definition setOverlap))
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall X,Y. (leader(X) & leader(Y)) -> X = Y))
+ (let (($v ((forall X,Y. (__leader(X) & __leader(Y)) -> X = Y))
  ))
  (and $v))
  :invar-property 0))
@@ -56,31 +60,31 @@
  :axiom true))
 
 (define-fun .init () Bool (! 
- (let (($v ((forall V0,V1. vote(V0,V1) <-> false) & (forall V0. leader(V0) <-> false) & (forall V0,V1. voters(V0,V1) <-> V1 = emptyset))
+ (let (($v ((forall V1,V0. __vote(V0,V1) <-> false) & (forall V0. __leader(V0) <-> false) & (forall V1,V0. __voters(V0,V1) <-> V1 = emptyset))
  ))
  (and $v))
  :init true))
 
 (define-fun .action_ext:become_leader () Bool (! 
- (let (($v exists V__fml:vs,V__fml:n. ((forall V0. leader(V0) <-> (true if (V0 = V__fml:n) else __leader(V0))) & voters(V__fml:n,V__fml:vs) & majority(V__fml:vs))
+ (let (($v exists V__fml:n,V__fml:vs. ((forall V0. leader(V0) <-> (true if (V0 = V__fml:n) else __leader(V0))) & __voters(V__fml:n,V__fml:vs) & majority(V__fml:vs))
  ))
  (and $v))
  :action ext:become_leader))
 
 (define-fun .action_ext:receive_vote () Bool (! 
- (let (($v exists V__fml:voter,V__new_fml:vs,V__fml:vs,V__new_fml:n,V__fml:n,V__fml:s2,V__new_fml:s1. (V__new_fml:n:node = V__fml:voter & V__new_fml:s1:nodeset = V__fml:vs & V__new_fml:vs:nodeset = V__fml:s2 & (forall V0,V1. voters(V0,V1) <-> ((V1 = V__new_fml:vs) if (V0 = V__fml:n) else __voters(V0,V1))) & vote(V__fml:voter,V__fml:n) & __voters(V__fml:n,V__fml:vs) & ~member(V__fml:voter,V__fml:vs) & (forall N. member(N,V__fml:s2) <-> member(N,V__new_fml:s1) | N = V__new_fml:n) & (majority(V__new_fml:s1) -> majority(V__fml:s2)))
+ (let (($v exists V__new_fml:vs,V__fml:voter,V__new_fml:n,V__fml:vs,V__fml:n,V__fml:s2,V__new_fml:s1. (V__new_fml:n:node = V__fml:voter & V__new_fml:s1:nodeset = V__fml:vs & V__new_fml:vs:nodeset = V__fml:s2 & (forall V1,V0. voters(V0,V1) <-> ((V1 = V__new_fml:vs) if (V0 = V__fml:n) else __voters(V0,V1))) & __vote(V__fml:voter,V__fml:n) & __voters(V__fml:n,V__fml:vs) & ~member(V__fml:voter,V__fml:vs) & (forall N. member(N,V__fml:s2) <-> member(N,V__new_fml:s1) | N = V__new_fml:n) & (majority(V__new_fml:s1) -> majority(V__fml:s2)))
  ))
  (and $v))
  :action ext:receive_vote))
 
 (define-fun .action_ext:voting () Bool (! 
- (let (($v exists V__fml:n2,V__fml:n1. ((forall V0,V1. vote(V0,V1) <-> (true if (V0 = V__fml:n1 & V1 = V__fml:n2) else __vote(V0,V1))) & __didNotVote(V__fml:n1))
+ (let (($v exists V__fml:n2,V__fml:n1. ((forall V1,V0. vote(V0,V1) <-> (true if (V0 = V__fml:n1 & V1 = V__fml:n2) else __vote(V0,V1))) & __didNotVote(V__fml:n1))
  ))
  (and $v))
  :action ext:voting))
 
 (define-fun .action_ns.add () Bool (! 
- (let (($v exists V__fml:s1,V__fml:n,V__fml:s2. ((forall N. member(N,V__fml:s2) <-> member(N,V__fml:s1) | N = V__fml:n) & (majority(V__fml:s1) -> majority(V__fml:s2)))
+ (let (($v exists V__fml:n,V__fml:s1,V__fml:s2. ((forall N. member(N,V__fml:s2) <-> member(N,V__fml:s1) | N = V__fml:n) & (majority(V__fml:s1) -> majority(V__fml:s2)))
  ))
  (and $v))
  :action ns.add))
