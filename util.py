@@ -1,7 +1,7 @@
 from typing import List
 
 from enum import Enum
-Mode  = Enum('Mode', ['gen', 'qfy', 'min']) # generate prime, quantify prime, minimize prime
+Mode  = Enum('Mode', ['ivy', 'gen', 'qfy', 'min']) # compile ivy, generate prime, quantify prime, minimize prime
 UseMC = Enum('UseMC', ['sat', 'appMC'])
 class QrmOptions():
     def __init__(self) -> None:
