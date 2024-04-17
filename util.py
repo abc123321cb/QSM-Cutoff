@@ -1,6 +1,5 @@
 from typing import List
 
-
 from enum import Enum
 Mode  = Enum('Mode', ['gen', 'qfy', 'min']) # generate prime, quantify prime, minimize prime
 UseMC = Enum('UseMC', ['sat', 'appMC'])
