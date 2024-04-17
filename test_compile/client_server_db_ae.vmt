@@ -76,13 +76,13 @@
  :init true))
 
 (define-fun .action_ext:db_process_request () Bool (! 
- (let (($v exists V__fml:r,V__fml:p,V__fml:i. ((forall V0,V1. db_response_sent(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:p) else __db_response_sent(V0,V1))) & __db_request_sent(V__fml:i,V__fml:r) & match(V__fml:r,V__fml:p))
+ (let (($v exists V__fml:p,V__fml:r,V__fml:i. ((forall V0,V1. db_response_sent(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:p) else __db_response_sent(V0,V1))) & __db_request_sent(V__fml:i,V__fml:r) & match(V__fml:r,V__fml:p))
  ))
  (and $v))
  :action ext:db_process_request))
 
 (define-fun .action_ext:new_request () Bool (! 
- (let (($v exists V__fml:r,V__fml:n. ((forall V0,V1. request_sent(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:r) else __request_sent(V0,V1))))
+ (let (($v exists V__fml:n,V__fml:r. ((forall V0,V1. request_sent(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:r) else __request_sent(V0,V1))))
  ))
  (and $v))
  :action ext:new_request))
@@ -100,7 +100,7 @@
  :action ext:server_process_db_response))
 
 (define-fun .action_ext:server_process_request () Bool (! 
- (let (($v exists V__fml:r,V__fml:n,V__fml:i. ((forall V0,V1. t(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:n) else __t(V0,V1))) & (forall V0,V1. db_request_sent(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:r) else __db_request_sent(V0,V1))) & __request_sent(V__fml:n,V__fml:r) & __noneWithId(V__fml:i))
+ (let (($v exists V__fml:n,V__fml:i,V__fml:r. ((forall V0,V1. t(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:n) else __t(V0,V1))) & (forall V0,V1. db_request_sent(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:r) else __db_request_sent(V0,V1))) & __request_sent(V__fml:n,V__fml:r) & __noneWithId(V__fml:i))
  ))
  (and $v))
  :action ext:server_process_request))

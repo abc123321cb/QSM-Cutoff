@@ -53,7 +53,6 @@ class print_module_vmt():
         self.nex2pre = {}
         self.pre2nex = {}
         self.actions = set()
-        self.helpers = {}
         self.definitions = []
         self.defn_labels = []
         self.defs = set()
@@ -105,7 +104,6 @@ class print_module_vmt():
         print('nex2pre    : ', self.nex2pre     ) 
         print('pre2nex    : ', self.pre2nex     ) 
         print('actions    : ', self.actions     ) 
-        print('helpers    : ', self.helpers     ) 
         print('definitions: ', self.definitions ) 
         print('defn_labels: ', self.defn_labels ) 
         print('defs       : ', self.defs        ) 
@@ -159,9 +157,6 @@ class print_module_vmt():
         for actname in sorted(self.actions, key=lambda v: str(v)):
             fprint(self.get_vmt_string(actname))
             fprint("")
-        for h in sorted(self.helpers.keys(), key=lambda v: str(v)):
-            fprint(self.get_vmt_string(h))
-            fprint("")
         
     def process_sig(self):
         for name,sort in ivy_logic.sig.sorts.items():
@@ -209,7 +204,6 @@ class print_module_vmt():
     
     def process_defs(self):
         self.process_defs_v2()
-#         self.process_defs_v1()
 
     def process_defs_v0(self):
         for lf in self.definitions:
@@ -257,8 +251,6 @@ class print_module_vmt():
             
     def process_defs_v2(self):
         for lf in self.definitions:
-#             print(type(lf))
-#             print(lf)
             sym = lf.defines()
             print("definition: %s" % str(sym))
             
@@ -293,29 +285,14 @@ class print_module_vmt():
             
     def process_conj(self):
         fmlas = []
-        helpers = []
         for lf in self.mod.labeled_conjs:
-            label = str(lf.label)
-            if label.startswith("help_"):
-                helpers.append(lf)
-            else:
-                fmlas.append(lf.formula)
+            fmlas.append(lf.formula)
         cl = lut.Clauses(fmlas)
         f = self.get_formula(cl)
         pref = lgu.substitute(f, self.nex2pre)
         self.add_new_constants(pref)
         res = (pref, "prop", "invar-property", "0")
         self.vmt["$prop"] = res
-        
-        for lf in helpers:
-            label = str(lf.label)
-            self.helpers[label] = lf.formula
-            cl = lut.Clauses([lf.formula])
-            f = self.get_formula(cl)
-            pref = lgu.substitute(f, self.nex2pre)
-            self.add_new_constants(pref)
-            res = (pref, label, "help", label)
-            self.vmt[label] = res
         
     def process_axiom(self):
         fmlas = [lf.formula for lf in self.mod.labeled_axioms]
@@ -327,8 +304,7 @@ class print_module_vmt():
 
     def process_init(self):
         init_cl = []
-        for name,action in self.mod.initializers:
-#             print ("init: ", str(action))
+        if self.mod.initializers:
             ag = ivy_art.AnalysisGraph(initializer=lambda x:None)
             history = ag.get_history(ag.states[0])
             post = lut.and_clauses(history.post)
@@ -342,20 +318,15 @@ class print_module_vmt():
         
     def process_actions(self):
         for name, action in self.mod.actions.items():
-#             print(type(action))
-#             print ("action2: ", ia.action_def_to_str(name, action))
             ag = ivy_art.AnalysisGraph()
             pre = itp.State()
             pre.clauses = lut.true_clauses()
-#             print(pre.to_formula())
             post = ag.execute(action, pre)
             history = ag.get_history(post)
             clauses = lut.and_clauses(history.post)
             f = self.get_formula(clauses)
             conjuncts = clauses.fmlas
             defn = lut.close_epr(lg.And(*conjuncts))
-#             print(defn)
-#             assert(0)
             
             update = action.update(pre.domain,pre.in_scope)
             sf = self.standardize_action(f, update[0], name)
@@ -403,18 +374,14 @@ class print_module_vmt():
             if c in self.nex:
                 if c not in nexSet:
                     subs[c] = self.nex2pre[c]
-#             elif False and (c not in self.pre):
             elif c not in self.pre:
                 if (not c.sort.dom) and (c.sort != lg.Boolean):
                     vname = "V"+c.name
-#                     vname = vname.replace(":", "")
                     qv = lg.Var(vname, c.sort)
                     subs[c] = qv
                     evars.append(qv)
         action = f
         if len(subs) != 0:
-#             for k, v in subs.iteritems():
-#                 print("\treplacing %s -> %s in %s" % (k, v, name))
             action = lgu.substitute(f, subs)
         if len(evars) != 0:
             action = lg.Exists(evars, action)

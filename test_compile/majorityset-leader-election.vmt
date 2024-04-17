@@ -66,13 +66,13 @@
  :init true))
 
 (define-fun .action_ext:become_leader () Bool (! 
- (let (($v exists V__fml:n,V__fml:vs. ((forall V0. leader(V0) <-> (true if (V0 = V__fml:n) else __leader(V0))) & __voters(V__fml:n,V__fml:vs) & majority(V__fml:vs))
+ (let (($v exists V__fml:vs,V__fml:n. ((forall V0. leader(V0) <-> (true if (V0 = V__fml:n) else __leader(V0))) & __voters(V__fml:n,V__fml:vs) & majority(V__fml:vs))
  ))
  (and $v))
  :action ext:become_leader))
 
 (define-fun .action_ext:receive_vote () Bool (! 
- (let (($v exists V__new_fml:vs,V__fml:voter,V__new_fml:n,V__fml:vs,V__fml:n,V__fml:s2,V__new_fml:s1. (V__new_fml:n:node = V__fml:voter & V__new_fml:s1:nodeset = V__fml:vs & V__new_fml:vs:nodeset = V__fml:s2 & (forall V1,V0. voters(V0,V1) <-> ((V1 = V__new_fml:vs) if (V0 = V__fml:n) else __voters(V0,V1))) & __vote(V__fml:voter,V__fml:n) & __voters(V__fml:n,V__fml:vs) & ~member(V__fml:voter,V__fml:vs) & (forall N. member(N,V__fml:s2) <-> member(N,V__new_fml:s1) | N = V__new_fml:n) & (majority(V__new_fml:s1) -> majority(V__fml:s2)))
+ (let (($v exists V__new_fml:s1,V__new_fml:n,V__fml:n,V__fml:s2,V__new_fml:vs,V__fml:vs,V__fml:voter. (V__new_fml:n:node = V__fml:voter & V__new_fml:s1:nodeset = V__fml:vs & V__new_fml:vs:nodeset = V__fml:s2 & (forall V1,V0. voters(V0,V1) <-> ((V1 = V__new_fml:vs) if (V0 = V__fml:n) else __voters(V0,V1))) & __vote(V__fml:voter,V__fml:n) & __voters(V__fml:n,V__fml:vs) & ~member(V__fml:voter,V__fml:vs) & (forall N. member(N,V__fml:s2) <-> member(N,V__new_fml:s1) | N = V__new_fml:n) & (majority(V__new_fml:s1) -> majority(V__fml:s2)))
  ))
  (and $v))
  :action ext:receive_vote))
@@ -84,7 +84,7 @@
  :action ext:voting))
 
 (define-fun .action_ns.add () Bool (! 
- (let (($v exists V__fml:n,V__fml:s1,V__fml:s2. ((forall N. member(N,V__fml:s2) <-> member(N,V__fml:s1) | N = V__fml:n) & (majority(V__fml:s1) -> majority(V__fml:s2)))
+ (let (($v exists V__fml:n,V__fml:s2,V__fml:s1. ((forall N. member(N,V__fml:s2) <-> member(N,V__fml:s1) | N = V__fml:n) & (majority(V__fml:s1) -> majority(V__fml:s2)))
  ))
  (and $v))
  :action ns.add))

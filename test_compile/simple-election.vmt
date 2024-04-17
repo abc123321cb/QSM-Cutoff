@@ -29,7 +29,7 @@
 (define-fun .member ((V0 acceptor) (V1 quorum)) Bool (! (member V0 V1) :global true))
 
 (define-fun .def___chosenAt () Bool (! 
- (let (($v forall V1,V0. __chosenAt(V0,V1) = (forall A. member(A,V0) -> __promise(A,V1))
+ (let (($v forall V0,V1. __chosenAt(V0,V1) = (forall A. member(A,V0) -> __promise(A,V1))
  ))
  (and $v))
  :definition __chosenAt))
@@ -41,7 +41,7 @@
  :definition __didNotPromise))
 
 (define-fun .def_chosenAt () Bool (! 
- (let (($v forall V1,V0. chosenAt(V0,V1) = (forall A. member(A,V0) -> promise(A,V1))
+ (let (($v forall V0,V1. chosenAt(V0,V1) = (forall A. member(A,V0) -> promise(A,V1))
  ))
  (and $v))
  :definition chosenAt))
@@ -53,19 +53,19 @@
  :definition didNotPromise))
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall P2,P1. (__leader(P1) & __leader(P2)) -> P1 = P2))
+ (let (($v ((forall P1,P2. (__leader(P1) & __leader(P2)) -> P1 = P2))
  ))
  (and $v))
  :invar-property 0))
 
 (define-fun .axiom () Bool (! 
- (let (($v ((forall Q1,Q2. (exists A. (member(A,Q1) & member(A,Q2)))))
+ (let (($v ((forall Q2,Q1. (exists A. (member(A,Q1) & member(A,Q2)))))
  ))
  (and $v))
  :axiom true))
 
 (define-fun .init () Bool (! 
- (let (($v ((forall V0. __start(V0) <-> false) & (forall V1,V0. __promise(V0,V1) <-> false) & (forall V0. __leader(V0) <-> false))
+ (let (($v ((forall V0. __start(V0) <-> false) & (forall V0,V1. __promise(V0,V1) <-> false) & (forall V0. __leader(V0) <-> false))
  ))
  (and $v))
  :init true))
@@ -83,7 +83,7 @@
  :action ext:send_1a))
 
 (define-fun .action_ext:send_1b () Bool (! 
- (let (($v exists V__fml:a,V__fml:p. ((forall V1,V0. promise(V0,V1) <-> (true if (V0 = V__fml:a & V1 = V__fml:p) else __promise(V0,V1))) & __start(V__fml:p) & __didNotPromise(V__fml:a))
+ (let (($v exists V__fml:a,V__fml:p. ((forall V0,V1. promise(V0,V1) <-> (true if (V0 = V__fml:a & V1 = V__fml:p) else __promise(V0,V1))) & __start(V__fml:p) & __didNotPromise(V__fml:a))
  ))
  (and $v))
  :action ext:send_1b))

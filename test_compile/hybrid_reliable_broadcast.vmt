@@ -156,19 +156,19 @@
  :action ext:receive_init_i))
 
 (define-fun .action_ext:receive_msg () Bool (! 
- (let (($v exists V__fml:n,V__fml:s. ((forall V1,V0. rcv_msg(V0,V1) <-> (true if (V0 = V__fml:s & V1 = V__fml:n) else __rcv_msg(V0,V1))) & (forall V0. accept(V0) <-> ((__accept(V__fml:n) | chosenAtB(V__fml:n)) if (V0 = V__fml:n) else __accept(V0))) & (forall V1,V0. sent_msg(V0,V1) <-> ((__sent_msg(V__fml:n,V1) | chosenAtA(V__fml:n)) if (V0 = V__fml:n) else __sent_msg(V0,V1))) & (forall V0. sent_msg_proj(V0) <-> ((__sent_msg_proj(V__fml:n) | chosenAtA(V__fml:n)) if (V0 = V__fml:n) else __sent_msg_proj(V0))) & __sent_msg(V__fml:s,V__fml:n))
+ (let (($v exists V__fml:s,V__fml:n. ((forall V1,V0. rcv_msg(V0,V1) <-> (true if (V0 = V__fml:s & V1 = V__fml:n) else __rcv_msg(V0,V1))) & (forall V0. accept(V0) <-> ((__accept(V__fml:n) | chosenAtB(V__fml:n)) if (V0 = V__fml:n) else __accept(V0))) & (forall V1,V0. sent_msg(V0,V1) <-> ((__sent_msg(V__fml:n,V1) | chosenAtA(V__fml:n)) if (V0 = V__fml:n) else __sent_msg(V0,V1))) & (forall V0. sent_msg_proj(V0) <-> ((__sent_msg_proj(V__fml:n) | chosenAtA(V__fml:n)) if (V0 = V__fml:n) else __sent_msg_proj(V0))) & __sent_msg(V__fml:s,V__fml:n))
  ))
  (and $v))
  :action ext:receive_msg))
 
 (define-fun .action_ext:receive_msg_c () Bool (! 
- (let (($v exists V__fml:n,V__fml:s. ((forall V1,V0. rcv_msg(V0,V1) <-> (true if (V0 = V__fml:s & V1 = V__fml:n) else __rcv_msg(V0,V1))) & (forall V0. accept(V0) <-> ((__accept(V__fml:n) | chosenAtB(V__fml:n)) if (V0 = V__fml:n) else __accept(V0))) & (forall V1,V0. sent_msg(V0,V1) <-> ((__sent_msg(V__fml:n,V1) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg(V0,V1))) & (forall V0. sent_msg_proj(V0) <-> ((__sent_msg_proj(V__fml:n) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg_proj(V0))) & member_fc(V__fml:n) & __sent_msg(V__fml:s,V__fml:n))
+ (let (($v exists V__fml:s,V__fml:n. ((forall V1,V0. rcv_msg(V0,V1) <-> (true if (V0 = V__fml:s & V1 = V__fml:n) else __rcv_msg(V0,V1))) & (forall V0. accept(V0) <-> ((__accept(V__fml:n) | chosenAtB(V__fml:n)) if (V0 = V__fml:n) else __accept(V0))) & (forall V1,V0. sent_msg(V0,V1) <-> ((__sent_msg(V__fml:n,V1) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg(V0,V1))) & (forall V0. sent_msg_proj(V0) <-> ((__sent_msg_proj(V__fml:n) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg_proj(V0))) & member_fc(V__fml:n) & __sent_msg(V__fml:s,V__fml:n))
  ))
  (and $v))
  :action ext:receive_msg_c))
 
 (define-fun .action_ext:receive_msg_i () Bool (! 
- (let (($v exists V__fml:n,V__fml:s. ((forall V1,V0. rcv_msg(V0,V1) <-> (true if (V0 = V__fml:s & V1 = V__fml:n) else __rcv_msg(V0,V1))) & (forall V0. accept(V0) <-> ((__accept(V__fml:n) | chosenAtB(V__fml:n)) if (V0 = V__fml:n) else __accept(V0))) & (forall V0. sent_msg_proj(V0) <-> ((__sentMsgAt(V__fml:n) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg_proj(V0))) & (forall V1,V0. sent_msg(V0,V1) <-> ((__sent_msg(V__fml:n,V1) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg(V0,V1))) & member_fi(V__fml:n) & __sent_msg(V__fml:s,V__fml:n))
+ (let (($v exists V__fml:s,V__fml:n. ((forall V1,V0. rcv_msg(V0,V1) <-> (true if (V0 = V__fml:s & V1 = V__fml:n) else __rcv_msg(V0,V1))) & (forall V0. accept(V0) <-> ((__accept(V__fml:n) | chosenAtB(V__fml:n)) if (V0 = V__fml:n) else __accept(V0))) & (forall V0. sent_msg_proj(V0) <-> ((__sentMsgAt(V__fml:n) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg_proj(V0))) & (forall V1,V0. sent_msg(V0,V1) <-> ((__sent_msg(V__fml:n,V1) | (__fml:nondet & chosenAtA(V__fml:n))) if (V0 = V__fml:n) else __sent_msg(V0,V1))) & member_fi(V__fml:n) & __sent_msg(V__fml:s,V__fml:n))
  ))
  (and $v))
  :action ext:receive_msg_i))

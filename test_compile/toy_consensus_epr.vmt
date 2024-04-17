@@ -56,13 +56,13 @@
  :init true))
 
 (define-fun .action_ext:cast_vote () Bool (! 
- (let (($v exists V__fml:n,V__fml:v. ((forall V1,V0. vote(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:v) else __vote(V0,V1))) & (forall V0. voted(V0) <-> (true if (V0 = V__fml:n) else __voted(V0))) & ~__voted(V__fml:n))
+ (let (($v exists V__fml:v,V__fml:n. ((forall V1,V0. vote(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:v) else __vote(V0,V1))) & (forall V0. voted(V0) <-> (true if (V0 = V__fml:n) else __voted(V0))) & ~__voted(V__fml:n))
  ))
  (and $v))
  :action ext:cast_vote))
 
 (define-fun .action_ext:decide () Bool (! 
- (let (($v exists V__fml:q,V__fml:v. ((forall V0. decided(V0) <-> (true if (V0 = V__fml:v) else __decided(V0))) & __chosenAt(V__fml:q,V__fml:v))
+ (let (($v exists V__fml:v,V__fml:q. ((forall V0. decided(V0) <-> (true if (V0 = V__fml:v) else __decided(V0))) & __chosenAt(V__fml:q,V__fml:v))
  ))
  (and $v))
  :action ext:decide))

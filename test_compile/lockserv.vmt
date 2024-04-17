@@ -21,7 +21,7 @@
 (define-fun .unlock_msg ((V0 node)) Bool (! (__unlock_msg V0) :next unlock_msg))
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall N1,N2. (__holds_lock(N1) & __holds_lock(N2)) -> N1 = N2))
+ (let (($v ((forall N2,N1. (__holds_lock(N1) & __holds_lock(N2)) -> N1 = N2))
  ))
  (and $v))
  :invar-property 0))
