@@ -1,0 +1,77 @@
+(declare-sort node 0)
+
+(define-fun .node ((S node)) node (! S :sort 0))
+
+
+
+
+(declare-fun __alive (node) Bool)
+(declare-fun __decide_abort (node) Bool)
+(declare-fun __decide_commit (node) Bool)
+(declare-fun __go_abort (node) Bool)
+(declare-fun __go_commit (node) Bool)
+(declare-fun __vote_no (node) Bool)
+(declare-fun __vote_yes (node) Bool)
+(declare-fun abort_flag () Bool)
+(declare-fun alive (node) Bool)
+(declare-fun decide_abort (node) Bool)
+(declare-fun decide_commit (node) Bool)
+(declare-fun go_abort (node) Bool)
+(declare-fun go_commit (node) Bool)
+(declare-fun vote_no (node) Bool)
+(declare-fun vote_yes (node) Bool)
+
+(define-fun .prop () Bool (! 
+ (let (($v ((forall N,N2. decide_commit(N) -> ~decide_abort(N2)) & (forall N,N2. decide_commit(N) -> vote_yes(N2)) & (forall N. decide_abort(N) -> abort_flag))
+ ))
+ (and $v))
+ :invar-property 0))
+
+(define-fun .init () Bool (! 
+ (let (($v ((forall V0. vote_yes(V0) <-> false) & (forall V0. vote_no(V0) <-> false) & (forall V0. alive(V0) <-> true) & (forall V0. go_commit(V0) <-> false) & (forall V0. go_abort(V0) <-> false) & (forall V0. decide_commit(V0) <-> false) & (forall V0. decide_abort(V0) <-> false) & (abort_flag <-> false))
+ ))
+ (and $v))
+ :init true))
+
+(define-fun .action_ext:abort () Bool (! 
+ (let (($v exists V__fml:n. ((forall V0. decide_abort(V0) <-> (true if (V0 = V__fml:n) else __decide_abort(V0))) & alive(V__fml:n) & go_abort(V__fml:n))
+ ))
+ (and $v))
+ :action ext:abort))
+
+(define-fun .action_ext:commit () Bool (! 
+ (let (($v exists V__fml:n. ((forall V0. decide_commit(V0) <-> (true if (V0 = V__fml:n) else __decide_commit(V0))) & alive(V__fml:n) & go_commit(V__fml:n))
+ ))
+ (and $v))
+ :action ext:commit))
+
+(define-fun .action_ext:fail () Bool (! 
+ (let (($v exists V__fml:n. ((forall V0. alive(V0) <-> (false if (V0 = V__fml:n) else __alive(V0))) & (abort_flag <-> true) & __alive(V__fml:n))
+ ))
+ (and $v))
+ :action ext:fail))
+
+(define-fun .action_ext:go1 () Bool (! 
+ (let (($v ((forall V0. go_commit(V0) <-> true) & (forall N. ~__go_commit(N)) & (forall N. ~go_abort(N)) & (forall N. vote_yes(N)))
+ ))
+ (and $v))
+ :action ext:go1))
+
+(define-fun .action_ext:go2 () Bool (! 
+ (let (($v exists V__sk__N. ((forall V0. go_abort(V0) <-> true) & (forall N. ~go_commit(N)) & (forall N. ~__go_abort(N)) & (vote_no(V__sk__N) | ~alive(V__sk__N)))
+ ))
+ (and $v))
+ :action ext:go2))
+
+(define-fun .action_ext:vote1 () Bool (! 
+ (let (($v exists V__fml:n. ((forall V0. vote_yes(V0) <-> (true if (V0 = V__fml:n) else __vote_yes(V0))) & alive(V__fml:n) & ~vote_no(V__fml:n) & ~decide_commit(V__fml:n) & ~decide_abort(V__fml:n))
+ ))
+ (and $v))
+ :action ext:vote1))
+
+(define-fun .action_ext:vote2 () Bool (! 
+ (let (($v exists V__fml:n. ((forall V0. vote_no(V0) <-> (true if (V0 = V__fml:n) else __vote_no(V0))) & (abort_flag <-> true) & (forall V0. decide_abort(V0) <-> (true if (V0 = V__fml:n) else __decide_abort(V0))) & alive(V__fml:n) & ~vote_yes(V__fml:n) & ~decide_commit(V__fml:n) & ~__decide_abort(V__fml:n))
+ ))
+ (and $v))
+ :action ext:vote2))
+

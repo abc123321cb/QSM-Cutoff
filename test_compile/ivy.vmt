@@ -1,0 +1,14 @@
+|__fml:v|
+(declare-fun chosen (value) Bool)
+(declare-fun new_chosen (value) Bool)
+(declare-fun new_chosen (value) Bool)
+(define-fun $init () Bool (!
+(forall ((|V0:value| value)) (not (chosen |V0:value|))) :init true))
+(define-fun $trans () Bool (!
+(let ((a!1 (forall ((|V0:value| value))
+             (= (new_chosen |V0:value|)
+                (ite (and (= |V0:value| |__fml:v|)) true (chosen |V0:value|))))))
+  (and a!1 (forall ((|V:value| value)) (not (chosen |V:value|))))) :trans true))
+(define-fun safety () Bool (!
+(forall ((|V1:value| value) (|V2:value| value))
+  (=> (and (chosen |V1:value|) (chosen |V2:value|)) (= |V1:value| |V2:value|))) :invar-property 1))

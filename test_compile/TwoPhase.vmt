@@ -1,0 +1,76 @@
+(declare-sort resource_manager 0)
+
+(define-fun .resource_manager ((S resource_manager)) resource_manager (! S :sort 0))
+
+
+
+
+(declare-fun __aborted (resource_manager) Bool)
+(declare-fun __committed (resource_manager) Bool)
+(declare-fun __msg_prepared (resource_manager) Bool)
+(declare-fun __tm_init () Bool)
+(declare-fun __tm_prepared (resource_manager) Bool)
+(declare-fun __working (resource_manager) Bool)
+(declare-fun aborted (resource_manager) Bool)
+(declare-fun committed (resource_manager) Bool)
+(declare-fun msg_abort () Bool)
+(declare-fun msg_commit () Bool)
+(declare-fun msg_prepared (resource_manager) Bool)
+(declare-fun tm_init () Bool)
+(declare-fun tm_prepared (resource_manager) Bool)
+(declare-fun working (resource_manager) Bool)
+
+(define-fun .prop () Bool (! 
+ (let (($v ((forall R2,R1. ~(aborted(R1) & committed(R2))))
+ ))
+ (and $v))
+ :invar-property 0))
+
+(define-fun .init () Bool (! 
+ (let (($v ((forall V0. working(V0) <-> true) & (forall V0. committed(V0) <-> false) & (forall V0. aborted(V0) <-> false) & (tm_init <-> true) & (forall V0. tm_prepared(V0) <-> false) & (forall V0. msg_prepared(V0) <-> false) & (msg_commit <-> false) & (msg_abort <-> false))
+ ))
+ (and $v))
+ :init true))
+
+(define-fun .action_ext:rMChooseToAbort () Bool (! 
+ (let (($v exists V__fml:rm. ((forall V0. working(V0) <-> (false if (V0 = V__fml:rm) else __working(V0))) & (forall V0. committed(V0) <-> (false if (V0 = V__fml:rm) else __committed(V0))) & (forall V0. aborted(V0) <-> (true if (V0 = V__fml:rm) else __aborted(V0))) & __working(V__fml:rm))
+ ))
+ (and $v))
+ :action ext:rMChooseToAbort))
+
+(define-fun .action_ext:rMPrepare () Bool (! 
+ (let (($v exists V__fml:rm. ((forall V0. working(V0) <-> (false if (V0 = V__fml:rm) else __working(V0))) & (forall V0. committed(V0) <-> (false if (V0 = V__fml:rm) else __committed(V0))) & (forall V0. aborted(V0) <-> (false if (V0 = V__fml:rm) else __aborted(V0))) & (forall V0. msg_prepared(V0) <-> (true if (V0 = V__fml:rm) else __msg_prepared(V0))) & __working(V__fml:rm))
+ ))
+ (and $v))
+ :action ext:rMPrepare))
+
+(define-fun .action_ext:rMRcvAbortMsg () Bool (! 
+ (let (($v exists V__fml:rm. ((forall V0. working(V0) <-> (false if (V0 = V__fml:rm) else __working(V0))) & (forall V0. committed(V0) <-> (false if (V0 = V__fml:rm) else __committed(V0))) & (forall V0. aborted(V0) <-> (true if (V0 = V__fml:rm) else __aborted(V0))) & msg_abort)
+ ))
+ (and $v))
+ :action ext:rMRcvAbortMsg))
+
+(define-fun .action_ext:rMRcvCommitMsg () Bool (! 
+ (let (($v exists V__fml:rm. ((forall V0. working(V0) <-> (false if (V0 = V__fml:rm) else __working(V0))) & (forall V0. committed(V0) <-> (true if (V0 = V__fml:rm) else __committed(V0))) & (forall V0. aborted(V0) <-> (false if (V0 = V__fml:rm) else __aborted(V0))) & msg_commit)
+ ))
+ (and $v))
+ :action ext:rMRcvCommitMsg))
+
+(define-fun .action_ext:tMAbort () Bool (! 
+ (let (($v ((tm_init <-> false) & (msg_abort <-> true) & __tm_init)
+ ))
+ (and $v))
+ :action ext:tMAbort))
+
+(define-fun .action_ext:tMCommit () Bool (! 
+ (let (($v ((tm_init <-> false) & (msg_commit <-> true) & __tm_init & (forall R. tm_prepared(R)))
+ ))
+ (and $v))
+ :action ext:tMCommit))
+
+(define-fun .action_ext:tMRcvPrepared () Bool (! 
+ (let (($v exists V__fml:rm. ((forall V0. tm_prepared(V0) <-> (true if (V0 = V__fml:rm) else __tm_prepared(V0))) & tm_init & msg_prepared(V__fml:rm))
+ ))
+ (and $v))
+ :action ext:tMRcvPrepared))
+

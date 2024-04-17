@@ -1,0 +1,38 @@
+(declare-sort node 0)
+
+(define-fun .node ((S node)) node (! S :sort 0))
+
+
+
+
+(declare-fun __m_pending (node node node node) Bool)
+(declare-fun __pending (node node node node) Bool)
+(declare-fun __table (node node node) Bool)
+(declare-fun __ts0_a () Bool)
+(declare-fun pending (node node node node) Bool)
+(declare-fun table (node node node) Bool)
+
+(define-fun .prop () Bool (! 
+ (let (($v ((forall T,X. table(T,X,X)) & (forall Y,T,X,Z. (table(T,X,Y) & table(T,Y,Z)) -> table(T,X,Z)) & (forall Y,T,X. (table(T,X,Y) & table(T,Y,X)) -> X = Y) & (forall Y,T,X,Z. (table(T,X,Y) & table(T,X,Z)) -> table(T,Y,Z) | table(T,Z,Y)))
+ ))
+ (and $v))
+ :invar-property 0))
+
+(define-fun .init () Bool (! 
+ (let (($v ((forall V2,V1,V0. table(V0,V1,V2) <-> V1 = V2) & (forall V2,V1,V3,V0. pending(V0,V1,V2,V3) <-> false))
+ ))
+ (and $v))
+ :init true))
+
+(define-fun .action_ext:forward () Bool (! 
+ (let (($v exists V__fml:sw0,V__fml:ps,V__fml:pd,V__fml:nondet,V__fml:sw1. ((forall V2,V1,V3,V0. __m_pending(V0,V1,V2,V3) <-> (__pending(V0,V1,V2,V3) & V0 = V__fml:nondet)) & (forall V2,V1,V3,V0. pending(V0,V1,V2,V3) <-> (true if (V0 = V__fml:ps & V1 = V__fml:pd & V2 = V__fml:sw1) else __m_pending(V0,V1,V2,V3))) & (forall V2,V1,V0. table(V0,V1,V2) <-> (((__table(V__fml:ps,V1,V2) | (__table(V__fml:ps,V1,V__fml:sw1) & __table(V__fml:ps,V__fml:sw0,V2))) if (V0 = V__fml:ps) else __table(V0,V1,V2)) if __ts0_a else __table(V0,V1,V2))) & (__ts0_a <-> (V__fml:ps ~= V__fml:sw1 & (forall W. W:node ~= V__fml:sw1 -> ~__table(V__fml:ps,V__fml:sw1,W)))) & __pending(V__fml:ps,V__fml:pd,V__fml:sw0,V__fml:sw1))
+ ))
+ (and $v))
+ :action ext:forward))
+
+(define-fun .action_ext:new_packet () Bool (! 
+ (let (($v exists V__fml:ps,V__fml:pd. ((forall V2,V1,V3,V0. pending(V0,V1,V2,V3) <-> (true if (V0 = V__fml:ps & V1 = V__fml:pd & V2 = V__fml:ps & V3 = V__fml:ps) else __pending(V0,V1,V2,V3))))
+ ))
+ (and $v))
+ :action ext:new_packet))
+
