@@ -17,31 +17,31 @@
 (declare-fun transfer_msg (node key value) Bool)
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall N1,N2,V2,K,V1. (table(N1,K,V1) & table(N2,K,V2)) -> (N1 = N2 & V1 = V2)))
+ (let (($v ((forall K,V1,V2,N1,N2. (table(N1,K,V1) & table(N2,K,V2)) -> (N1 = N2 & V1 = V2)))
  ))
  (and $v))
  :invar-property 0))
 
 (define-fun .init () Bool (! 
- (let (($v ((forall V1,V2,V0. table(V0,V1,V2) <-> false) & (forall V1,V2,V0. transfer_msg(V0,V1,V2) <-> false) & (forall N1,K,N2. (owner(N1,K) & owner(N2,K)) -> N1 = N2))
+ (let (($v ((forall V0,V1,V2. table(V0,V1,V2) <-> false) & (forall V0,V1,V2. transfer_msg(V0,V1,V2) <-> false) & (forall N2,K,N1. (owner(N1,K) & owner(N2,K)) -> N1 = N2))
  ))
  (and $v))
  :init true))
 
 (define-fun .action_ext:put () Bool (! 
- (let (($v exists V__fml:k,V__fml:v,V__fml:n. ((forall V1,V2,V0. table(V0,V1,V2) <-> ((V2 = V__fml:v) if (V0 = V__fml:n & V1 = V__fml:k) else __table(V0,V1,V2))) & owner(V__fml:n,V__fml:k))
+ (let (($v exists V__fml:k,V__fml:v,V__fml:n. ((forall V0,V1,V2. table(V0,V1,V2) <-> ((V2 = V__fml:v) if (V0 = V__fml:n & V1 = V__fml:k) else __table(V0,V1,V2))) & owner(V__fml:n,V__fml:k))
  ))
  (and $v))
  :action ext:put))
 
 (define-fun .action_ext:recv_transfer_msg () Bool (! 
- (let (($v exists V__fml:k,V__fml:v,V__fml:n. ((forall V1,V2,V0. transfer_msg(V0,V1,V2) <-> (false if (V0 = V__fml:n & V1 = V__fml:k & V2 = V__fml:v) else __transfer_msg(V0,V1,V2))) & (forall V1,V2,V0. table(V0,V1,V2) <-> (true if (V0 = V__fml:n & V1 = V__fml:k & V2 = V__fml:v) else __table(V0,V1,V2))) & (forall V1,V0. owner(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:k) else __owner(V0,V1))) & __transfer_msg(V__fml:n,V__fml:k,V__fml:v))
+ (let (($v exists V__fml:k,V__fml:v,V__fml:n. ((forall V0,V1,V2. transfer_msg(V0,V1,V2) <-> (false if (V0 = V__fml:n & V1 = V__fml:k & V2 = V__fml:v) else __transfer_msg(V0,V1,V2))) & (forall V0,V1,V2. table(V0,V1,V2) <-> (true if (V0 = V__fml:n & V1 = V__fml:k & V2 = V__fml:v) else __table(V0,V1,V2))) & (forall V0,V1. owner(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:k) else __owner(V0,V1))) & __transfer_msg(V__fml:n,V__fml:k,V__fml:v))
  ))
  (and $v))
  :action ext:recv_transfer_msg))
 
 (define-fun .action_ext:reshard () Bool (! 
- (let (($v exists V__fml:k,V__fml:v,V__fml:n_old,V__fml:n_new. ((forall V1,V2,V0. table(V0,V1,V2) <-> (false if (V0 = V__fml:n_old & V1 = V__fml:k & V2 = V__fml:v) else __table(V0,V1,V2))) & (forall V1,V0. owner(V0,V1) <-> (false if (V0 = V__fml:n_old & V1 = V__fml:k) else __owner(V0,V1))) & (forall V1,V2,V0. transfer_msg(V0,V1,V2) <-> (true if (V0 = V__fml:n_new & V1 = V__fml:k & V2 = V__fml:v) else __transfer_msg(V0,V1,V2))) & __table(V__fml:n_old,V__fml:k,V__fml:v))
+ (let (($v exists V__fml:n_new,V__fml:n_old,V__fml:k,V__fml:v. ((forall V0,V1,V2. table(V0,V1,V2) <-> (false if (V0 = V__fml:n_old & V1 = V__fml:k & V2 = V__fml:v) else __table(V0,V1,V2))) & (forall V0,V1. owner(V0,V1) <-> (false if (V0 = V__fml:n_old & V1 = V__fml:k) else __owner(V0,V1))) & (forall V0,V1,V2. transfer_msg(V0,V1,V2) <-> (true if (V0 = V__fml:n_new & V1 = V__fml:k & V2 = V__fml:v) else __transfer_msg(V0,V1,V2))) & __table(V__fml:n_old,V__fml:k,V__fml:v))
  ))
  (and $v))
  :action ext:reshard))

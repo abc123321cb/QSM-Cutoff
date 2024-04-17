@@ -13,7 +13,7 @@
 (declare-fun semaphore (server) Bool)
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall C2,C1,S. (link(C1,S) & link(C2,S)) -> C1 = C2))
+ (let (($v ((forall C2,S,C1. (link(C1,S) & link(C2,S)) -> C1 = C2))
  ))
  (and $v))
  :invar-property 0))
@@ -25,13 +25,13 @@
  :init true))
 
 (define-fun .action_ext:connect () Bool (! 
- (let (($v exists V__fml:s,V__fml:c. ((forall V1,V0. link(V0,V1) <-> (true if (V0 = V__fml:c & V1 = V__fml:s) else __link(V0,V1))) & (forall V0. semaphore(V0) <-> (false if (V0 = V__fml:s) else __semaphore(V0))) & __semaphore(V__fml:s))
+ (let (($v exists V__fml:c,V__fml:s. ((forall V1,V0. link(V0,V1) <-> (true if (V0 = V__fml:c & V1 = V__fml:s) else __link(V0,V1))) & (forall V0. semaphore(V0) <-> (false if (V0 = V__fml:s) else __semaphore(V0))) & __semaphore(V__fml:s))
  ))
  (and $v))
  :action ext:connect))
 
 (define-fun .action_ext:disconnect () Bool (! 
- (let (($v exists V__fml:s,V__fml:c. ((forall V1,V0. link(V0,V1) <-> (false if (V0 = V__fml:c & V1 = V__fml:s) else __link(V0,V1))) & (forall V0. semaphore(V0) <-> (true if (V0 = V__fml:s) else __semaphore(V0))) & __link(V__fml:c,V__fml:s))
+ (let (($v exists V__fml:c,V__fml:s. ((forall V1,V0. link(V0,V1) <-> (false if (V0 = V__fml:c & V1 = V__fml:s) else __link(V0,V1))) & (forall V0. semaphore(V0) <-> (true if (V0 = V__fml:s) else __semaphore(V0))) & __link(V__fml:c,V__fml:s))
  ))
  (and $v))
  :action ext:disconnect))

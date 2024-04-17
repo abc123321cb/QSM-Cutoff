@@ -33,13 +33,13 @@
  :init true))
 
 (define-fun .action_ext:become_leader () Bool (! 
- (let (($v exists V__fml:n,V__fml:s. ((forall V0. isleader(V0) <-> (true if (V0 = V__fml:n) else __isleader(V0))) & majority(V__fml:s) & (forall M. member(M,V__fml:s) -> voted(M,V__fml:n)))
+ (let (($v exists V__fml:s,V__fml:n. ((forall V0. isleader(V0) <-> (true if (V0 = V__fml:n) else __isleader(V0))) & majority(V__fml:s) & (forall M. member(M,V__fml:s) -> voted(M,V__fml:n)))
  ))
  (and $v))
  :action ext:become_leader))
 
 (define-fun .action_ext:vote () Bool (! 
- (let (($v exists V__fml:n,V__fml:v. ((forall V1,V0. voted(V0,V1) <-> (true if (V0 = V__fml:v & V1 = V__fml:n) else __voted(V0,V1))) & (forall M. ~__voted(V__fml:v,M)))
+ (let (($v exists V__fml:v,V__fml:n. ((forall V1,V0. voted(V0,V1) <-> (true if (V0 = V__fml:v & V1 = V__fml:n) else __voted(V0,V1))) & (forall M. ~__voted(V__fml:v,M)))
  ))
  (and $v))
  :action ext:vote))

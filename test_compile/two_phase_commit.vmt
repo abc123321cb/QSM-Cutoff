@@ -22,7 +22,7 @@
 (declare-fun vote_yes (node) Bool)
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall N,N2. decide_commit(N) -> ~decide_abort(N2)) & (forall N,N2. decide_commit(N) -> vote_yes(N2)) & (forall N. decide_abort(N) -> abort_flag))
+ (let (($v ((forall N2,N. decide_commit(N) -> ~decide_abort(N2)) & (forall N2,N. decide_commit(N) -> vote_yes(N2)) & (forall N. decide_abort(N) -> abort_flag))
  ))
  (and $v))
  :invar-property 0))

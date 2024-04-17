@@ -1,0 +1,95 @@
+(declare-sort db_request_id 0)
+(declare-sort node 0)
+(declare-sort request 0)
+(declare-sort response 0)
+
+(define-fun .db_request_id ((S db_request_id)) db_request_id (! S :sort 0))
+(define-fun .node ((S node)) node (! S :sort 0))
+(define-fun .request ((S request)) request (! S :sort 0))
+(define-fun .response ((S response)) response (! S :sort 0))
+
+
+
+
+(declare-fun __db_request_sent (db_request_id request) Bool)
+(declare-fun __db_response_sent (db_request_id response) Bool)
+(declare-fun __noneWithId (db_request_id) Bool)
+(declare-fun __request_sent (node request) Bool)
+(declare-fun __response_received (node response) Bool)
+(declare-fun __response_sent (node response) Bool)
+(declare-fun __t (db_request_id node) Bool)
+(declare-fun db_request_sent (db_request_id request) Bool)
+(declare-fun db_response_sent (db_request_id response) Bool)
+(declare-fun match (request response) Bool)
+(declare-fun request_sent (node request) Bool)
+(declare-fun responseMatched (node response) Bool)
+(declare-fun response_received (node response) Bool)
+(declare-fun response_sent (node response) Bool)
+(declare-fun t (db_request_id node) Bool)
+
+(define-fun .def_noneWithId () Bool (! 
+ (let (($v forall V0. noneWithId(V0) = (forall N. ~t(V0,N))
+ ))
+ (and $v))
+ :definition noneWithId))
+
+(define-fun .def_noneWithId () Bool (! 
+ (let (($v forall V0. noneWithId(V0) = (forall N. ~t(V0,N))
+ ))
+ (and $v))
+ :definition noneWithId))
+
+(define-fun .def_responseMatched () Bool (! 
+ (let (($v forall V1,V0. responseMatched(V0,V1) = (exists R. (request_sent(V0,R) & match(R,V1)))
+ ))
+ (and $v))
+ :definition responseMatched))
+
+(define-fun .def_responseMatched () Bool (! 
+ (let (($v forall V1,V0. responseMatched(V0,V1) = (exists R. (request_sent(V0,R) & match(R,V1)))
+ ))
+ (and $v))
+ :definition responseMatched))
+
+(define-fun .prop () Bool (! 
+ (let (($v ((forall N,P. response_received(N,P) -> responseMatched(N,P)))
+ ))
+ (and $v))
+ :invar-property 0))
+
+(define-fun .init () Bool (! 
+ (let (($v ((forall V1,V0. request_sent(V0,V1) <-> false) & (forall V1,V0. response_sent(V0,V1) <-> false) & (forall V1,V0. response_received(V0,V1) <-> false) & (forall V1,V0. db_request_sent(V0,V1) <-> false) & (forall V1,V0. db_response_sent(V0,V1) <-> false) & (forall V1,V0. t(V0,V1) <-> false))
+ ))
+ (and $v))
+ :init true))
+
+(define-fun .action_ext:db_process_request () Bool (! 
+ (let (($v exists V__fml:p,V__fml:i,V__fml:r. ((forall V1,V0. db_response_sent(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:p) else __db_response_sent(V0,V1))) & db_request_sent(V__fml:i,V__fml:r) & match(V__fml:r,V__fml:p))
+ ))
+ (and $v))
+ :action ext:db_process_request))
+
+(define-fun .action_ext:new_request () Bool (! 
+ (let (($v exists V__fml:n,V__fml:r. ((forall V1,V0. request_sent(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:r) else __request_sent(V0,V1))))
+ ))
+ (and $v))
+ :action ext:new_request))
+
+(define-fun .action_ext:receive_response () Bool (! 
+ (let (($v exists V__fml:n,V__fml:p. ((forall V1,V0. response_received(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:p) else __response_received(V0,V1))) & response_sent(V__fml:n,V__fml:p))
+ ))
+ (and $v))
+ :action ext:receive_response))
+
+(define-fun .action_ext:server_process_db_response () Bool (! 
+ (let (($v exists V__fml:n,V__fml:p,V__fml:i. ((forall V1,V0. response_sent(V0,V1) <-> (true if (V0 = V__fml:n & V1 = V__fml:p) else __response_sent(V0,V1))) & db_response_sent(V__fml:i,V__fml:p) & t(V__fml:i,V__fml:n))
+ ))
+ (and $v))
+ :action ext:server_process_db_response))
+
+(define-fun .action_ext:server_process_request () Bool (! 
+ (let (($v exists V__fml:n,V__fml:i,V__fml:r. ((forall V1,V0. t(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:n) else __t(V0,V1))) & (forall V1,V0. db_request_sent(V0,V1) <-> (true if (V0 = V__fml:i & V1 = V__fml:r) else __db_request_sent(V0,V1))) & request_sent(V__fml:n,V__fml:r) & __noneWithId(V__fml:i))
+ ))
+ (and $v))
+ :action ext:server_process_request))
+

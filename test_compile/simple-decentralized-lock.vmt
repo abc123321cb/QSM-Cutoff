@@ -12,25 +12,25 @@
 (declare-fun start_node () node)
 
 (define-fun .prop () Bool (! 
- (let (($v ((forall X,Y. X:node ~= Y -> ~(has_lock(X) & has_lock(Y))))
+ (let (($v ((forall Y,X. X:node ~= Y -> ~(has_lock(X) & has_lock(Y))))
  ))
  (and $v))
  :invar-property 0))
 
 (define-fun .init () Bool (! 
- (let (($v ((forall V1,V0. message(V0,V1) <-> false) & (forall V0. has_lock(V0) <-> V0 = start_node))
+ (let (($v ((forall V0,V1. message(V0,V1) <-> false) & (forall V0. has_lock(V0) <-> V0 = start_node))
  ))
  (and $v))
  :init true))
 
 (define-fun .action_ext:recv () Bool (! 
- (let (($v exists V__fml:dst,V__fml:src. ((forall V1,V0. message(V0,V1) <-> (false if (V0 = V__fml:src & V1 = V__fml:dst) else __message(V0,V1))) & (forall V0. has_lock(V0) <-> (true if (V0 = V__fml:dst) else __has_lock(V0))) & __message(V__fml:src,V__fml:dst))
+ (let (($v exists V__fml:src,V__fml:dst. ((forall V0,V1. message(V0,V1) <-> (false if (V0 = V__fml:src & V1 = V__fml:dst) else __message(V0,V1))) & (forall V0. has_lock(V0) <-> (true if (V0 = V__fml:dst) else __has_lock(V0))) & __message(V__fml:src,V__fml:dst))
  ))
  (and $v))
  :action ext:recv))
 
 (define-fun .action_ext:send () Bool (! 
- (let (($v exists V__fml:dst,V__fml:src. ((forall V1,V0. message(V0,V1) <-> (true if (V0 = V__fml:src & V1 = V__fml:dst) else __message(V0,V1))) & (forall V0. has_lock(V0) <-> (false if (V0 = V__fml:src) else __has_lock(V0))) & __has_lock(V__fml:src))
+ (let (($v exists V__fml:src,V__fml:dst. ((forall V0,V1. message(V0,V1) <-> (true if (V0 = V__fml:src & V1 = V__fml:dst) else __message(V0,V1))) & (forall V0. has_lock(V0) <-> (false if (V0 = V__fml:src) else __has_lock(V0))) & __has_lock(V__fml:src))
  ))
  (and $v))
  :action ext:send))
