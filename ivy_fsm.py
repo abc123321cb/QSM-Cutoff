@@ -745,6 +745,95 @@ def instantiate_axioms(mod,stvars,trans,invariant,sort_constants,funs):
     return inst_list
 
 
+def instantiate_axioms_without_ivar(mod,stvars,trans,sort_constants,funs):
+
+    # Expand the axioms schemata into axioms
+
+    if verbose:
+        print('Expanding schemata...')
+    axioms = mod.labeled_axioms + expand_schemata(mod,sort_constants,funs)
+    for a in axioms:
+        logfile.write('axiom {}\n'.format(a))
+
+    if verbose:
+        print('Instantiating axioms...')
+    
+    # Get all the triggers. For now only automatic triggers
+
+    def get_trigger(expr,vs):
+        if il.is_quantifier(expr) or il.is_variable(expr):
+            return None
+        for a in expr.args:
+            r = get_trigger(a,vs)
+            if r is not None:
+                return r
+        if il.is_app(expr) or il.is_eq(expr):
+            evs = ilu.used_variables_ast(expr)
+            if all(v in evs for v in vs):
+                return expr
+
+    triggers = []
+    for ax in axioms:
+        fmla = ax.formula
+        vs = list(ilu.used_variables_ast(fmla))
+        if vs:
+            trig = get_trigger(fmla,vs)
+            if trig is not None:
+#                iu.dbg('trig')
+#                iu.dbg('ax')
+                triggers.append((trig,ax))
+
+    insts = set()
+    global inst_list # python lamemess -- should be local but inner function cannot access
+    inst_list = []
+
+    def match(pat,expr,mp):
+        if il.is_variable(pat):
+            if pat in mp:
+                return expr == mp[pat]
+            mp[pat] = expr
+            return True
+        if il.is_app(pat):
+            return (il.is_app(expr) and pat.rep == expr.rep
+                    and all(match(x,y,mp) for x,y in zip(pat.args,expr.args)))
+        if il.is_quantifier(pat):
+            return False
+        if type(pat) is not type(expr):
+            return False
+        if il.is_eq(expr):
+            px,py = pat.args
+            ex,ey = expr.args
+            if px.sort != ex.sort:
+                return False
+            save = mp.copy()
+            if match(px,ex,mp) and match(py,ey,mp):
+                return True
+            mp.clear()
+            mp.update(save)
+            return match(px,ey,mp) and match(py,ex,mp)
+        return all(match(x,y,mp) for x,y in zip(pat.args,expr.args))
+                                                                
+    # TODO: make sure matches are ground
+    def recur(expr):
+        for e in expr.args:
+            recur(e)
+        for trig,ax in triggers:
+            mp = dict()
+            if match(trig,expr,mp):
+                fmla = normalize(il.substitute(ax.formula,mp))
+                if fmla not in insts:
+                    insts.add(fmla)
+                    inst_list.append(fmla)
+
+    # match triggers against the defs and fmlas
+    for f in trans.defs + trans.fmlas:
+        recur(f)
+                    
+    for f in inst_list:
+        logfile.write('    {}\n'.format(f))
+    return inst_list
+
+
 # This eliminates ite's over non-finite sorts by translating (x if c
 # else y) to a fresh variable v with an added constraint (v = x if c
 # else v = y). As an optimization, (z = x if c else y) is converted to
@@ -788,6 +877,14 @@ def mine_constants2(mod,trans,invariant):
     res = defaultdict(list)
     syms = ilu.used_symbols_ast(invariant)
     syms.update(ilu.used_symbols_clauses(trans))
+    for c in syms:
+        if not il.is_function_sort(c.sort):
+            res[c.sort].append(c)
+    return res
+
+def mine_trans_constants(mod, trans):
+    res = defaultdict(list)
+    syms = ilu.used_symbols_clauses(trans)
     for c in syms:
         if not il.is_function_sort(c.sort):
             res[c.sort].append(c)
@@ -912,6 +1009,53 @@ class Qelim(object):
         # add the transition constraints to the new trans
         trans = ilu.Clauses(new_fmlas+indhyps+self.fmlas,new_defs)
         return trans,invariant
+
+
+class TransQelim(object):
+    def __init__(self,sort_constants):
+        self.syms = dict()     # map from quantified formulas to proposition variables
+        self.syms_ctr = 0      # counter for fresh symbols
+        self.fmlas = []        # constraints added
+        self.sort_constants  = sort_constants
+    def fresh(self,expr):
+        res = il.Symbol('__qe[{}]'.format(self.syms_ctr),expr.sort)
+        self.syms[expr] = res
+        self.syms_ctr += 1
+        return res
+    def get_consts(self,sort,sort_constants):
+        if is_finite_sort(sort):   # enumerate quantifiers over finite sorts
+            return sort_values(sort)
+        return sort_constants[sort]
+    def qe(self,expr,sort_constants):
+        if il.is_quantifier(expr):
+            old = self.syms.get(expr,None)
+            if old is not None:
+                return old
+#            res = self.fresh(expr)
+            consts = [self.get_consts(x.sort,sort_constants) for x in expr.variables]
+            values = itertools.product(*consts)
+            maps = [dict(list(zip(expr.variables,v))) for v in values]
+            insts = [self.qe(il.substitute(expr.body,m),sort_constants) for m in maps]
+            if all(is_finite_sort(x.sort) for x in expr.variables):
+                thing = (il.And if il.is_forall(expr) else il.Or)(*insts)
+                return thing
+            else:
+                res = self.fresh(expr)
+                for inst in insts:
+                    c = il.Implies(res,inst) if il.is_forall(expr) else il.Implies(inst,res)
+                    self.fmlas.append(c)
+                return res
+        if il.is_macro(expr):
+            return self.qe(il.expand_macro(expr),sort_constants)
+        return clone_normal(expr,[self.qe(e,sort_constants) for e in expr.args])
+    def __call__(self,trans):
+        # apply to the transition relation
+        constants = self.sort_constants2 if fullqi.get() else self.sort_constants
+        new_defs = [self.qe(defn,constants) for defn in trans.defs]
+        new_fmlas = [self.qe(il.close_formula(fmla),constants) for fmla in trans.fmlas]
+        # add the transition constraints to the new trans
+        trans = ilu.Clauses(new_fmlas+self.fmlas,new_defs)
+        return trans
         
 
 def uncompose_annot(annot):
@@ -1113,6 +1257,58 @@ def to_table_lookup(trans,invariant):
         invariant = il.Implies(il.And(*[df.to_constraint() for df in new_defs]),invariant)
     return trans,invariant
 
+def trans_to_table_lookup(trans):
+    new_defs = []
+    global to_table_lookup_counter
+    to_table_lookup_counter = 0
+    
+    def arg_sym(sort):
+        global to_table_lookup_counter
+        res = il.Symbol('__arg[{}]'.format(to_table_lookup_counter),sort)
+        to_table_lookup_counter += 1
+        return res
+
+    def recur(expr):
+        if (il.is_app(expr) and len(expr.args) > 0 and
+            not il.is_interpreted_symbol(expr.func) and
+            all(is_finite_sort(a.sort) for a in expr.args)):
+            
+            argsyms = []
+            consts = []
+            for x in expr.args:
+                cs = sort_values(x.sort)
+                if x in cs:
+                    argsyms.append(x)
+                    consts.append([x])
+                else:
+                    consts.append(cs)
+                    if il.is_constant(x):
+                        argsyms.append(x)
+                    else:
+                        sym = arg_sym(x.sort)
+                        argsyms.append(sym)
+                        new_defs.append(il.Definition(sym,recur(x)))
+            values = list(itertools.product(*consts))
+            res = (expr.rep)(*values[0])
+            for v in values[1:]:
+                res = il.Ite(il.And(*[il.Equals(x,y) for x,y in zip(argsyms,v)]),(expr.rep)(*v),res)
+            return res
+        return expr.clone(list(map(recur,expr.args)))
+
+
+    # skip this step if there aren't any finite-domain functions
+    if not any(il.is_function_sort(func.sort) and len(func.sort.dom) > 0 and not il.is_interpreted_symbol(func) and
+               all(is_finite_sort(sort) for sort in func.sort.dom) for func in il.all_symbols()):
+        return trans
+
+    defs  = [recur(df) for df in trans.defs]
+    fmlas = [recur(fmla) for fmla in trans.fmlas]
+    trans = ilu.Clauses(fmlas,defs + new_defs)
+    # new_defs = []
+    # invariant = recur(invariant)
+    # if new_defs:
+    #     invariant = il.Implies(il.And(*[df.to_constraint() for df in new_defs]),invariant)
+    return trans
 
 def to_aiger(mod,ext_act,method="mc"):
 
@@ -1426,6 +1622,327 @@ def to_aiger(mod,ext_act,method="mc"):
     cnsts = set(sym for syms in list(sort_constants.values()) for sym in syms)
     return aiger,decoder,annot,cnsts,action,stvarset
 
+def to_fsm(mod):
+
+    erf = il.Symbol('err_flag',il.find_sort('bool'))
+    errconds = []
+    add_err_flag_mod(mod,erf,errconds)
+
+    # we use a special state variable __init to indicate the initial state
+
+    ext_acts = [mod.actions[x].add_label(x) for x in sorted(mod.public_actions)]
+    ext_act = ia.EnvAction(*ext_acts)
+
+    init_var = il.Symbol('__init',il.find_sort('bool')) 
+    init = add_err_flag(ia.Sequence(*([a for n,a in mod.initializers]+[ia.AssignAction(init_var,il.And()).set_lineno(iu.nowhere())])),erf,errconds)
+    action = ia.Sequence(ia.AssignAction(erf,il.Or()).set_lineno(iu.nowhere()),ia.IfAction(init_var,ext_act,init))
+
+    #### lauren-yrluo: we don't need invariant  ####
+    
+#    # get the invariant to be proved, replacing free variables with
+#    # skolems. First, we apply any proof tactics.
+#
+#    pc = ivy_proof.ProofChecker(mod.labeled_axioms,mod.definitions,mod.schemata)
+#    pmap = dict((lf.id,p) for lf,p in mod.proofs)
+#    conjs = []
+#    for lf in mod.labeled_conjs:
+#        if not checked(lf):
+#            continue
+#        if verbose:
+#            print("{}Model checking invariant".format(lf.lineno))
+#        if lf.id in pmap:
+#            proof = pmap[lf.id]
+#            subgoals = pc.admit_proposition(lf,proof)
+#            conjs.extend(subgoals)
+#        else:
+#            conjs.append(lf)
+#
+#    invariant = il.And(*[il.drop_universals(lf.formula) for lf in conjs])
+#    skolemizer = lambda v: ilu.var_to_skolem('__',il.Variable(v.rep,v.sort))
+#    vs = ilu.used_variables_in_order_ast(invariant)
+#    sksubs = dict((v.rep,skolemizer(v)) for v in vs)
+#    invariant = ilu.substitute_ast(invariant,sksubs)
+#    invar_syms = ilu.used_symbols_ast(invariant)
+    
+    # compute the transition relation
+
+    bgt = mod.background_theory()
+ 
+    #### lauren-yrluo: we work on finite state only ####
+#    if method=="fsmc":  # if finite-state, unroll the loops
+#        with ia.UnrollContext(im.module.sort_card):
+#            upd = action.update(im.module,None)
+#    else:
+#        upd = action.update(im.module,None) 
+    # finite-state, unroll the loops 
+    with ia.UnrollContext(im.module.sort_card): # lauren-yrluo TODO: check sort_card
+        upd = action.update(im.module,None)
+    
+    stvars,trans,error = tr.add_post_axioms(upd,bgt)
+    trans = ilu.and_clauses(trans,ilu.Clauses(defs=bgt.defs))
+    defsyms = set(x.defines() for x in bgt.defs)
+    rn = dict((tr.new(sym),tr.new(sym).prefix('__')) for sym in defsyms)
+    trans = ilu.rename_clauses(trans,rn)
+    error = ilu.rename_clauses(error,rn)
+    stvars = [x for x in stvars if x not in defsyms]  # Remove symbols with state-dependent definitions
+    
+    annot = trans.annot
+    #### lauren-yrluo: we don't need induction ####
+#   indhyps = [il.close_formula(il.Implies(init_var,lf.formula)) for lf in mod.labeled_conjs + mod.assumed_invariants]
+#   trans = ilu.and_clauses(trans,indhyps)
+
+    # save the original symbols for trace
+    orig_syms = ilu.used_symbols_clauses(trans)
+#   orig_syms.update(ilu.used_symbols_ast(invariant)) ## lauren-yrluo: we don't need 
+                     
+    # TODO: get the axioms (or maybe only the ground ones?)
+
+    # axioms = mod.background_theory()
+
+    # rn = dict((sym,tr.new(sym)) for sym in stvars)
+    # next_axioms = ilu.rename_clauses(axioms,rn)
+    # return ilu.and_clauses(axioms,next_axioms)
+
+    funs = set()
+    for df in trans.defs:
+        funs.update(ilu.used_symbols_ast(df.args[1]))
+    for fmla in trans.fmlas:
+        funs.update(ilu.used_symbols_ast(fmla))
+#   funs = ilu.used_symbols_clauses(trans)
+#   funs.update(ilu.used_symbols_ast(invariant))    ## lauren-yrluo: we don't need
+    funs = set(sym for sym in funs if  il.is_function_sort(sym.sort))
+
+    # Propositionally abstract
+
+    # step 1: get rid of definitions of non-finite symbols by turning
+    # them into constraints
+
+    new_defs = []
+    new_fmlas = []
+    for df in trans.defs:
+        if len(df.args[0].args) == 0 and is_finite_sort(df.args[0].sort):
+            new_defs.append(df)
+        else:
+            fmla = df.to_constraint()
+            new_fmlas.append(fmla)
+    trans = ilu.Clauses(new_fmlas+trans.fmlas,new_defs)
+
+    # step 2: get rid of ite's over non-finite sorts, by introducing constraints
+
+    cnsts = []
+    new_defs = [elim_ite(df,cnsts) for df in trans.defs]
+    new_fmlas = [elim_ite(fmla,cnsts) for fmla in trans.fmlas]
+    trans = ilu.Clauses(new_fmlas+cnsts,new_defs)
+    
+    # step 3: eliminate quantfiers using finite instantiations
+    #### lauren-yrluo: we dont need invariant
+#    from_asserts = il.And(*[il.Equals(x,x) for x in ilu.used_symbols_ast(il.And(*errconds)) if
+#                            tr.is_skolem(x) and not il.is_function_sort(x.sort)])
+#    iu.dbg('from_asserts')
+#    invar_syms.update(ilu.used_symbols_ast(from_asserts))
+#    sort_constants  = mine_constants(mod,trans,il.And(invariant,from_asserts))
+#    sort_constants2 = mine_constants2(mod,trans,invariant)
+    sort_constants = mine_trans_constants(mod,trans)    ## lauren-yrluo: modified for trans only
+    if verbose:
+        print('\nInstantiating quantifiers (see {} for instantiations)...'.format(logfile_name))
+    logfile.write('\ninstantiations:\n')
+#    trans,invariant = Qelim(sort_constants,sort_constants2)(trans,invariant,indhyps)
+    trans = TransQelim(sort_constants)(trans)   ## lauren-yrluo: modified for trans only
+
+#    print 'after qe:'
+#    print 'trans: {}'.format(trans)
+#    print 'invariant: {}'.format(invariant)
+
+    # step 4: instantiate the axioms using patterns
+
+    # We have to condition both the transition relation and the
+    # invariant on the axioms, so we define a boolean symbol '__axioms'
+    # to represent the axioms.
+
+#    axs = instantiate_axioms(mod,stvars,trans,invariant,sort_constants,funs)
+    axs = instantiate_axioms_without_ivar(mod,stvars,trans,sort_constants,funs) ## lauren-yrluo: modified to remove invar
+    ax_conj = il.And(*axs)
+    ax_var = il.Symbol('__axioms',ax_conj.sort)
+    ax_def = il.Definition(ax_var,ax_conj)
+#   invariant = il.Implies(ax_var,invariant)    ## lauren-yrluo: we don't need
+    trans = ilu.Clauses(trans.fmlas+[ax_var],trans.defs+[ax_def])
+
+#    iu.dbg('trans')
+    # print "\ndefinitions:"
+    # for df3 in trans.defs:
+    #     print df3
+    # print ""
+    # print "\nconstraints:"
+    # for df3 in trans.fmlas:
+    #     print df3
+    # print ""
+    
+
+    # step 4b: handle the finite-domain functions specially
+
+#    trans,invariant= to_table_lookup(trans,invariant)
+    trans = trans_to_table_lookup(trans)    ## lauren-yrluo: modified for trans only
+    
+    # step 5: eliminate all non-propositional atoms by replacing with fresh booleans
+    # An atom with next-state symbols is converted to a next-state symbol if possible
+
+    stvarset = set(stvars)
+    prop_abs = dict()  # map from atoms to proposition variables
+    global prop_abs_ctr  # sigh -- python lameness
+    prop_abs_ctr = 0   # counter for fresh symbols
+    new_stvars = []    # list of fresh symbols
+    finite_syms = []   # list of symbols not abstracted
+    finite_syms_set = set()
+
+    # get the propositional abstraction of an atom
+    def new_prop(expr):
+        res = prop_abs.get(expr,None)
+        if res is None:
+            prev = prev_expr(stvarset,expr,sort_constants)
+            if prev is not None:
+#                print 'stvar: old: {} new: {}'.format(prev,expr)
+                pva = new_prop(prev)
+                res = tr.new(pva)
+                new_stvars.append(pva)
+                prop_abs[expr] = res  # prevent adding this again to new_stvars
+            else:
+                global prop_abs_ctr
+                res = il.Symbol('__abs[{}]'.format(prop_abs_ctr),expr.sort)
+#                print '{} = {}'.format(res,expr)
+                prop_abs[expr] = res
+                prop_abs_ctr += 1
+        return res
+
+    # propositionally abstract an expression
+    global mk_prop_fmlas
+    mk_prop_fmlas = []
+    def mk_prop_abs(expr):
+        if (il.is_quantifier(expr) or
+            len(expr.args) > 0 and (
+                any(not is_finite_sort(a.sort) for a in expr.args)
+                or il.is_app(expr) and not il.is_interpreted_symbol(expr.func))):
+            return new_prop(expr)
+        if (il.is_constant(expr) and not il.is_numeral(expr)
+            and expr not in il.sig.constructors and expr not in finite_syms_set and not tr.is_skolem(expr)):
+            finite_syms_set.add(expr)
+            finite_syms.append(expr)
+        return expr.clone(list(map(mk_prop_abs,expr.args)))
+    
+    # apply propositional abstraction to the transition relation
+    new_defs = list(map(mk_prop_abs,trans.defs))
+    new_fmlas = [mk_prop_abs(il.close_formula(fmla)) for fmla in trans.fmlas]
+
+    # find any immutable abstract variables, and give them a next definition
+
+    def my_is_skolem(x):
+        res = tr.is_skolem(x) # and x not in invar_syms ## lauren-yrluo: remove invar
+        return res    
+    def is_immutable_expr(expr):
+        res = not any(my_is_skolem(sym) or tr.is_new(sym) or sym in stvarset for sym in ilu.used_symbols_ast(expr))
+        return res
+    def expr_is_defined(expr):
+        return il.is_app(expr) and expr.rep in defsyms
+    for expr,v in itertools.chain(iter(prop_abs.items()),((x,x) for x in finite_syms)):
+        if is_immutable_expr(expr) and not expr_is_defined(expr):
+            new_stvars.append(v)
+            logfile.write('new state: {}\n'.format(expr))
+            new_defs.append(il.Definition(tr.new(v),v))
+
+    trans = ilu.Clauses(new_fmlas+mk_prop_fmlas,new_defs)
+
+#    iu.dbg('trans')
+
+    #### lauren-yrluo: we don't need invariant ####
+#   # apply propositional abstraction to the invariant
+#   invariant = mk_prop_abs(invariant)
+
+#   # create next-state symbols for atoms in the invariant (is this needed?)
+    rn = dict((sym,tr.new(sym)) for sym in stvars)
+    #### lauren-yrluo: we don't need invariant
+#   mk_prop_abs(ilu.rename_ast(invariant,rn))  # this is to pick up state variables from invariant
+
+    # update the state variables by removing the non-finite ones and adding the fresh state booleans
+    stvars = [sym for sym in stvars if is_finite_sort(sym.sort)] + new_stvars
+
+#    iu.dbg('trans')
+#    iu.dbg('stvars')
+#    iu.dbg('invariant')
+#    exit(0)
+
+    # For each state var, create a variable that corresponds to the input of its latch
+    # Also, havoc all the state bits except the init flag at the initial time. This
+    # is needed because in aiger, all latches start at 0!
+
+    def fix(v):
+        return v.prefix('nondet')
+    def curval(v):
+        return v.prefix('curval')
+    def initchoice(v):
+        return v.prefix('initchoice')
+    stvars_fix_map = dict((tr.new(v),fix(v)) for v in stvars)
+    stvars_fix_map.update((v,curval(v)) for v in stvars if v != init_var)
+    trans = ilu.rename_clauses(trans,stvars_fix_map)
+#    iu.dbg('trans')
+    new_defs = trans.defs + [il.Definition(ilu.sym_inst(tr.new(v)),ilu.sym_inst(fix(v))) for v in stvars]
+    new_defs.extend(il.Definition(curval(v),il.Ite(init_var,v,initchoice(v))) for v in stvars if  v != init_var)
+    trans = ilu.Clauses(trans.fmlas,new_defs)
+    
+    # Turn the transition constraint into a definition
+    
+    cnst_var = il.Symbol('__cnst',il.find_sort('bool'))
+    new_defs = list(trans.defs)
+    new_defs.append(il.Definition(tr.new(cnst_var),fix(cnst_var)))
+    new_defs.append(il.Definition(fix(cnst_var),il.Or(cnst_var,il.Not(il.And(*trans.fmlas)))))
+    stvars.append(cnst_var)
+    trans = ilu.Clauses([],new_defs)
+    
+    # Input are all the non-defined symbols. Output indicates invariant is false.
+
+#    iu.dbg('trans')
+    def_set = set(df.defines() for df in trans.defs)
+    def_set.update(stvars)
+#    iu.dbg('def_set')
+    used = ilu.used_symbols_clauses(trans)
+ #   used.update(ilu.symbols_ast(invariant)) ## lauren-yrluo: we don't need
+    inputs = [sym for sym in used if
+              sym not in def_set and not il.is_interpreted_symbol(sym)]
+    #### lauren-yrluo: modify outputs ####
+    # fail = il.Symbol('__fail',il.find_sort('bool'))
+    # outputs = [fail]
+    outputs = [sym for sym in used if not il.is_interpreted_symbol(sym)] # include the definitions in output
+   
+
+    #    iu.dbg('trans')
+    
+    # make an aiger
+
+    aiger = Encoder(inputs,stvars,outputs)
+    comb_defs = [df for df in trans.defs if not tr.is_new(df.defines())]
+    #### lauren-yrluo: we don't need to prove invariant
+#    invar_fail = il.Symbol('invar__fail',il.find_sort('bool'))  # make a name for invariant fail cond
+#    comb_defs.append(il.Definition(invar_fail,il.Not(invariant)))
+
+    aiger.deflist(comb_defs)
+    for df in trans.defs:
+        if tr.is_new(df.defines()):
+            aiger.set(tr.new_of(df.defines()),aiger.eval(df.args[1]))
+    #### lauren-yrluo: we don't need to construct and prove miter
+    # miter = il.And(init_var,il.Not(cnst_var),il.Or(invar_fail,il.And(fix(erf),il.Not(fix(cnst_var)))))
+    # aiger.set(fail,aiger.eval(miter))
+    # lauren-yrluo TODO: aiger.set output
+
+#    aiger.sub.debug()
+
+    # make a decoder for the abstract propositions
+
+    decoder = dict((y,x) for x,y in prop_abs.items())
+    for sym in aiger.inputs + aiger.latches:
+        if sym not in decoder and sym in orig_syms:
+            decoder[sym] = sym
+
+    cnsts = set(sym for syms in list(sort_constants.values()) for sym in syms)
+    return aiger,decoder,annot,cnsts,action,stvarset
+
 def badwit():
     raise iu.IvyError(None,'model checker returned mis-formated witness')
 
@@ -1681,92 +2198,15 @@ class ABCModelChecker(ModelChecker):
         return 'Property proved' in alltext
 
 
-def check_isolate(method="mc"):
-    
-    if verbose:
-        print()
-        print(80*'*')
-        print()
-
+def check_isolate():
     global logfile,logfile_name
     if logfile is None:
-        logfile_name = 'ivy_mc.log'
-        logfile = open(logfile_name,'w')
-
+        logfile_name = 'ivy_fsm.log'
+        logfile = open(logfile_name,'w') 
+ 
     mod = im.module
 
-    # build up a single action that does both initialization and all external actions
-
-    ext_acts = [mod.actions[x] for x in sorted(mod.public_actions)]
-    ext_act = ia.EnvAction(*ext_acts)
-    
     # convert to aiger
-
-    aiger,decoder,annot,cnsts,action,stvarset = to_aiger(mod,ext_act,method=method)
-#    print aiger
-
-    # output aiger to temp file
-
-    with tempfile.NamedTemporaryFile(mode='wt', suffix='.aag',delete=False) as f:
-        name = f.name
-#        print 'file name: {}'.format(name)
-        f.write(str(aiger))
-    
-    # convert aag to aig format
-
-    aigfilename = name.replace('.aag','.aig')
-    aigtoaig_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(__file__)),'bin'),'aigtoaig')
-    if verbose:
-        print("aigtoaig_path:{}".format(aigtoaig_path))
-    try:
-        ret = subprocess.call([aigtoaig_path,name,aigfilename])
-    except:
-        raise iu.IvyError(None,'failed to run aigtoaig')
-    if ret != 0:
-        raise iu.IvyError(None,'aigtoaig returned non-zero status')
-        
-    # run model checker
-
-    outfilename = name.replace('.aag','.out')
-    mc = ABCModelChecker() # TODO: make a command-line option
-    cmd = mc.cmd(aigfilename,outfilename)
-#    print cmd
-    try:
-        p = subprocess.Popen(cmd,stdout=subprocess.PIPE)
-    except:
-        raise iu.IvyError(None,'failed to run model checker')
-
-    # pass through the stdout and collect it in texts
-
-    if verbose:
-        print('\nModel checker output:')
-        print(80*'-')
-    texts = []
-    while True:
-        text = p.stdout.read(256)
-        if verbose:
-            sys.stdout.write(text.decode("utf-8"))
-        texts.append(text)
-        if len(text) < 256:
-            break
-    alltext = ''.join(x.decode("utf-8") for x in texts)
-    if verbose:
-        print(80*'-')
-    
-    # get the model checker status
-
-    ret = p.wait()
-    if ret != 0:
-        raise iu.IvyError(None,'model checker returned non-zero status')
-
-    # scrape the output to get the answer
-
-    if mc.scrape(alltext):
-        return None
-    else:
-        return aiger_witness_to_ivy_trace2(aiger,outfilename,action,stvarset,ext_act,annot,cnsts,decoder)        
-        
-    
-
+    aiger,decoder,annot,cnsts,action,stvarset = to_fsm(mod)
 
     
