@@ -14,6 +14,8 @@ from ivy import ivy_theory as thy
 from ivy import ivy_ast
 from ivy import ivy_proof
 from ivy import ivy_trace
+from ivy import ivy_init
+from ivy import ivy_utils as utl
 
 import tempfile
 import subprocess
@@ -22,6 +24,7 @@ import itertools
 import sys
 import os
 
+outFile = ''
 logfile = None
 verbose = False
 fullqi = iu.BooleanParameter("fullqi",False)
@@ -44,7 +47,8 @@ class Aiger(object):
 #        iu.dbg('inputs')
 #        iu.dbg('latches')
 #        iu.dbg('outputs')
-        inputs = inputs + [il.Symbol('%%bogus%%',il.find_sort('bool'))] # work around abc bug
+        #### lauren-yrluo: removed work around
+        # inputs = inputs + [il.Symbol('%%bogus%%',il.find_sort('bool'))] # work around abc bug
         self.inputs = inputs
         self.latches = latches
         self.outputs = outputs
@@ -156,6 +160,13 @@ class Aiger(object):
             strings.append(str(self.values[x]))
         for x,y,z in self.gates:
             strings.append(str('{} {} {}'.format(x,y,z)))
+        ### lauren-yrluo: add symbol names 
+        for (id,x) in enumerate(self.inputs):
+            strings.append(f'i{id} {str(x)}')
+        for (id,x) in enumerate(self.latches):
+            strings.append(f'l{id} {str(x)}')
+        for (id,x) in enumerate(self.outputs):
+            strings.append(f'o{id} {str(x)}')
         return '\n'.join(strings)+'\n'
                                           
     def sym_vals(self,syms):
@@ -175,8 +186,7 @@ class Aiger(object):
     def show_state(self):
         print('state: {}'.format(self.latch_vals()))
         
-    def reset(self):
-        self.state = dict((self.map[x],'0') for x in self.latches)
+    def reset(self): self.state = dict((self.map[x],'0') for x in self.latches)
 
     def getin(self,gi):
         if gi == 0:
@@ -216,6 +226,28 @@ class Aiger(object):
         print('self:')
         print(self)
 
+    def debug_val(self):
+        self.reset()
+        self.show_state()
+        input = ['0']*len(self.inputs)
+        input[0]  = '0' # initchoice_response_sent(__fml:n,__fml:p)
+        input[7]  = '1' # initchoice_request_sent(__fml:n,__fml:r)
+        input[12] = '0' # initchoice_response_received(__fml:n,__fml:p)
+        input[19] = '0' # initchoice_responseMatched(__fml:n,__fml:p)
+        self.step(''.join(input))
+        self.show_state()
+        # print('***** inputs *****\n')
+        # for x in self.inputs:
+        #     print(f'{str(x)} : {self.sym_vals()}')
+        # print('***** latches *****\n')
+        # for x in self.latches:
+        #     if x in self.map:
+        #         print(f'{str(x)} : {self.map[x]}')
+        # print('***** outputs *****\n')
+        # for x in self.outputs:
+        #     if x in self.map:
+        #         print(f'{str(x)} : {self.map[x]}')
+
         
             
 # functions for binary encoding of finite sorts
@@ -249,7 +281,12 @@ def encode_vars(syms,encoding):
     res = []
     for sym in syms:
         n = get_encoding_bits(sym.sort)
-        vs = [sym.suffix('[{}]'.format(i)) for i in range(n)]
+        ### lauren-yrluo: modified for readability
+        vs = []
+        if n > 1:
+            vs = [sym.suffix('[{}]'.format(i)) for i in range(n)]
+        else:
+            vs = [sym]
         encoding[sym] = vs
         res.extend(vs)
     return res
@@ -1684,7 +1721,8 @@ def to_fsm(mod):
     rn = dict((tr.new(sym),tr.new(sym).prefix('__')) for sym in defsyms)
     trans = ilu.rename_clauses(trans,rn)
     error = ilu.rename_clauses(error,rn)
-    stvars = [x for x in stvars if x not in defsyms]  # Remove symbols with state-dependent definitions
+    #### lauren-yrluo: keep the defined symbols in the state variables
+#    stvars = [x for x in stvars if x not in defsyms]  # Remove symbols with state-dependent definitions
     
     annot = trans.annot
     #### lauren-yrluo: we don't need induction ####
@@ -1807,8 +1845,10 @@ def to_fsm(mod):
                 prop_abs[expr] = res  # prevent adding this again to new_stvars
             else:
                 global prop_abs_ctr
-                res = il.Symbol('__abs[{}]'.format(prop_abs_ctr),expr.sort)
-#                print '{} = {}'.format(res,expr)
+                ## lauren-yrluo: rename for better understanding
+                # res = il.Symbol('__abs[{}]'.format(prop_abs_ctr),expr.sort)
+                res = il.Symbol(str(expr), expr.sort)
+#                print ('{} = {}'.format(res,expr))
                 prop_abs[expr] = res
                 prop_abs_ctr += 1
         return res
@@ -1874,11 +1914,11 @@ def to_fsm(mod):
     # is needed because in aiger, all latches start at 0!
 
     def fix(v):
-        return v.prefix('nondet')
+        return v.prefix('nondet_')
     def curval(v):
-        return v.prefix('curval')
+        return v.prefix('curval_')
     def initchoice(v):
-        return v.prefix('initchoice')
+        return v.prefix('initchoice_')
     stvars_fix_map = dict((tr.new(v),fix(v)) for v in stvars)
     stvars_fix_map.update((v,curval(v)) for v in stvars if v != init_var)
     trans = ilu.rename_clauses(trans,stvars_fix_map)
@@ -1896,7 +1936,7 @@ def to_fsm(mod):
     stvars.append(cnst_var)
     trans = ilu.Clauses([],new_defs)
     
-    # Input are all the non-defined symbols. Output indicates invariant is false.
+    # Input are all the non-defined symbols. 
 
 #    iu.dbg('trans')
     def_set = set(df.defines() for df in trans.defs)
@@ -1907,11 +1947,10 @@ def to_fsm(mod):
     inputs = [sym for sym in used if
               sym not in def_set and not il.is_interpreted_symbol(sym)]
     #### lauren-yrluo: modify outputs ####
-    # fail = il.Symbol('__fail',il.find_sort('bool'))
-    # outputs = [fail]
-    outputs = [sym for sym in used if not il.is_interpreted_symbol(sym)] # include the definitions in output
-   
-
+#    fail = il.Symbol('__fail',il.find_sort('bool'))
+#    outputs = [fail]
+    outputs = [sym for sym in stvars if sym != cnst_var] 
+    
     #    iu.dbg('trans')
     
     # make an aiger
@@ -1927,9 +1966,12 @@ def to_fsm(mod):
         if tr.is_new(df.defines()):
             aiger.set(tr.new_of(df.defines()),aiger.eval(df.args[1]))
     #### lauren-yrluo: we don't need to construct and prove miter
-    # miter = il.And(init_var,il.Not(cnst_var),il.Or(invar_fail,il.And(fix(erf),il.Not(fix(cnst_var)))))
-    # aiger.set(fail,aiger.eval(miter))
-    # lauren-yrluo TODO: aiger.set output
+#    miter = il.And(init_var,il.Not(cnst_var),il.Or(invar_fail,il.And(fix(erf),il.Not(fix(cnst_var)))))
+#    aiger.set(fail,aiger.eval(miter))
+    #### lauren-yrluo : set output 
+    for sym in outputs:
+        aiger.set(sym, aiger.eval(sym))
+
 
 #    aiger.sub.debug()
 
@@ -2207,6 +2249,35 @@ def check_isolate():
     mod = im.module
 
     # convert to aiger
-    aiger,decoder,annot,cnsts,action,stvarset = to_fsm(mod)
 
+#   aiger,decoder,annot,cnsts,action,stvarset = to_aiger(mod,ext_act,method=method)
+#    print aiger
+
+    aiger,decoder,annot,cnsts,action,stvarset = to_fsm(mod)
+    with open(outFile, 'w') as f:
+        name = f.name
+        print ('file name: {}'.format(name))
+        f.write(str(aiger))
+
+    aiger.sub.debug_val()
     
+
+def usage():
+    print (f'usage: \n  ivy_fsm file.ivy')
+    sys.exit(1)
+    
+def compile(ivy_filename, aig_filename):
+    global outFile
+    import signal
+    signal.signal(signal.SIGINT,signal.SIG_DFL)
+    from ivy import ivy_alpha
+    ivy_alpha.test_bottom = False # this prevents a useless SAT check
+    ivy_init.read_params()
+    if not ivy_filename.endswith('ivy'):
+        usage()
+    with im.Module():
+        with utl.ErrorPrinter():
+            ivy_init.source_file(ivy_filename,ivy_init.open_read(ivy_filename),create_isolate=False)
+            outFile = aig_filename 
+            check_isolate()
+    print ('OK')
