@@ -1380,7 +1380,7 @@ class TransitionSystem(SmtLibParser):
                         ri = str(common.gopts.init)
                     else:
                         eprint("Finitize %s ? " % (str(tt)), end='')
-                        ri = raw_input("")
+                        ri = input("")
     
                     if ri:
                         try:
@@ -1424,7 +1424,7 @@ class TransitionSystem(SmtLibParser):
             if (not increment):
                 eprint("Extend %s ? " % (str(tt)), end='')
                 if (len(self._sort2fin) > 1):
-                    ri = raw_input("")
+                    ri = input("")
                 else:
                     eprint()
             
