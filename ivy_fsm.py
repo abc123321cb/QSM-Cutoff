@@ -226,30 +226,6 @@ class Aiger(object):
         print('self:')
         print(self)
 
-    def debug_val(self):
-        self.reset()
-        self.show_state()
-        input = ['0']*len(self.inputs)
-        input[0]  = '0' # initchoice_response_sent(__fml:n,__fml:p)
-        input[7]  = '1' # initchoice_request_sent(__fml:n,__fml:r)
-        input[12] = '0' # initchoice_response_received(__fml:n,__fml:p)
-        input[19] = '0' # initchoice_responseMatched(__fml:n,__fml:p)
-        self.step(''.join(input))
-        self.show_state()
-        # print('***** inputs *****\n')
-        # for x in self.inputs:
-        #     print(f'{str(x)} : {self.sym_vals()}')
-        # print('***** latches *****\n')
-        # for x in self.latches:
-        #     if x in self.map:
-        #         print(f'{str(x)} : {self.map[x]}')
-        # print('***** outputs *****\n')
-        # for x in self.outputs:
-        #     if x in self.map:
-        #         print(f'{str(x)} : {self.map[x]}')
-
-        
-            
 # functions for binary encoding of finite sorts
 
 def ceillog2(n):
@@ -1721,9 +1697,9 @@ def to_fsm(mod):
     rn = dict((tr.new(sym),tr.new(sym).prefix('__')) for sym in defsyms)
     trans = ilu.rename_clauses(trans,rn)
     error = ilu.rename_clauses(error,rn)
-    #### lauren-yrluo: keep the defined symbols in the state variables
-#    stvars = [x for x in stvars if x not in defsyms]  # Remove symbols with state-dependent definitions
-    
+    #### lauren-yrluo: preserve defined symbols
+    # stvars = [x for x in stvars if x not in defsyms]  # Remove symbols with state-dependent definitions
+
     annot = trans.annot
     #### lauren-yrluo: we don't need induction ####
 #   indhyps = [il.close_formula(il.Implies(init_var,lf.formula)) for lf in mod.labeled_conjs + mod.assumed_invariants]
@@ -1754,6 +1730,7 @@ def to_fsm(mod):
 
     # step 1: get rid of definitions of non-finite symbols by turning
     # them into constraints
+    ## lauren-yrluo: introduce many "new_" prefixed atoms
 
     new_defs = []
     new_fmlas = []
@@ -1771,7 +1748,7 @@ def to_fsm(mod):
     new_defs = [elim_ite(df,cnsts) for df in trans.defs]
     new_fmlas = [elim_ite(fmla,cnsts) for fmla in trans.fmlas]
     trans = ilu.Clauses(new_fmlas+cnsts,new_defs)
-    
+
     # step 3: eliminate quantfiers using finite instantiations
     #### lauren-yrluo: we dont need invariant
 #    from_asserts = il.And(*[il.Equals(x,x) for x in ilu.used_symbols_ast(il.And(*errconds)) if
@@ -1804,6 +1781,7 @@ def to_fsm(mod):
     ax_def = il.Definition(ax_var,ax_conj)
 #   invariant = il.Implies(ax_var,invariant)    ## lauren-yrluo: we don't need
     trans = ilu.Clauses(trans.fmlas+[ax_var],trans.defs+[ax_def])
+
 
 #    iu.dbg('trans')
     # print "\ndefinitions:"
@@ -1944,8 +1922,12 @@ def to_fsm(mod):
 #    iu.dbg('def_set')
     used = ilu.used_symbols_clauses(trans)
  #   used.update(ilu.symbols_ast(invariant)) ## lauren-yrluo: we don't need
-    inputs = [sym for sym in used if
-              sym not in def_set and not il.is_interpreted_symbol(sym)]
+    #### lauren-yrluo: modify inputs ####
+#    inputs = [sym for sym in used if
+#              sym not in def_set and not il.is_interpreted_symbol(sym)]
+    inputs = [sym for sym in used if sym not in def_set and not il.is_interpreted_symbol(sym)]
+    #### lauren-yrluo: modify stvars ####
+    # stvars  = [sym for sym in stvars if not sym in def_set]
     #### lauren-yrluo: modify outputs ####
 #    fail = il.Symbol('__fail',il.find_sort('bool'))
 #    outputs = [fail]
@@ -2258,9 +2240,6 @@ def check_isolate():
         name = f.name
         print ('file name: {}'.format(name))
         f.write(str(aiger))
-
-    aiger.sub.debug_val()
-    
 
 def usage():
     print (f'usage: \n  ivy_fsm file.ivy')
