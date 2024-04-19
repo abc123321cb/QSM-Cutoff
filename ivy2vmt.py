@@ -53,7 +53,8 @@ class print_module_vmt():
         self.nex2pre = {}
         self.pre2nex = {}
         self.actions = set()
-        self.definitions = []
+        self.helpers = {}
+        self.definitions = set()
         self.defn_labels = []
         self.defs = set()
         self.str = {}
@@ -78,8 +79,14 @@ class print_module_vmt():
         for i in range(len(self.mod.updates)):
             if type(self.mod.updates[i]) == ia.DerivedUpdate:
                 defn = self.mod.updates[i].defn
-                self.definitions.append(defn)
+#                 print("definitions: %s" % str(defn))
+                self.definitions.add(defn)
             self.mod.definitions = []
+#         if len(self.mod.definitions) != 0:
+#             print("definitions: %s" % str(self.mod.definitions))
+#             for defn in self.mod.definitions:
+#                 self.definitions.add(defn)
+#             self.mod.definitions = []
             
         with self.mod.theory_context():
             self.process_sig()
@@ -89,26 +96,8 @@ class print_module_vmt():
             self.process_init()
             self.process_actions()
             self.process_global()
-
+    
             self.print_vmt()
-            self.print_verbose()
-
-    def print_verbose(self):
-        print('sorts      : ', self.sorts       ) 
-        print('pre        : ', self.pre         ) 
-        print('nex        : ', self.nex         ) 
-        print('updated    : ', self.updated     ) 
-        print('glo        : ', self.glo         ) 
-        print('vars       : ', self.vars        ) 
-        print('allvars    : ', self.allvars     ) 
-        print('nex2pre    : ', self.nex2pre     ) 
-        print('pre2nex    : ', self.pre2nex     ) 
-        print('actions    : ', self.actions     ) 
-        print('definitions: ', self.definitions ) 
-        print('defn_labels: ', self.defn_labels ) 
-        print('defs       : ', self.defs        ) 
-        print('str        : ', self.str         ) 
-        print('vmt        : ', self.vmt         ) 
             
     def print_vmt(self):
         global outF, outFile
@@ -157,6 +146,9 @@ class print_module_vmt():
         for actname in sorted(self.actions, key=lambda v: str(v)):
             fprint(self.get_vmt_string(actname))
             fprint("")
+        for h in sorted(self.helpers.keys(), key=lambda v: str(v)):
+            fprint(self.get_vmt_string(h))
+            fprint("")
         
     def process_sig(self):
         for name,sort in ivy_logic.sig.sorts.items():
@@ -168,7 +160,7 @@ class print_module_vmt():
             res += '(declare-sort {} 0)'.format(name)
             self.sorts[sort] = 0
             self.str[str(sort)] = res
-
+            
         for sym in ivy_logic.sig.symbols.values():
             if isinstance(sym.sort,UnionSort):
                 assert("todo")
@@ -203,7 +195,57 @@ class print_module_vmt():
             self.add_constant(sym, True)
     
     def process_defs(self):
+        self.process_defs_v2()
+#         self.process_defs_v1()
+
+    def process_defs_v0(self):
         for lf in self.definitions:
+            f = lf.formula.to_constraint()
+            self.add_new_constants(f)
+            label = str(lf.label)
+            res = (f, label, "axiom", "true")
+            self.vmt[label] = res
+            self.defn_labels.append(label)
+            
+            pref = lgu.substitute(f, self.nex2pre)
+            self.add_new_constants(pref)
+            label = "__" + str(lf.label)
+            res = (pref, label, "axiom", "true")
+            self.vmt[label] = res
+            self.defn_labels.append(label)
+            
+    def process_defs_v1(self):
+        for lf in self.definitions:
+#             print(type(lf))
+#             print(lf)
+            sym = lf.defines()
+            label = str(sym)
+            lhs = lf.lhs()
+            rhs = lf.rhs()
+            self.add_new_constants(rhs)
+            args = []
+            if isinstance(lhs, lg.Apply):
+                for arg in lhs.terms:
+                    args.append(arg)
+            self.add_definition(label, sym, args, rhs)
+            
+            sym = lgu.substitute(sym, self.nex2pre)
+            label = str(sym)
+            lhs = lgu.substitute(lf.lhs(), self.nex2pre)
+            rhs = lgu.substitute(lf.rhs(), self.nex2pre)
+            self.add_new_constants(rhs)
+            args = []
+            if isinstance(lhs, lg.Apply):
+                for arg in lhs.terms:
+                    args.append(arg)
+            self.add_definition(label, sym, args, rhs)
+            self.pre.remove(sym)
+            self.defs.add(sym)
+            
+    def process_defs_v2(self):
+        for lf in self.definitions:
+#             print(type(lf))
+#             print(lf)
             sym = lf.defines()
             print("definition: %s" % str(sym))
             
@@ -238,14 +280,29 @@ class print_module_vmt():
             
     def process_conj(self):
         fmlas = []
+        helpers = []
         for lf in self.mod.labeled_conjs:
-            fmlas.append(lf.formula)
+            label = str(lf.label)
+            if label.startswith("help_"):
+                helpers.append(lf)
+            else:
+                fmlas.append(lf.formula)
         cl = lut.Clauses(fmlas)
         f = self.get_formula(cl)
         pref = lgu.substitute(f, self.nex2pre)
         self.add_new_constants(pref)
         res = (pref, "prop", "invar-property", "0")
         self.vmt["$prop"] = res
+        
+        for lf in helpers:
+            label = str(lf.label)
+            self.helpers[label] = lf.formula
+            cl = lut.Clauses([lf.formula])
+            f = self.get_formula(cl)
+            pref = lgu.substitute(f, self.nex2pre)
+            self.add_new_constants(pref)
+            res = (pref, label, "help", label)
+            self.vmt[label] = res
         
     def process_axiom(self):
         fmlas = [lf.formula for lf in self.mod.labeled_axioms]
@@ -257,7 +314,8 @@ class print_module_vmt():
 
     def process_init(self):
         init_cl = []
-        if self.mod.initializers:
+        for name,action in self.mod.initializers:
+#             print ("init: ", str(action))
             ag = ivy_art.AnalysisGraph(initializer=lambda x:None)
             history = ag.get_history(ag.states[0])
             post = lut.and_clauses(history.post)
@@ -271,15 +329,20 @@ class print_module_vmt():
         
     def process_actions(self):
         for name, action in self.mod.actions.items():
+#             print(type(action))
+#             print ("action2: ", ia.action_def_to_str(name, action))
             ag = ivy_art.AnalysisGraph()
             pre = itp.State()
             pre.clauses = lut.true_clauses()
+#             print(pre.to_formula())
             post = ag.execute(action, pre)
             history = ag.get_history(post)
             clauses = lut.and_clauses(history.post)
             f = self.get_formula(clauses)
             conjuncts = clauses.fmlas
             defn = lut.close_epr(lg.And(*conjuncts))
+#             print(defn)
+#             assert(0)
             
             update = action.update(pre.domain,pre.in_scope)
             sf = self.standardize_action(f, update[0], name)
@@ -327,14 +390,18 @@ class print_module_vmt():
             if c in self.nex:
                 if c not in nexSet:
                     subs[c] = self.nex2pre[c]
+#             elif False and (c not in self.pre):
             elif c not in self.pre:
                 if (not c.sort.dom) and (c.sort != lg.Boolean):
                     vname = "V"+c.name
+#                     vname = vname.replace(":", "")
                     qv = lg.Var(vname, c.sort)
                     subs[c] = qv
                     evars.append(qv)
         action = f
         if len(subs) != 0:
+#             for k, v in subs.iteritems():
+#                 print("\treplacing %s -> %s in %s" % (k, v, name))
             action = lgu.substitute(f, subs)
         if len(evars) != 0:
             action = lg.Exists(evars, action)
@@ -480,11 +547,13 @@ def print_isolate():
         if len(temporals) > 1:
             raise iu.IvyError(None,'multiple temporal properties in an isolate not supported yet')
         from ivy.ivy_l2s import l2s
-        l2s(mod, temporals[0])  # Lauren: ????     
-        mod.concept_spaces = [] # Lauren: ???? 
-        mod.update_conjs()      # Lauren: ???? 
+        l2s(mod, temporals[0])
+        mod.concept_spaces = []
+        mod.update_conjs()
+#     ifc.check_fragment()
     print_module_vmt(mod)
-    with im.module.theory_context(): # set-up first order theory fragment
+    with im.module.theory_context():
+#         ip.print_module(mod)
         pass
         return
 
