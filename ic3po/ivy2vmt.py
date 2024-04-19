@@ -54,7 +54,7 @@ class print_module_vmt():
         self.pre2nex = {}
         self.actions = set()
         self.helpers = {}
-        self.definitions = set()
+        self.definitions = [] 
         self.defn_labels = []
         self.defs = set()
         self.str = {}
@@ -80,7 +80,7 @@ class print_module_vmt():
             if type(self.mod.updates[i]) == ia.DerivedUpdate:
                 defn = self.mod.updates[i].defn
 #                 print("definitions: %s" % str(defn))
-                self.definitions.add(defn)
+                self.definitions.append(defn)
             self.mod.definitions = []
 #         if len(self.mod.definitions) != 0:
 #             print("definitions: %s" % str(self.mod.definitions))
@@ -247,7 +247,7 @@ class print_module_vmt():
 #             print(type(lf))
 #             print(lf)
             sym = lf.defines()
-            print("definition: %s" % str(sym))
+            # print("definition: %s" % str(sym))
             
             label = "def_" + str(sym)
             lhs = lf.lhs()
@@ -594,4 +594,22 @@ def compile(ivy_filename, vmt_filename):
             print_module()
     print ('OK')
 
+def main():
+    global outFile
+    import signal
+    signal.signal(signal.SIGINT,signal.SIG_DFL)
+    from ivy import ivy_alpha
+    ivy_alpha.test_bottom = False # this prevents a useless SAT check
+    ivy_init.read_params()
+    if len(sys.argv) != 3 or not sys.argv[1].endswith('ivy'):
+        usage()
+    with im.Module():
+        with utl.ErrorPrinter():
+            ivy_init.source_file(sys.argv[1],ivy_init.open_read(sys.argv[1]),create_isolate=False)
+            outFile = sys.argv[2]
+            print_module()
+    print ('OK')
 
+
+if __name__ == "__main__":
+    main()
