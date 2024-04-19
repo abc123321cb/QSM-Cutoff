@@ -43,7 +43,7 @@ short_header="""IC3PO
 copyright (c) 2018 - Present  Aman Goel and Karem Sakallah, University of Michigan"""
 
 
-def getopts(header):
+def getopts(header, arguments):
     p = argparse.ArgumentParser(description=str(header), formatter_class=argparse.RawDescriptionHelpFormatter)
     # p.add_argument('file', help='input file name', type=str)
     p.add_argument('-m', '--mode', help='mode: ic3po, updr, frpo (default: %s)' % DEFAULT_MODE, type=str, default=DEFAULT_MODE)
@@ -66,9 +66,9 @@ def getopts(header):
     p.add_argument('--cti', help='use 1 to enable CTI printing (default: %r)' % DEFAULT_CTI, type=int, default=DEFAULT_CTI)
     p.add_argument('-v', '--verbosity', help='verbosity level (default: %r)' % DEFAULT_VERBOSITY, type=int, default=DEFAULT_VERBOSITY)
     # args, leftovers = p.parse_known_args()
-    return p.parse_args([])
+    return p.parse_args(arguments)
     
 
-def initialize():
+def initialize(arguments=[]):
     global gopts
-    gopts = getopts(header)
+    gopts = getopts(header, arguments) 
