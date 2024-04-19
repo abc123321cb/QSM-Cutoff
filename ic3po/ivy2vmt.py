@@ -102,7 +102,7 @@ class print_module_vmt():
     def print_vmt(self):
         global outF, outFile
         outF = open(outFile, 'w')
-        
+
         for s in sorted(self.sorts.keys(), key=lambda v: str(v)):
             fprint(self.str[str(s)])
         fprint("")
@@ -149,6 +149,8 @@ class print_module_vmt():
         for h in sorted(self.helpers.keys(), key=lambda v: str(v)):
             fprint(self.get_vmt_string(h))
             fprint("")
+
+        outF.close()
         
     def process_sig(self):
         for name,sort in ivy_logic.sig.sorts.items():
