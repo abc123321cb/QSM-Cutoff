@@ -60,6 +60,7 @@ class Protocol():
 
     def _read_sort(self, line : str) -> None:
         # read '.s [sort_name] [element1] [element2] ...'
+        # .s node n1 n2
         sort_id     = len(self.sorts)
         (sort, elements) = split_head_tail(line, head=1)
         self.sorts.append(sort)
@@ -78,11 +79,13 @@ class Protocol():
 
     def _read_predicate(self, line : str) -> None:
         # read '.p [predicate_name] [argsort1] [argsort2] ...'
+        # .p hold node
         (pred, arg_sorts) = split_head_tail(line, head=1)
         self.predicates[pred] = arg_sorts 
 
     def _read_atoms(self, line:str) -> None:
         # read '.a [atom1] [atom2] ...'
+        # .a hold(n1) hold(n2)
         atoms = line.split()[1:] # remove '.a'
         self.atom_num = len(atoms)
         assert( len(atoms) == self.atom_num )
@@ -103,6 +106,7 @@ class Protocol():
 
     def _read_states(self, line:str, states: Set[str]) -> None:
         # read '[reachable_state]'
+        # 010-
         state = line.split()[0]
         assert( len(state) == self.atom_num )
         if not state in states:
