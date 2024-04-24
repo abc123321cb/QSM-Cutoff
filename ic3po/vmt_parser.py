@@ -1493,11 +1493,11 @@ class TransitionSystem(SmtLibParser):
 #         eprint("symbol |%s|=%d" % (str(s), val))
         return val
 
-def parse(vmt_filename):
-    ts_parser = TransitionSystem()
+def parse(vmt_filename): 
+    ts = TransitionSystem()
     with open(vmt_filename, 'r') as script:
-        ts_parser.read_ts(script)
-        print(ts_parser)
+        ts.read_ts(script)
+    return ts  
                         
 # Time to try out the parser !!!
 
