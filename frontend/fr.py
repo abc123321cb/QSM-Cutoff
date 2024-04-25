@@ -8,28 +8,30 @@
 # ------------------------------------------
 
 from __future__ import print_function
-from cStringIO import StringIO # Python3 use: from io import StringIO
+from io import StringIO # Python3 use: from io import StringIO
 
 import sys
 import os
 import subprocess
 import pysmt
-import utils
+import frontend.utils
 
-import repycudd
+#import repycudd
 
 
-from utils import *
-from problem import *
-from vmt_parser import TransitionSystem
+from frontend.utils import *
+from frontend.problem import *
+from frontend.vmt_parser import TransitionSystem
+from frontend.simulate import EvalEngine
 from pysmt.environment import get_env
 from pysmt.shortcuts import Solver, QuantifierEliminator, Enum
 from pysmt.logics import BOOL
 from pysmt.solvers.bdd import BddConverter
 from _pytest.compat import enum
 
-from ic3po import *
-import common
+#from ic3po import *
+import frontend.common as common
+from dd.autoref import BDD
 
 outFile = "out"
 outF = None
@@ -67,10 +69,10 @@ class FR(object):
         self.globals = {}
         self.prospectives = {}
         self.framesolver = []
-        z3ctx = z3.main_ctx()
-        del z3ctx
-        if yices_api.yices_is_inited():
-            yices_api.yices_reset()
+        # z3ctx = z3.main_ctx()
+        # del z3ctx
+        # if yices_api.yices_is_inited():
+        #     yices_api.yices_reset()
         self._faxioms = []
         self._init_formula = TRUE()
         self._init_formula_orig = TRUE()
