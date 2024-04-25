@@ -7,7 +7,7 @@ from forward import *
 from protocol import Protocol 
 from prime import PrimeOrbits
 from minimize import Minimizer
-import ic3po.ivy2vmt
+from frontend.ivy2vmt import compile_ivy2vmt
 
 def usage ():
     print('Usage: python3 qrm.py [options]')
@@ -73,7 +73,7 @@ def qrm(args):
         ivy_filename  = options.filename
         vmt_filename  = ivy_filename.split('.')[0] + '.vmt'
         ptcl_filename = ivy_filename.split('.')[0] + '.pctl'
-        ic3po.ivy2vmt.compile(ivy_filename, vmt_filename)
+        compile_ivy2vmt(ivy_filename, vmt_filename)
         forward_reach(input=vmt_filename, output=ptcl_filename)
     elif options.mode == Mode.gen:
         protocol = Protocol(options)

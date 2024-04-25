@@ -11,7 +11,7 @@ from __future__ import print_function
 
 import sys
 import time
-import ic3po.common as common
+import frontend.common as common
 import math
 import re
 

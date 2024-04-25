@@ -1,12 +1,13 @@
 from typing import Type
 from pysmt.shortcuts import TRUE, And, Or, Not, EqualsOrIff, Exists, ForAll, is_sat, Function
-import ic3po.vmt_parser
-import ic3po.common
+from frontend.vmt_parser import TransitionSystem
+from frontend.vmt_parser import vmt_parse 
+import frontend.common as common
 
 def forward_reach(input : str, output : str):
-    ic3po.common.initialize() # ic3po setup
-    ts : Type[ic3po.vmt_parser.TransitionSystem]
-    ts = ic3po.vmt_parser.parse(input)
+    common.initialize() # ic3po setup
+    ts : Type[TransitionSystem]
+    ts = vmt_parse(input)
     print('sorts: ', ts._sorts    ) 
     print('sorts2fin: ', ts._sort2fin ) 
     print('enumsorts: ', ts._enumsorts) 

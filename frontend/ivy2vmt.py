@@ -580,7 +580,7 @@ def usage():
     print (f'usage: \n  ivy2vmt file.ivy output.vmt')
     sys.exit(1)
 
-def compile(ivy_filename, vmt_filename):
+def compile_ivy2vmt(ivy_filename, vmt_filename):
     global outFile
     import signal
     signal.signal(signal.SIGINT,signal.SIG_DFL)

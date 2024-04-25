@@ -18,10 +18,10 @@ from pysmt.typing import INT, BVType, EnumType, BOOL, FunctionType
 
 from pysmt.environment import get_env
 
-from ic3po.utils import eprint, time_str, pretty_print_set, pretty_print, pretty_print_str, SORT_SUFFIX, flatten_and, num_majority, substituteDefinitions, parseSizes
-from ic3po.stratify import StratificationOracle
-from ic3po.syntax import SyntaxInference
-import ic3po.common as common
+from   frontend.utils import eprint, time_str, pretty_print_set, pretty_print, pretty_print_str, SORT_SUFFIX, flatten_and, num_majority, substituteDefinitions, parseSizes
+from   frontend.stratify import StratificationOracle
+from   frontend.syntax import SyntaxInference
+import frontend.common as common
 from pysmt.pretty_printer import pretty_serialize
 
 class System():
@@ -1493,7 +1493,7 @@ class TransitionSystem(SmtLibParser):
 #         eprint("symbol |%s|=%d" % (str(s), val))
         return val
 
-def parse(vmt_filename): 
+def vmt_parse(vmt_filename): 
     ts = TransitionSystem()
     with open(vmt_filename, 'r') as script:
         ts.read_ts(script)
