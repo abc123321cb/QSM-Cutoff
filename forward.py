@@ -4,8 +4,9 @@ from frontend.vmt_parser import TransitionSystem
 from frontend.vmt_parser import vmt_parse 
 import frontend.common as common
 
-def forward_reach(input : str, output : str):
-    common.initialize() # ic3po setup
+def forward_reach(input : str, output : str, size_str : str):
+    common.initialize() # frontend setup
+    common.gopts.size = size_str
     ts : Type[TransitionSystem]
     ts = vmt_parse(input)
     print('sorts: ', ts._sorts    ) 

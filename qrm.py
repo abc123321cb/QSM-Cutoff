@@ -14,6 +14,7 @@ def usage ():
     print(' -h              usage')
     print(' -v LEVEL        set verbose level (defult:0, max: 5)')
     print(' -i FILE.ivy     read FILE.ivy file')
+    print(' -s SIZE         pass sort size string (format: -s [sort1]=[size1], [sort2]=[size2])')
     print(' -o FILE.ptcl    produce prime orbits')
     print(' -q FILE.orb     quantify prime orbits')
     print(' -m FILE.orb     minimize quantified prime orbits')
@@ -32,12 +33,13 @@ def file_exist(filename) -> bool:
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "hv:i:o:q:m:c:a")
+        opts, args = getopt.getopt(args, "hv:i:s:o:q:m:c:a")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
 
     options = QrmOptions()
+    size_str =''## temporary
     for (optc, optv) in opts:
         if optc == '-v':
             options.verbosity = int(optv)
@@ -47,6 +49,8 @@ def qrm(args):
             options.mode = Mode.ivy
             if file_exist(optv):
                 options.filename = optv
+        elif optc == '-s':
+           size_str = optv 
         elif optc == '-o':
             options.mode = Mode.gen
             if file_exist(optv):
@@ -74,7 +78,7 @@ def qrm(args):
         vmt_filename  = ivy_filename.split('.')[0] + '.vmt'
         ptcl_filename = ivy_filename.split('.')[0] + '.pctl'
         compile_ivy2vmt(ivy_filename, vmt_filename)
-        forward_reach(input=vmt_filename, output=ptcl_filename)
+        forward_reach(vmt_filename, ptcl_filename, size_str)
     elif options.mode == Mode.gen:
         protocol = Protocol(options)
         prime_orbits = PrimeOrbits(options) 
