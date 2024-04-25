@@ -9,12 +9,12 @@
 
 from __future__ import print_function
 
-from utils import *
+from frontend.utils import *
 import pysmt
 from pysmt.shortcuts import TRUE, And, Or, Not, EqualsOrIff, Exists, ForAll, is_sat,\
     Function
 import sys
-import common
+import frontend.common as common
 
 def read_problem(self, fname):
     print(time_str(), "Reading from file %s" % fname)
