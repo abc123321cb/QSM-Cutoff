@@ -16,7 +16,7 @@ import subprocess
 import pysmt
 import frontend.utils
 
-#import repycudd
+import repycudd.repycudd as repycudd
 
 
 from frontend.utils import *
@@ -31,7 +31,6 @@ from _pytest.compat import enum
 
 #from ic3po import *
 import frontend.common as common
-from dd.autoref import BDD
 
 outFile = "out"
 outF = None

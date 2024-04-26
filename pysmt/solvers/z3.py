@@ -18,7 +18,7 @@
 from __future__ import absolute_import
 
 from pysmt.exceptions import SolverAPINotFound
-from z3.z3core import Z3_inc_ref
+#from z3.z3core import Z3_inc_ref
 
 try:
     import z3
