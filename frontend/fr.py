@@ -15,9 +15,8 @@ import os
 import subprocess
 import pysmt
 import frontend.utils
-
 import repycudd.repycudd as repycudd
-
+import z3 
 
 from frontend.utils import *
 from frontend.problem import *
@@ -68,10 +67,10 @@ class FR(object):
         self.globals = {}
         self.prospectives = {}
         self.framesolver = []
-        # z3ctx = z3.main_ctx()
-        # del z3ctx
-        # if yices_api.yices_is_inited():
-        #     yices_api.yices_reset()
+        z3ctx = z3.main_ctx()
+        del z3ctx
+        #if yices_api.yices_is_inited():
+        #    yices_api.yices_reset()
         self._faxioms = []
         self._init_formula = TRUE()
         self._init_formula_orig = TRUE()
