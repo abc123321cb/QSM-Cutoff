@@ -674,6 +674,8 @@ class FR(object):
                 assert(0)
         return res
 
+    
+
     def print_espresso(self, bdd, restricted, name):
         global outF
         outF =open(name + ".pla", "w")
@@ -1130,6 +1132,8 @@ class FR(object):
                 result[atom] = s
         return result
 
+
+
     def execute(self):
         global outF
 
@@ -1346,6 +1350,157 @@ class FR(object):
             self.inferences.append((label, clause))
         pretty_print_inv(self.inferences, "Forward inferences")
         return self.inferences
+
+    def print_reachability(self, bdd, restricted, name):
+        global outF
+        outF =open(name, "w")
+
+        # print sorts
+        for (sort, elements) in self.system._enumsorts.items():
+            sort_line = '.s ' + str(self.system._enum2inf[sort])
+            for e in elements:
+                sort_line += ' ' + pretty_print_str(e)
+            fprint(sort_line)
+
+        # print predicates
+        for pred in self.system.orig._nexstates:
+            pred_line = '.p ' + str(pred)
+            param_list =  [str(s) for s in pred.symbol_type()._param_types]
+            if len(param_list) > 0:
+                pred_line += ' ' + ' '.join(param_list)
+            fprint(pred_line)
+
+        # print quorums
+        # TODO
+        
+        # print atoms 
+        atom_line = '.a '
+        atoms = []
+        abvars = set(self.converter.var2atom.keys())
+        atomList = []
+        for idx in range(self.numvars):
+            var = self.converter.idx2var[idx]
+            atom = self.converter.var2atom[var]
+            atomList.append(atom)
+            if atom in restricted:
+                atoms.append(atom)
+                abvars.remove(var)
+        for atom in atoms:
+            atom_line += pretty_print_str(atom).replace(' ', '') +' ' 
+        fprint(atom_line)
+        abcube = self.converter.cube_from_var_list(list(abvars))
+        bddnew = self.ddmanager.ExistAbstract(bdd, abcube)
+        print("\t(printing reachability)")
+        for cube_tup in repycudd.ForeachCubeIterator(self.ddmanager, bddnew):
+            str_cube = '' 
+            for idx, char in enumerate(cube_tup):
+                if idx >= self.numvars:
+                    break
+                atom = atomList[idx]
+                if atom in restricted:
+                    if char == 2:
+                        str_cube += '-'
+                    else:
+                        str_cube += str(char)
+            fprint(str_cube)
+        fprint('.e')
+        outF.close()
+
+    def solve_reachability(self, outname):
+        global outF
+
+        """Forward Reachability using BDDs."""
+        prop = prop_formula(self)
+        print("\nChecking property %s...\n" % prop)
+        
+        self.ddmanager = repycudd.DdManager()
+        self.converter = BddConverter(environment=get_env(),
+                                      ddmanager=self.ddmanager)
+
+        for k, v in self.system._enumsorts.items():
+            if str(k).startswith("epoch"):
+                self.converter.zero = v[0]
+                break
+        
+        self.initialize_atoms()
+
+        eprint(time_str(), "(building bdds)")
+        bddI = self.formula2bdd(init_formula(self))
+        
+        self.build_actions()
+        self.build_axioms()
+                  
+        self.bddP = self.formula2bdd(prop_formula(self))
+        self.bddnotP = self.ddmanager.Not(self.bddP)
+        
+        self.set_abstract()
+        
+        sources = list()
+        initSrc = self.ddmanager.AndAbstract(bddI, self.axiom, self.projPre)
+        totalR = initSrc
+        sources.append((initSrc, "init"))
+        iteration = 0
+        eprint("\t(running forward reachability)")
+        count = 0
+        while (len(sources) != 0):
+            src, comment = sources.pop()
+            iteration += 1
+            
+            if src == self.ddmanager.ReadLogicZero():
+                print("#%d Found no new states" % iteration)
+                continue
+            else:
+                print("#%d Processing state from action %s" % (iteration, comment))
+            self.check_safe(src)
+                
+            notTotalR = self.ddmanager.Not(totalR)
+            
+            destinations = []
+            for action, actionBdds in self.actions.items():
+                nex = self.ddmanager.Zero()
+                done = False
+                for actionBdd in actionBdds:
+                    image = self.ddmanager.AndAbstract(src, actionBdd, self.projNex)
+                    if image == self.ddmanager.ReadLogicZero(): continue
+                    image = self.ddmanager.SwapVariables(image, self.preV, self.nexV, self.N)
+                    image = self.ddmanager.AndAbstract(image, self.axiom, self.projPre)
+                    if image == self.ddmanager.ReadLogicZero(): continue
+                    image = self.ddmanager.And(image, notTotalR)
+                    if image == self.ddmanager.ReadLogicZero(): continue
+                    nex = self.ddmanager.Or(nex, image)
+                    done = True
+                    count += 1
+                if done:
+                    destinations.append((nex, action))
+            
+            for dest, comment in destinations:
+                sources.append((dest, comment))
+                totalR = self.ddmanager.Or(totalR, dest)
+            print("#%d Found #%d new transitions" % (iteration, len(destinations)))
+
+        totalR = self.ddmanager.ExistAbstract(totalR, self.projPre)
+        
+        if self.converter.zero != None:
+            proj_vars = set(self.converter.var2node.keys())
+            proj_vars = proj_vars.difference(self.pvars)
+            for atom in self.gatoms.keys():
+                enumc = atom.get_enum_constants()
+                if self.converter.zero in enumc:
+                    var = self.converter.atom2var[atom]
+                    proj_vars.add(var)
+                    self.patoms.pop(atom)
+            projCustom = self.converter.cube_from_var_list(proj_vars)
+            totalR = self.ddmanager.ExistAbstract(totalR, projCustom)
+        
+        eprint("\t(forward reachability done)")
+        print("\t(forward reachability done)")
+        self.check_safe(totalR)
+
+        restricted = self.filter_atoms(self.patoms)
+
+        self.print_reachability(totalR, restricted, outname)
+        eprint("\t(printed R in file %s)" % outname)
+        print("\t(printed R in file %s)" % outname)
     
 def forwardReach(fname):
     global start_time

@@ -14,4 +14,4 @@ def forward_reach(input : str, output : str, size_str : str):
     fr_solver = FR(tran_sys)
     set_problem(fr_solver)
     tran_sys.gen = "fe"
-    inferences = fr_solver.execute()
+    inferences = fr_solver.solve_reachability(output)
