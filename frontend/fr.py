@@ -15,7 +15,7 @@ import os
 import subprocess
 import pysmt
 import frontend.utils
-import repycudd.repycudd as repycudd
+import repycudd
 import z3 
 
 from frontend.utils import *
