@@ -21,7 +21,7 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
     return False
 
 class Protocol():
-    def __init__(self, options : QrmOptions) -> None:
+    def __init__(self, ptcl_filename, options : QrmOptions) -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
@@ -38,7 +38,7 @@ class Protocol():
         self.options = options
 
         # initialization 
-        self._read(options.filename)
+        self._read(ptcl_filename)
         self._init_sorts_permutations()
         vprint_banner(self, f'Protocol {options.filename}', 3)
         vprint(self, str(self), 3)

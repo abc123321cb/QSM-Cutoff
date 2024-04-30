@@ -79,8 +79,8 @@ def qrm(args):
         ptcl_filename = ivy_filename.split('.')[0] + '.pctl'
         compile_ivy2vmt(ivy_filename, vmt_filename)
         forward_reach(vmt_filename, ptcl_filename, size_str)
-    elif options.mode == Mode.gen:
-        protocol = Protocol(options)
+    #elif options.mode == Mode.gen:
+        protocol = Protocol(ptcl_filename, options)
         prime_orbits = PrimeOrbits(options) 
         prime_orbits.symmetry_aware_enumerate(protocol)               
 
