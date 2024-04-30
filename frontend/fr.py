@@ -24,7 +24,7 @@ from frontend.vmt_parser import TransitionSystem
 from frontend.simulate import EvalEngine
 from pysmt.environment import get_env
 from pysmt.shortcuts import Solver, QuantifierEliminator, Enum
-from pysmt.logics import BOOL
+from pysmt.typing import BOOL
 from pysmt.solvers.bdd import BddConverter
 from _pytest.compat import enum
 
