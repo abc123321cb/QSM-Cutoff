@@ -1,14 +1,18 @@
 from typing import List
 
 from enum import Enum
-Mode  = Enum('Mode', ['ivy', 'gen', 'qfy', 'min']) 
+Mode  = Enum('Mode', ['ivy', 'min'])
 # read ivy, generate prime, quantify prime, minimize prime
 UseMC = Enum('UseMC', ['sat', 'appMC'])
 class QrmOptions():
     def __init__(self) -> None:
         self.verbosity  = 0
-        self.filename = ''
-        self.mode  = Mode.gen 
+        self.filename     = ''
+        self.ivy_filename = ''
+        self.vmt_filename = ''
+        self.R_filename   = ''
+        self.mode   = Mode.ivy
+        self.writeR = False
         self.useMC = UseMC.sat
         self.all_solutions = False 
 

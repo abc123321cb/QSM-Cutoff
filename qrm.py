@@ -15,8 +15,7 @@ def usage ():
     print(' -v LEVEL        set verbose level (defult:0, max: 5)')
     print(' -i FILE.ivy     read FILE.ivy file')
     print(' -s SIZE         pass sort size string (format: -s [sort1]=[size1], [sort2]=[size2])')
-    print(' -o FILE.ptcl    produce prime orbits')
-    print(' -q FILE.orb     quantify prime orbits')
+    print(' -r              write reachable states to FILE.ptcl (default: do not write)')
     print(' -m FILE.orb     minimize quantified prime orbits')
     print(' -c sat | mc     use sat solver or approximate model counter for coverage estimation (default: sat)')
     print(' -a              find all minimal solutions (default: off)')
@@ -33,7 +32,7 @@ def file_exist(filename) -> bool:
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "hv:i:s:o:q:m:c:a")
+        opts, args = getopt.getopt(args, "hv:i:s:rm:c:a")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -48,17 +47,13 @@ def qrm(args):
         elif optc == '-i':
             options.mode = Mode.ivy
             if file_exist(optv):
-                options.filename = optv
+                options.ivy_filename = optv
+                options.vmt_filename = optv.split('.')[0] + '.vmt'
+                options.R_filename   = optv.split('.')[0] + '.pctl'
         elif optc == '-s':
-           size_str = optv 
-        elif optc == '-o':
-            options.mode = Mode.gen
-            if file_exist(optv):
-                options.filename = optv
-        elif optc == '-q':
-            options.mode = Mode.qfy
-            if file_exist(optv):
-                options.filename = optv
+            size_str = optv 
+        elif optc == '-r':
+            options.writeR = True
         elif optc == '-m':
             options.mode = Mode.min
             if file_exist(optv):
@@ -74,13 +69,8 @@ def qrm(args):
             usage_and_exit()
 
     if options.mode == Mode.ivy:
-        ivy_filename  = options.filename
-        vmt_filename  = ivy_filename.split('.')[0] + '.vmt'
-        ptcl_filename = ivy_filename.split('.')[0] + '.pctl'
-        compile_ivy2vmt(ivy_filename, vmt_filename)
-        forward_reach(vmt_filename, ptcl_filename, size_str)
-    #elif options.mode == Mode.gen:
-        protocol = Protocol(ptcl_filename, options)
+        compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
+        protocol = forward_reach(size_str, options)
         prime_orbits = PrimeOrbits(options) 
         prime_orbits.symmetry_aware_enumerate(protocol)               
 

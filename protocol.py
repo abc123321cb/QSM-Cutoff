@@ -7,7 +7,7 @@ from verbose import *
 # utils
 quorum_delim = '-'
 def format_atom(predicate: str, args: List[str]) -> str:
-    return predicate + '(' + ', '.join(args) + ')'
+    return predicate + '(' + ','.join(args) + ')'
 
 def split_head_tail(line: str, head : int, delim=None) -> Tuple [str, List[str]]:
     lst = line.split(delim)
@@ -21,7 +21,7 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
     return False
 
 class Protocol():
-    def __init__(self, ptcl_filename, options : QrmOptions) -> None:
+    def __init__(self) -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
@@ -35,13 +35,13 @@ class Protocol():
         self.quorums       : Dict[str, int]      = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
-        self.options = options
 
         # initialization 
-        self._read(ptcl_filename)
-        self._init_sorts_permutations()
-        vprint_banner(self, f'Protocol {options.filename}', 3)
-        vprint(self, str(self), 3)
+        # self.read(ptcl_filename)
+        # self.init_sorts_permutations()
+        # vprint_banner(self, f'Protocol {options.filename}', 3)
+        # vprint(self, str(self), 3)
+
 
     def __str__(self) -> str:
         lines = f'sorts: {str(self.sorts)}\n'
@@ -58,7 +58,7 @@ class Protocol():
         lines += f'permutations: {str(self._sorts_permutations)}\n' 
         return lines
 
-    def _read_sort(self, line : str) -> None:
+    def read_sort(self, line : str) -> None:
         # read '.s [sort_name] [element1] [element2] ...'
         # .s node n1 n2
         sort_id     = len(self.sorts)
@@ -69,7 +69,7 @@ class Protocol():
         for (id, e) in enumerate(elements):
             self.element_Name2Id[e]=id
 
-    def _read_quorums(self, line : str) -> None:
+    def read_quorum_sort(self, line : str) -> None:
         # read '.q [member sort] [quorum1] [quorum2] ...' 
         # .q node q-n1-n2 q-n1-n3 q-n2-n3 ...
         (sort, quorums) = split_head_tail(line, head=1) 
@@ -77,13 +77,13 @@ class Protocol():
         for quorum in quorums:
             self.quorums[quorum] = sort_id
 
-    def _read_predicate(self, line : str) -> None:
+    def read_predicate(self, line : str) -> None:
         # read '.p [predicate_name] [argsort1] [argsort2] ...'
         # .p hold node
         (pred, arg_sorts) = split_head_tail(line, head=1)
         self.predicates[pred] = arg_sorts 
 
-    def _read_atoms(self, line:str) -> None:
+    def read_atoms(self, line:str) -> None:
         # read '.a [atom1] [atom2] ...'
         # .a hold(n1) hold(n2)
         atoms = line.split()[1:] # remove '.a'
@@ -104,7 +104,7 @@ class Protocol():
             signature = [predicate] + args
             self.atom_sig.append(signature)
 
-    def _read_states(self, line:str, states: Set[str]) -> None:
+    def read_states(self, line:str, states=set()) -> None:
         # read '[reachable_state]'
         # 010-
         state = line.split()[0]
@@ -112,22 +112,22 @@ class Protocol():
         if not state in states:
             self.reachable_states.append(state)
 
-    def _read(self, filename: str) -> None:
+    def read_from_file(self, filename: str) -> None:
         with open(filename, 'r') as file:
             states = set() # avoid reading repeated state
             for line in file:
                 if line.startswith('.s'):
-                    self._read_sort(line)
+                    self.read_sort(line)
                 if line.startswith('.q'):
-                    self._read_quorums(line)
+                    self.read_quorum_sort(line)
                 if line.startswith('.p'):
-                    self._read_predicate(line)                    
+                    self.read_predicate(line)                    
                 if line.startswith('.a'):
-                    self._read_atoms(line)
+                    self.read_atoms(line)
                 if not line.startswith('.') and not line.startswith('#'):
-                    self._read_states(line, states)
+                    self.read_states(line, states)
 
-    def _init_sorts_permutations(self) -> None:
+    def init_sorts_permutations(self) -> None:
         all_sorts_permutations = []
         for elements in self.sort_elements:
             element_id_list = list(range(len(elements)))

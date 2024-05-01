@@ -1351,62 +1351,7 @@ class FR(object):
         pretty_print_inv(self.inferences, "Forward inferences")
         return self.inferences
 
-    def print_reachability(self, bdd, restricted, name):
-        global outF
-        outF =open(name, "w")
-
-        # print sorts
-        for (sort, elements) in self.system._enumsorts.items():
-            sort_line = '.s ' + str(self.system._enum2inf[sort])
-            for e in elements:
-                sort_line += ' ' + pretty_print_str(e)
-            fprint(sort_line)
-
-        # print predicates
-        for pred in self.system.orig._nexstates:
-            pred_line = '.p ' + str(pred)
-            param_list =  [str(s) for s in pred.symbol_type()._param_types]
-            if len(param_list) > 0:
-                pred_line += ' ' + ' '.join(param_list)
-            fprint(pred_line)
-
-        # print quorums
-        # TODO
-        
-        # print atoms 
-        atom_line = '.a '
-        atoms = []
-        abvars = set(self.converter.var2atom.keys())
-        atomList = []
-        for idx in range(self.numvars):
-            var = self.converter.idx2var[idx]
-            atom = self.converter.var2atom[var]
-            atomList.append(atom)
-            if atom in restricted:
-                atoms.append(atom)
-                abvars.remove(var)
-        for atom in atoms:
-            atom_line += pretty_print_str(atom).replace(' ', '') +' ' 
-        fprint(atom_line)
-        abcube = self.converter.cube_from_var_list(list(abvars))
-        bddnew = self.ddmanager.ExistAbstract(bdd, abcube)
-        print("\t(printing reachability)")
-        for cube_tup in repycudd.ForeachCubeIterator(self.ddmanager, bddnew):
-            str_cube = '' 
-            for idx, char in enumerate(cube_tup):
-                if idx >= self.numvars:
-                    break
-                atom = atomList[idx]
-                if atom in restricted:
-                    if char == 2:
-                        str_cube += '-'
-                    else:
-                        str_cube += str(char)
-            fprint(str_cube)
-        fprint('.e')
-        outF.close()
-
-    def solve_reachability(self, outname):
+    def solve_reachability(self):
         global outF
 
         """Forward Reachability using BDDs."""
@@ -1498,10 +1443,8 @@ class FR(object):
 
         restricted = self.filter_atoms(self.patoms)
 
-        self.print_reachability(totalR, restricted, outname)
-        eprint("\t(printed R in file %s)" % outname)
-        print("\t(printed R in file %s)" % outname)
-    
+        return (totalR, restricted)
+            
 def forwardReach(fname):
     global start_time
     utils.start_time = time.time()
