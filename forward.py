@@ -1,5 +1,4 @@
 from typing import Type, List, Dict
-from pysmt.shortcuts import TRUE, And, Or, Not, EqualsOrIff, Exists, ForAll, is_sat, Function
 from frontend.vmt_parser import TransitionSystem, vmt_parse
 from frontend.fr import *
 from frontend.problem import *
