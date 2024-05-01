@@ -14,7 +14,7 @@ def usage ():
     print(' -h              usage')
     print(' -v LEVEL        set verbose level (defult:0, max: 5)')
     print(' -i FILE.ivy     read FILE.ivy file')
-    print(' -s SIZE         pass sort size string (format: -s [sort1]=[size1], [sort2]=[size2])')
+    print(' -s SORT_SIZE    pass sort size (format: -s [sort1=size1,sort2=size2 ...])')
     print(' -r              write reachable states to FILE.ptcl (default: do not write)')
     print(' -m FILE.orb     minimize quantified prime orbits')
     print(' -c sat | mc     use sat solver or approximate model counter for coverage estimation (default: sat)')
