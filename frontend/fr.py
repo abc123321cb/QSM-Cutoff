@@ -673,7 +673,6 @@ class FR(object):
                 print("Found ")
                 assert(0)
         return res
-
     
 
     def print_espresso(self, bdd, restricted, name):
@@ -1352,8 +1351,6 @@ class FR(object):
         return self.inferences
 
     def solve_reachability(self):
-        global outF
-
         """Forward Reachability using BDDs."""
         prop = prop_formula(self)
         print("\nChecking property %s...\n" % prop)
@@ -1440,10 +1437,39 @@ class FR(object):
         eprint("\t(forward reachability done)")
         print("\t(forward reachability done)")
         self.check_safe(totalR)
-
         restricted = self.filter_atoms(self.patoms)
 
-        return (totalR, restricted)
+        eprint("\t(extracting state variables and reachable states)")
+        print("\t(extracting state variables and reachable states)")
+        stvars = []
+        states = []
+        abvars = set(self.converter.var2atom.keys())
+        atomList = []
+        for idx in range(self.numvars):
+            var = self.converter.idx2var[idx]
+            atom = self.converter.var2atom[var]
+            atomList.append(atom)
+            if atom in restricted:
+                stvars.append(pretty_print_str(atom).replace(" ", ""))
+                abvars.remove(var)
+
+        abcube = self.converter.cube_from_var_list(list(abvars))
+        bddnew = self.ddmanager.ExistAbstract(totalR, abcube)
+        for cube_tup in repycudd.ForeachCubeIterator(self.ddmanager, bddnew):
+            str_cube = ""
+            for idx, char in enumerate(cube_tup):
+                if idx >= self.numvars:
+                    break
+                atom = atomList[idx]
+                if atom in restricted:
+                    if char == 2:
+                        str_cube += '-'
+                    else:
+                        str_cube += str(char)
+            states.append(str_cube)
+        eprint("\t(extracting state variables and reachable states done)")
+        print("\t(extracting state variables and reachable states done)")
+        return (stvars, states)
             
 def forwardReach(fname):
     global start_time

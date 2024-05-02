@@ -1,6 +1,9 @@
 import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
+from forward import Reachability
+from frontend.vmt_parser import TransitionSystem
+from frontend.utils import pretty_print_str
 from util import QrmOptions 
 from verbose import *
 
@@ -21,7 +24,7 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
     return False
 
 class Protocol():
-    def __init__(self) -> None:
+    def __init__(self, options : QrmOptions, filename='') -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
         self.sort_elements   : List[List[str]] = [] # sort id -> elem names
@@ -35,13 +38,12 @@ class Protocol():
         self.quorums       : Dict[str, int]      = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
+        self.options = options
 
         # initialization 
-        # self.read(ptcl_filename)
-        # self.init_sorts_permutations()
-        # vprint_banner(self, f'Protocol {options.filename}', 3)
-        # vprint(self, str(self), 3)
-
+        if filename != '':
+            self._read_from_file(filename)
+            self._init_sorts_permutations()
 
     def __str__(self) -> str:
         lines = f'sorts: {str(self.sorts)}\n'
@@ -58,7 +60,7 @@ class Protocol():
         lines += f'permutations: {str(self._sorts_permutations)}\n' 
         return lines
 
-    def read_sort(self, line : str) -> None:
+    def _read_sort(self, line : str) -> None:
         # read '.s [sort_name] [element1] [element2] ...'
         # .s node n1 n2
         sort_id     = len(self.sorts)
@@ -69,7 +71,7 @@ class Protocol():
         for (id, e) in enumerate(elements):
             self.element_Name2Id[e]=id
 
-    def read_quorum_sort(self, line : str) -> None:
+    def _read_quorum_sort(self, line : str) -> None:
         # read '.q [member sort] [quorum1] [quorum2] ...' 
         # .q node q-n1-n2 q-n1-n3 q-n2-n3 ...
         (sort, quorums) = split_head_tail(line, head=1) 
@@ -77,13 +79,13 @@ class Protocol():
         for quorum in quorums:
             self.quorums[quorum] = sort_id
 
-    def read_predicate(self, line : str) -> None:
+    def _read_predicate(self, line : str) -> None:
         # read '.p [predicate_name] [argsort1] [argsort2] ...'
         # .p hold node
         (pred, arg_sorts) = split_head_tail(line, head=1)
         self.predicates[pred] = arg_sorts 
 
-    def read_atoms(self, line:str) -> None:
+    def _read_atoms(self, line:str) -> None:
         # read '.a [atom1] [atom2] ...'
         # .a hold(n1) hold(n2)
         atoms = line.split()[1:] # remove '.a'
@@ -104,7 +106,7 @@ class Protocol():
             signature = [predicate] + args
             self.atom_sig.append(signature)
 
-    def read_states(self, line:str, states=set()) -> None:
+    def _read_states(self, line:str, states=set()) -> None:
         # read '[reachable_state]'
         # 010-
         state = line.split()[0]
@@ -112,22 +114,96 @@ class Protocol():
         if not state in states:
             self.reachable_states.append(state)
 
-    def read_from_file(self, filename: str) -> None:
+    def _read_from_file(self, filename: str) -> None:
         with open(filename, 'r') as file:
             states = set() # avoid reading repeated state
             for line in file:
                 if line.startswith('.s'):
-                    self.read_sort(line)
+                    self._read_sort(line)
                 if line.startswith('.q'):
-                    self.read_quorum_sort(line)
+                    self._read_quorum_sort(line)
                 if line.startswith('.p'):
-                    self.read_predicate(line)                    
+                    self._read_predicate(line)                    
                 if line.startswith('.a'):
-                    self.read_atoms(line)
+                    self._read_atoms(line)
                 if not line.startswith('.') and not line.startswith('#'):
-                    self.read_states(line, states)
+                    self._read_states(line, states)
 
-    def init_sorts_permutations(self) -> None:
+    def _init_sort(self, tran_sys : TransitionSystem) -> None:
+        for (sort, elements) in tran_sys._enumsorts.items():
+            sort_line = '.s ' + str(tran_sys._enum2inf[sort])
+            for e in elements:
+                sort_line += ' ' + pretty_print_str(e)
+            self._read_sort(sort_line) 
+            if self.options.writeR:
+                self.lines.append(sort_line)
+
+    def _init_quorum_sort(self, tran_sys : TransitionSystem) -> None:
+        for (qsort, quorums) in tran_sys._quorums_consts.items():
+            child_sort = (tran_sys._quorums_sorts[qsort])[1]
+            quorum_elements = tran_sys._enumsorts[qsort] 
+            child_elements  = tran_sys._enumsorts[child_sort]
+            qsort_line = '.q ' + str(tran_sys._enum2inf[child_sort])
+            for qidx, qset in quorums.items():
+                elements = [str(tran_sys._enum2inf[qsort])[0]] 
+                for e in qset:
+                    elements.append(pretty_print_str(child_elements[e]))
+                qstr_idx = pretty_print_str(quorum_elements[qidx])
+                qstr_set = quorum_delim.join(elements)
+                qsort_line += ' ' + qstr_set 
+                self.qstr_map[qstr_idx]  = qstr_set
+            self._read_quorum_sort(qsort_line)
+            if self.options.writeR:
+                self.lines.append(qsort_line)
+
+    def _init_predicate(self, tran_sys) -> None:
+        for pred in tran_sys.orig._nexstates:
+            pred_line = '.p ' + str(pred)
+            param_list =  [str(s) for s in pred.symbol_type()._param_types]
+            if len(param_list) > 0:
+                pred_line += ' ' + ' '.join(param_list)
+            self._read_predicate(pred_line)
+            if self.options.writeR:
+                self.lines.append(pred_line)
+
+    def _init_atoms(self, reachblty) -> None:
+        atom_line = '.a'
+        for atom in reachblty.state_vars:
+            predicate = '' 
+            args     = []
+            new_args = []
+            match = re.search(r'(\w+)\(([^)]+)\)', atom)
+            if match:
+                predicate = match.group(1)
+                args      = match.group(2).split(',')
+            else:
+                predicate = atom.strip('( )')
+
+            for arg in args:
+                if arg in self.qstr_map:
+                    new_args.append(self.qstr_map[arg])
+                else:
+                    new_args.append(arg)
+            atom_str = format_atom(predicate,new_args)
+            atom_line +=  ' ' + atom_str
+        self._read_atoms(atom_line)
+        if self.options.writeR:
+            self.lines.append(atom_line)
+
+    def _init_reachable_states(self, reachblty) -> None:
+        for state in reachblty.states:
+            self._read_states(state)
+            if self.options.writeR:
+                self.lines.append(state)
+
+    def _write_reachability(self, filename) -> None:
+        outF =open(filename, "w")
+        for line in self.lines:
+            outF.write(line+'\n')
+        outF.write('.e\n')
+        outF.close()
+
+    def _init_sorts_permutations(self) -> None:
         all_sorts_permutations = []
         for elements in self.sort_elements:
             element_id_list = list(range(len(elements)))
@@ -135,6 +211,23 @@ class Protocol():
             all_sorts_permutations.append(sort_permutations)
         # cartesian product
         self._sorts_permutations = list(product(*all_sorts_permutations))
+
+    def initialize(self, tran_sys : TransitionSystem, reachblty : Reachability) -> None:
+        ## helper
+        self.qstr_map  = {}
+        self.lines     = []
+
+        ## init
+        self._init_sort(tran_sys)
+        self._init_quorum_sort(tran_sys)
+        self._init_predicate(tran_sys)
+        self._init_atoms(reachblty)
+        self._init_reachable_states(reachblty)
+        self._init_sorts_permutations()
+
+        # write protocols
+        if (self.options.writeR):
+            self._write_reachability(self.options.R_filename)
     
     def _get_renamed_element(self, permutation, sort_id, element) -> str:
         new_element = []
@@ -189,6 +282,3 @@ class Protocol():
             if nvalues and new_insert(nvalues, values_hash):
                 values_list.append(nvalues)
         return values_list 
-    
-
- 

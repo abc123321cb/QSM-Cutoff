@@ -4,6 +4,7 @@ from os import path
 from verbose import *
 from util import * 
 from forward import *
+from transition import *
 from protocol import Protocol 
 from prime import PrimeOrbits
 from minimize import Minimizer
@@ -38,7 +39,7 @@ def qrm(args):
         usage_and_exit()
 
     options = QrmOptions()
-    size_str =''## temporary
+    size_str ='' ## temporary
     for (optc, optv) in opts:
         if optc == '-v':
             options.verbosity = int(optv)
@@ -70,7 +71,12 @@ def qrm(args):
 
     if options.mode == Mode.ivy:
         compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
-        protocol = forward_reach(size_str, options)
+        tran_sys  = get_transition_system(options.vmt_filename, size_str)
+        reachblty = forward_reach(tran_sys)
+    
+        protocol  = Protocol(options)
+        protocol.initialize(tran_sys, reachblty)
+
         prime_orbits = PrimeOrbits(options) 
         prime_orbits.symmetry_aware_enumerate(protocol)               
 
