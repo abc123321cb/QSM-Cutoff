@@ -65,11 +65,11 @@ def pretty_print_str(cl, mode=0, reset=True):
             sname = str(vs)[0].upper()
             if sname not in nameSort:
                 nameSort[sname] = 0
-            nameSort[sname] += 1
             n = sname + str(nameSort[sname])
+            nameSort[sname] += 1
             if n in nameset:
-                count += 1
                 n = n + "_" + str(count)
+                count += 1
             nameset.add(n)
             subs[v] = n
         
