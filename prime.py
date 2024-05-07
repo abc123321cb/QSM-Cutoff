@@ -1,8 +1,9 @@
 from typing import Dict,List
 from pysat.solvers import Cadical153 as SatSolver 
+from frontend.utils import count_quantifiers_and_literals, pretty_print_str
 from protocol import Protocol 
 from dualrail import DualRailNegation
-from util import QrmOptions 
+from util import QrmOptions
 from verbose import *
 
 def make_key(values: List[str], protocol : Protocol) -> str:
@@ -41,7 +42,7 @@ class Prime():
                 literals.append('~'+Prime._atoms[atom_id])
         literals.sort()
         return f'{str(literals)}'
-        
+
     @staticmethod
     def setup(protocol : Protocol) -> None:
         Prime._atoms    = protocol.atoms
@@ -56,21 +57,21 @@ class PrimeOrbit():
         self.id         : int = PrimeOrbit.count   
 
         # quantifier inference
-        self.forall      : List[str] = [] 
-        self.exists      : List[str] = []
-        self.literals    : List[str] = [] 
-        self.quantified_form  : str = ""
-        self.qcost            : int = 0
+        self.num_forall   = 0 
+        self.num_exists   = 0 
+        self.num_literals = 0 
+        self.qcost        = 0
+        self.quantified_form  : str = ''
         PrimeOrbit.count += 1
 
     def __str__(self) -> str:
-        lines  = f'= Orbit {self.id} ========================\n'
+        lines  = f'--- Orbit {self.id} ----------------\n'
         lines += f'size : {len(self.primes)}\n'
         for prime in self.primes:
             lines += str(prime) 
-        lines += f'forall : {self.forall}\n'
-        lines += f'exists : {self.exists}\n'
-        lines += f'literals : {self.literals}\n'
+        lines += f'num_forall :   {self.num_forall}\n'
+        lines += f'num_exists :   {self.num_exists}\n'
+        lines += f'num_literals : {self.num_literals}\n'
         lines += f'quantified form : {self.quantified_form}\n'
         lines += f'qcost : {self.qcost}\n'
         lines += '\n\n'
@@ -125,9 +126,24 @@ class PrimeOrbits():
                     block_clauses  = self._make_orbit(values, protocol)
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
-        vprint_banner(self, 'Prime Orbits', 3)
+        vprint_banner(self, 'Prime Orbits', 4)
+        vprint(self, str(self), 4)
+
+
+    def quantifier_inference(self, atoms, tran_sys, options) -> None:
+        from qinference import QInference
+        QInference.setup(atoms, tran_sys)
+        for orbit in self.orbits:
+            qInfr = QInference(orbit, options)
+            qclauses = qInfr.infer_quantifier()
+            assert(len(qclauses) == 1)
+            qclause   = qclauses[0]
+            num_forall, num_exists, num_literals = count_quantifiers_and_literals(qclause)
+            orbit.num_forall    = num_forall
+            orbit.num_exists    = num_exists
+            orbit.num_literals  = num_literals
+            orbit.qcost         = num_forall + num_exists + num_literals
+            orbit.quantified_form = pretty_print_str(qclause)
+        vprint_banner(self, 'Quantified Prime Orbits', 3)
         vprint(self, str(self), 3)
-
-    
-
 
