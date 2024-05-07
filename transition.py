@@ -10,6 +10,6 @@ def get_transition_system(vmt_filename : str, size_str : str) -> TransitionSyste
     # parse vmt
     tran_sys : Type[TransitionSystem]
     tran_sys = vmt_parse(vmt_filename)
-    tran_sys.gen = 'fe'
+    tran_sys.gen = 'fe' # forall-exist
 
     return tran_sys

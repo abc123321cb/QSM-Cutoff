@@ -1450,7 +1450,7 @@ class FR(object):
             atom = self.converter.var2atom[var]
             atomList.append(atom)
             if atom in restricted:
-                stvars.append(pretty_print_str(atom).replace(" ", ""))
+                stvars.append(atom)
                 abvars.remove(var)
 
         abcube = self.converter.cube_from_var_list(list(abvars))

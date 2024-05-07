@@ -42,7 +42,7 @@ class Protocol():
 
         # initialization 
         if filename != '':
-            self._read_from_file(filename)
+            self.read(filename)
             self._init_sorts_permutations()
 
     def __str__(self) -> str:
@@ -114,7 +114,7 @@ class Protocol():
         if not state in states:
             self.reachable_states.append(state)
 
-    def _read_from_file(self, filename: str) -> None:
+    def read(self, filename: str) -> None:
         with open(filename, 'r') as file:
             states = set() # avoid reading repeated state
             for line in file:
@@ -168,7 +168,7 @@ class Protocol():
 
     def _init_atoms(self, reachblty) -> None:
         atom_line = '.a'
-        for atom in reachblty.state_vars:
+        for atom in reachblty.stvars:
             predicate = '' 
             args     = []
             new_args = []
@@ -184,8 +184,8 @@ class Protocol():
                     new_args.append(self.qstr_map[arg])
                 else:
                     new_args.append(arg)
-            atom_str = format_atom(predicate,new_args)
-            atom_line +=  ' ' + atom_str
+            atom = format_atom(predicate,new_args)
+            atom_line +=  ' ' + atom
         self._read_atoms(atom_line)
         if self.options.writeR:
             self.lines.append(atom_line)
