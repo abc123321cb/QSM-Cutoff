@@ -111,7 +111,7 @@ class Minimizer():
 
     def _get_cost(self) -> int:
         s = sum([self.orbits[i].qcost for i in self.solution])
-        vprint(self, f'\nSolution : {self.solution} has cost {s}.', 5)
+        vprint(self.options, f'\nSolution : {self.solution} has cost {s}.', 5)
         return s
 
     def _get_max_coverage_id(self) -> int:
@@ -138,13 +138,13 @@ class Minimizer():
         top._switch_branch()
         if top.include_orbit:
             self.solution.append(top.id)
-        vprint(self, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
+        vprint(self.options, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
 
     def _new_level(self) -> None:
         level    = len(self.decision_stack)
         start_id = len(self.solution)
         self.decision_stack.append(StackLevel(level,start_id))
-        vprint(self, f'\nNew level: {level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'\nNew level: {level}\n pending : {self.pending}\n solution : {self.solution}', 5)
 
     def _decide(self) -> None:
         # decide orbit id and initial phase
@@ -152,26 +152,26 @@ class Minimizer():
         top = self.decision_stack[-1]
         top.orbit_id      = self._get_max_coverage_id() 
         top.include_orbit = self._get_initial_phase() 
-        vprint(self, f'\nDecide in level {top.level} among pending : {self.pending}', 5)
-        vprint(self, f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
-        vprint(self, f'Decide {top.orbit_id} with phase {top.include_orbit} at level {top.level}', 5)
+        vprint(self.options, f'\nDecide in level {top.level} among pending : {self.pending}', 5)
+        vprint(self.options, f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+        vprint(self.options, f'Decide {top.orbit_id} with phase {top.include_orbit} at level {top.level}', 5)
         # update pending and solution accordingly
         top.unpended.append(top.orbit_id)
         self.pending.remove(top.orbit_id)
         if top.include_orbit:
             self.solution.append(top.orbit_id)
-        vprint(self, f'After decision at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'After decision at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
 
     def _backtrack(self) -> None:
         assert(len(self.decision_stack))
         top = self.decision_stack[-1]
-        vprint(self,f'\nBefore backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options,f'\nBefore backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
         # restore pending and solution
         self.pending.extend(top.unpended)
         if len(self.solution) > top.solution_start_idx:
             del self.solution[top.solution_start_idx:]
         self.decision_stack.pop()
-        vprint(self, f'After backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'After backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
     
     def _collect_essentials(self) -> Set[int]:
         essentials = set()
@@ -182,11 +182,11 @@ class Minimizer():
         if self.options.verbosity >=5:
             assert(len(self.decision_stack))
             top = self.decision_stack[-1]
-            vprint(self, f'Essensial at level {top.level} : {essentials}', 5)
+            vprint(self.options, f'Essensial at level {top.level} : {essentials}', 5)
         return essentials
 
     def _collect_covered(self) -> Set[int]:
-        vprint(self, f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+        vprint(self.options, f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
         covered = set()
         self.cover.reset_coverage()
         for id in self.pending:
@@ -197,8 +197,8 @@ class Minimizer():
         if self.options.verbosity >=5:
             assert(len(self.decision_stack))
             top = self.decision_stack[-1]
-            vprint(self, f'After removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
-            vprint(self, f'Covered at level {top.level} : {covered}', 5)
+            vprint(self.options, f'After removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+            vprint(self.options, f'Covered at level {top.level} : {covered}', 5)
         return covered
 
     def _unpend(self, to_unpend : Set[int]) -> None:
@@ -219,10 +219,10 @@ class Minimizer():
         return len(covered) > 0
 
     def _reduce(self) -> None:
-        vprint(self, f'\nBefore reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'\nBefore reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
         has_essential = self._add_essentials()
         has_covered   = self._remove_covered()
-        vprint(self, f'After reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'After reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
         if has_essential or has_covered:
             self._reduce()
 
@@ -277,14 +277,14 @@ class Minimizer():
         return 
 
     def print_final_solutions(self) -> None:
-        vprint_banner(self, 'Final solutions')
+        vprint_banner(self.options, 'Minimized Invariants')
         for (sid, solution) in enumerate(self.optimal_solutions):
-            vprint(self, f'Solution {sid} : {solution} (length = {len(solution)})')
+            vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})')
             costs = [self.orbits[i].qcost for i in solution]
-            vprint(self, f'Total cost : {sum(costs)} (individual cost : {costs})')
+            vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})')
             for id in solution: 
-                vprint(self, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}')
-            vprint(self, '\n')
+                vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}')
+            vprint(self.options, '\n')
 
     def get_final_invariants(self) -> List[str]:
         invariants = []

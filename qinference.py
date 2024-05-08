@@ -63,8 +63,8 @@ class QInference():
             else:
                 assert(val == '-')
         self.repr_state =  And(literals) if len(literals) != 0 else TRUE()
-        vprint_title(self, 'set_repr_state', 5)
-        vprint(self, f'repr_state: {pretty_print_str(self.repr_state)}', 5)
+        vprint_title(self.options, 'set_repr_state', 5)
+        vprint(self.options, f'repr_state: {pretty_print_str(self.repr_state)}', 5)
 
     def _get_used_qvars(self, sort):
         if not sort in self.sort2qvars:         
@@ -78,7 +78,7 @@ class QInference():
         return qvar
 
     def record_sort_occurrence_in_vars(self):
-        vprint_title(self, 'record_sort_occurrence_in_vars' , 5)
+        vprint_title(self.options, 'record_sort_occurrence_in_vars' , 5)
         for var in sorted(self.vars, key=str):
             sort = var.constant_type()
             if not sort in QInference.tran_sys._enum2qvar:
@@ -89,14 +89,14 @@ class QInference():
             self.var2qvar[var] = qvar
             self.qvars_set.add(qvar)
             
-            vprint(self, f'var: {str(var)}', 5)
-            vprint(self, f'sort: {str(sort)}', 5)
-            vprint(self, f'qvar: {str(qvar)}', 5)
-            vprint(self, '', 5)
+            vprint(self.options, f'var: {str(var)}', 5)
+            vprint(self.options, f'sort: {str(sort)}', 5)
+            vprint(self.options, f'qvar: {str(qvar)}', 5)
+            vprint(self.options, '', 5)
             
-        vprint(self, f'qvars_set: {str(self.qvars_set)}', 5) 
-        vprint(self, f'sort2qvars: {str(self.sort2qvars)}', 5)
-        vprint(self, f'var2qvar: {str(self.var2qvar)}', 5)
+        vprint(self.options, f'qvars_set: {str(self.qvars_set)}', 5) 
+        vprint(self.options, f'sort2qvars: {str(self.sort2qvars)}', 5)
+        vprint(self.options, f'var2qvar: {str(self.var2qvar)}', 5)
             
 
     def record_fully_occuring_sorts(self):
@@ -105,11 +105,11 @@ class QInference():
             if  ( (len(qvars) >= min_size) and 
                   (len(qvars) == sort_size) ):
                 self.full_occur_sorts.append([sort, qvars])
-        vprint_title(self, 'record_fully_occuring_sorts', 5)
-        vprint(self, f'full_occur_sorts: {str(self.full_occur_sorts)}' , 5)
+        vprint_title(self.options, 'record_fully_occuring_sorts', 5)
+        vprint(self.options, f'full_occur_sorts: {str(self.full_occur_sorts)}' , 5)
 
     def set_qvar_pairwise_neq_constraints(self):
-        vprint_title(self, 'set_qvar_pairwise_neq_constraints', 5)
+        vprint_title(self.options, 'set_qvar_pairwise_neq_constraints', 5)
         for sort, qvars in self.sort2qvars.items():
             self.neq_constraints[sort] = []
             for i in range(len(qvars) - 1):
@@ -117,7 +117,7 @@ class QInference():
                     # if i!=j: NOTE ????????
                     neq = Not(EqualsOrIff(qvars[i], qvars[j]))
                     self.neq_constraints[sort].append(neq)
-                    vprint(self, pretty_print_str(neq), 5)
+                    vprint(self.options, pretty_print_str(neq), 5)
 
     def _get_instantiated_vars(self, sort):
         if sort not in self.sort2ivars:
@@ -147,9 +147,9 @@ class QInference():
             self._instantiate_qstate()
         self.qstate = self.qstate.simple_substitute(self.var2qvar)
         self.qterms = flatten_cube(self.qstate)
-        vprint_title(self, 'set_qstate', 5)
-        vprint(self, f'qstate: {pretty_print_str(self.qstate)}', 5)
-        vprint(self, f'qterms: {pretty_print_set(self.qterms)}', 5)
+        vprint_title(self.options, 'set_qstate', 5)
+        vprint(self.options, f'qstate: {pretty_print_str(self.qstate)}', 5)
+        vprint(self.options, f'qterms: {pretty_print_set(self.qterms)}', 5)
 
     def _split_eq(self, eq_term):
         lhs = eq_term.arg(0)
@@ -241,8 +241,8 @@ class QInference():
         qstate = And(qterms)
         if len(self.qvars_set) != 0:  # NOTE ??????
             qstate = Exists(self.qvars_set, qstate)
-        vprint_title(self, 'get_state_from_terms', 5)
-        vprint(self, f'qstate: {pretty_print_str(qstate)}', 5)
+        vprint_title(self.options, 'get_state_from_terms', 5)
+        vprint(self.options, f'qstate: {pretty_print_str(qstate)}', 5)
         return qstate
 
     def conjunct_qstate_with_neq_constraints(self):
@@ -338,8 +338,8 @@ class QInference():
         self._init_partition(qvars)
         self._record_qvars_occurrence_in_terms(sort, qvars) 
         self._finalize_partition() 
-        vprint_title(self, 'partition_qvars_in_terms', 5)
-        vprint(self, f'qvars_partition: {self.qvars_partition.values()}', 5)
+        vprint_title(self.options, 'partition_qvars_in_terms', 5)
+        vprint(self.options, f'qvars_partition: {self.qvars_partition.values()}', 5)
 
     def _collect_singles_multiples_in_partition(self):
         self.single_class = []

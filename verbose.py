@@ -1,5 +1,5 @@
-def vprint_banner(self, line : str, level=0) -> None:
-    if self.options.verbosity >= level:
+def vprint_banner(options, line : str, level=0) -> None:
+    if options.verbosity >= level:
         banner ='**' + '='*(len(line)+20) + '**'
         print()
         print(banner)
@@ -7,11 +7,11 @@ def vprint_banner(self, line : str, level=0) -> None:
         print(banner)
         print()
 
-def vprint_title(self, line : str, level=0) -> None:
-    if self.options.verbosity >= level:
+def vprint_title(options, line : str, level=0) -> None:
+    if options.verbosity >= level:
         bullet = '-'*10
         print(f'\n{bullet} {line} {bullet}\n')
 
-def vprint(self, line : str, level=0) -> None:
-    if self.options.verbosity >= level:
+def vprint(options, line : str, level=0) -> None:
+    if options.verbosity >= level:
         print(line)
