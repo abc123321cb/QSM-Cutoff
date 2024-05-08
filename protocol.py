@@ -197,7 +197,7 @@ class Protocol():
                 self.lines.append(state)
 
     def _write_reachability(self, filename) -> None:
-        outF =open(filename, "w")
+        outF = open(filename, "w")
         for line in self.lines:
             outF.write(line+'\n')
         outF.write('.e\n')
@@ -227,7 +227,8 @@ class Protocol():
 
         # write protocols
         if (self.options.writeR):
-            self._write_reachability(self.options.R_filename)
+            R_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
+            self._write_reachability(R_filename)
     
     def _get_renamed_element(self, permutation, sort_id, element) -> str:
         new_element = []

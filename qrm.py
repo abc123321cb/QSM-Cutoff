@@ -9,16 +9,23 @@ from transition import *
 from protocol import Protocol 
 from prime import PrimeOrbits
 from minimize import Minimizer
+from run_ivy import *
 
 def usage ():
-    print('Usage: python3 qrm.py [options]')
-    print(' -h              usage')
-    print(' -v LEVEL        set verbose level (defult:0, max: 5)')
-    print(' -i FILE.ivy     read FILE.ivy file')
-    print(' -s SORT_SIZE    pass sort size (format: -s [sort1=size1,sort2=size2 ...])')
-    print(' -r              write reachable states to FILE.ptcl (default: do not write)')
-    print(' -c sat | mc     use sat solver or approximate model counter for coverage estimation (default: sat)')
-    print(' -a              find all minimal solutions (default: off)')
+    print('Usage:')
+    print('python3 qrm.py -i FILE.ivy -s SORT_SIZE [options]')
+    print('python3 qrm.py -y FILE.yaml [options]')
+    print('-i FILE.ivy -s SORT_SIZE  read ivy file and check with the given sort size')
+    print('                          (format: -s [sort1=size1,sort2=size2 ...])')
+    print('-y FILE.yaml              check all cases in the given yaml file')
+    print('')
+    print('Options:')
+    print('-v LEVEL     set verbose level (defult:0, max: 5)')
+    print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
+    print('-r           write reachable states to FILE.ptcl (default: do not write)')
+    print('-a           find all minimal solutions (default: off)')
+    print('-m           merge suborbits (default: off)')
+    print('-h           usage')
 
 def usage_and_exit():
     usage()
@@ -32,54 +39,73 @@ def file_exist(filename) -> bool:
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "hv:i:s:rm:c:a")
+        opts, args = getopt.getopt(args, "i:s:y:v:rc:amh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
 
     options = QrmOptions()
-    size_str ='' ## temporary
     for (optc, optv) in opts:
-        if optc == '-v':
+        if optc == '-i':
+            options.mode = Mode.ivy
+            options.ivy_filename = optv
+        elif optc == '-s':
+            options.size_str = optv 
+        elif optc == '-y':
+            options.mode = Mode.yaml
+            options.yaml_filename = optv
+        elif optc == '-v':
             options.verbosity = int(optv)
             if options.verbosity < 0 or options.verbosity > 5:
                 usage_and_exit()
-        elif optc == '-i':
-            if file_exist(optv):
-                options.ivy_filename = optv
-                options.vmt_filename = optv.split('.')[0] + '.vmt'
-                options.R_filename   = optv.split('.')[0] + '.pctl'
-        elif optc == '-s':
-            size_str = optv 
-        elif optc == '-r':
-            options.writeR = True
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
                 options.useMC = optv
             else:
                 usage_and_exit()
+        elif optc == '-r':
+            options.writeR = True
         elif optc == '-a':
             options.all_solutions = True
+        elif optc == '-m':
+            options.merge_suborbits = True
         else:
             usage_and_exit()
 
-    # step1: generate reachability
-    compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
-    tran_sys  = get_transition_system(options.vmt_filename, size_str)
-    reachblty = get_forward_reachability(tran_sys)
-    protocol  = Protocol(options)
-    protocol.initialize(tran_sys, reachblty)
+    instances = {} 
+    if options.mode == Mode.ivy:
+        instances[options.ivy_filename] = [options.size_str]
+    else:
+        instances = get_instances_from_yaml(options.yaml_filename)
 
-    # step2: generate prime orbits
-    prime_orbits = PrimeOrbits(options) 
-    prime_orbits.symmetry_aware_enumerate(protocol)               
+    for ivy_name, sizes in instances.items():
+        options.ivy_filename  = ivy_name
+        options.instance_name = ivy_name.split('.')[0]
+        options.vmt_filename  = options.instance_name + '.vmt'
+        compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
+        for size_str in sizes:
+            # step1: generate reachability
+            options.size_str    = size_str
+            options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
+            tran_sys  = get_transition_system(options.vmt_filename, options.size_str)
+            reachblty = get_forward_reachability(tran_sys)
+            protocol  = Protocol(options)
+            protocol.initialize(tran_sys, reachblty)
 
-    # step3: quantifier inference
-    prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
+            # step2: generate prime orbits
+            prime_orbits = PrimeOrbits(options) 
+            prime_orbits.symmetry_aware_enumerate(protocol)               
 
-    # step4: minimization
-    minimizer = Minimizer(prime_orbits.orbits, options)
-    minimizer.solve()
+            # step3: quantifier inference
+            prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
+
+            # step4: minimization
+            minimizer  = Minimizer(prime_orbits.orbits, options)
+            invariants = minimizer.get_minimal_invariants()
+
+            # step5: ivy_check
+            check_result = run_ivy_check(invariants, options)
+            print(check_result)
 
 if __name__ == '__main__':
     qrm(sys.argv[1:])

@@ -59,6 +59,7 @@ class PrimeOrbit():
         self.primes     : List[Prime] = []
         self.id         : int = PrimeOrbit.count   
         self.num_suborbits = 0
+        self.suborbit_repr_primes : List[Prime] = []
 
         # quantifier inference
         self.num_forall   = 0 
@@ -69,7 +70,7 @@ class PrimeOrbit():
         PrimeOrbit.count += 1
 
     def __str__(self) -> str:
-        lines  = f'--- Orbit {self.id} ----------------\n'
+        lines  = f'\n=== Orbit {self.id} =====================\n'
         lines += f'size : {len(self.primes)}\n'
         lines += f'num_suborbits: {self.num_suborbits}\n'
         for prime in self.primes:
@@ -79,13 +80,23 @@ class PrimeOrbit():
         lines += f'num_literals : {self.num_literals}\n'
         lines += f'quantified form : {self.quantified_form}\n'
         lines += f'qcost : {self.qcost}\n'
-        lines += '\n\n'
+        lines += '\n'
         return lines
 
     def add_prime(self, prime: Prime) -> None:
         if len(self.primes) == 0:
             self.repr_prime  = prime
         self.primes.append(prime)
+        if prime.is_sub_repr:
+            self.suborbit_repr_primes.append(prime)
+
+    def set_quantifier_inference_result(self, qclause):
+        num_forall, num_exists, num_literals = count_quantifiers_and_literals(qclause)
+        self.num_forall    = num_forall
+        self.num_exists    = num_exists
+        self.num_literals  = num_literals
+        self.qcost         = num_forall + num_exists + num_literals
+        self.quantified_form = pretty_print_str(qclause)
 
 class PrimeOrbits():
     def __init__(self, options : QrmOptions) -> None:
@@ -102,7 +113,7 @@ class PrimeOrbits():
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
         key = make_key(values,protocol)
-        if not key in self._orbit_hash:
+        if not key in self._orbit_hash or not self.options.merge_suborbits:
             orbit = PrimeOrbit()
             self._orbit_hash[key] = orbit
             self.orbits.append(orbit)
@@ -142,19 +153,15 @@ class PrimeOrbits():
         from qinference import QInference
         QInference.setup(atoms, tran_sys)
         for orbit in self.orbits:
-            qInfr = QInference(orbit, options)
+            for prime in orbit.suborbit_repr_primes:
+                qInfr = QInference(prime, options)
+                qclauses = qInfr.infer_quantifier()
+                assert(len(qclauses) == 1)
+                qclause   = qclauses[0]
+                orbit.set_quantifier_inference_result(qclause)
             if orbit.num_suborbits > 1:
-                print('Cannot perform quantifier inference for suborbits')
-                # sys.exit(1)
-            qclauses = qInfr.infer_quantifier()
-            assert(len(qclauses) == 1)
-            qclause   = qclauses[0]
-            num_forall, num_exists, num_literals = count_quantifiers_and_literals(qclause)
-            orbit.num_forall    = num_forall
-            orbit.num_exists    = num_exists
-            orbit.num_literals  = num_literals
-            orbit.qcost         = num_forall + num_exists + num_literals
-            orbit.quantified_form = pretty_print_str(qclause)
+                vprint(self, 'Cannot infer suborbits', 3)
+                sys.exit(1) 
         vprint_banner(self, 'Quantified Prime Orbits', 3)
         vprint(self, str(self), 3)
 

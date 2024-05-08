@@ -1,7 +1,8 @@
+from typing import List
 from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, TRUE
 from frontend.utils import *
 from frontend.vmt_parser import TransitionSystem
-from prime import PrimeOrbit
+from prime import Prime 
 from util import QrmOptions
 from verbose import *
 
@@ -12,10 +13,10 @@ class QInference():
     atoms = []
     tran_sys : TransitionSystem
 
-    def __init__(self, orbit : PrimeOrbit, options : QrmOptions) -> None:
+    def __init__(self, prime: Prime, options : QrmOptions) -> None:
         self.options = options
         # original
-        self.orbit = orbit 
+        self.prime      = prime
         self.repr_state = TRUE()
         self.relations  = []
         self.vars       = []
@@ -51,7 +52,7 @@ class QInference():
         self.results = list()
 
     def set_repr_state(self):
-        values = self.orbit.repr_prime.values
+        values = self.prime.values
         literals = []
         for atom_id, atom in enumerate(self.atoms):
             val = values[atom_id]
@@ -63,7 +64,6 @@ class QInference():
                 assert(val == '-')
         self.repr_state =  And(literals) if len(literals) != 0 else TRUE()
         vprint_title(self, 'set_repr_state', 5)
-        vprint(self, f'orbit: {str(self.orbit)}', 5)
         vprint(self, f'repr_state: {pretty_print_str(self.repr_state)}', 5)
 
     def _get_used_qvars(self, sort):
@@ -242,7 +242,6 @@ class QInference():
         if len(self.qvars_set) != 0:  # NOTE ??????
             qstate = Exists(self.qvars_set, qstate)
         vprint_title(self, 'get_state_from_terms', 5)
-        vprint(self, f'orbit: {self.orbit}', 5)
         vprint(self, f'qstate: {pretty_print_str(qstate)}', 5)
         return qstate
 
@@ -340,7 +339,6 @@ class QInference():
         self._record_qvars_occurrence_in_terms(sort, qvars) 
         self._finalize_partition() 
         vprint_title(self, 'partition_qvars_in_terms', 5)
-        vprint(self, f'orbit: {self.orbit}', 5)
         vprint(self, f'qvars_partition: {self.qvars_partition.values()}', 5)
 
     def _collect_singles_multiples_in_partition(self):

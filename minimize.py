@@ -276,22 +276,32 @@ class Minimizer():
         self._backtrack()
         return 
 
-    def print_final_solution(self) -> None:
+    def print_final_solutions(self) -> None:
         vprint_banner(self, 'Final solutions')
         for (sid, solution) in enumerate(self.optimal_solutions):
             vprint(self, f'Solution {sid} : {solution} (length = {len(solution)})')
             costs = [self.orbits[i].qcost for i in solution]
             vprint(self, f'Total cost : {sum(costs)} (individual cost : {costs})')
             for id in solution: 
-                vprint(self, f'invariant [I{id}] {self.orbits[id].quantified_form}')
+                vprint(self, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}')
             vprint(self, '\n')
 
-    def solve(self) -> None:
+    def get_final_invariants(self) -> List[str]:
+        invariants = []
+        assert(len(self.optimal_solutions) >=1 )
+        solution = self.optimal_solutions[0]
+        for id in solution:
+            line = f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}'
+            invariants.append(line)
+        return invariants
+
+    def get_minimal_invariants(self) -> List[str]:
         if self.options.all_solutions:
             self._solve_all()
         else:
             self._solve_one()
-        self.print_final_solution()
+        self.print_final_solutions()
+        return self.get_final_invariants()
 
 
     
