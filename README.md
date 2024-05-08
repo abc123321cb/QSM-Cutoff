@@ -12,6 +12,7 @@ apt-get install python3-dev
 pip install python-sat[aiger,approxmc,cryptosat,pblib]
 pip install python-sat
 pip install z3-solver==4.8.9
+pip install pyyaml
 ```
 
 2. Install swig
