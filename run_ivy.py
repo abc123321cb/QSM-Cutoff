@@ -2,6 +2,7 @@ import os
 from typing import List
 from ivy import ivy_check
 from util import QrmOptions
+from verbose import *
 
 
 def run_ivy_check(invariants : List[str], options : QrmOptions):
@@ -14,4 +15,7 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
         ivy_file.write(line+'\n')
     ivy_file.close()
     ivy_args = ['ivy_check','complete=fo', ivy_name]
-    ivy_check.ivy_check(ivy_args)
+    result = ''
+    vprint_banner(options, 'Ivy Check')
+    result = ivy_check.ivy_check(ivy_args)
+    return result

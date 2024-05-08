@@ -7,7 +7,7 @@ from util import *
 from forward import *
 from transition import *
 from protocol import Protocol 
-from prime import PrimeOrbits
+from prime import PrimeOrbits, PrimeOrbit
 from minimize import Minimizer
 from run_ivy import *
 
@@ -79,13 +79,15 @@ def qrm(args):
         instances = get_instances_from_yaml(options.yaml_filename)
 
     for ivy_name, sizes in instances.items():
+        vprint_banner(options, f'{ivy_name}')
         options.ivy_filename  = ivy_name
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
         compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
+        check_result = False
         for size_str in sizes:
             # step1: generate reachability
-            options.size_str    = size_str
+            options.size_str        = size_str
             options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
             tran_sys  = get_transition_system(options.vmt_filename, options.size_str)
             reachblty = get_forward_reachability(tran_sys)
@@ -104,8 +106,17 @@ def qrm(args):
             invariants = minimizer.get_minimal_invariants()
 
             # step5: ivy_check
-            check_result = run_ivy_check(invariants, options)
-            print(check_result)
+            ivy_result = ''
+            ivy_result = run_ivy_check(invariants, options)
+            if ivy_result == 'OK':
+                check_result = True
+            else:
+                check_result = False
+        if check_result:
+            vprint(options, 'QRM RESULT: Pass')
+        else:
+            vprint(options, 'QRM RESULT: Fail')
+        
 
 if __name__ == '__main__':
     qrm(sys.argv[1:])
