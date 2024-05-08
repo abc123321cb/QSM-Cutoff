@@ -47,8 +47,11 @@ class Prime():
         return f'{str(literals)}'
 
     @staticmethod
-    def setup(protocol : Protocol) -> None:
+    def setup_atoms(protocol : Protocol) -> None:
         Prime._atoms    = protocol.atoms
+
+    def reset() -> None:
+        Prime.count = 0
 
 class PrimeOrbit():
     # static members
@@ -98,12 +101,18 @@ class PrimeOrbit():
         self.qcost         = num_forall + num_exists + num_literals
         self.quantified_form = pretty_print_str(qclause)
 
+    @staticmethod
+    def reset() -> None:
+        PrimeOrbit.count = 0
+
 class PrimeOrbits():
     def __init__(self, options : QrmOptions) -> None:
         self.orbits      : List[PrimeOrbit] = [] 
         self._formula    : DualRailNegation
         self._orbit_hash : Dict[str, PrimeOrbit] = {}
         self.options = options
+        Prime.reset()
+        PrimeOrbit.reset()
 
     def __str__(self) -> str:
         lines ='' 
@@ -118,9 +127,9 @@ class PrimeOrbits():
             self._orbit_hash[key] = orbit
             self.orbits.append(orbit)
         orbit = self._orbit_hash[key]
+        orbit.num_suborbits += 1
         block_clauses = []
         is_sub_repr = True
-        orbit.num_suborbits += 1
         for nvalues in protocol.all_permutations(values):
             clause = self._formula.block(nvalues) 
             block_clauses.append(clause)
@@ -131,7 +140,7 @@ class PrimeOrbits():
 
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
         # setup
-        Prime.setup(protocol)
+        Prime.setup_atoms(protocol)
         atom_num = protocol.atom_num
         # emumerate prime orbits
         self._formula = DualRailNegation(protocol)
@@ -145,8 +154,8 @@ class PrimeOrbits():
                     block_clauses  = self._make_orbit(values, protocol)
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
-        vprint_banner(self, 'Prime Orbits', 3)
-        vprint(self, str(self), 3)
+        vprint_banner(self.options, 'Prime Orbits', 3)
+        vprint(self.options, str(self), 3)
 
 
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
@@ -160,8 +169,8 @@ class PrimeOrbits():
                 qclause   = qclauses[0]
                 orbit.set_quantifier_inference_result(qclause)
             if orbit.num_suborbits > 1:
-                vprint(self, 'Cannot infer suborbits', 3)
+                vprint(self.options, 'Cannot infer suborbits', 3)
                 sys.exit(1) 
-        vprint_banner(self, 'Quantified Prime Orbits', 3)
-        vprint(self, str(self), 3)
+        vprint_banner(self.options, 'Quantified Prime Orbits', 3)
+        vprint(self.options, str(self), 3)
 
