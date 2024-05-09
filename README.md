@@ -64,5 +64,5 @@ If you don't have permission to `apt-get install` or `yum install`, try the foll
 - Download the source
 - `./configure --prefix=/home/USERNAME/opt`
 - `make` and then `make install`
-- set `PATH` variable to include `/home/USERNAME/opt/bin/`
+- `export PATH=/home/USERNAME/opt/bin/:$PATH` so that system looks up your path first
 
