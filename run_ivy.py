@@ -1,7 +1,7 @@
 import os
 import subprocess
 from typing import List
-from ivy import ivy_check
+from ivy import ivy_utils as iu
 from util import QrmOptions
 from verbose import *
 
@@ -17,8 +17,13 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
 
     vprint_banner(options, 'Ivy Check')
     ivy_args = ['ivy_check', ivy_name]
-    ivy_process = subprocess.run(ivy_args, check=True) 
-    if ivy_process.returncode != 0:
+    try:
+        ivy_process = subprocess.run(ivy_args, check=True) 
+    except subprocess.CalledProcessError:
+        vprint(options, f'IVY ABORT: ivy_check {ivy_name}')
         return False
-    else:
-        return True
+    except iu.IvyError:
+        vprint(options, f'IVY FAIL: ivy_check {ivy_name}')
+        return False
+    vprint(options, f'IVY PASS: ivy_check {ivy_name}')
+    return True
