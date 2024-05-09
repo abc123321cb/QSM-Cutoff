@@ -14,15 +14,16 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
     for line in invariants:
         ivy_file.write(line+'\n')
     ivy_file.close()
-    ivy_args = ['ivy_check', 'complete=fo', 'trace=true', ivy_name]
+    ivy_args = ['ivy_check', 'complete=fo', ivy_name]
     ivy_cmd  = ' '.join(ivy_args)
+    vprint(options, ivy_cmd)
     try:
-        ivy_process = subprocess.run(ivy_args, check=True) 
-    except subprocess.CalledProcessError:
-        vprint(options, f'IVY RESULT: {ivy_cmd} ABORT')
+        subprocess.run(ivy_args, check=True) 
+    except subprocess.CalledProcessError as error:
+        if error.returncode == 1:
+            vprint(options, f'IVY RESULT: FAIL ... exit with return code {error.returncode}')
+        else:
+            vprint(options, f'IVY RESULT: ABORT ... exit with return code {error.returncode}')
         return False
-    except iu.IvyError:
-        vprint(options, f'IVY RESULT: {ivy_cmd} FAIL')
-        return False
-    vprint(options, f'IVY RESULT: {ivy_cmd} PASS')
+    vprint(options, f'IVY RESULT: PASS')
     return True

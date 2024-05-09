@@ -245,6 +245,9 @@ class Protocol():
         if (self.options.writeR):
             R_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
             self._write_reachability(R_filename)
+
+        vprint_step_banner(self.options, 'FW RESULT: Forward Reachability', 3)
+        vprint(self.options, '\n'.join(self.lines), 3)
     
     def _get_renamed_element(self, permutation, sort_id, element) -> str:
         new_element = []
