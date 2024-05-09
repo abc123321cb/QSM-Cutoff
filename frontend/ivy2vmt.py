@@ -595,6 +595,8 @@ def compile_ivy2vmt(ivy_filename, vmt_filename):
             outFile = vmt_filename 
             print_module()
     print ('OK')
+    import sys
+    sys.stdout.flush()
 
 def main():
     global outFile

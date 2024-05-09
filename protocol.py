@@ -140,7 +140,7 @@ class Protocol():
             for e in elements:
                 sort_line += ' ' + pretty_print_str(e)
             self._read_sort(sort_line) 
-            if self.options.writeR:
+            if self.options.writeReach:
                 self.lines.append(sort_line)
 
     def _init_quorum_sort(self, tran_sys : TransitionSystem) -> None:
@@ -158,7 +158,7 @@ class Protocol():
                 qsort_line += ' ' + qstr_set 
                 self.qstr_map[qstr_idx]  = qstr_set
             self._read_quorum_sort(qsort_line)
-            if self.options.writeR:
+            if self.options.writeReach:
                 self.lines.append(qsort_line)
 
     def _init_predicate(self, tran_sys) -> None:
@@ -175,7 +175,7 @@ class Protocol():
             if len(param_list) > 0:
                 pred_line += ' ' + ' '.join(param_list)
             self._read_predicate(pred_line)
-            if self.options.writeR:
+            if self.options.writeReach:
                 self.lines.append(pred_line)
 
     def _init_atoms(self, reachblty) -> None:
@@ -203,13 +203,13 @@ class Protocol():
             atom = format_atom(predicate,new_args)
             atom_line +=  ' ' + atom
         self._read_atoms(atom_line)
-        if self.options.writeR:
+        if self.options.writeReach:
             self.lines.append(atom_line)
 
     def _init_reachable_states(self, reachblty) -> None:
         for state in reachblty.states:
             self._read_states(state)
-            if self.options.writeR:
+            if self.options.writeReach:
                 self.lines.append(state)
 
     def _write_reachability(self, filename) -> None:
@@ -242,7 +242,7 @@ class Protocol():
         self._init_sorts_permutations()
 
         # write protocols
-        if (self.options.writeR):
+        if (self.options.writeReach):
             R_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
             self._write_reachability(R_filename)
 

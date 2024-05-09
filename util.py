@@ -13,7 +13,9 @@ class QrmOptions():
         self.instance_suffix = ''
         self.mode  = Mode.ivy
         self.useMC = UseMC.sat
-        self.writeR          = False
+        self.writeReach      = False
+        self.writePrime      = False
+        self.writeQI         = False
         self.all_solutions   = False
         self.merge_suborbits = False
 

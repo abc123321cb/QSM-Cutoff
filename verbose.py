@@ -1,3 +1,4 @@
+import sys
 def vprint_instance_banner(options, line : str, level=0) -> None:
     if options.verbosity >= level:
         banner = '*'*(len(line)+20)
@@ -6,6 +7,7 @@ def vprint_instance_banner(options, line : str, level=0) -> None:
         print(f'\n\t{line}\n')
         print(banner)
         print()
+        sys.stdout.flush()
 
 def vprint_step_banner(options, line : str, level=0) -> None:
     if options.verbosity >= level:
@@ -15,6 +17,7 @@ def vprint_step_banner(options, line : str, level=0) -> None:
         print(f'\n\t{line}\n')
         print(banner)
         print()
+        sys.stdout.flush()
 
 def vprint_title(options, line : str, level=0) -> None:
     if options.verbosity >= level:

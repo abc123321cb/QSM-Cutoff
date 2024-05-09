@@ -3,6 +3,7 @@ from frontend.vmt_parser import TransitionSystem
 from frontend.fr import *
 from frontend.problem import *
 from frontend.utils import *
+import repycudd
 
 class Reachability():
     def __init__(self, atoms, states) -> None:
@@ -18,4 +19,6 @@ def get_forward_reachability(tran_sys : TransitionSystem) -> FR:
     fr_solver = FR(tran_sys)
     set_problem(fr_solver)
     (atoms, states) = fr_solver.solve_reachability()
-    return Reachability(atoms, states)
+    reach = Reachability(atoms, states)
+    fr_solver.reset() 
+    return reach

@@ -19,6 +19,7 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
     vprint(options, ivy_cmd)
     try:
         subprocess.run(ivy_args, check=True) 
+        sys.stdout.flush()
     except subprocess.CalledProcessError as error:
         if error.returncode == 1:
             vprint(options, f'IVY RESULT: FAIL ... exit with return code {error.returncode}')

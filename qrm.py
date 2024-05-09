@@ -25,7 +25,10 @@ def usage ():
     print('Options:')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
-    print('-r           write reachable states to FILE.ptcl (default: do not write)')
+    print('-r           write reachable states to FILE.ptcl (default: off)')
+    print('-p           write prime orbits to FILE.pis (default: off)')
+    print('-q           write quantified prime orbits to FILE.qpis (default: off)')
+    print('-w           write .ptcl, .pis, .qpis, equivalent to options -r -p -q (default: off)')
     print('-a           find all minimal solutions (default: off)')
     print('-m           merge suborbits (default: off)')
     print('-h           usage')
@@ -42,7 +45,7 @@ def file_exist(filename) -> bool:
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "i:s:y:v:rc:amh")
+        opts, args = getopt.getopt(args, "i:s:y:v:c:rpqwamh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -67,7 +70,15 @@ def qrm(args):
             else:
                 usage_and_exit()
         elif optc == '-r':
-            options.writeR = True
+            options.writeReach = True
+        elif optc == '-p':
+            options.writPrime = True
+        elif optc == '-q':
+            options.writeQI = True
+        elif optc == '-w':
+            options.writeReach = True
+            options.writePrime = True
+            options.writeQI    = True
         elif optc == '-a':
             options.all_solutions = True
         elif optc == '-m':
