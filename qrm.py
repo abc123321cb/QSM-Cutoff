@@ -1,3 +1,4 @@
+import faulthandler
 import sys
 import getopt
 from os import path
@@ -10,6 +11,8 @@ from protocol import Protocol
 from prime import PrimeOrbits, PrimeOrbit
 from minimize import Minimizer
 from run_ivy import *
+
+faulthandler.enable()
 
 def usage ():
     print('Usage:')
@@ -84,7 +87,7 @@ def qrm(args):
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
         compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
-        check_result = False
+        qrm_result = False
         for size_str in sizes:
             # step1: generate reachability
             options.size_str        = size_str
@@ -106,13 +109,9 @@ def qrm(args):
             invariants = minimizer.get_minimal_invariants()
 
             # step5: ivy_check
-            ivy_result = ''
             ivy_result = run_ivy_check(invariants, options)
-            if ivy_result == 'OK':
-                check_result = True
-            else:
-                check_result = False
-        if check_result:
+            qrm_result = ivy_result
+        if qrm_result:
             vprint(options, 'QRM RESULT: Pass')
         else:
             vprint(options, 'QRM RESULT: Fail')

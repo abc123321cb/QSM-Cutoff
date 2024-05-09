@@ -45,6 +45,7 @@ export PYTHONPATH=$PYTHONPATH:[path to repycudd.py]
 apt-get install cmake
 cd ivy
 python3 build_submodules.py
+python3 setup.py install
 python3 setup.py develop
 ```
 
