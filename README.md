@@ -13,6 +13,8 @@ pip install python-sat[aiger,approxmc,cryptosat,pblib]
 pip install python-sat
 pip install z3-solver==4.8.9
 pip install pyyaml
+pip install pytest
+pip install setuptools
 ```
 
 2. Install swig
