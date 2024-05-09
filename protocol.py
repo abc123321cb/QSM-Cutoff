@@ -1,6 +1,7 @@
 import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
+from pysmt.fnode import FNode
 from forward import Reachability
 from frontend.vmt_parser import TransitionSystem
 from frontend.utils import pretty_print_str
@@ -94,10 +95,14 @@ class Protocol():
         for (id,atom) in enumerate(atoms):
             predicate = '' 
             args = []
-            match = re.search(r'(\w+)\(([^)]+)\)', atom)
-            if match:
-                predicate = match.group(1)
-                args      = match.group(2).split(',')
+            match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
+            match_eq   = re.search(r'(\w+\.\w+=)\((\w+)\)', atom)
+            if match_pred:
+                predicate = match_pred.group(1)
+                args      = match_pred.group(2).split(',')
+            elif match_eq:
+                predicate = match_eq.group(1)
+                args      = match_eq.group(2).split(',')
             else:
                 predicate = atom.strip('( )')
             atom = format_atom(predicate,args)
@@ -159,7 +164,14 @@ class Protocol():
     def _init_predicate(self, tran_sys) -> None:
         for pred in tran_sys.orig._nexstates:
             pred_line = '.p ' + str(pred)
-            param_list =  [str(s) for s in pred.symbol_type()._param_types]
+            param_list = []
+            if not pred.symbol_type().is_function_type():
+                if not pred.is_literal(): # case: individual [pred]: sort
+                    param_list = [str(pred.symbol_type())]
+                    pred_line += '.operator='
+                # else: bool type, no parameters
+            else: # function
+                param_list =  [str(s) for s in pred.symbol_type()._param_types]
             if len(param_list) > 0:
                 pred_line += ' ' + ' '.join(param_list)
             self._read_predicate(pred_line)
@@ -172,10 +184,14 @@ class Protocol():
             predicate = '' 
             args     = []
             new_args = []
-            match = re.search(r'(\w+)\(([^)]+)\)', atom)
-            if match:
-                predicate = match.group(1)
-                args      = match.group(2).split(',')
+            match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
+            match_eq   = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
+            if match_pred:
+                predicate = match_pred.group(1)
+                args      = match_pred.group(2).split(',')
+            elif match_eq:
+                predicate = match_eq.group(1) + '.operator='
+                args      = match_eq.group(2).split(',')
             else:
                 predicate = atom.strip('( )')
 
