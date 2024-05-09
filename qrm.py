@@ -82,7 +82,7 @@ def qrm(args):
         instances = get_instances_from_yaml(options.yaml_filename)
 
     for ivy_name, sizes in instances.items():
-        vprint_banner(options, f'{ivy_name}')
+        vprint_instance_banner(options, f'QRM: {ivy_name}')
         options.ivy_filename  = ivy_name
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
@@ -90,6 +90,7 @@ def qrm(args):
         qrm_result = False
         for size_str in sizes:
             # step1: generate reachability
+            vprint_step_banner(options, 'FW: Forward Reachability')
             options.size_str        = size_str
             options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
             tran_sys  = get_transition_system(options.vmt_filename, options.size_str)
@@ -98,19 +99,25 @@ def qrm(args):
             protocol.initialize(tran_sys, reachblty)
 
             # step2: generate prime orbits
+            vprint_step_banner(options, 'PRIME: Prime Orbit Generatation')
             prime_orbits = PrimeOrbits(options) 
             prime_orbits.symmetry_aware_enumerate(protocol)               
 
             # step3: quantifier inference
+            vprint_step_banner(options, 'QI: Quantifier Inference')
             prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
 
             # step4: minimization
+            vprint_step_banner(options, 'MIN: Minimization')
             minimizer  = Minimizer(prime_orbits.orbits, options)
             invariants = minimizer.get_minimal_invariants()
 
             # step5: ivy_check
+            vprint_step_banner(options, 'IVY: Ivy Check')
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
+
+        vprint_instance_banner(options, f'QRM: {ivy_name}')
         if qrm_result:
             vprint(options, 'QRM RESULT: Pass')
         else:

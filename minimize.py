@@ -277,14 +277,14 @@ class Minimizer():
         return 
 
     def print_final_solutions(self) -> None:
-        vprint_banner(self.options, 'Minimized Invariants')
+        vprint_step_banner(self.options, 'MIN RESULT: Minimized Invariants', 3)
         for (sid, solution) in enumerate(self.optimal_solutions):
-            vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})')
+            vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})', 3)
             costs = [self.orbits[i].qcost for i in solution]
-            vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})')
+            vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})', 3)
             for id in solution: 
-                vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}')
-            vprint(self.options, '\n')
+                vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
+            vprint(self.options, '\n', 3)
 
     def get_final_invariants(self) -> List[str]:
         invariants = []

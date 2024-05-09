@@ -154,7 +154,7 @@ class PrimeOrbits():
                     block_clauses  = self._make_orbit(values, protocol)
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
-        vprint_banner(self.options, 'Prime Orbits', 3)
+        vprint_step_banner(self.options, 'PRIME RESULT: Prime Orbits', 3)
         vprint(self.options, str(self), 3)
 
 
@@ -171,6 +171,6 @@ class PrimeOrbits():
             if orbit.num_suborbits > 1:
                 vprint(self.options, 'Cannot infer suborbits', 3)
                 sys.exit(1) 
-        vprint_banner(self.options, 'Quantified Prime Orbits', 3)
+        vprint_step_banner(self.options, 'QI RESULT: Quantified Prime Orbits', 3)
         vprint(self.options, str(self), 3)
 
