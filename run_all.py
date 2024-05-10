@@ -32,6 +32,7 @@ def file_exist(filename) -> bool:
     return True
 
 def run_all(yaml_name, args):
+    sys_args = args.copy()
     try:
         opts, args = getopt.getopt(args, "v:c:rpqwamh")
     except getopt.GetoptError as err:
@@ -73,7 +74,7 @@ def run_all(yaml_name, args):
         vprint_instance_banner(options, f'QRM: {ivy_name}')
         qrm_result = False
         for size_str in sizes:
-            qrm_args = ['python3', 'qrm.py', '-i', ivy_name, '-s', size_str, '-d'] + args
+            qrm_args = ['python3', 'qrm.py', '-i', ivy_name, '-s', size_str, '-d'] + sys_args
             ivy_result = True 
             try:
                 subprocess.run(qrm_args, check=True) 
