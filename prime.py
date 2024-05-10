@@ -110,6 +110,7 @@ class PrimeOrbits():
         self.orbits      : List[PrimeOrbit] = [] 
         self._formula    : DualRailNegation
         self._orbit_hash : Dict[str, PrimeOrbit] = {}
+        self._has_sub_orbit = False
         self.options = options
         Prime.reset()
         PrimeOrbit.reset()
@@ -127,6 +128,8 @@ class PrimeOrbits():
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
         key = make_key(values,protocol)
+        if key in self._orbit_hash:
+            self._has_sub_orbit = True
         if not key in self._orbit_hash or not self.options.merge_suborbits:
             orbit = PrimeOrbit()
             self._orbit_hash[key] = orbit
@@ -165,6 +168,7 @@ class PrimeOrbits():
             self._write_primes(prime_filename)
         vprint_step_banner(self.options, 'PRIME RESULT: Prime Orbits', 3)
         vprint(self.options, str(self), 3)
+        vprint(self.options, f'SUB ORBIT: {self._has_sub_orbit}')
 
 
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
@@ -178,7 +182,7 @@ class PrimeOrbits():
                 qclause   = qclauses[0]
                 orbit.set_quantifier_inference_result(qclause)
             if orbit.num_suborbits > 1:
-                vprint(self.options, 'Cannot infer suborbits', 3)
+                vprint(self.options, 'QI ERROR: Cannot infer suborbits', 3)
                 sys.exit(1) 
         # output result
         if self.options.writeQI:
