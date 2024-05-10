@@ -13,6 +13,9 @@ quorum_delim = '-'
 def format_atom(predicate: str, args: List[str]) -> str:
     return predicate + '(' + ','.join(args) + ')'
 
+def format_eq_atom(predicate: str, args: List[str]) -> str:
+    return  '(' + predicate + ','.join(args) + ')'
+
 def split_head_tail(line: str, head : int, delim=None) -> Tuple [str, List[str]]:
     lst = line.split(delim)
     return (lst[head], lst[head+1:])
@@ -96,16 +99,19 @@ class Protocol():
             predicate = '' 
             args = []
             match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            match_eq   = re.search(r'(\w+\.\w+=)\((\w+)\)', atom)
+            match_eq   = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
             if match_pred:
                 predicate = match_pred.group(1)
                 args      = match_pred.group(2).split(',')
             elif match_eq:
-                predicate = match_eq.group(1)
+                predicate = match_eq.group(1) + '='
                 args      = match_eq.group(2).split(',')
             else:
                 predicate = atom.strip('( )')
-            atom = format_atom(predicate,args)
+            if match_eq:
+                atom = format_eq_atom(predicate, args)
+            else:
+                atom = format_atom(predicate, args)
             self.atoms.append(atom)
             self.atom_Name2Id[atom]  = id
             signature = [predicate] + args
@@ -168,7 +174,7 @@ class Protocol():
             if not pred.symbol_type().is_function_type():
                 if not pred.is_literal(): # case: individual [pred]: sort
                     param_list = [str(pred.symbol_type())]
-                    pred_line += '.operator='
+                    pred_line += '='
                 # else: bool type, no parameters
             else: # function
                 param_list =  [str(s) for s in pred.symbol_type()._param_types]
@@ -190,7 +196,7 @@ class Protocol():
                 predicate = match_pred.group(1)
                 args      = match_pred.group(2).split(',')
             elif match_eq:
-                predicate = match_eq.group(1) + '.operator='
+                predicate = match_eq.group(1) + '='
                 args      = match_eq.group(2).split(',')
             else:
                 predicate = atom.strip('( )')
@@ -200,7 +206,10 @@ class Protocol():
                     new_args.append(self.qstr_map[arg])
                 else:
                     new_args.append(arg)
-            atom = format_atom(predicate,new_args)
+            if match_eq:
+                atom = format_eq_atom(predicate, new_args)
+            else:
+                atom = format_atom(predicate,new_args)
             atom_line +=  ' ' + atom
         self._read_atoms(atom_line)
         if self.options.writeReach:
@@ -279,7 +288,10 @@ class Protocol():
                 sort_id = self.sort_Name2Id[sort]
                 narg = self._get_renamed_element(permutation, sort_id, [arg])
             new_args.append(narg)       
-        return format_atom(predicate, new_args)
+        if predicate.endswith('='):
+            return format_eq_atom(predicate, new_args)
+        else: 
+            return format_atom(predicate, new_args)
 
     def _permute_values(self, permutation, values : List[str]) -> List[str]:
         # values is a list of '0', '1', '-'

@@ -254,20 +254,26 @@ class QInference():
         return constrained_qstate
 
     def can_infer_univ(self):
-        return  ( (QInference.tran_sys.gen == 'univ')
-                  or (len(self.full_occur_sorts) == 0)
-                  or (len(self.relations) <= 1)
-                  or (len(self.qterms) < min_size) 
-                )
+        can_infer  =  ( (QInference.tran_sys.gen == 'univ')
+                       or (len(self.full_occur_sorts) == 0)
+                       or (len(self.relations) <= 1)    # FIXME: ?????? 
+                       or (len(self.qterms) < min_size) 
+                      )
+        vprint_title(self.options, 'can_infer_univ', 5)
+        vprint(self.options, str(can_infer), 5)
+        return can_infer
 
     def infer_univ(self):
         qstate = self.conjunct_qstate_with_neq_constraints()
         self.results.append((qstate, 'univ'))
+        vprint_title(self.options, 'infer_univ', 5)
+        vprint(self.options, pretty_print_str(qstate), 5)
 
     def init_infer(self):
+        vprint_title(self.options, 'init_infer', 5)
         self.infr_qvars_set = set()
         self.infr_terms     = self.qterms.copy()
-
+ 
     def _create_normalized_qvar(self, sort):
         return Symbol('V:' +str(sort), sort)
 
@@ -479,13 +485,14 @@ class QInference():
                 single_qvars, multi_qvars, first_mult_qvar)
 
     def infer_fully_occur_sort(self, sort, qvars):
+        vprint_title(self.options, 'infer_fully_occur_sort', 5)
         self._partition_qvars_in_terms(sort, qvars) # pi(\psi, qvars)
         self._collect_singles_multiples_in_partition()
         if self.num_class == 1:  # single class partition 
             self._infer_exists(sort, qvars)
         elif ( self.num_class == (self.num_sing_class + self.num_mult_class)
                and self.num_mult_class == 1
-               and self.num_sing_class == 1 # NOTE ??????
+               and self.num_sing_class == 1 # FIXME ??????
              ): 
             self._infer_forall_exists(sort, qvars)
 

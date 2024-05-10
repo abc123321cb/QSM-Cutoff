@@ -87,8 +87,8 @@ Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' 
     - print debug info
 #### Experient Options
 ```
-python3 run_all.py [YAML] -v 1 -w       > log    # write .ptcl, .pis, .qpis, .ivy
-python3 run_all.py [YAML] -v 4 -w -a    > log    # find all solutions, don't merge suborbits
-python3 run_all.py [YAML] -v 4 -w -a -m > log    # find all solutions, merge suborbits
+python3 run_all.py [YAML] -v 1 -w       -l log    # write .ptcl, .pis, .qpis, .ivy
+python3 run_all.py [YAML] -v 4 -w -a    -l log    # find all solutions, don't merge suborbits
+python3 run_all.py [YAML] -v 4 -w -a -m -l log    # find all solutions, merge suborbits
 ```
 

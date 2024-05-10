@@ -26,6 +26,7 @@ def usage ():
     print('')
     print('Options:')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
+    print('-l LOG       write verbose info to LOG (default: off)')
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
     print('-r           write reachable states to FILE.ptcl (default: off)')
     print('-p           write prime orbits to FILE.pis (default: off)')
@@ -59,7 +60,7 @@ def get_time(options, time_start=None, time_stamp=None):
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "i:s:y:v:c:rpqwamhd")
+        opts, args = getopt.getopt(args, "i:s:y:v:l:c:rpqwamhd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -69,16 +70,22 @@ def qrm(args):
     for (optc, optv) in opts:
         if optc == '-i':
             options.mode = Mode.ivy
-            options.ivy_filename = optv
+            if file_exist(optv):
+                options.ivy_filename = optv
         elif optc == '-s':
             options.size_str = optv 
         elif optc == '-y':
             options.mode = Mode.yaml
-            options.yaml_filename = optv
+            if file_exist(optv):
+                options.yaml_filename = optv
         elif optc == '-v':
             options.verbosity = int(optv)
             if options.verbosity < 0 or options.verbosity > 5:
                 usage_and_exit()
+        elif optc == '-l':
+            options.writeLog   = True
+            options.log_name   = optv
+            options.open_log()
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
                 options.useMC = optv
@@ -87,9 +94,9 @@ def qrm(args):
         elif optc == '-r':
             options.writeReach = True
         elif optc == '-p':
-            options.writPrime = True
+            options.writPrime  = True
         elif optc == '-q':
-            options.writeQI = True
+            options.writeQI    = True
         elif optc == '-w':
             options.writeReach = True
             options.writePrime = True
@@ -117,6 +124,7 @@ def qrm(args):
         options.ivy_filename  = ivy_name
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
+        # step 0: compile ivy
         compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
         qrm_result = False
         time_stamp = get_time(options, time_start, time_start)

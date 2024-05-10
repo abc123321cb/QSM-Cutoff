@@ -16,8 +16,19 @@ class QrmOptions():
         self.writeReach      = False
         self.writePrime      = False
         self.writeQI         = False
+        self.writeLog        = False
+        self.log_name        = ''
+        self.log_fout        = None
         self.all_solutions   = False
         self.merge_suborbits = False
+
+    def open_log(self) -> None:
+        assert(self.writeLog)
+        self.log_fout = open(self.log_name, "a")
+
+    def write_log(self, lines) -> None:
+        self.log_fout.write(lines)
+        self.log_fout.flush()
 
 def get_instances_from_yaml(yaml_name):
     import yaml
