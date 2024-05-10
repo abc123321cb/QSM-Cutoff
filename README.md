@@ -37,7 +37,7 @@ make libso
 cd..
 ```
 
-change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X or add the compilation flag `-I[PATH TO Python.h]`
+change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X and add the compilation flag `-I[PATH TO Python.h]`
 ```
 make
 export PYTHONPATH=$PYTHONPATH:[path to repycudd.py]
