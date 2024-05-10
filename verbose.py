@@ -1,6 +1,6 @@
 import sys
-def vprint_instance_banner(options, line : str, level=0) -> None:
-    if options.verbosity >= level:
+def vprint_instance_banner(options, line : str, level=0, disable=False) -> None:
+    if options.verbosity >= level and not disable:
         banner = '*'*(len(line)+20)
         print()
         print(banner)
@@ -9,8 +9,8 @@ def vprint_instance_banner(options, line : str, level=0) -> None:
         print()
         sys.stdout.flush()
 
-def vprint_step_banner(options, line : str, level=0) -> None:
-    if options.verbosity >= level:
+def vprint_step_banner(options, line : str, level=0, disable=False) -> None:
+    if options.verbosity >= level and not disable:
         banner = '='*(len(line)+15)
         print()
         print(banner)
@@ -19,11 +19,11 @@ def vprint_step_banner(options, line : str, level=0) -> None:
         print()
         sys.stdout.flush()
 
-def vprint_title(options, line : str, level=0) -> None:
-    if options.verbosity >= level:
+def vprint_title(options, line : str, level=0, disable=False) -> None:
+    if options.verbosity >= level and not disable:
         bullet = '-'*10
         print(f'\n{bullet} {line} {bullet}\n')
 
-def vprint(options, line : str, level=0) -> None:
-    if options.verbosity >= level:
+def vprint(options, line : str, level=0, disable=False) -> None:
+    if options.verbosity >= level and not disable:
         print(line)

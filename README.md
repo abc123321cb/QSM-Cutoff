@@ -56,11 +56,11 @@ python3 setup.py develop
 python3 setup.py install
 ```
 ## Usage
-To parse an ivy file, perform forward reachability, and enumerate prime orbits
 ```=python3
 python3 qrm.py -i [IVY FILE] -s [sort1=size1,sort2=size2 ...]
-python3 qrm.py -y [YAML FILE]
+python3 run_all.py [YAML FILE]
 ```
+Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' as a work around.
 
 ## Issues with Installation
 If you don't have permission to `apt-get install` or `yum install`, try the following steps:

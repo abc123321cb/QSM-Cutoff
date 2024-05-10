@@ -45,12 +45,13 @@ def file_exist(filename) -> bool:
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "i:s:y:v:c:rpqwamh")
+        opts, args = getopt.getopt(args, "i:s:y:v:c:rpqwamhd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
 
     options = QrmOptions()
+    disable_print = False
     for (optc, optv) in opts:
         if optc == '-i':
             options.mode = Mode.ivy
@@ -83,6 +84,8 @@ def qrm(args):
             options.all_solutions = True
         elif optc == '-m':
             options.merge_suborbits = True
+        elif optc == '-d':
+            disable_print = True
         else:
             usage_and_exit()
 
@@ -92,8 +95,9 @@ def qrm(args):
     else:
         instances = get_instances_from_yaml(options.yaml_filename)
 
+    pass_count = 0
     for ivy_name, sizes in instances.items():
-        vprint_instance_banner(options, f'QRM: {ivy_name}')
+        vprint_instance_banner(options, f'QRM: {ivy_name}', 0, disable_print)
         options.ivy_filename  = ivy_name
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
@@ -128,12 +132,15 @@ def qrm(args):
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
 
-        vprint_instance_banner(options, f'QRM: {ivy_name}')
+        vprint_instance_banner(options, f'QRM: {ivy_name}', 0, disable_print)
         if qrm_result:
-            vprint(options, 'QRM RESULT: Pass')
+            vprint(options, 'QRM RESULT: Pass', 0, disable_print)
+            pass_count += 1
         else:
-            vprint(options, 'QRM RESULT: Fail')
-        
+            vprint(options, 'QRM RESULT: Fail', 0, disable_print)
+
+    if pass_count != len(instances):
+        sys.exit(1)
 
 if __name__ == '__main__':
     qrm(sys.argv[1:])
