@@ -55,17 +55,40 @@ python3 setup.py develop
 ```
 python3 setup.py install
 ```
+### Issues with Installation
+If you don't have permission to `apt-get install` or `yum install`, try the following steps:
+- Download the source
+- `./configure --prefix=/home/USERNAME/opt`
+- `make` and then `make install`
+- `export PATH=/home/USERNAME/opt/bin/:$PATH` so that system looks up your path first
+
 ## Usage
 ```=python3
 python3 qrm.py -i [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 python3 run_all.py [YAML FILE]
 ```
 Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' as a work around.
-
-## Issues with Installation
-If you don't have permission to `apt-get install` or `yum install`, try the following steps:
-- Download the source
-- `./configure --prefix=/home/USERNAME/opt`
-- `make` and then `make install`
-- `export PATH=/home/USERNAME/opt/bin/:$PATH` so that system looks up your path first
+### Usage for Options
+#### Verbosity
+- default: only prints `ivy_check` result for each size, and the final qrm result
+- `-v 1`: prints elapsed time
+- `-v 2`: 
+    - print number of variables, reachable states, orbits, suborbits, primes, minimal solutions, etc
+    - number of suborbits is meaningful only if using option `-m`
+    - number of minimal solutions is meaningful only if using option `-a`
+- `-v 3`:
+    - prints results of forward reachability
+    - prints results of prime orbit generation
+    - prints results of quantifier inference
+    - prints results of minimization (prints all solutions if using option `-a`)
+- `-v 4`:
+    - prints quantifier inference result for representative prime of each suborbit
+- `-v 5`: 
+    - print debug info
+#### Experient Options
+```
+python3 run_all.py [YAML] -v 1 -w       > log    # write .ptcl, .pis, .qpis, .ivy
+python3 run_all.py [YAML] -v 4 -w -a    > log    # find all solutions, don't merge suborbits
+python3 run_all.py [YAML] -v 4 -w -a -m > log    # find all solutions, merge suborbits
+```
 

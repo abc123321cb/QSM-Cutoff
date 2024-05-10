@@ -1,6 +1,8 @@
 import faulthandler
 import sys
 import getopt
+import datetime
+import time
 from os import path
 from frontend.ivy2vmt import compile_ivy2vmt
 from verbose import *
@@ -42,6 +44,18 @@ def file_exist(filename) -> bool:
         print(f'Cannot find file: {filename}')
         usage_and_exit ()
     return True
+
+def get_time(options, time_start=None, time_stamp=None):
+    new_time_stamp  = datetime.datetime.now()
+    if time_start != None and time_stamp != None:
+        delta   = new_time_stamp - time_start 
+        seconds = delta.seconds + 1e-6 * delta.microseconds
+        vprint(options, "[QRM NOTE]: Time elapsed since start: %.3f seconds" % (seconds), 1)
+        delta   = new_time_stamp - time_stamp 
+        seconds = delta.seconds + 1e-6 * delta.microseconds
+        vprint(options, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 1)
+    return new_time_stamp
+    
 
 def qrm(args):
     try:
@@ -97,47 +111,55 @@ def qrm(args):
 
     pass_count = 0
     for ivy_name, sizes in instances.items():
-        vprint_instance_banner(options, f'QRM: {ivy_name}', 0, disable_print)
+        time_start = get_time(options)
+        vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, disable_print)
+        vprint_step_banner(options, '[CPL]: Compile Ivy')
         options.ivy_filename  = ivy_name
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
         compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
         qrm_result = False
+        time_stamp = get_time(options, time_start, time_start)
         for size_str in sizes:
             # step1: generate reachability
-            vprint_step_banner(options, 'FW: Forward Reachability')
+            vprint_step_banner(options, '[FW]: Forward Reachability')
             options.size_str        = size_str
             options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
             tran_sys  = get_transition_system(options.vmt_filename, options.size_str)
             reachblty = get_forward_reachability(tran_sys)
             protocol  = Protocol(options)
             protocol.initialize(tran_sys, reachblty)
+            time_stamp = get_time(options, time_start, time_stamp)
 
             # step2: generate prime orbits
-            vprint_step_banner(options, 'PRIME: Prime Orbit Generatation')
+            vprint_step_banner(options, '[PRIME]: Prime Orbit Generatation')
             prime_orbits = PrimeOrbits(options) 
             prime_orbits.symmetry_aware_enumerate(protocol)               
+            time_stamp = get_time(options, time_start, time_stamp)
 
             # step3: quantifier inference
-            vprint_step_banner(options, 'QI: Quantifier Inference')
+            vprint_step_banner(options, '[QI]: Quantifier Inference')
             prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
+            time_stamp = get_time(options, time_start, time_stamp)
 
             # step4: minimization
-            vprint_step_banner(options, 'MIN: Minimization')
+            vprint_step_banner(options, '[MIN]: Minimization')
             minimizer  = Minimizer(prime_orbits.orbits, options)
             invariants = minimizer.get_minimal_invariants()
+            time_stamp = get_time(options, time_start, time_stamp)
 
             # step5: ivy_check
-            vprint_step_banner(options, 'IVY: Ivy Check')
+            vprint_step_banner(options, '[IVY]: Ivy Check')
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
+            time_stamp = get_time(options, time_start, time_stamp)
 
-        vprint_instance_banner(options, f'QRM: {ivy_name}', 0, disable_print)
+        vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, disable_print)
         if qrm_result:
-            vprint(options, 'QRM RESULT: Pass', 0, disable_print)
+            vprint(options, '[QRM RESULT]: Pass', 0, disable_print)
             pass_count += 1
         else:
-            vprint(options, 'QRM RESULT: Fail', 0, disable_print)
+            vprint(options, '[QRM RESULT]: Fail', 0, disable_print)
 
     if pass_count != len(instances):
         sys.exit(1)

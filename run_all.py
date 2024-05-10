@@ -71,7 +71,7 @@ def run_all(yaml_name, args):
 
     instances = get_instances_from_yaml(options.yaml_filename)
     for ivy_name, sizes in instances.items():
-        vprint_instance_banner(options, f'QRM: {ivy_name}')
+        vprint_instance_banner(options, f'[QRM]: {ivy_name}')
         qrm_result = False
         for size_str in sizes:
             qrm_args = ['python3', 'qrm.py', '-i', ivy_name, '-s', size_str, '-d'] + sys_args
@@ -83,11 +83,11 @@ def run_all(yaml_name, args):
                 ivy_result = False
             qrm_result = ivy_result
         
-        vprint_instance_banner(options, f'QRM: {ivy_name}')
+        vprint_instance_banner(options, f'[QRM]: {ivy_name}')
         if qrm_result:
-            vprint(options, 'QRM RESULT: Pass')
+            vprint(options, '[QRM RESULT]: Pass')
         else:
-            vprint(options, 'QRM RESULT: Fail')
+            vprint(options, '[QRM RESULT]: Fail')
 
 if __name__ == '__main__':
     run_all(sys.argv[1], sys.argv[2:])

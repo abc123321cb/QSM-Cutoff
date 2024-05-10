@@ -110,7 +110,7 @@ class PrimeOrbits():
         self.orbits      : List[PrimeOrbit] = [] 
         self._formula    : DualRailNegation
         self._orbit_hash : Dict[str, PrimeOrbit] = {}
-        self._has_sub_orbit = False
+        self._sub_orbit_count = 0 
         self.options = options
         Prime.reset()
         PrimeOrbit.reset()
@@ -129,7 +129,7 @@ class PrimeOrbits():
     def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
         key = make_key(values,protocol)
         if key in self._orbit_hash:
-            self._has_sub_orbit = True
+            self._sub_orbit_count += 1
         if not key in self._orbit_hash or not self.options.merge_suborbits:
             orbit = PrimeOrbit()
             self._orbit_hash[key] = orbit
@@ -166,28 +166,35 @@ class PrimeOrbits():
         if self.options.writePrime:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pis'
             self._write_primes(prime_filename)
-        vprint_step_banner(self.options, 'PRIME RESULT: Prime Orbits', 3)
+        vprint_step_banner(self.options, '[PRIME RESULT]: Prime Orbits', 3)
         vprint(self.options, str(self), 3)
-        vprint(self.options, f'SUB ORBIT: {self._has_sub_orbit}')
+        vprint(self.options, f'[PRIME NOTE]: number of orbits: {PrimeOrbit.count}', 2)
+        vprint(self.options, f'[PRIME NOTE]: number of suborbits: {self._sub_orbit_count}', 2)
+        vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
 
 
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
         from qinference import QInference
         QInference.setup(atoms, tran_sys)
+        vprint_title(self.options, '[QI NOTE]: QI for each representative prime', 4)
         for orbit in self.orbits:
+            vprint(self.options, str(orbit), 4)
             for prime in orbit.suborbit_repr_primes:
                 qInfr = QInference(prime, options)
                 qclauses = qInfr.infer_quantifier()
                 assert(len(qclauses) == 1)
                 qclause   = qclauses[0]
                 orbit.set_quantifier_inference_result(qclause)
+                vprint(self.options, str(prime), 4)
+                vprint(self.options, pretty_print_str(qclause), 4)
+                vprint(self.options, '', 4)
             if orbit.num_suborbits > 1:
-                vprint(self.options, 'QI ERROR: Cannot infer suborbits', 3)
+                vprint(self.options, '[QI ERROR]: Cannot infer suborbits')
                 sys.exit(1) 
         # output result
         if self.options.writeQI:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
             self._write_primes(prime_filename)
-        vprint_step_banner(self.options, 'QI RESULT: Quantified Prime Orbits', 3)
+        vprint_step_banner(self.options, '[QI RESULT]: Quantified Prime Orbits', 3)
         vprint(self.options, str(self), 3)
 
