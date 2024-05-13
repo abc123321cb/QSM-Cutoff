@@ -24,7 +24,7 @@ class QrmOptions():
 
     def open_log(self) -> None:
         assert(self.writeLog)
-        self.log_fout = open(self.log_name, "a")
+        self.log_fout = open(self.log_name, 'a')
 
     def write_log(self, lines) -> None:
         self.log_fout.write(lines)

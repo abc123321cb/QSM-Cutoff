@@ -26,7 +26,7 @@ def usage ():
     print('')
     print('Options:')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
-    print('-l LOG       write verbose info to LOG (default: off)')
+    print('-l LOG       append verbose info to LOG (default: off)')
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
     print('-r           write reachable states to FILE.ptcl (default: off)')
     print('-p           write prime orbits to FILE.pis (default: off)')
@@ -45,6 +45,10 @@ def file_exist(filename) -> bool:
         print(f'Cannot find file: {filename}')
         usage_and_exit ()
     return True
+
+def rm_log_file_if_exist(filename) -> bool:
+    if path.isfile(filename):
+        os.system(f'rm {filename}')
 
 def get_time(options, time_start=None, time_stamp=None):
     new_time_stamp  = datetime.datetime.now()
@@ -84,7 +88,7 @@ def qrm(args):
                 usage_and_exit()
         elif optc == '-l':
             options.writeLog   = True
-            options.log_name   = optv
+            options.log_name   = optv 
             options.open_log()
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
@@ -102,11 +106,11 @@ def qrm(args):
             options.writePrime = True
             options.writeQI    = True
         elif optc == '-a':
-            options.all_solutions = True
+            options.all_solutions   = True
         elif optc == '-m':
             options.merge_suborbits = True
-        elif optc == '-d':
-            disable_print = True
+        elif optc == '-d': # not for user
+            disable_print      = True
         else:
             usage_and_exit()
 

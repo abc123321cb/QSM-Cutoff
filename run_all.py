@@ -32,6 +32,10 @@ def file_exist(filename) -> bool:
         usage_and_exit ()
     return True
 
+def rm_log_file_if_exist(filename) -> bool:
+    if path.isfile(filename):
+        os.system(f'rm {filename}')
+
 def run_all(yaml_name, args):
     sys_args = args.copy()
     try:
@@ -50,7 +54,8 @@ def run_all(yaml_name, args):
                 usage_and_exit()
         elif optc == '-l':
             options.writeLog   = True
-            options.log_name   = optv
+            options.log_name   = optv 
+            rm_log_file_if_exist(options.log_name)
             options.open_log()
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
