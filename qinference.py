@@ -610,8 +610,10 @@ class QInference():
             qstate = And(And(pre_terms), qstate)
         if len(self.qvars_set) != 0: 
             qstate = Exists(self.qvars_set, qstate)
-        qtype = 'exists'
-        if (len(self.qvars_set) != 0):
+        qtype = 'forall'
+        if len(self.qvars_set) == 0 and len(self.infr_qvars_set) != 0:
+            qtype = 'exists'
+        if len(self.qvars_set) != 0 and len(self.infr_qvars_set) != 0:
             qtype = 'forall_exists'
         self.results.append((qstate, qtype))
 
