@@ -174,23 +174,21 @@ class PrimeOrbits():
 
 
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
-        from qinference import QInference
+        from qinference import QInference, merge_qclauses 
         QInference.setup(atoms, tran_sys)
-        vprint_title(self.options, '[QI NOTE]: QI for each representative prime', 4)
+        vprint_title(self.options, 'quantifier_inference', 5)
         for orbit in self.orbits:
-            vprint(self.options, str(orbit), 4)
-            for prime in orbit.suborbit_repr_primes:
+            vprint(self.options, str(orbit), 5)
+            sub_results = []
+            for prime in orbit.suborbit_repr_primes: 
                 qInfr = QInference(prime, options)
-                qclauses = qInfr.infer_quantifier()
-                assert(len(qclauses) == 1)
-                qclause   = qclauses[0]
-                orbit.set_quantifier_inference_result(qclause)
-                vprint(self.options, str(prime), 4)
-                vprint(self.options, pretty_print_str(qclause), 4)
-                vprint(self.options, '', 4)
-            if orbit.num_suborbits > 1:
-                vprint(self.options, '[QI ERROR]: Cannot infer suborbits')
-                sys.exit(1) 
+                results = qInfr.infer_quantifier()
+                assert(len(results) == 1)
+                sub_result  = results[0]
+                sub_results.append(sub_result)
+            qclause = merge_qclauses(self.options, tran_sys, sub_results)
+            orbit.set_quantifier_inference_result(qclause)
+
         # output result
         if self.options.writeQI:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'

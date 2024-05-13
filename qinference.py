@@ -1,5 +1,5 @@
 from typing import List
-from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, TRUE
+from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
 from frontend.utils import *
 from frontend.vmt_parser import TransitionSystem
 from prime import Prime 
@@ -50,6 +50,8 @@ class QInference():
         self.eqMap  = dict()
         # result
         self.results = list()
+        vprint_title(self.options, 'QInference', 5)
+        vprint(self.options, f'prime: {str(self.prime)}', 5)
 
     def set_repr_state(self):
         values = self.prime.values
@@ -78,6 +80,8 @@ class QInference():
         return qvar
 
     def record_sort_occurrence_in_vars(self):
+        # relabel each var into qvar with index being order of occurrence
+        # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
         vprint_title(self.options, 'record_sort_occurrence_in_vars' , 5)
         for var in sorted(self.vars, key=str):
             sort = var.constant_type()
@@ -114,7 +118,6 @@ class QInference():
             self.neq_constraints[sort] = []
             for i in range(len(qvars) - 1):
                 for j in range(i+1, len(qvars)):
-                    # if i!=j: NOTE ????????
                     neq = Not(EqualsOrIff(qvars[i], qvars[j]))
                     self.neq_constraints[sort].append(neq)
                     vprint(self.options, pretty_print_str(neq), 5)
@@ -143,7 +146,7 @@ class QInference():
 
     def set_qstate(self):
         self.qstate = self.repr_state 
-        if self.qstate.is_exists(): # NOTE ????
+        if self.qstate.is_exists(): 
             self._instantiate_qstate()
         self.qstate = self.qstate.simple_substitute(self.var2qvar)
         self.qterms = flatten_cube(self.qstate)
@@ -161,7 +164,7 @@ class QInference():
     def _is_propagatable(self, eq_term):
         lhs, rhs = self._split_eq(eq_term)
         if ( (rhs.is_symbol)     and 
-             (rhs in self.qvars_set) and # NOTE (common.gopts.const > 1)?????
+             (rhs in self.qvars_set) and 
              (not lhs.is_function_application()) ):
             rhst = rhs.symbol_type()
             if rhst.is_enum_type() and rhs not in self.eqMap:
@@ -230,23 +233,33 @@ class QInference():
         self.full_occur_sorts = new_full_occur_sorts
 
     def propagate_eq_constraints(self):
+        vprint_title(self.options, 'propagate_eq_constraints', 5)
+        vprint(self.options, f'qterms: {self.qterms}', 5)
+        vprint(self.options, f'qterms before propagate: {self.qterms}', 5)
         nprop_terms = self._get_non_propagatable_terms() 
         if self._has_propagatable_terms():
             self._propagate_until_fixpoint()
             self._substitute_non_propagatable(nprop_terms)
             self._substitute_neq_constraints()
             self._substitute_fully_occuring_sorts()
+        vprint(self.options, f'qterms after propagate: {self.qterms}', 5)
 
     def _get_state_from_terms(self, qterms):
-        qstate = And(qterms)
-        if len(self.qvars_set) != 0:  # NOTE ??????
-            qstate = Exists(self.qvars_set, qstate)
         vprint_title(self.options, 'get_state_from_terms', 5)
-        vprint(self.options, f'qstate: {pretty_print_str(qstate)}', 5)
+        vprint(self.options, f'{qterms}', 5)
+        qstate = And(qterms)
+        vprint(self.options, f'qstate before exist: {pretty_print_str(qstate)}', 5)
+        if len(self.qvars_set) != 0: 
+            qstate = Exists(self.qvars_set, qstate)
+        vprint(self.options, f'qstate after exist: {pretty_print_str(qstate)}', 5)
         return qstate
 
     def conjunct_qstate_with_neq_constraints(self):
+        # append all pairwise neq constraints
+        vprint_title(self.options, 'conjunct_qstate_with_neq_constraints', 5)
         constrained_qterms = self.qterms.copy()
+        vprint(self.options, f'qterms: {self.qterms}', 5)
+        vprint(self.options, f'constrained_qterms: {constrained_qterms}', 5)
         for neqs in self.neq_constraints.values():
             for neq in neqs:
                 constrained_qterms.add(neq)
@@ -256,7 +269,7 @@ class QInference():
     def can_infer_univ(self):
         can_infer  =  ( (QInference.tran_sys.gen == 'univ')
                        or (len(self.full_occur_sorts) == 0)
-                       or (len(self.relations) <= 1)    # FIXME: ?????? 
+                       # or (len(self.relations) <= 1) 
                        or (len(self.qterms) < min_size) 
                       )
         vprint_title(self.options, 'can_infer_univ', 5)
@@ -265,7 +278,7 @@ class QInference():
 
     def infer_univ(self):
         qstate = self.conjunct_qstate_with_neq_constraints()
-        self.results.append((qstate, 'univ'))
+        self.results.append((qstate, 'forall'))
         vprint_title(self.options, 'infer_univ', 5)
         vprint(self.options, pretty_print_str(qstate), 5)
 
@@ -297,6 +310,10 @@ class QInference():
         return term.substitute(subst)
 
     def _record_qvars_occurrence_in_terms(self, sort, qvars):
+        # e.g. Qn0, Qn1, Qn2 ... -> Qn (norm_qvar)
+        # terms: p(Qn0) q(Qn1) q(Qn2) q(Qn0)
+        # qvar2term: Qn0 -> p(Qn0), q(Qn0); Qn1 -> q(Qn1); Qn2 -> q(Qn2)
+        # qvar2_norm_terms: Qn0 -> p(Qn),q(Qn); Qn1 -> q(Qn); Qn2 -> q(Qn)
         self.norm_qvar  = self._create_normalized_qvar(sort)
         qvars_set = set(qvars)
         for term in self.qterms:
@@ -401,7 +418,7 @@ class QInference():
 
     def _infer_exists(self, sort, qvars):
         assert(self._check_single_partition(qvars))
-        # {v1,v2,v2}---> \exists v1
+        # {v0,v1,v2}---> \exists v0
         self._remove_qvars(qvars)
         self._remove_qvars_neq_constraints(sort)
         first_qvar = self._get_first_qvar(qvars)
@@ -492,7 +509,7 @@ class QInference():
             self._infer_exists(sort, qvars)
         elif ( self.num_class == (self.num_sing_class + self.num_mult_class)
                and self.num_mult_class == 1
-               and self.num_sing_class == 1 # FIXME ??????
+               # and self.num_sing_class == 1 # FIXME ??????
              ): 
             self._infer_forall_exists(sort, qvars)
 
@@ -529,10 +546,10 @@ class QInference():
             qstate = And(And(pre_terms), qstate)
         if len(self.qvars_set) != 0: 
             qstate = Exists(self.qvars_set, qstate)
-        fancy = 'univ'
+        qtype = 'exists'
         if (len(self.infr_qvars_set) != 0):
-            fancy = 'epr'
-        self.results.append((qstate, fancy))
+            qtype = 'forall_exists'
+        self.results.append((qstate, qtype))
 
     def _update_qvars_qterms(self, qstate):
         self.qvars_set = set()
@@ -579,11 +596,12 @@ class QInference():
             self.results[i] = (qstate, result[1])
 
     def negate_qstates_in_results(self):
-        qclauses = []
+        vprint_title(self.options, 'negate_qstates_in_results', 5)
         for (i, result) in enumerate(self.results):
             qstate = result[0]
-            qclauses.append(Not(qstate))
-        return qclauses
+            qstate = Not(qstate)
+            self.results[i] = (qstate, result[1])
+            vprint(self.options, f'({pretty_print_str(qstate)}, {result[1]})', 5)
 
     def infer_quantifier(self):
         # original
@@ -596,8 +614,8 @@ class QInference():
         # quantified
         self.set_qstate()
         self.set_qvar_pairwise_neq_constraints()
-        if common.gopts.const > 0:
-            self.propagate_eq_constraints()
+        # if common.gopts.const > 0:
+        #     self.propagate_eq_constraints()
         # infer quantifier
         if self.can_infer_univ():  # case: #(\psi, s) < |s|, for each sort s
             self.infer_univ()
@@ -607,12 +625,188 @@ class QInference():
                 self.infer_fully_occur_sort(sort=fs[0], qvars=fs[1])
             self.add_required_neq_constraints()
             self.finalize_infer()
-        if common.gopts.const > 0:
-            self.propagate_results_eq_constraints()
-        qclauses = self.negate_qstates_in_results()
-        return qclauses 
+        # if common.gopts.const > 0:
+        #     self.propagate_results_eq_constraints()
+        self.negate_qstates_in_results()
+        return self.results
 
     @staticmethod
     def setup(atoms, tran_sys) -> None:
         QInference.atoms    = atoms
         QInference.tran_sys = tran_sys
+
+class QClause():
+    def __init__(self, qclause):
+        self.qclause     = qclause
+        self.args        = []
+        self.edges       = set()
+        
+    def set_atom_to_args(self, func_names):
+        atoms = self.qclause.get_atoms() 
+        atom_name2args = {}
+        for atom in atoms:
+            if atom.is_function_application():
+                atom_name2args[atom.function_name()] = list(atom.args())
+        for atom_name in func_names:
+            self.args += atom_name2args[atom_name] 
+
+    def set_edges(self, vertices, arg_sorts): 
+        for i in range(len(vertices)-1):
+            for j in range(i+1, len(vertices)):
+                if (arg_sorts[i] == arg_sorts[j]
+                    and self.args[i] != self.args[j]):  # different color
+                    self.edges.add((i,j))
+
+
+class QClauseMerger():
+    def __init__(self, options, tran_sys, sub_qclauses):
+        self.options      = options
+        self.tran_sys     = tran_sys
+        self.sub_qclauses = sub_qclauses 
+        self.qclauses     = []
+        self.atoms        = []
+        self.func_names   = []
+        self.is_neg       = []
+        self.arg_sorts    = []
+        self.qvars        = []
+        self.vertices     = []
+        self.edges        = set()
+        self.sort_count   = {}
+        self.sort2qvars   = {}
+        self.merged_terms = []
+
+
+    def _split_term(self, term):
+        if term.is_not():
+            return (True, term.arg(0))
+        else:
+            return (False, term)
+
+    def _set_atom_list(self):
+        formula = self.sub_qclauses[0]
+        assert(formula.is_not())
+        formulaNeg = formula.arg(0)
+        assert(formulaNeg.is_exists())
+        matrix = formulaNeg.arg(0)
+        assert(matrix.is_and())
+        terms = list(flatten_and(matrix))
+        for term in terms:
+            (is_neg, atom)  = self._split_term(term)
+            if atom.is_function_application():
+                self.atoms.append(atom)
+                self.func_names.append(atom.function_name())
+                self.is_neg.append(is_neg)
+        vprint_title(self.options, '_set_atom_list', 5)
+        vprint(self.options, f'terms:  {terms      }', 5)
+        vprint(self.options, f'atoms:  {self.atoms }', 5)
+        vprint(self.options, f'names:  {self.func_names }', 5)
+        vprint(self.options, f'is_neg: {self.is_neg}', 5)
+
+    def _set_sort_count(self):
+        for func in self.func_names:
+            args = list(func.symbol_type()._param_types)
+            self.arg_sorts += args
+            for arg in args:
+                if not arg in self.sort_count:
+                    self.sort_count[arg] = 0
+                self.sort_count[arg] += 1
+
+    def _set_sort2qvar(self):
+        for sort, count in self.sort_count.items():
+            qvars = self.tran_sys._enum2qvar[sort]
+            new_qvars = []
+            for i in range(len(qvars), count):
+                name = 'Q:' + str(sort) + f'{i}'
+                new_qvars.append(Symbol(name, sort))
+            self.sort2qvars[sort] = qvars + new_qvars
+        
+    def _set_qclauses(self):
+        for sub_qclause in self.sub_qclauses: 
+            qclause = QClause(sub_qclause)
+            qclause.set_atom_to_args(self.func_names)
+            self.qclauses.append(qclause)
+
+    def _set_graph(self):
+        vprint_title(self.options, '_set_graphs', 5)
+        self.vertices = list(range(len(self.arg_sorts)))
+        for qclause in self.qclauses:
+            qclause.set_edges(self.vertices, self.arg_sorts)
+            vprint(self.options, f'qclause edges: {qclause.edges}', 5)
+
+        for i in range(len(self.vertices)-1):
+            for j in range(i+1, len(self.vertices)):
+                if self.arg_sorts[i] == self.arg_sorts[j]:
+                    self.edges.add((i,j))
+        union_edges = set()
+        for qclause in self.qclauses:
+            union_edges = union_edges.union(qclause.edges)
+        for edge in union_edges:
+            self.edges.remove(edge)
+        vprint(self.options, f'edges: {self.edges}', 5)
+
+    def _reset_sort_count(self):
+        for sort in self.sort_count.keys():
+            self.sort_count[sort] = 0
+
+    def _get_next_unused_qvar(self, sort):
+        count = self.sort_count[sort]
+        qvar = self.sort2qvars[sort][count]
+        self.sort_count[sort] += 1
+        return qvar
+
+    def _set_merged_terms(self):
+        self._reset_sort_count()
+        for (func_id, func) in enumerate(self.func_names):
+            args = []
+            for sort in func.symbol_type()._param_types:
+                qvar = self._get_next_unused_qvar(sort)
+                args.append(qvar)
+                self.qvars.append(qvar)
+            new_term = Function(func, args)
+            if self.is_neg[func_id]:
+                new_term = Not(new_term)
+            self.merged_terms.append(new_term)
+
+    def _add_required_neq_constraints(self):
+        for (i,j) in self.edges:
+            neq = Not(EqualsOrIff(self.qvars[i], self.qvars[j]))
+            self.merged_terms.append(neq)
+
+    def _get_merged_qstate(self):
+        qstate = And(self.merged_terms)
+        if len(self.qvars) != 0: 
+            qstate = Exists(self.qvars, qstate)
+        qstate = Not(qstate)
+        return qstate
+
+    def merge(self):
+        self._set_atom_list()
+        self._set_sort_count()
+        self._set_sort2qvar()
+        self._set_qclauses()
+        self._set_graph()
+        self._set_merged_terms()
+        self._add_required_neq_constraints()
+        qclause = self._get_merged_qstate()
+        return qclause
+
+def merge_qclauses(options, tran_sys, sub_results):
+    vprint_title(options, 'merge_qclauses', 5)
+    if len(sub_results) == 1:
+        qclause = sub_results[0][0]
+        vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
+        return qclause 
+
+    sub_qclauses = []
+    for result in sub_results:
+        qclause = result[0]
+        qtype   = result[1]
+        assert(qtype == 'forall')
+        vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
+        sub_qclauses.append(qclause)
+
+    merger = QClauseMerger(options, tran_sys, sub_qclauses)
+    qclause = merger.merge()
+    vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
+    return qclause
+    
