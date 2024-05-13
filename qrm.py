@@ -134,7 +134,7 @@ def qrm(args):
         time_stamp = get_time(options, time_start, time_start)
         for size_str in sizes:
             # step1: generate reachability
-            vprint_step_banner(options, f'[FW]: Forward Reachability on [{size_str}]')
+            vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             options.size_str        = size_str
             options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
             tran_sys  = get_transition_system(options.vmt_filename, options.size_str)
@@ -144,24 +144,24 @@ def qrm(args):
             time_stamp = get_time(options, time_start, time_stamp)
 
             # step2: generate prime orbits
-            vprint_step_banner(options, f'[PRIME]: Prime Orbit Generatation on [{size_str}]')
+            vprint_step_banner(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {size_str}]')
             prime_orbits = PrimeOrbits(options) 
             prime_orbits.symmetry_aware_enumerate(protocol)               
             time_stamp = get_time(options, time_start, time_stamp)
 
             # step3: quantifier inference
-            vprint_step_banner(options, f'[QI]: Quantifier Inference on [{size_str}]')
+            vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
             prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
             time_stamp = get_time(options, time_start, time_stamp)
 
             # step4: minimization
-            vprint_step_banner(options, f'[MIN]: Minimization on [{size_str}]')
+            vprint_step_banner(options, f'[MIN]: Minimization on [{options.instance_name}: {size_str}]')
             minimizer  = Minimizer(prime_orbits.orbits, options)
             invariants = minimizer.get_minimal_invariants()
             time_stamp = get_time(options, time_start, time_stamp)
 
             # step5: ivy_check
-            vprint_step_banner(options, f'[IVY]: Ivy Check on [{size_str}]')
+            vprint_step_banner(options, f'[IVY]: Ivy Check on [{options.instance_name}: {size_str}]')
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
             time_stamp = get_time(options, time_start, time_stamp)

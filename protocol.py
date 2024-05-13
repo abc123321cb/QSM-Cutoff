@@ -255,7 +255,7 @@ class Protocol():
             R_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
             self._write_reachability(R_filename)
 
-        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
         vprint(self.options, '\n'.join(self.lines), 3)
         vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
         vprint(self.options, f'[FW NOTE]: number of reachable states: {len(self.reachable_states)}', 2)
