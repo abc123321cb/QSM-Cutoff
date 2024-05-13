@@ -512,6 +512,7 @@ class QInference():
                # and self.num_sing_class == 1 # FIXME ??????
              ): 
             self._infer_forall_exists(sort, qvars)
+        vprint(self.options, f'number of multi-class: {self.num_mult_class}', 5)
 
     def add_required_neq_constraints(self):
         for neqs in self.neq_constraints.values():
@@ -650,12 +651,15 @@ class QClause():
         for atom_name in func_names:
             self.args += atom_name2args[atom_name] 
 
-    def set_edges(self, vertices, arg_sorts): 
+    def set_edges(self, vertices, arg_sorts, sort2has_edge): 
         for i in range(len(vertices)-1):
             for j in range(i+1, len(vertices)):
                 if (arg_sorts[i] == arg_sorts[j]
                     and self.args[i] != self.args[j]):  # different color
                     self.edges.add((i,j))
+                    sort = arg_sorts[i]
+                    sort2has_edge[sort] = True
+                    
 
 
 class QClauseMerger():
@@ -673,6 +677,7 @@ class QClauseMerger():
         self.edges        = set()
         self.sort_count   = {}
         self.sort2qvars   = {}
+        self.sort2has_edge = {}
         self.merged_terms = []
 
 
@@ -729,13 +734,17 @@ class QClauseMerger():
     def _set_graph(self):
         vprint_title(self.options, '_set_graphs', 5)
         self.vertices = list(range(len(self.arg_sorts)))
+        for sort in self.arg_sorts:
+            self.sort2has_edge[sort] = False
         for qclause in self.qclauses:
-            qclause.set_edges(self.vertices, self.arg_sorts)
+            qclause.set_edges(self.vertices, self.arg_sorts, self.sort2has_edge)
             vprint(self.options, f'qclause edges: {qclause.edges}', 5)
 
         for i in range(len(self.vertices)-1):
+            sort_i = self.arg_sorts[i]
             for j in range(i+1, len(self.vertices)):
-                if self.arg_sorts[i] == self.arg_sorts[j]:
+                sort_j = self.arg_sorts[j]
+                if sort_i == sort_j and self.sort2has_edge[sort_i]:
                     self.edges.add((i,j))
         union_edges = set()
         for qclause in self.qclauses:
@@ -802,8 +811,8 @@ def merge_qclauses(options, tran_sys, sub_results):
         qclause = result[0]
         qtype   = result[1]
         if qtype != 'forall':
-            print('Cannot handle non universal suborbit merging')
-            sys.exit(1)
+            vprint(options, '[QI ERROR]: Cannot handle non universal suborbit merging')
+            sys.exit(1) 
         vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
         sub_qclauses.append(qclause)
 
