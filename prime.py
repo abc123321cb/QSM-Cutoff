@@ -179,9 +179,10 @@ class PrimeOrbits():
         vprint_title(self.options, 'quantifier_inference', 5)
         for orbit in self.orbits:
             vprint(self.options, str(orbit), 5)
+            is_orbit_size_1 = (len(orbit.primes) == 1)
             sub_results = []
             for prime in orbit.suborbit_repr_primes: 
-                qInfr = QInference(prime, options)
+                qInfr = QInference(prime, options, is_orbit_size_1)
                 results = qInfr.infer_quantifier()
                 assert(len(results) == 1)
                 sub_result  = results[0]

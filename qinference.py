@@ -13,10 +13,11 @@ class QInference():
     atoms = []
     tran_sys : TransitionSystem
 
-    def __init__(self, prime: Prime, options : QrmOptions) -> None:
+    def __init__(self, prime: Prime, options : QrmOptions, is_orbit_size_1 : bool) -> None:
         self.options = options
         # original
         self.prime      = prime
+        self.is_orbit_size_1 = is_orbit_size_1
         self.repr_state = TRUE()
         self.relations  = []
         self.vars       = []
@@ -425,6 +426,66 @@ class QInference():
         self._add_first_qvar(first_qvar)
         self._replace_qvars_with_first_qvar(first_qvar)
 
+    def _get_term_func_names_with_sort(self):
+        func_names = set()
+        for terms in self.qvar2terms.values():
+            for term in terms:
+                is_neg = False
+                if term.is_not():
+                    is_neg = True
+                    term = term.arg(0)
+                func_name = term.function_name()
+                func_names.add((is_neg, func_name))
+        return list(func_names)
+
+    def _get_sort_count(self, sort, func_names):
+        sort_count = 0
+        for (is_neg, func) in func_names:
+            for arg_sort in func.symbol_type()._param_types:
+                assert(arg_sort == sort)
+                sort_count += 1
+        return sort_count
+
+    def _add_sort_qvars(self, sort, sort_count):
+        qvars = QInference.tran_sys._enum2qvar[sort]
+        if (len(qvars) < sort_count):
+            new_qvars = []
+            for i in range(len(qvars), sort_count):
+                name = 'Q:' + str(sort) + f'{i}'
+                new_qvars.append(Symbol(name, sort))
+            qvars += new_qvars
+        else:
+            qvars = qvars[:sort_count]
+        for qvar in qvars:
+            self.infr_qvars_set.add(qvar)
+        return qvars
+
+    def _replace_qvars_with_multi_qvars(self, sort, func_names):
+        for terms in self.qvar2terms.values():
+            for term in terms:
+                self.infr_terms.discard(term)
+
+        sort_count = self._get_sort_count(sort, func_names)
+        sort_qvars = self._add_sort_qvars(sort, sort_count) 
+        sort_count = 0
+        for (is_neg, func) in func_names:
+            args = []
+            for _ in func.symbol_type()._param_types:
+                qvar = sort_qvars[sort_count]
+                sort_count += 1
+                args.append(qvar)
+            term = Function(func, args)
+            if is_neg:
+                term = Not(term)
+            self.infr_terms.add(term)       
+        self.qterms = self.infr_terms 
+
+    def _infer_multi_exists(self, sort, qvars):
+        self._remove_qvars(qvars)
+        self._remove_qvars_neq_constraints(sort)
+        func_names = self._get_term_func_names_with_sort()
+        self._replace_qvars_with_multi_qvars(sort, func_names)
+
     def _get_single_qvars_list(self):
         single_qvars = []
         for key in self.single_class:
@@ -507,6 +568,8 @@ class QInference():
         self._collect_singles_multiples_in_partition()
         if self.num_class == 1:  # single class partition 
             self._infer_exists(sort, qvars)
+        elif self.num_mult_class == 0 and self.is_orbit_size_1: # some relation has multiple parameter with type sort  
+            self._infer_multi_exists(sort, qvars)
         elif ( self.num_class == (self.num_sing_class + self.num_mult_class)
                and self.num_mult_class == 1
                # and self.num_sing_class == 1 # FIXME ??????
@@ -548,7 +611,7 @@ class QInference():
         if len(self.qvars_set) != 0: 
             qstate = Exists(self.qvars_set, qstate)
         qtype = 'exists'
-        if (len(self.infr_qvars_set) != 0):
+        if (len(self.qvars_set) != 0):
             qtype = 'forall_exists'
         self.results.append((qstate, qtype))
 
@@ -659,8 +722,6 @@ class QClause():
                     self.edges.add((i,j))
                     sort = arg_sorts[i]
                     sort2has_edge[sort] = True
-                    
-
 
 class QClauseMerger():
     def __init__(self, options, tran_sys, sub_qclauses):
