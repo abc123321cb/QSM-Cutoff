@@ -19,9 +19,9 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
     vprint(options, ivy_cmd)
     try:
         if options.write_log:
-            subprocess.run(ivy_args, text=True, check=True, stdout=options.log_fout) 
+            subprocess.run(ivy_args, text=True, check=True, stdout=options.log_fout, timeout=options.ivy_to) 
         else:
-            subprocess.run(ivy_args, capture_output=True, text=True, check=True) 
+            subprocess.run(ivy_args, capture_output=True, text=True, check=True, timeout=options.ivy_to) 
         sys.stdout.flush()
     except subprocess.CalledProcessError as error:
         if error.returncode == 1:
@@ -29,5 +29,7 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
         else:
             vprint(options, f'[IVY RESULT]: ABORT ... exit with return code {error.returncode}')
         return False
+    except subprocess.TimeoutExpired:
+        vprint(options, f'[IVY TO]: Timeout after {options.ivy_to}')
     vprint(options, f'[IVY RESULT]: PASS')
     return True

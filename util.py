@@ -21,6 +21,7 @@ class QrmOptions():
         self.log_fout        = None
         self.all_solutions   = False
         self.merge_suborbits = False
+        self.ivy_to          = 60
 
     def open_log(self) -> None:
         assert(self.writeLog)
