@@ -801,7 +801,9 @@ def merge_qclauses(options, tran_sys, sub_results):
     for result in sub_results:
         qclause = result[0]
         qtype   = result[1]
-        assert(qtype == 'forall')
+        if qtype != 'forall':
+            print('Cannot handle non universal suborbit merging')
+            sys.exit(1)
         vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
         sub_qclauses.append(qclause)
 

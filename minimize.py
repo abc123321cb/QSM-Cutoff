@@ -277,7 +277,7 @@ class Minimizer():
         return 
 
     def print_final_solutions(self) -> None:
-        vprint_step_banner(self.options, '[MIN RESULT]: Minimized Invariants', 3)
+        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.size_str}]', 3)
         for (sid, solution) in enumerate(self.optimal_solutions):
             vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})', 3)
             costs = [self.orbits[i].qcost for i in solution]

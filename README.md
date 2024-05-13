@@ -81,8 +81,6 @@ Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' 
     - prints results of prime orbit generation
     - prints results of quantifier inference
     - prints results of minimization (prints all solutions if using option `-a`)
-- `-v 4`:
-    - prints quantifier inference result for representative prime of each suborbit
 - `-v 5`: 
     - print debug info
 #### Experient Options
