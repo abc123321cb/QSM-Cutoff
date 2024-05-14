@@ -286,6 +286,25 @@ class Minimizer():
                 vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
             vprint(self.options, '\n', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 2)
+
+    def remove_quorum_invariants(self, tran_sys):
+        solution = self.optimal_solutions[0]
+        remove = []
+        for id in solution:
+            qclause = self.orbits[id].qclause
+            qvars = qclause.get_quantifier_variables()
+            qvars_sorts = set()
+            for qvar in qvars:
+                qvars_sorts.add(qvar.symbol_type())
+            for qsymbol in tran_sys._quorums_symbols:
+                member_func = qsymbol.symbol_type()
+                assert(len(member_func.param_types) == 2)
+                sort0 = member_func.param_types[0]
+                sort1 = member_func.param_types[1]
+                if sort0 in qvars_sorts and sort1 in qvars_sorts:
+                    remove.append(id)
+        for id in remove: 
+            solution.remove(id)
         
     def get_final_invariants(self) -> List[str]:
         invariants = []
@@ -300,18 +319,11 @@ class Minimizer():
         vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
         return invariants
 
-    def get_minimal_invariants(self) -> List[str]:
+    def get_minimal_invariants(self, tran_sys) -> List[str]:
         if self.options.all_solutions:
             self._solve_all()
         else:
             self._solve_one()
+        self.remove_quorum_invariants(tran_sys)
         self.print_final_solutions()
         return self.get_final_invariants()
-
-
-    
-        
-            
-
-    
-    

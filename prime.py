@@ -99,6 +99,7 @@ class PrimeOrbit():
         self.num_exists    = num_exists
         self.num_literals  = num_literals
         self.qcost         = num_forall + num_exists + num_literals
+        self.qclause       = qclause
         self.quantified_form = pretty_print_str(qclause)
 
     @staticmethod
@@ -172,7 +173,6 @@ class PrimeOrbits():
         vprint(self.options, f'[PRIME NOTE]: number of suborbits: {self._sub_orbit_count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
 
-
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
         from qinference import QInference, merge_qclauses 
         QInference.setup(atoms, tran_sys)
@@ -189,7 +189,6 @@ class PrimeOrbits():
                 sub_results.append(sub_result)
             qclause = merge_qclauses(self.options, tran_sys, sub_results)
             orbit.set_quantifier_inference_result(qclause)
-
         # output result
         if self.options.writeQI:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
