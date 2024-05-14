@@ -849,7 +849,18 @@ class QClauseMerger():
             self.merged_terms.append(neq)
 
     def _get_merged_qstate(self):
-        qstate = And(self.merged_terms)
+        qstate_list = []
+        for (i,j) in self.edges:
+            neq = Not(EqualsOrIff(self.qvars[i], self.qvars[j]))
+            self.merged_terms.append(neq)
+            qstate = And(self.merged_terms)
+            del self.merged_terms[-1]
+            qstate_list.append(qstate)
+        qstate = TRUE()
+        if len(self.edges):
+            qstate = Or(qstate_list)
+        else:
+            qstate = And(self.merged_terms)
         if len(self.merged_qvars) != 0: 
             qstate = Exists(self.merged_qvars, qstate)
         qstate = Not(qstate)
@@ -862,7 +873,7 @@ class QClauseMerger():
         self._set_qclauses()
         self._set_graph()
         self._set_merged_terms()
-        self._add_required_neq_constraints()
+        #self._add_required_neq_constraints()
         qclause = self._get_merged_qstate()
         return qclause
 
