@@ -304,6 +304,7 @@ class Minimizer():
                 if sort0 in qvars_sorts and sort1 in qvars_sorts:
                     remove.append(id)
         for id in remove: 
+            vprint(self.options, f'[MIN NOTE]: remove invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 2)
             solution.remove(id)
         
     def get_final_invariants(self) -> List[str]:
