@@ -736,6 +736,7 @@ class QClauseMerger():
         self.is_neg       = []
         self.arg_sorts    = []
         self.qvars        = []
+        self.merged_qvars = set()
         self.vertices     = []
         self.edges        = set()
         self.sort_count   = {}
@@ -836,6 +837,7 @@ class QClauseMerger():
                     qvar = self._get_next_unused_qvar(sort)
                 args.append(qvar)
                 self.qvars.append(qvar)
+                self.merged_qvars.add(qvar)
             new_term = Function(func, args)
             if self.is_neg[func_id]:
                 new_term = Not(new_term)
@@ -848,8 +850,8 @@ class QClauseMerger():
 
     def _get_merged_qstate(self):
         qstate = And(self.merged_terms)
-        if len(self.qvars) != 0: 
-            qstate = Exists(self.qvars, qstate)
+        if len(self.merged_qvars) != 0: 
+            qstate = Exists(self.merged_qvars, qstate)
         qstate = Not(qstate)
         return qstate
 
