@@ -830,8 +830,10 @@ class QClauseMerger():
         self._reset_sort_count()
         for (func_id, func) in enumerate(self.func_names):
             args = []
-            for sort in func.symbol_type()._param_types:
-                qvar = self._get_next_unused_qvar(sort)
+            for (arg_id, sort) in enumerate(func.symbol_type()._param_types):
+                qvar = self.atoms[func_id].arg(arg_id)
+                if self.sort2has_edge[sort]:
+                    qvar = self._get_next_unused_qvar(sort)
                 args.append(qvar)
                 self.qvars.append(qvar)
             new_term = Function(func, args)
