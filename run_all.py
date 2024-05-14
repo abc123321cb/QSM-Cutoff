@@ -86,13 +86,16 @@ def run_all(yaml_name, args):
         qrm_result = False
         for size_str in sizes:
             qrm_args = ['python3', 'qrm.py', '-i', ivy_name, '-s', size_str, '-d'] + sys_args
-            ivy_result = True 
+            result = True 
             try:
-                subprocess.run(qrm_args, check=True) 
+                subprocess.run(qrm_args, check=True, timeout=options.qrm_to) 
                 sys.stdout.flush()
             except subprocess.CalledProcessError:
-                ivy_result = False
-            qrm_result = ivy_result
+                result = False
+            except subprocess.TimeoutExpired:
+                vprint(options, f'[QRM TO]: Timeout after {options.qrm_to}')
+                result = False
+            qrm_result = result
         
         vprint_instance_banner(options, f'[QRM]: {ivy_name}')
         if qrm_result:
