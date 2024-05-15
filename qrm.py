@@ -13,6 +13,7 @@ from protocol import Protocol
 from prime import PrimeOrbits, PrimeOrbit
 from minimize import Minimizer
 from run_ivy import *
+import tracemalloc
 
 faulthandler.enable()
 
@@ -60,7 +61,11 @@ def get_time(options, time_start=None, time_stamp=None):
         seconds = delta.seconds + 1e-6 * delta.microseconds
         vprint(options, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 1)
     return new_time_stamp
-    
+
+def get_peak_memory_and_reset(options):
+    (_, peak) = tracemalloc.get_traced_memory()
+    vprint(options, f'[QRM NOTE]: Peak memory: {peak} bytes', 1)
+    tracemalloc.reset_peak()    
 
 def qrm(args):
     try:
@@ -134,6 +139,7 @@ def qrm(args):
         time_stamp = get_time(options, time_start, time_start)
         for size_str in sizes:
             # step1: generate reachability
+            tracemalloc.start()
             vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             options.size_str        = size_str
             options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
@@ -142,29 +148,38 @@ def qrm(args):
             protocol  = Protocol(options)
             protocol.initialize(tran_sys, reachblty)
             time_stamp = get_time(options, time_start, time_stamp)
+            get_peak_memory_and_reset(options)
 
             # step2: generate prime orbits
+            tracemalloc.start()
             vprint_step_banner(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {size_str}]')
             prime_orbits = PrimeOrbits(options) 
             prime_orbits.symmetry_aware_enumerate(protocol)               
             time_stamp = get_time(options, time_start, time_stamp)
+            get_peak_memory_and_reset(options)
 
             # step3: quantifier inference
+            tracemalloc.start()
             vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
             prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
             time_stamp = get_time(options, time_start, time_stamp)
+            get_peak_memory_and_reset(options)             
 
             # step4: minimization
+            tracemalloc.start()
             vprint_step_banner(options, f'[MIN]: Minimization on [{options.instance_name}: {size_str}]')
             minimizer  = Minimizer(prime_orbits.orbits, options)
             invariants = minimizer.get_minimal_invariants(tran_sys)
             time_stamp = get_time(options, time_start, time_stamp)
+            get_peak_memory_and_reset(options)
 
             # step5: ivy_check
+            tracemalloc.start()
             vprint_step_banner(options, f'[IVY]: Ivy Check on [{options.instance_name}: {size_str}]')
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
             time_stamp = get_time(options, time_start, time_stamp)
+            get_peak_memory_and_reset(options)
 
         vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, disable_print)
         if qrm_result:

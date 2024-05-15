@@ -757,7 +757,6 @@ class QClauseMerger():
         formulaNeg = formula.arg(0)
         assert(formulaNeg.is_exists())
         matrix = formulaNeg.arg(0)
-        assert(matrix.is_and())
         terms = list(flatten_and(matrix))
         for term in terms:
             (is_neg, atom)  = self._split_term(term)
