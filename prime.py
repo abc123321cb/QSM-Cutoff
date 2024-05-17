@@ -175,20 +175,12 @@ class PrimeOrbits():
 
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
         from qinference import QInference 
-        from merge import merge_qclauses
+        from merge import merge_sub_orbits_and_infer_quantifier
         QInference.setup(atoms, tran_sys)
         vprint_title(self.options, 'quantifier_inference', 5)
         for orbit in self.orbits:
             vprint(self.options, str(orbit), 5)
-            is_orbit_size_1 = (len(orbit.primes) == 1)
-            sub_results = []
-            for prime in orbit.suborbit_repr_primes: 
-                qInfr = QInference(prime, options, is_orbit_size_1)
-                results = qInfr.infer_quantifier()
-                assert(len(results) == 1)
-                sub_result  = results[0]
-                sub_results.append(sub_result)
-            qclause = merge_qclauses(self.options, tran_sys, sub_results)
+            qclause = merge_sub_orbits_and_infer_quantifier(self.options, tran_sys, orbit.suborbit_repr_primes)
             orbit.set_quantifier_inference_result(qclause)
         # output result
         if self.options.writeQI:

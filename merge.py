@@ -486,3 +486,12 @@ def merge_qclauses(options, tran_sys, sub_results):
     qclause = merger.merge()
     vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
     return qclause
+
+def merge_sub_orbits_and_infer_quantifier(options, tran_sys, suborbit_repr_primes):
+    vprint_title(options, 'merge_sub_orbits_and_infer_quantifier', 5)
+    merger = QClauseMerger(options, tran_sys, suborbit_repr_primes)
+    qclause = merger.merge()
+    vprint_title(options, 'merge_sub_orbits_and_infer_quantifier', 5)
+    vprint(options, f'inferred qclause: {pretty_print_str(qclause)}', 5)
+    return qclause
+
