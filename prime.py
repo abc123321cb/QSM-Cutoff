@@ -174,7 +174,8 @@ class PrimeOrbits():
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
 
     def quantifier_inference(self, atoms, tran_sys, options) -> None:
-        from qinference import QInference, merge_qclauses 
+        from qinference import QInference 
+        from merge import merge_qclauses
         QInference.setup(atoms, tran_sys)
         vprint_title(self.options, 'quantifier_inference', 5)
         for orbit in self.orbits:
