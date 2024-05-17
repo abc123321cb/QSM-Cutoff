@@ -15,6 +15,8 @@ pip install z3-solver==4.8.9
 pip install pyyaml
 pip install pytest
 pip install setuptools
+pip install more-itertools
+pip install itertools
 ```
 
 2. Install swig
