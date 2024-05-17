@@ -695,7 +695,10 @@ class QInference():
         # if common.gopts.const > 0:
         #     self.propagate_results_eq_constraints()
         self.negate_qstates_in_results()
-        return self.results
+        assert(len(self.results) == 1)
+        result  = self.results[0]
+        qclause = result[0]
+        return qclause 
 
     @staticmethod
     def setup(atoms, tran_sys) -> None:

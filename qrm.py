@@ -161,7 +161,7 @@ def qrm(args):
             # step3: quantifier inference
             tracemalloc.start()
             vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
-            prime_orbits.quantifier_inference(reachblty.atoms, tran_sys, options)
+            prime_orbits.quantifier_inference(reachblty.atoms, tran_sys)
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)             
 

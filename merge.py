@@ -8,13 +8,50 @@ from verbose import *
 from more_itertools import set_partitions
 from itertools import product, permutations
 
-def get_flattened_terms(formula):
-    assert(formula.is_not())
-    formulaNeg = formula.arg(0)
-    assert(formulaNeg.is_exists())
-    matrix = formulaNeg.arg(0)
-    terms = list(flatten_and(matrix))
-    return terms
+def get_used_qvars(sort2qvars, sort):
+    if not sort in sort2qvars:         
+        sort2qvars[sort] = []
+    qvars = sort2qvars[sort]
+    return qvars
+
+def get_next_unused_qvar(tran_sys, sort, qvars):
+    qvar_id = len(qvars)
+    qvar    = tran_sys._enum2qvar[sort][qvar_id]
+    return qvar
+
+def replace_var_with_qvar(tran_sys, terms):
+    # relabel each var into qvar with index being order of occurrence
+    # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
+    state =  And(terms) if len(terms) != 0 else TRUE()
+    vars = state.get_enum_constants()
+    var2qvar   = {}
+    sort2qvars = {}
+    for var in sorted(vars, key=str):
+        sort = var.constant_type()
+        if not sort in tran_sys._enum2qvar:
+            continue
+        qvars  = get_used_qvars(sort2qvars, sort)
+        qvar   = get_next_unused_qvar(tran_sys, sort, qvars) 
+        qvars.append(qvar)
+        var2qvar[var] = qvar
+
+    qstate = state.simple_substitute(var2qvar)
+    qterms = flatten_cube(qstate)
+    return qterms
+
+def get_qterms(tran_sys, atoms, prime):
+    values = prime.values
+    terms = []
+    for atom_id, atom in enumerate(atoms):
+        val = values[atom_id]
+        if val == '0':
+            terms.append(Not(atom))
+        elif val == '1':
+            terms.append(atom)
+        else:
+            assert(val == '-')
+    qterms = replace_var_with_qvar(tran_sys, terms)
+    return qterms 
 
 def split_term(term):
     if term.is_not():
@@ -31,10 +68,14 @@ def split_signed_func_name(func_name):
 def get_signed_func_name(sign, atom):
     return sign + '.' + str(atom.function_name())
 
-class QClause():
-    def __init__(self, qclause, options):
+class QPrime():
+    # static members
+    atoms = []
+    tran_sys : TransitionSystem
+
+    def __init__(self, qprime, options):
         self.options            = options
-        self.qclause            = qclause
+        self.qprime             = qprime
         self.func_name2args     = {}
         self.qvar2arg_signatrs  = {}
         self.sort2part_signatrs = {}
@@ -45,14 +86,14 @@ class QClause():
         self.func_name2args [fname].append(args)
 
     def set_function_name_to_arguments(self):
-        terms = get_flattened_terms(self.qclause)
+        terms = get_qterms(QPrime.tran_sys, QPrime.atoms, self.qprime)
         for term in terms:
             (sign, atom)  = split_term(term)
             if atom.is_function_application():
                 fname = get_signed_func_name(sign, atom)
                 self.add_fname_args(fname, atom.args())
 
-        vprint_title(self.options, 'QClause: set_function_name_to_arguments', 5)
+        vprint_title(self.options, 'QPrime: set_function_name_to_arguments', 5)
         vprint(self.options, f'func_name2args: {self.func_name2args}', 5)
 
     def _get_arg_signature(self, signed_fname, func_id, arg_id, qvar):
@@ -71,7 +112,7 @@ class QClause():
                 for arg_id, qvar in enumerate(func_args):
                     signatr = self._get_arg_signature(fname, func_id, arg_id, qvar)
                     self._add_qvar_signature(qvar, signatr)
-        vprint_title(self.options, 'QClause: set_qvar_to_argument_signatures', 5)
+        vprint_title(self.options, 'QPrime: set_qvar_to_argument_signatures', 5)
         vprint(self.options, f'qvar2arg_signatr: {self.qvar2arg_signatrs}', 5)
 
     def _add_sort_part_signatures(self, qvar, part_signatr):
@@ -90,27 +131,35 @@ class QClause():
                 sort2has_mult_parts[sort] = False
             if len(part_signatrs) > 1:
                 sort2has_mult_parts[sort] = True
-        vprint_title(self.options, 'QClause: set_sort_to_partition_signatures', 5)
+        vprint_title(self.options, 'QPrime: set_sort_to_partition_signatures', 5)
         vprint(self.options, f'sort2partition: {self.sort2part_signatrs}', 5)
 
 
-    def set_qclause_partition_signature(self):
+    def set_qprime_partition_signature(self):
         from itertools import product
         sort_partition_signatrs = []
         for sort, part_signatrs in self.sort2part_signatrs.items():
             signatr = ' | '.join(part_signatrs)
             sort_partition_signatrs.append([signatr])
         self.partition_signatr = list(product(*sort_partition_signatrs))[0]
-        vprint_title(self.options, 'QClause: set_qclause_partition_signatures', 5)
+        vprint_title(self.options, 'QPrime: set_qprime_partition_signatures', 5)
         vprint(self.options, f'sort partition signature: {sort_partition_signatrs}', 5)
         vprint(self.options, f'partition signature: {self.partition_signatr}', 5)
 
-class QClauseMerger():
-    def __init__(self, options, tran_sys, sub_qclauses):
+    @staticmethod
+    def setup(atoms, tran_sys) -> None:
+        QPrime.atoms    = atoms
+        QPrime.tran_sys = tran_sys
+
+class Merger():
+    # static members
+    atoms = []
+    tran_sys : TransitionSystem
+
+    def __init__(self, options, suborbit_repr_primes):
         self.options            = options
-        self.tran_sys           = tran_sys
-        self.sub_qclauses       = sub_qclauses 
-        self.qclauses           = []
+        self.sub_repr_primes    = suborbit_repr_primes
+        self.qprimes            = []
         self.atoms              = []
         self.func_name2args     = {}
         self.func_name2symbol   = {}
@@ -125,14 +174,13 @@ class QClauseMerger():
         self.func_permutations  = []
         self.signatr2qvar       = {}
 
-
     def add_fname_args(self, fname, args):
         if not fname in self.func_name2args: 
             self.func_name2args[fname] = [] 
         self.func_name2args [fname].append(args)
 
     def _set_atom_list(self):
-        terms = get_flattened_terms(self.sub_qclauses[0])
+        terms = get_qterms(Merger.tran_sys, Merger.atoms, self.sub_repr_primes[0])
         for term in terms:
             (sign, atom)  = split_term(term)
             if atom.is_function_application():
@@ -143,7 +191,7 @@ class QClauseMerger():
                 fname   = get_signed_func_name(sign, atom) 
                 self.add_fname_args(fname, args)
 
-        vprint_title(self.options, 'QClauseMerger: _set_atom_list', 5)
+        vprint_title(self.options, 'Merger: _set_atom_list', 5)
         vprint(self.options, f'terms:  {terms      }', 5)
         vprint(self.options, f'atoms:  {self.atoms }', 5)
         vprint(self.options, f'names:  {self.func_name2args}', 5)
@@ -163,7 +211,7 @@ class QClauseMerger():
                     signature = self._get_arg_signature(sort, fname, func_id, arg_id)
                     self._add_sort_signature(sort, signature)
 
-        vprint_title(self.options, 'QClauseMerger: set_arguments_sorts', 5)
+        vprint_title(self.options, 'Merger: set_arguments_sorts', 5)
         vprint(self.options, f'sort to argument signatures: {self.sort2signatrs}', 5)
 
     def _get_partitions_signatures(self, partitions):
@@ -192,7 +240,7 @@ class QClauseMerger():
             sort_partition_signatrs.append(partition_signatrs)
         self.partition_signatrs = set(product(*sort_partition_signatrs))
 
-        vprint_title(self.options, 'QClauseMerger: set_argument_partitions', 5)
+        vprint_title(self.options, 'Merger: set_argument_partitions', 5)
         vprint(self.options, 'partitions signatures:', 5)
         for pid, signatr in enumerate(self.partition_signatrs):
             vprint(self.options, f'[{pid}] {signatr}', 5)
@@ -200,13 +248,13 @@ class QClauseMerger():
 
     def _set_sort2qvars(self):
         for sort, count in self.sort_count.items():
-            qvars = self.tran_sys._enum2qvar[sort]
+            qvars = Merger.tran_sys._enum2qvar[sort]
             new_qvars = []
             for i in range(len(qvars), count):
                 name = 'Q:' + str(sort) + f'{i}'
                 new_qvars.append(Symbol(name, sort))
             self.sort2qvars[sort] = (qvars + new_qvars)[:count]
-        vprint_title(self.options, 'QClauseMerger: set_sort2qvars', 5)
+        vprint_title(self.options, 'Merger: set_sort2qvars', 5)
         vprint(self.options, f'sort2qvars: {self.sort2qvars}', 5)
 
     def _has_single_part(self, sort):
@@ -215,7 +263,7 @@ class QClauseMerger():
     def _reset_sort_count(self):
         for sort in self.sort_count.keys():
             self.sort_count[sort] = 0
-        vprint_title(self.options, 'QClauseMerger: _reset_sort_count', 5)
+        vprint_title(self.options, 'Merger: _reset_sort_count', 5)
         vprint(self.options, f'sort_count: {self.sort_count}', 5)
                 
     def _get_single_qvar(self, sort):
@@ -238,7 +286,7 @@ class QClauseMerger():
         for sort in func_args:
             arg = self._get_qvar(sort)
             args.append(arg)
-        vprint_title(self.options, 'QClauseMerger: _get_func_merged_args', 5)
+        vprint_title(self.options, 'Merger: _get_func_merged_args', 5)
         vprint(self.options, f'{fname} args: {args}', 5)
         return args
 
@@ -271,7 +319,7 @@ class QClauseMerger():
         if len(qvars) != 0: 
             qstate = Exists(qvars, qstate)
         qclause = Not(qstate)
-        vprint_title(self.options, 'QClauseMerger: _get_unconstrained_qclause', 5)
+        vprint_title(self.options, 'Merger: _get_unconstrained_qclause', 5)
         vprint(self.options, f'qclause: {qclause}', 5)
         return qclause
 
@@ -286,7 +334,7 @@ class QClauseMerger():
             all_func_permutations.append(func_permutations)
         # cartesian product
         self.func_permutations = list(product(*all_func_permutations))
-        vprint_title(self.options, 'QClauseMerger: set_func_name_permutations', 5)
+        vprint_title(self.options, 'Merger: set_func_name_permutations', 5)
         vprint(self.options, f'func permutations: {self.func_permutations}', 5)
 
     def _get_renamed_signatr(self, signatr, func_perm):
@@ -313,14 +361,14 @@ class QClauseMerger():
         partitions = tuple(partitions)
         return tuple(partitions)
 
-    def _set_qclause_partitions(self):
-        for sub_qclause in self.sub_qclauses: 
-            qclause = QClause(sub_qclause, self.options)
-            qclause.set_function_name_to_arguments()
-            qclause.set_qvar_to_argument_signatures()
-            qclause.set_sort_to_partition_signatures(self.sort2has_mult_parts)
-            qclause.set_qclause_partition_signature()
-            self.qclauses.append(qclause)
+    def _set_qprime_partitions(self):
+        for prime in self.sub_repr_primes: 
+            qprime = QPrime(prime, self.options)
+            qprime.set_function_name_to_arguments()
+            qprime.set_qvar_to_argument_signatures()
+            qprime.set_sort_to_partition_signatures(self.sort2has_mult_parts)
+            qprime.set_qprime_partition_signature()
+            self.qprimes.append(qprime)
 
     def _remove_signatures_with_multi_parts(self, sort_id):
         remove = []
@@ -339,9 +387,9 @@ class QClauseMerger():
         self.sort2qvars[sort] = [qvars[0]]
         
     def _check_absent_partitions(self):
-        for qclause in self.qclauses: 
-            signatr = qclause.partition_signatr
-            vprint(self.options, f'qclause signatr: {signatr}', 5)
+        for qprime in self.qprimes: 
+            signatr = qprime.partition_signatr
+            vprint(self.options, f'qprime signatr: {signatr}', 5)
             for func_perm in self.func_permutations:
                 permuted_signatr = self._get_renamed_signatr(signatr, func_perm)
                 if permuted_signatr in self.partition_signatrs:
@@ -354,7 +402,7 @@ class QClauseMerger():
                 self._reset_sort2qvar(sort)
             sort_id += 1
 
-        vprint_title(self.options, 'QClauseMerger: check_absent_partitions_among_qclauses', 5)
+        vprint_title(self.options, 'Merger: check_absent_partitions', 5)
         vprint(self.options, f'absent partitions: {self.partition_signatrs}', 5)
 
     def _map_arg_signature_to_qvar(self):
@@ -391,7 +439,7 @@ class QClauseMerger():
         return merged_terms
 
     def _get_eq_class_qvars_constraint(self, eq_class):
-        vprint_title(self.options, 'QClauseMerger: _get_eq_class_qvars_constraint', 5)
+        vprint_title(self.options, 'Merger: _get_eq_class_qvars_constraint', 5)
         args = eq_class.split(', ')
         qvars = []
         vprint(self.options, f'args: {args}', 5)
@@ -410,7 +458,7 @@ class QClauseMerger():
         return neq_terms
 
     def _get_partition_qvars_constraint(self, partition):
-        vprint_title(self.options, 'QClauseMerger: get_partition_qvars_constraint', 5)
+        vprint_title(self.options, 'Merger: get_partition_qvars_constraint', 5)
         vprint(self.options, f'partition: {partition}', 5)
         constraint   = []
         for sort_partition in partition:
@@ -423,7 +471,7 @@ class QClauseMerger():
         return constraint
 
     def _remove_redundant_qvars_constraint(self, constraints):
-        vprint_title(self.options, 'QClauseMerger: _remove_redundant_qvars_constraint', 5)
+        vprint_title(self.options, 'Merger: _remove_redundant_qvars_constraint', 5)
         constraints_str = []
         for constraint in constraints:
             constraints_str.append(set([str(term) for term in constraint]))
@@ -457,7 +505,7 @@ class QClauseMerger():
             constraint = self._get_partition_qvars_constraint(partition)
             constraints.append(constraint)
         constraints.sort(key=lambda constraint: len(constraint))
-        vprint_title(self.options, 'QClauseMerger: get_eq_constraints', 5)
+        vprint_title(self.options, 'Merger: get_eq_constraints', 5)
         vprint(self.options, f'partition signatrs: {self.partition_signatrs}', 5)  
         vprint(self.options, f'before remove constraints: {constraints}', 5)
         constraints = self._remove_redundant_qvars_constraint(constraints)
@@ -489,7 +537,7 @@ class QClauseMerger():
             qstate = Exists(qvars, qstate)
         # qstate: forall Q ( ~merge_terms | (eq1 & eq2) | (eq3 & eq4) )
         qclause = Not(qstate)
-        vprint_title(self.options, 'QClauseMerger: _get_constrained_qclause', 5)
+        vprint_title(self.options, 'Merger: _get_constrained_qclause', 5)
         vprint(self.options, f'qclause: {qclause}', 5)
         return qclause 
 
@@ -498,43 +546,22 @@ class QClauseMerger():
         self._set_argument_signatures()
         self._set_argument_partitions()
         self._set_sort2qvars()
-        if len(self.partition_signatrs) == len(self.sub_qclauses):
+        if len(self.partition_signatrs) == len(self.sub_repr_primes):
             qclause = self._get_unconstrained_qclause() 
+            vprint_title(self.options, 'merge_qclauses', 5)
+            vprint(self.options, f'qclause: {pretty_print_str(qclause)}', 5)
             return qclause
 
         self._set_func_name_permutations()
-        self._set_qclause_partitions()
+        self._set_qprime_partitions()
         self._check_absent_partitions()
         qclause = self._get_constrained_qclause()
+        vprint_title(self.options, 'merge_qclauses', 5)
+        vprint(self.options, f'qclause: {pretty_print_str(qclause)}', 5)
         return qclause
 
-def merge_qclauses(options, tran_sys, sub_results):
-    vprint_title(options, 'merge_qclauses', 5)
-    if len(sub_results) == 1:
-        qclause = sub_results[0][0]
-        vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
-        return qclause 
-
-    sub_qclauses = []
-    for result in sub_results:
-        qclause = result[0]
-        qtype   = result[1]
-        if qtype != 'forall':
-            vprint(options, '[QI ERROR]: Cannot handle non universal suborbit merging')
-            sys.exit(1) 
-        vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
-        sub_qclauses.append(qclause)
-
-    merger = QClauseMerger(options, tran_sys, sub_qclauses)
-    qclause = merger.merge()
-    vprint(options, f'qclause: {pretty_print_str(qclause)}', 5)
-    return qclause
-
-def merge_sub_orbits_and_infer_quantifier(options, tran_sys, suborbit_repr_primes):
-    vprint_title(options, 'merge_sub_orbits_and_infer_quantifier', 5)
-    merger = QClauseMerger(options, tran_sys, suborbit_repr_primes)
-    qclause = merger.merge()
-    vprint_title(options, 'merge_sub_orbits_and_infer_quantifier', 5)
-    vprint(options, f'inferred qclause: {pretty_print_str(qclause)}', 5)
-    return qclause
-
+    @staticmethod
+    def setup(atoms, tran_sys) -> None:
+        Merger.atoms    = atoms
+        Merger.tran_sys = tran_sys
+        QPrime.setup(atoms, tran_sys)
