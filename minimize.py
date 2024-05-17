@@ -79,22 +79,26 @@ class CoverConstraints():
             self.coverage[i] = -1
 
     def is_essential(self, orbit : PrimeOrbit, pending, solution) -> bool:
-        assumptions = self.get_prime_literals(orbit.repr_prime)
-        assumptions += [self.orbit_vars[i] for i in pending  if i != orbit.id]
-        assumptions += [self.orbit_vars[i] for i in solution if i != orbit.id]
-        result = self.sat_solver.solve(assumptions)
+        result = False
+        for repr_prime in orbit.suborbit_repr_primes:
+            assumptions = self.get_prime_literals(repr_prime)
+            assumptions += [self.orbit_vars[i] for i in pending  if i != orbit.id]
+            assumptions += [self.orbit_vars[i] for i in solution if i != orbit.id]
+            result = result or self.sat_solver.solve(assumptions)
         return result
 
     def get_coverage(self, orbit : PrimeOrbit, solution) -> int:
-        assumptions = self.get_prime_literals(orbit.repr_prime)
-        assumptions += [self.orbit_vars[i] for i in solution]
-        if self.useMC == UseMC.sat:
-            result, assigned = self.model_counter.propagate(assumptions)
-            if result:
-                atom_count = self._count_atom_var(assigned)
-                self.coverage[orbit.id] = len(self.atom_vars) +1 - atom_count
-            else:
-                self.coverage[orbit.id] = 0 # covered by existing solution 
+        for repr_prime in orbit.suborbit_repr_primes:
+            assumptions = self.get_prime_literals(repr_prime)
+            assumptions += [self.orbit_vars[i] for i in solution]
+            if self.useMC == UseMC.sat:
+                result, assigned = self.model_counter.propagate(assumptions)
+                if result:
+                    atom_count = self._count_atom_var(assigned)
+                    self.coverage[orbit.id] = len(self.atom_vars) +1 - atom_count
+                else:
+                    self.coverage[orbit.id] = 0 # covered by existing solution 
+                    break;
         return self.coverage[orbit.id] 
 
 class Minimizer():
