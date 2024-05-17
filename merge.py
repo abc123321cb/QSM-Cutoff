@@ -80,12 +80,19 @@ class QClause():
             self.sort2part_signatrs[sort] = []
         self.sort2part_signatrs[sort].append(part_signatr)
 
-    def set_sort_to_partition_signatures(self):
+    def set_sort_to_partition_signatures(self, sort2has_mult_parts):
         for qvar, arg_signatrs in self.qvar2arg_signatrs.items():
             part_signatr = ', '.join(arg_signatrs)
             self._add_sort_part_signatures(qvar, part_signatr)
+        
+        for sort, part_signatrs in self.sort2part_signatrs.items():
+            if not sort in sort2has_mult_parts:
+                sort2has_mult_parts[sort] = False
+            if len(part_signatrs) > 1:
+                sort2has_mult_parts[sort] = True
         vprint_title(self.options, 'QClause: set_sort_to_partition_signatures', 5)
         vprint(self.options, f'sort2partition: {self.sort2part_signatrs}', 5)
+
 
     def set_qclause_partition_signature(self):
         from itertools import product
@@ -113,9 +120,11 @@ class QClauseMerger():
         self.sort_partitions    = []
         self.partitions         = []
         self.partition_signatrs = []
+        self.sort2has_mult_parts = {}
         self.sort2qvars         = {}
         self.func_permutations  = []
         self.signatr2qvar       = {}
+
 
     def add_fname_args(self, fname, args):
         if not fname in self.func_name2args: 
@@ -309,9 +318,25 @@ class QClauseMerger():
             qclause = QClause(sub_qclause, self.options)
             qclause.set_function_name_to_arguments()
             qclause.set_qvar_to_argument_signatures()
-            qclause.set_sort_to_partition_signatures()
-            qclause.set_qclause_partition_signature() 
+            qclause.set_sort_to_partition_signatures(self.sort2has_mult_parts)
+            qclause.set_qclause_partition_signature()
             self.qclauses.append(qclause)
+
+    def _remove_signatures_with_multi_parts(self, sort_id):
+        remove = []
+        for signatr in self.partition_signatrs:
+            sort_partition = signatr[sort_id]
+            sort_parts = sort_partition.split(' | ')
+            if len(sort_parts) > 1:
+                remove.append(signatr)
+
+        for signatr in remove:
+            self.partition_signatrs.remove(signatr)
+
+    def _reset_sort2qvar(self, sort):
+        self.sort_count[sort] = 1
+        qvars = self.sort2qvars[sort] 
+        self.sort2qvars[sort] = [qvars[0]]
         
     def _check_absent_partitions(self):
         for qclause in self.qclauses: 
@@ -321,6 +346,14 @@ class QClauseMerger():
                 permuted_signatr = self._get_renamed_signatr(signatr, func_perm)
                 if permuted_signatr in self.partition_signatrs:
                     self.partition_signatrs.remove(permuted_signatr)
+        
+        sort_id = 0
+        for sort, has_mult_parts in self.sort2has_mult_parts.items():
+            if not has_mult_parts:
+                self._remove_signatures_with_multi_parts(sort_id)
+                self._reset_sort2qvar(sort)
+            sort_id += 1
+
         vprint_title(self.options, 'QClauseMerger: check_absent_partitions_among_qclauses', 5)
         vprint(self.options, f'absent partitions: {self.partition_signatrs}', 5)
 
@@ -370,9 +403,10 @@ class QClauseMerger():
         neq_terms = [] 
         for i in range(len(qvars)-1):
             for j in range(i+1, len(qvars)):
-                neq_qvars = [qvars[i], qvars[j]]
-                neq = Not(EqualsOrIff(neq_qvars[0], neq_qvars[1]))
-                neq_terms.append(neq)
+                if str(qvars[i]) != str(qvars[j]):
+                    neq_qvars = [qvars[i], qvars[j]]
+                    neq = Not(EqualsOrIff(neq_qvars[0], neq_qvars[1]))
+                    neq_terms.append(neq)
         return neq_terms
 
     def _get_partition_qvars_constraint(self, partition):
@@ -394,7 +428,7 @@ class QClauseMerger():
         for constraint in constraints:
             constraints_str.append(set([str(term) for term in constraint]))
         vprint(self.options,  f'constraint str representation: {constraints_str}', 5)
-
+      
         fixed_point = False
         while len(constraints) >= 2 and not fixed_point:
             fixed_point = True
@@ -403,9 +437,16 @@ class QClauseMerger():
                 if constraints_str[0].issubset(constraints_str[i]):
                     remove.append(i)
                     fixed_point = False
-            for i in remove:
-                del constraints_str[i]
-                del constraints[i] 
+            new_constraints     = []
+            new_constraints_str = []
+            i = 0
+            for j in remove:
+                if i<j :
+                    new_constraints += constraints[i:j]
+                    new_constraints_str += constraints_str[i:j]
+                i = j+1
+            constraints     = new_constraints
+            constraints_str = new_constraints_str
         return constraints
 
     def _get_eq_constraints(self):
@@ -434,11 +475,13 @@ class QClauseMerger():
         for constraint in constraints:
             # constraint = [neq1, neq2,...]
             # neq_constraint = neq1 | neq2
-            neq_constraint = Or(constraint)
-            neq_constraint_list.append(neq_constraint)
+            if len(constraint):
+                neq_constraint = Or(constraint)
+                neq_constraint_list.append(neq_constraint)
         # neq_constraint = (neq1 | neq2) & (neq3 | neq4)
-        neq_constraint = And(neq_constraint_list)
-        merged_terms.append(neq_constraint)
+        if len(neq_constraint_list):
+            neq_constraint = And(neq_constraint_list)
+            merged_terms.append(neq_constraint)
 
         # qstate: exist Q (merge_terms & ((neq1 | neq2) & (neq3 | neq4)) )
         qstate = And(merged_terms)
@@ -456,8 +499,8 @@ class QClauseMerger():
         self._set_argument_partitions()
         self._set_sort2qvars()
         if len(self.partition_signatrs) == len(self.sub_qclauses):
-           qclause = self._get_unconstrained_qclause() 
-           return qclause
+            qclause = self._get_unconstrained_qclause() 
+            return qclause
 
         self._set_func_name_permutations()
         self._set_qclause_partitions()
