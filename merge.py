@@ -121,19 +121,12 @@ class QPrime():
             self.sort2part_signatrs[sort] = []
         self.sort2part_signatrs[sort].append(part_signatr)
 
-    def set_sort_to_partition_signatures(self, sort2has_mult_parts):
+    def set_sort_to_partition_signatures(self):
         for qvar, arg_signatrs in self.qvar2arg_signatrs.items():
             part_signatr = ', '.join(arg_signatrs)
             self._add_sort_part_signatures(qvar, part_signatr)
-        
-        for sort, part_signatrs in self.sort2part_signatrs.items():
-            if not sort in sort2has_mult_parts:
-                sort2has_mult_parts[sort] = False
-            if len(part_signatrs) > 1:
-                sort2has_mult_parts[sort] = True
         vprint_title(self.options, 'QPrime: set_sort_to_partition_signatures', 5)
         vprint(self.options, f'sort2partition: {self.sort2part_signatrs}', 5)
-
 
     def set_qprime_partition_signature(self):
         from itertools import product
@@ -169,7 +162,8 @@ class Merger():
         self.sort_partitions    = []
         self.partitions         = []
         self.partition_signatrs = []
-        self.sort2has_mult_parts = {}
+        self.sort2max_num_parts = {}
+        self.sort2part_sizes    = {}
         self.sort2qvars         = {}
         self.func_permutations  = []
         self.signatr2qvar       = {}
@@ -195,6 +189,37 @@ class Merger():
         vprint(self.options, f'terms:  {terms      }', 5)
         vprint(self.options, f'atoms:  {self.atoms }', 5)
         vprint(self.options, f'names:  {self.func_name2args}', 5)
+
+    def _set_qprime_partitions(self):
+        for prime in self.sub_repr_primes: 
+            qprime = QPrime(prime, self.options)
+            qprime.set_function_name_to_arguments()
+            qprime.set_qvar_to_argument_signatures()
+            qprime.set_sort_to_partition_signatures()
+            qprime.set_qprime_partition_signature()
+            self.qprimes.append(qprime)
+
+    def _add_sort_max_num_parts(self, sort, part_len):
+        if not sort in self.sort2max_num_parts:
+            self.sort2max_num_parts[sort]  = 0
+        num = self.sort2max_num_parts[sort]
+        self.sort2max_num_parts[sort] = max(num, part_len)
+
+    def _add_sort_part_sizes(self, sort, part_signatrs):
+        if not sort in self.sort2part_sizes:
+            self.sort2part_sizes[sort] = set()
+        size_list = []
+        for part in part_signatrs:
+            elements = part.split(', ')
+            size_list.append(len(elements))
+        size_list.sort()
+        self.sort2part_sizes[sort].add(tuple(size_list))
+
+    def _set_partition_combinations(self):
+        for qprime in self.qprimes:
+            for sort, part_signatrs in qprime.sort2part_signatrs.items():
+                self._add_sort_max_num_parts(sort, len(part_signatrs))
+                self._add_sort_part_sizes(sort, part_signatrs)
 
     def _get_arg_signature(self, sort, fname, func_id, arg_id):
         return f'{sort}.{fname}.{func_id}.{arg_id}'
@@ -229,12 +254,35 @@ class Merger():
            max_num = max(max_num, len(partition)) 
         return max_num
 
+    def _get_sort_partitions(self, sort, signatrs):
+        signatr_list = list(signatrs)
+        signatr_list.sort()
+        max_num_part = self.sort2max_num_parts[sort] 
+        partitions = []
+        if max_num_part == 1:
+            partitions = list(set_partitions(signatr_list, max_num_part))
+        else:
+            partitions = list(set_partitions(signatr_list))
+        # remove = set() 
+        # for pid, partition in enumerate(partitions):
+        #     size_list = []
+        #     for part in partition:
+        #         size_list.append(len(part))
+        #     size_list.sort()
+        #     if not tuple(size_list) in self.sort2part_sizes[sort]:
+        #         remove.add(pid)
+        
+        # reduced_partition = []
+        # for pid, partition in enumerate(partitions):
+        #     if not pid in remove:
+        #         reduced_partition.append(partition)
+        # return reduced_partition 
+        return partitions
+
     def _set_argument_partitions(self):
         sort_partition_signatrs = []
         for sort, signatrs in self.sort2signatrs.items():
-            signatr_list = list(signatrs)
-            signatr_list.sort()
-            partitions   = list(set_partitions(signatr_list))
+            partitions = self._get_sort_partitions(sort, signatrs)
             self.sort_count[sort] = self._get_max_num_parts(partitions)
             partition_signatrs    = self._get_partitions_signatures(partitions)
             sort_partition_signatrs.append(partition_signatrs)
@@ -361,31 +409,6 @@ class Merger():
         partitions = tuple(partitions)
         return tuple(partitions)
 
-    def _set_qprime_partitions(self):
-        for prime in self.sub_repr_primes: 
-            qprime = QPrime(prime, self.options)
-            qprime.set_function_name_to_arguments()
-            qprime.set_qvar_to_argument_signatures()
-            qprime.set_sort_to_partition_signatures(self.sort2has_mult_parts)
-            qprime.set_qprime_partition_signature()
-            self.qprimes.append(qprime)
-
-    def _remove_signatures_with_multi_parts(self, sort_id):
-        remove = []
-        for signatr in self.partition_signatrs:
-            sort_partition = signatr[sort_id]
-            sort_parts = sort_partition.split(' | ')
-            if len(sort_parts) > 1:
-                remove.append(signatr)
-
-        for signatr in remove:
-            self.partition_signatrs.remove(signatr)
-
-    def _reset_sort2qvar(self, sort):
-        self.sort_count[sort] = 1
-        qvars = self.sort2qvars[sort] 
-        self.sort2qvars[sort] = [qvars[0]]
-        
     def _check_absent_partitions(self):
         for qprime in self.qprimes: 
             signatr = qprime.partition_signatr
@@ -395,13 +418,6 @@ class Merger():
                 if permuted_signatr in self.partition_signatrs:
                     self.partition_signatrs.remove(permuted_signatr)
         
-        sort_id = 0
-        for sort, has_mult_parts in self.sort2has_mult_parts.items():
-            if not has_mult_parts:
-                self._remove_signatures_with_multi_parts(sort_id)
-                self._reset_sort2qvar(sort)
-            sort_id += 1
-
         vprint_title(self.options, 'Merger: check_absent_partitions', 5)
         vprint(self.options, f'absent partitions: {self.partition_signatrs}', 5)
 
@@ -543,17 +559,18 @@ class Merger():
 
     def merge(self):
         self._set_atom_list()
+        self._set_qprime_partitions()
+        self._set_partition_combinations()
         self._set_argument_signatures()
         self._set_argument_partitions()
         self._set_sort2qvars()
-        if len(self.partition_signatrs) == len(self.sub_repr_primes):
+        if len(self.partition_signatrs) == len(self.qprimes):
             qclause = self._get_unconstrained_qclause() 
             vprint_title(self.options, 'merge_qclauses', 5)
             vprint(self.options, f'qclause: {pretty_print_str(qclause)}', 5)
             return qclause
 
         self._set_func_name_permutations()
-        self._set_qprime_partitions()
         self._check_absent_partitions()
         qclause = self._get_constrained_qclause()
         vprint_title(self.options, 'merge_qclauses', 5)
