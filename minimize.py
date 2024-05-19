@@ -84,7 +84,9 @@ class CoverConstraints():
             assumptions = self.get_prime_literals(repr_prime)
             assumptions += [self.orbit_vars[i] for i in pending  if i != orbit.id]
             assumptions += [self.orbit_vars[i] for i in solution if i != orbit.id]
-            result = result or self.sat_solver.solve(assumptions)
+            result = self.sat_solver.solve(assumptions)
+            if result:
+                break
         return result
 
     def get_coverage(self, orbit : PrimeOrbit, solution) -> int:
