@@ -79,6 +79,7 @@ class QPrime():
         self.func_name2args     = {}
         self.qvar2arg_signatrs  = {}
         self.sort2part_signatrs = {}
+        self.signatr2qvar       = {}
 
     def add_fname_args(self, fname, args):
         if not fname in self.func_name2args: 
@@ -105,6 +106,7 @@ class QPrime():
         if not qvar in self.qvar2arg_signatrs:
             self.qvar2arg_signatrs[qvar] = [] 
         self.qvar2arg_signatrs[qvar].append(signatr)
+        self.signatr2qvar[signatr] = qvar
         
     def set_qvar_to_argument_signatures(self):
         for fname, arg_list in self.func_name2args.items():
@@ -123,6 +125,7 @@ class QPrime():
 
     def set_sort_to_partition_signatures(self):
         for qvar, arg_signatrs in self.qvar2arg_signatrs.items():
+            arg_signatrs.sort()
             part_signatr = ', '.join(arg_signatrs)
             self._add_sort_part_signatures(qvar, part_signatr)
         vprint_title(self.options, 'QPrime: set_sort_to_partition_signatures', 5)
@@ -132,6 +135,7 @@ class QPrime():
         from itertools import product
         sort_partition_signatrs = []
         for sort, part_signatrs in self.sort2part_signatrs.items():
+            part_signatrs.sort()
             signatr = ' | '.join(part_signatrs)
             sort_partition_signatrs.append([signatr])
         self.partition_signatr = list(product(*sort_partition_signatrs))[0]
@@ -152,21 +156,24 @@ class Merger():
     def __init__(self, options, suborbit_repr_primes):
         self.options            = options
         self.sub_repr_primes    = suborbit_repr_primes
+        # basics
         self.atoms              = []
         self.func_name2args     = {}
         self.func_name2symbol   = {}
         self.func_name2id       = {}
-
+        # qprimes partition
         self.qprimes            = []
-        self.sort_count         = {}
-        self.sort2signatrs      = {}
-        self.sort2partitions    = {}
-        self.partition_signatrs = []
-        self.absent_signatrs    = []
-        self.sort2max_num_parts = {}
-        self.sort2qvars         = {}
-        self.func_permutations  = []
-        self.signatr2qvar       = {}
+        # argument signatures 
+        self.sort2signatrs        = {}
+        self.sort2signatr_classes = {}
+        # partitions
+        self.sort2partitions      = {}
+        self.partition_signatrs   = []
+        self.sort_count           = {}
+        self.sort2qvars           = {}
+        self.absent_signatrs      = []
+        self.func_permutations    = []
+        self.signatr2qvar         = {}
 
     def _add_fname_args(self, fname, args):
         if not fname in self.func_name2args: 
@@ -203,53 +210,64 @@ class Merger():
             qprime.set_qprime_partition_signature()
             self.qprimes.append(qprime)
 
+    def _get_qvar_signature(self, signature):
+        qvars = []
+        for qid, qprime in enumerate(self.qprimes):
+            qvar = qprime.signatr2qvar[signature]
+            qvars.append(f'{str(qvar)}.{qid}')
+        return '.'.join(qvars)
+
     def _get_arg_signature(self, sort, fname, func_id, arg_id):
         return f'{sort}.{fname}.{func_id}.{arg_id}'
 
-    def _add_sort_signature(self, sort, signature):
-        if not sort in self.sort2signatrs:
-            self.sort2signatrs[sort] = []
-        self.sort2signatrs[sort].append(signature)
+    def _add_sort_signature(self, sort, arg_signature):
+        if not sort in self.sort2signatr_classes:
+            self.sort2signatr_classes[sort] = {} 
+        qvar_signatr = self._get_qvar_signature(arg_signature)
+        if not qvar_signatr in self.sort2signatr_classes[sort]:
+            self.sort2signatr_classes[sort][qvar_signatr] = []
+        self.sort2signatr_classes[sort][qvar_signatr].append(arg_signature)
+
+    def _collapse_signature_classes(self):
+        # collapse arg signatures with same qvar signature (appears the same eq class in qprimes)
+        for sort, signatr_classes in self.sort2signatr_classes.items():
+            signatrs = []
+            for signatr_class in signatr_classes.values():
+                signatr_class.sort()
+                signatrs.append(', '.join(signatr_class))
+            signatrs.sort()
+            self.sort2signatrs[sort] = signatrs
 
     def _set_partition_universe(self):
         for fname, arg_list in self.func_name2args.items():
             for func_id, func_args in enumerate(arg_list):
                 for arg_id, sort in enumerate(func_args):
-                    signature = self._get_arg_signature(sort, fname, func_id, arg_id)
-                    self._add_sort_signature(sort, signature)
-
-    def _are_all_eq_classes_singletons(self, eq_classes):
+                    arg_signature = self._get_arg_signature(sort, fname, func_id, arg_id)
+                    self._add_sort_signature(sort, arg_signature)
+        self._collapse_signature_classes()
+        
+    def _are_all_eq_classes_singletons(self, eq_classes, singletons):
         for eq_class in eq_classes: 
-            elements = eq_class.split(', ')
-            if len(elements) > 1:
+            if not eq_class in singletons:
                 return False
         return True
     
     def _need_enumerate_partitions(self, sort):
+        singletons = set()
+        for singleton in self.sort2signatrs[sort]:
+            singletons.add(singleton)
+
         for qprime in self.qprimes: 
             eq_classes = qprime.sort2part_signatrs[sort]
             # eq_classes: e1 | e2 | e3 | e4 .....
-            if self._are_all_eq_classes_singletons(eq_classes):
+            if self._are_all_eq_classes_singletons(eq_classes, singletons):
                 return True 
         return False 
 
-    def _get_sort_max_num_parts(self, sort):
-        max_num = 0
-        for qprime in self.qprimes:
-            part_signatrs = qprime.sort2part_signatrs[sort]
-            max_num = max(max_num, len(part_signatrs))
-        return max_num
-
-    def _enumerate_sort_partitions(self, sort, signatrs):
+    def _enumerate_sort_partitions(self, signatrs):
         signatr_list = list(signatrs)
         signatr_list.sort()
         partitions = list(set_partitions(signatr_list))
-        return partitions
-
-    def _make_single_partition(self, signatrs):
-        signatr_list = list(signatrs)
-        signatr_list.sort()
-        partitions = list(set_partitions(signatr_list, 1))
         return partitions
 
     def _make_singletons_partition(self, signatrs):
@@ -263,18 +281,20 @@ class Merger():
     def _set_sort_to_partitions(self):
         for sort, signatrs in self.sort2signatrs.items():
             partitions = []
-            if self._get_sort_max_num_parts(sort) == 1:
-                partitions = self._make_single_partition(signatrs)
-            elif self._need_enumerate_partitions(sort):
-                partitions = self._enumerate_sort_partitions(sort, signatrs)
+            if self._need_enumerate_partitions(sort):
+                partitions = self._enumerate_sort_partitions(signatrs)
             else:
                 partitions = self._make_singletons_partition(signatrs)
             self.sort2partitions[sort] = partitions
         
     def _get_partitions_signatures(self, partitions):
+        for partition in partitions:
+            for part in partition:
+                part.sort()
+            partition.sort()
+
         partition_signatrs = []
         for partition in partitions: 
-            partition.sort()
             signatrs = [', '.join(part) for part in partition]
             signatr  = ' | '.join(signatrs)
             partition_signatrs.append(signatr)
@@ -283,7 +303,7 @@ class Merger():
     def _set_partition_signatures(self):
         sort_partition_signatrs = []
         for sort, partitions in self.sort2partitions.items():
-            partition_signatrs    = self._get_partitions_signatures(partitions)
+            partition_signatrs  = self._get_partitions_signatures(partitions)
             sort_partition_signatrs.append(partition_signatrs)
         self.partition_signatrs = set(product(*sort_partition_signatrs))
 
@@ -315,7 +335,6 @@ class Merger():
 
         vprint_title(self.options, 'Merger: set_partitions', 5)
         vprint(self.options, f'sort to argument signatures: {self.sort2signatrs}', 5)
-        vprint(self.options, f'sort to max num parts: {self.sort2max_num_parts}', 5)
         vprint(self.options, 'partitions signatures:', 5)
         for pid, signatr in enumerate(self.partition_signatrs):
             vprint(self.options, f'[{pid}] {signatr}', 5)
@@ -329,8 +348,52 @@ class Merger():
         vprint(self.options, can_infer, 5)
         return can_infer
 
+    def _reset_sort_count(self):
+        for sort in self.sort_count.keys():
+            self.sort_count[sort] = 0
+        vprint_title(self.options, 'Merger: _reset_sort_count', 5)
+        vprint(self.options, f'sort_count: {self.sort_count}', 5)
+                
+    def _get_next_unused_qvar(self, sort):
+        count = self.sort_count[sort]
+        qvar = self.sort2qvars[sort][count]
+        self.sort_count[sort] += 1
+        return qvar
+
+    def _map_arg_signature_to_qvar(self):
+        self._reset_sort_count()
+        for sort, signatr_classes in self.sort2signatr_classes.items():
+            for arg_signatrs in signatr_classes.values():
+                qvar = self._get_next_unused_qvar(sort)
+                for signatr in arg_signatrs:
+                    self.signatr2qvar[signatr] = qvar
+        vprint_title(self.options, 'map_arg_signature_to_qvar', 5)
+        vprint(self.options, f'signatr2qvar: {self.signatr2qvar}', 5)
+
+    def _get_func_mapped_args(self, signed_fname, func_id, func_args):
+        args = []
+        for arg_id, sort in enumerate(func_args):
+            signatr = self._get_arg_signature(sort, signed_fname, func_id, arg_id)
+            qvar = self.signatr2qvar[signatr]
+            args.append(qvar)
+        return args
+
+    def _get_merged_terms(self):
+        self._map_arg_signature_to_qvar()
+        merged_terms = []
+        for signed_fname, arg_list in self.func_name2args.items():
+            for func_id, func_args in enumerate(arg_list):
+                args = self._get_func_mapped_args(signed_fname, func_id, func_args)
+                (sign, fname) = split_signed_func_name(signed_fname)
+                fsymbol = self.func_name2symbol[fname]
+                merged_term = Function(fsymbol, args)
+                if sign == '1':
+                    merged_term = Not(merged_term)
+                merged_terms.append(merged_term)
+        return merged_terms
+
     def get_unconstrained_qclause(self):
-        merged_terms = self._get_unconstrained_merged_terms() 
+        merged_terms = self._get_merged_terms() 
         qvars = self._get_all_qvars()
 
         qstate = And(merged_terms)
@@ -340,53 +403,6 @@ class Merger():
         vprint_title(self.options, 'Merger: _get_unconstrained_qclause', 5)
         vprint(self.options, f'qclause: {pretty_print_str(qclause)}', 5) 
         return qclause
-
-    def _has_single_part(self, sort):
-        return len(self.sort2qvars[sort]) == 1
-
-    def _reset_sort_count(self):
-        for sort in self.sort_count.keys():
-            self.sort_count[sort] = 0
-        vprint_title(self.options, 'Merger: _reset_sort_count', 5)
-        vprint(self.options, f'sort_count: {self.sort_count}', 5)
-                
-    def _get_single_qvar(self, sort):
-        return self.sort2qvars[sort][0]
-
-    def _get_next_unused_qvar(self, sort):
-        count = self.sort_count[sort]
-        qvar = self.sort2qvars[sort][count]
-        self.sort_count[sort] += 1
-        return qvar
-
-    def _get_qvar(self, sort):
-        if self._has_single_part(sort):
-            return self._get_single_qvar(sort) 
-        else:
-            return self._get_next_unused_qvar(sort)
-
-    def _get_func_merged_args(self, fname, func_args):
-        args = []
-        for sort in func_args:
-            arg = self._get_qvar(sort)
-            args.append(arg)
-        vprint_title(self.options, 'Merger: _get_func_merged_args', 5)
-        vprint(self.options, f'{fname} args: {args}', 5)
-        return args
-
-    def _get_unconstrained_merged_terms(self):
-        self._reset_sort_count()
-        merged_terms = []
-        for signed_fname, arg_list in self.func_name2args.items():
-            for func_args in arg_list:
-                merged_args = self._get_func_merged_args(signed_fname, func_args)
-                (sign, fname) = split_signed_func_name(signed_fname)
-                fsymbol = self.func_name2symbol[fname]
-                merged_term = Function(fsymbol, merged_args)
-                if sign == '1':
-                    merged_term = Not(merged_term)
-                merged_terms.append(merged_term)
-        return merged_terms
 
     def _get_all_qvars(self):
         qvars_set = set()
@@ -447,39 +463,6 @@ class Merger():
         vprint(self.options, 'absent partitions:', 5)
         for signatr in self.absent_signatrs:
             vprint(self.options, f'{signatr}', 5)
-
-    def _map_arg_signature_to_qvar(self):
-        self._reset_sort_count()
-        for fname, arg_list in self.func_name2args.items():
-            for func_id, func_args in enumerate(arg_list):
-                for arg_id, sort in enumerate(func_args):
-                    qvar = self._get_qvar(sort)
-                    signatr = self._get_arg_signature(sort, fname, func_id, arg_id)
-                    self.signatr2qvar[signatr] = qvar
-        vprint_title(self.options, 'map_arg_signature_to_qvar', 5)
-        vprint(self.options, f'signatr2qvar: {self.signatr2qvar}', 5)
-
-    def _get_func_mapped_args(self, signed_fname, func_id, func_args):
-        args = []
-        for arg_id, sort in func_args:
-            signatr = self._get_arg_signature(sort, signed_fname, func_id, arg_id)
-            qvar = self.signatr2qvar[signatr]
-            args.append(qvar)
-        return args
-
-    def _get_merged_terms(self):
-        self._reset_sort_count()
-        merged_terms = []
-        for signed_fname, arg_list in self.func_name2args.items():
-            for func_id, func_args in enumerate(arg_list):
-                args = self._get_func_mapped_args(signed_fname, func_id, func_args)
-                (sign, fname) = split_signed_func_name(signed_fname)
-                fsymbol = self.func_name2symbol[fname]
-                merged_term = Function(fsymbol, args)
-                if sign == '1':
-                    merged_term = Not(merged_term)
-                merged_terms.append(merged_term)
-        return merged_terms
 
     def _get_eq_class_qvars_constraint(self, eq_class):
         vprint_title(self.options, 'Merger: _get_eq_class_qvars_constraint', 5)
@@ -553,9 +536,8 @@ class Merger():
         constraints = self._remove_redundant_qvars_constraint(constraints)
         return constraints
 
-    def get_constrained_qclause(self):
-        self._map_arg_signature_to_qvar()
-        merged_terms = self._get_unconstrained_merged_terms() 
+    def get_constrained_qclause(self): 
+        merged_terms = self._get_merged_terms() 
         constraints = self._get_eq_constraints()
         qvars = self._get_all_qvars()
 
