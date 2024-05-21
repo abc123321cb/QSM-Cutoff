@@ -288,7 +288,7 @@ class Merger():
                 self.use_absent = True
             else:
                 partitions = self._make_singletons_partition(signatrs)
-                self.use_absent = True
+                self.use_absent = False 
             self.sort2partitions[sort] = partitions
         
     def _get_partitions_signatures(self, partitions):
