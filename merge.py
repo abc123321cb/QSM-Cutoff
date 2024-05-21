@@ -168,10 +168,12 @@ class Merger():
         self.sort2signatr_classes = {}
         # partitions
         self.sort2partitions      = {}
-        self.partition_signatrs   = []
         self.sort_count           = {}
         self.sort2qvars           = {}
-        self.absent_signatrs      = []
+        self.use_absent           = True
+        self.partition_signatrs   = set() 
+        self.absent_signatrs      = set() 
+        self.present_signatrs     = set() 
         self.func_permutations    = []
         self.signatr2qvar         = {}
 
@@ -283,8 +285,10 @@ class Merger():
             partitions = []
             if self._need_enumerate_partitions(sort):
                 partitions = self._enumerate_sort_partitions(signatrs)
+                self.use_absent = True
             else:
                 partitions = self._make_singletons_partition(signatrs)
+                self.use_absent = True
             self.sort2partitions[sort] = partitions
         
     def _get_partitions_signatures(self, partitions):
@@ -342,8 +346,7 @@ class Merger():
         vprint(self.options, f'sort2qvars: {self.sort2qvars}', 5)
 
     def can_infer_unconstrained(self):
-        can_infer =  (len(self.partition_signatrs) == len(self.qprimes)  
-                      or len(self.partition_signatrs) == 1) # singletons partition
+        can_infer =  ( len(self.partition_signatrs) == len(self.qprimes) ) 
         vprint_title(self.options, 'can_infer_unconstrained', 5)
         vprint(self.options, can_infer, 5)
         return can_infer
@@ -449,19 +452,24 @@ class Merger():
         partitions = tuple(partitions)
         return tuple(partitions)
 
-    def set_absent_partitions(self):
+    def set_absent_present_partitions(self):
         self.absent_signatrs    = self.partition_signatrs.copy()
-        self.partition_signatrs = []
+        self.present_signatrs   = set()
+        self.partition_signatrs = set()
         for qprime in self.qprimes: 
             signatr = qprime.partition_signatr
             for func_perm in self.func_permutations:
                 permuted_signatr = self._get_renamed_signatr(signatr, func_perm)
                 if permuted_signatr in self.absent_signatrs:
                     self.absent_signatrs.remove(permuted_signatr)
+                self.present_signatrs.add(permuted_signatr)
         
         vprint_title(self.options, 'Merger: check_absent_partitions', 5)
         vprint(self.options, 'absent partitions:', 5)
         for signatr in self.absent_signatrs:
+            vprint(self.options, f'{signatr}', 5)
+        vprint(self.options, 'present partitions:', 5)
+        for signatr in self.present_signatrs:
             vprint(self.options, f'{signatr}', 5)
 
     def _get_eq_class_qvars_constraint(self, eq_class):
@@ -528,12 +536,14 @@ class Merger():
     def _get_eq_constraints(self):
         # constraints:[[neq1, neq2, ...], [neq3, neq4, .... ]]
         constraints = [] 
-        for partition in self.absent_signatrs:
+        use_signatrs = self.absent_signatrs if self.use_absent else self.present_signatrs
+        for partition in use_signatrs:
             # constraint: [neq1, neq2, ...]
             constraint = self._get_partition_qvars_constraint(partition)
             constraints.append(constraint)
         constraints.sort(key=lambda constraint: len(constraint))
-        constraints = self._remove_redundant_qvars_constraint(constraints)
+        if self.use_absent:
+            constraints = self._remove_redundant_qvars_constraint(constraints)
         return constraints
 
     def get_constrained_qclause(self): 
@@ -552,7 +562,10 @@ class Merger():
         # neq_constraint = (neq1 | neq2) & (neq3 | neq4)
         if len(neq_constraint_list):
             neq_constraint = And(neq_constraint_list)
-            merged_terms.append(neq_constraint)
+            if self.use_absent:
+                merged_terms.append(neq_constraint)
+            else:
+                merged_terms.append(Not(neq_constraint))
 
         # qstate: exist Q (merge_terms & ((neq1 | neq2) & (neq3 | neq4)) )
         qstate = And(merged_terms)
@@ -572,7 +585,7 @@ class Merger():
             return self.get_unconstrained_qclause() 
         else:
             self.set_func_name_permutations()
-            self.set_absent_partitions()
+            self.set_absent_present_partitions()
             return self.get_constrained_qclause()
 
     @staticmethod
