@@ -255,18 +255,16 @@ class Merger():
         return True
     
     def _need_enumerate_partitions(self, sort):
-        # singletons = set()
-        # for singleton in self.sort2signatrs[sort]:
-        #     singletons.add(singleton)
         sort_size    = len(Merger.tran_sys._enumsorts[sort])
         num_signatrs = len(self.sort2signatrs[sort])
         vprint_title(self.options, 'need_enumerate_partitions', 5)
         vprint(self.options, f'sort size: {sort_size}', 5)
         vprint(self.options, f'num signatures: {num_signatrs}', 5)
+        if num_signatrs >= 6: # enumerate all partitions will be infeasible
+            vprint(self.options, 'False', 5)
+            return False
         for qprime in self.qprimes: 
             eq_classes = qprime.sort2part_signatrs[sort]
-            # eq_classes: e1 | e2 | e3 | e4 .....
-            # if self._are_all_eq_classes_singletons(eq_classes, singletons):
             if len(eq_classes) == min(sort_size, num_signatrs):
                 vprint(self.options, f'eq classes: {eq_classes}', 5)
                 vprint(self.options, 'True', 5)
