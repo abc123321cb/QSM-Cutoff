@@ -1,5 +1,5 @@
 from typing import Dict,List,Set
-from pysat.solvers import Glucose4 as GluSolver 
+from pysat.solvers import Glucose4 as SatCounter 
 from pysat.solvers import Cadical153 as SatSolver
 from pysat.allies.approxmc import Counter
 from prime import *
@@ -30,12 +30,14 @@ class StackLevel():
 
 class CoverConstraints():
     def __init__(self, orbits : List[PrimeOrbit], useMC : UseMC) -> None:
-        self.sat_solver    = SatSolver() 
-        self.model_counter = GluSolver() if useMC == UseMC.sat else Counter()
+        self.sat_solver     = SatSolver() 
+        self.sat_counter    = SatCounter()
+        self.approx_counter = None 
         self.useMC         = useMC
         self.atom_vars : List[int] = []
         self.orbit_vars: List[int] = []
         self.coverage  : List[int] = [-1]*len(orbits) 
+        self.clauses       = []
         
         self._init_vars(orbits)
         self._init_solver(orbits)
@@ -64,7 +66,8 @@ class CoverConstraints():
                 clause = self.get_prime_literals(prime, negate=True) 
                 clause.append(-1*orbit_var)
                 self.sat_solver.add_clause(clause)
-                self.model_counter.add_clause(clause)
+                self.clauses.append(clause)
+                self.sat_counter.add_clause(clause)
 
     def _count_atom_var(self, assigned) -> int:
         count = 0
@@ -93,14 +96,25 @@ class CoverConstraints():
         for repr_prime in orbit.suborbit_repr_primes:
             assumptions = self.get_prime_literals(repr_prime)
             assumptions += [self.orbit_vars[i] for i in solution]
-            if self.useMC == UseMC.sat:
-                result, assigned = self.model_counter.propagate(assumptions)
-                if result:
-                    atom_count = self._count_atom_var(assigned)
-                    self.coverage[orbit.id] = len(self.atom_vars) +1 - atom_count
+            result = self.sat_counter.solve(assumptions)
+            self.coverage[orbit.id] = 0
+            if result:
+                result, assigned = self.sat_counter.propagate(assumptions)
+                atom_count = self._count_atom_var(assigned)
+                len_assigned = len(self.atom_vars) +1 - atom_count
+
+                if self.useMC == UseMC.sat:
+                    self.coverage[orbit.id] += len_assigned 
                 else:
-                    self.coverage[orbit.id] = 0 # covered by existing solution 
-                    break;
+                    cnf  = self.clauses                                                                    
+                    cnf += [[a] for a in assumptions]
+                    self.approx_counter = Counter(formula=cnf, epsilon=0.50, delta=0.50)
+                    result = self.approx_counter.count()
+                    self.coverage[orbit.id] += max(len_assigned, result)
+                    self.approx_counter.delete()
+                    self.approx_counter = None
+            else:
+                self.coverage[orbit.id] += 0 # covered by existing solution 
         return self.coverage[orbit.id] 
 
 class Minimizer():
