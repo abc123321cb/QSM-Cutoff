@@ -255,21 +255,29 @@ class Merger():
         return True
     
     def _need_enumerate_partitions(self, sort):
-        singletons = set()
-        for singleton in self.sort2signatrs[sort]:
-            singletons.add(singleton)
-
+        # singletons = set()
+        # for singleton in self.sort2signatrs[sort]:
+        #     singletons.add(singleton)
+        sort_size    = len(Merger.tran_sys._enumsorts[sort])
+        num_signatrs = len(self.sort2signatrs[sort])
+        vprint_title(self.options, 'need_enumerate_partitions', 5)
+        vprint(self.options, f'sort size: {sort_size}', 5)
+        vprint(self.options, f'num signatures: {num_signatrs}', 5)
         for qprime in self.qprimes: 
             eq_classes = qprime.sort2part_signatrs[sort]
             # eq_classes: e1 | e2 | e3 | e4 .....
-            if self._are_all_eq_classes_singletons(eq_classes, singletons):
+            # if self._are_all_eq_classes_singletons(eq_classes, singletons):
+            if len(eq_classes) == min(sort_size, num_signatrs):
+                vprint(self.options, f'eq classes: {eq_classes}', 5)
+                vprint(self.options, 'True', 5)
                 return True 
+        vprint(self.options, 'False', 5)
         return False 
 
     def _enumerate_sort_partitions(self, signatrs):
         signatr_list = list(signatrs)
         signatr_list.sort()
-        partitions = list(set_partitions(signatr_list))
+        partitions   = list(set_partitions(signatr_list))
         return partitions
 
     def _make_singletons_partition(self, signatrs):
@@ -282,6 +290,8 @@ class Merger():
 
     def _set_sort_to_partitions(self):
         for sort, signatrs in self.sort2signatrs.items():
+            partitions = self._enumerate_sort_partitions(signatrs)
+            self.use_absent = True
             partitions = []
             if self._need_enumerate_partitions(sort):
                 partitions = self._enumerate_sort_partitions(signatrs)
@@ -290,26 +300,6 @@ class Merger():
                 partitions = self._make_singletons_partition(signatrs)
                 self.use_absent = False 
             self.sort2partitions[sort] = partitions
-        
-    def _get_partitions_signatures(self, partitions):
-        for partition in partitions:
-            for part in partition:
-                part.sort()
-            partition.sort()
-
-        partition_signatrs = []
-        for partition in partitions: 
-            signatrs = [', '.join(part) for part in partition]
-            signatr  = ' | '.join(signatrs)
-            partition_signatrs.append(signatr)
-        return partition_signatrs
-
-    def _set_partition_signatures(self):
-        sort_partition_signatrs = []
-        for sort, partitions in self.sort2partitions.items():
-            partition_signatrs  = self._get_partitions_signatures(partitions)
-            sort_partition_signatrs.append(partition_signatrs)
-        self.partition_signatrs = set(product(*sort_partition_signatrs))
 
     def _get_max_num_parts(self, partitions):
         max_num = 1
@@ -330,12 +320,47 @@ class Merger():
                 name = 'Q:' + str(sort) + f'{i}'
                 new_qvars.append(Symbol(name, sort))
             self.sort2qvars[sort] = (qvars + new_qvars)[:count]
-        
+
+    def _remove_infeasible_partition(self):
+        for sort, partitions in self.sort2partitions.items():
+            sort_size = len(Merger.tran_sys._enumsorts[sort])
+            remove = set()
+            for pid, partition in enumerate(partitions):
+                if len(partition) > sort_size:
+                    remove.add(pid)
+            reduced_partitions = []
+            for pid, partition in enumerate(partitions):
+                if not pid in remove:
+                    reduced_partitions.append(partition)
+            self.sort2partitions[sort] = reduced_partitions
+
+    def _get_partitions_signatures(self, partitions):
+        for partition in partitions:
+            for part in partition:
+                part.sort()
+            partition.sort()
+
+        partition_signatrs = []
+        for partition in partitions: 
+            signatrs = [', '.join(part) for part in partition]
+            signatr  = ' | '.join(signatrs)
+            partition_signatrs.append(signatr)
+        return partition_signatrs
+
+    def _set_partition_signatures(self):
+        sort_partition_signatrs = []
+        for sort, partitions in self.sort2partitions.items():
+            partition_signatrs  = self._get_partitions_signatures(partitions)
+            sort_partition_signatrs.append(partition_signatrs)
+        self.partition_signatrs = set(product(*sort_partition_signatrs))
+
     def set_partitions(self):
         self._set_partition_universe()
         self._set_sort_to_partitions()
-        self._set_partition_signatures()
         self._set_sort2qvars()
+        if self.use_absent:
+            self._remove_infeasible_partition()
+        self._set_partition_signatures()
 
         vprint_title(self.options, 'Merger: set_partitions', 5)
         vprint(self.options, f'sort to argument signatures: {self.sort2signatrs}', 5)
