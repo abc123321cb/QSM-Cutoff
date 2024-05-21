@@ -145,8 +145,6 @@ class PrimeOrbits():
             prime  = Prime(nvalues, is_sub_repr)
             is_sub_repr = False
             orbit.add_prime(prime)
-        vprint_title(self.options, 'make orbit', 5)
-        vprint(self.options, f'block clauses: {block_clauses}', 5)
         return block_clauses
 
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
