@@ -7,7 +7,7 @@ from util import QrmOptions
 from verbose import *
  
 
-min_size = 3
+min_size = 2
 
 class QInference():
     # static members
@@ -377,6 +377,11 @@ class QInference():
         self.num_sing_class  = len(self.single_class)
         self.num_mult_class  = len(self.multi_class)
         self.num_class       = len(self.qvars_partition)
+        vprint_title(self.options, 'collect_singles_multiples_in_partition', 5)
+        vprint(self.options, f'single class: {self.single_class}', 5)
+        vprint(self.options, f'number single class: {self.num_sing_class}', 5)
+        vprint(self.options, f'multi class: {self.multi_class}', 5)
+        vprint(self.options, f'number multi class: {self.num_mult_class}', 5)
 
     def _check_single_partition(self, all_qvars):
         for qvars_class in self.qvars_partition.values():
@@ -564,17 +569,20 @@ class QInference():
                 single_qvars, multi_qvars, first_mult_qvar)
 
     def infer_fully_occur_sort(self, sort, qvars):
-        vprint_title(self.options, 'infer_fully_occur_sort', 5)
         self._partition_qvars_in_terms(sort, qvars) # pi(\psi, qvars)
         self._collect_singles_multiples_in_partition()
+        vprint_title(self.options, 'infer_fully_occur_sort', 5)
         if self.num_class == 1:  # single class partition 
+            vprint(self.options, 'infer exists', 5)
             self._infer_exists(sort, qvars)
         elif self.num_mult_class == 0 and self.is_orbit_size_1: # some relation has multiple parameter with type sort  
+            vprint(self.options, 'infer multiple exists (for many-arity)', 5)
             self._infer_multi_exists(sort, qvars)
         elif ( self.num_class == (self.num_sing_class + self.num_mult_class)
                and self.num_mult_class == 1
                # and self.num_sing_class == 1 # FIXME ??????
              ): 
+            vprint(self.options, 'infer forall exists', 5)
             self._infer_forall_exists(sort, qvars)
         vprint(self.options, f'number of multi-class: {self.num_mult_class}', 5)
 
