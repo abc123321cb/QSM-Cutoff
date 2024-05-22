@@ -14,7 +14,15 @@ def format_atom(predicate: str, args: List[str]) -> str:
     return predicate + '(' + ','.join(args) + ')'
 
 def format_eq_atom(predicate: str, args: List[str]) -> str:
-    return  '(' + predicate + ','.join(args) + ')'
+    lhs    = predicate.strip('=')
+    params = args[:-1]
+    rhs    = args[-1]
+    atom   = ''
+    if len(params) > 0:
+        atom = '(' + lhs + '(' + ','.join(params) + ')=' + rhs + ')'
+    else:
+        atom =  '(' + lhs + '=' + rhs + ')'
+    return atom
 
 def split_head_tail(line: str, head : int, delim=None) -> Tuple [str, List[str]]:
     lst = line.split(delim)
@@ -100,15 +108,20 @@ class Protocol():
             args = []
             match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
             match_eq   = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
-            if match_pred:
+            match_func_eq = re.search(r'\((\w+)\((\w+)\)=(\w+)\)', atom)
+            if match_func_eq: # case 4: general function
+                predicate = match_func_eq.group(1) + '='
+                args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
+            elif match_pred: # case 3: predicate 
                 predicate = match_pred.group(1)
                 args      = match_pred.group(2).split(',')
-            elif match_eq:
+            elif match_eq: # case 1
                 predicate = match_eq.group(1) + '='
                 args      = match_eq.group(2).split(',')
-            else:
+            else: # case 2: bool
                 predicate = atom.strip('( )')
-            if match_eq:
+
+            if match_func_eq or match_eq:
                 atom = format_eq_atom(predicate, args)
             else:
                 atom = format_atom(predicate, args)
@@ -169,36 +182,51 @@ class Protocol():
 
     def _init_predicate(self, tran_sys) -> None:
         for pred in tran_sys.orig._nexstates:
-            pred_line = '.p ' + str(pred)
+            pred_line  = '.p ' + str(pred)
+            eq_term    = ''
             param_list = []
-            if not pred.symbol_type().is_function_type():
-                if not pred.is_literal(): # case: individual [pred]: sort
-                    param_list = [str(pred.symbol_type())]
-                    pred_line += '='
-                # else: bool type, no parameters
-            else: # function
-                param_list =  [str(s) for s in pred.symbol_type()._param_types]
+            pred_sym = pred.symbol_type()
+            if not pred_sym.is_function_type():
+                if not pred.is_literal(): # case1: (start_node = n0)
+                    param_list = [str(pred_sym)]
+                    eq_term    = '='
+                # else case2: bool type, no parameters 
+            else: # case3: predicate/case 4: function (predicate is a function with return type bool)
+                param_list =  [str(s) for s in pred_sym._param_types]
+            # case 4: general function (dst(p0) = n0)
+            if (pred_sym.is_function_type() and
+               not pred_sym._return_type.is_bool_type()): 
+               eq_term = '='
+               param_list.append(str(pred_sym._return_type))
+            
+            pred_line += eq_term
             if len(param_list) > 0:
                 pred_line += ' ' + ' '.join(param_list)
+            
             self._read_predicate(pred_line)
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(pred_line)
 
     def _init_atoms(self, reachblty) -> None:
         atom_line = '.a'
+        vprint_title(self.options, 'init_atoms', 5)
         for atom in reachblty.stvars:
             predicate = '' 
             args     = []
             new_args = []
-            match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            match_eq   = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
-            if match_pred:
+            match_pred    = re.search(r'(\w+)\(([^)]+)\)',  atom)
+            match_eq      = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
+            match_func_eq = re.search(r'\((\w+)\((\w+)\)=(\w+)\)', atom)
+            if match_func_eq: # case 4: general function
+                predicate = match_func_eq.group(1) + '='
+                args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
+            elif match_pred: # case 3: predicate 
                 predicate = match_pred.group(1)
                 args      = match_pred.group(2).split(',')
-            elif match_eq:
+            elif match_eq: # case 1
                 predicate = match_eq.group(1) + '='
                 args      = match_eq.group(2).split(',')
-            else:
+            else: # case 2: bool
                 predicate = atom.strip('( )')
 
             for arg in args:
@@ -206,7 +234,7 @@ class Protocol():
                     new_args.append(self.qstr_map[arg])
                 else:
                     new_args.append(arg)
-            if match_eq:
+            if match_func_eq or match_eq:
                 atom = format_eq_atom(predicate, new_args)
             else:
                 atom = format_atom(predicate,new_args)
