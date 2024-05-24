@@ -169,7 +169,7 @@ def qrm(args):
             tracemalloc.start()
             vprint_step_banner(options, f'[MIN]: Minimization on [{options.instance_name}: {size_str}]')
             minimizer  = Minimizer(prime_orbits.orbits, options)
-            invariants = minimizer.get_minimal_invariants(tran_sys)
+            invariants = minimizer.get_minimal_invariants()
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)
 

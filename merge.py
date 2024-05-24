@@ -39,17 +39,43 @@ def replace_var_with_qvar(tran_sys, terms):
     qterms = flatten_cube(qstate)
     return qterms
 
+def add_member_terms_for_quorums(atoms, tran_sys):
+    terms = []
+    args = set()
+    for atom in atoms:
+        for arg in atom.args():
+            args.add(arg)
+    for arg in args:
+        if arg.get_type() in tran_sys._quorums_sorts:
+            qsort           = arg.get_type()
+            member_func     = tran_sys._quorums_sorts[qsort][0]
+            child_sort      = tran_sys._quorums_sorts[qsort][1]
+            child_elements  = tran_sys._enumsorts[child_sort]
+            quorums         = tran_sys._quorums_consts[qsort]
+            qidx            = int(str(arg)[-2])
+            elements        = quorums[qidx]
+            for elem_id in elements:
+                elem = child_elements[elem_id] 
+                if elem in args:
+                    member_args = [elem, arg]
+                    terms.append(Function(member_func, member_args))
+    return terms 
+
 def get_qterms(tran_sys, atoms, prime):
     values = prime.values
     terms = []
+    atoms = []
     for atom_id, atom in enumerate(atoms):
         val = values[atom_id]
         if val == '0':
             terms.append(Not(atom))
+            atoms.append(atom)
         elif val == '1':
             terms.append(atom)
+            atoms.append(atom)
         else:
             assert(val == '-')
+    terms += add_member_terms_for_quorums(atoms, tran_sys)
     qterms = replace_var_with_qvar(tran_sys, terms)
     return qterms 
 

@@ -55,17 +55,43 @@ class QInference():
         vprint_title(self.options, 'QInference', 5)
         vprint(self.options, f'prime: {str(self.prime)}', 5)
 
+    def _add_member_literals_for_quorums(self, atoms):
+        literals = []
+        args = set()
+        for atom in atoms:
+            for arg in atom.args():
+                args.add(arg)
+        for arg in args:
+            if arg.get_type() in QInference.tran_sys._quorums_sorts:
+                qsort           = arg.get_type()
+                member_func     = QInference.tran_sys._quorums_sorts[qsort][0]
+                child_sort      = QInference.tran_sys._quorums_sorts[qsort][1]
+                child_elements  = QInference.tran_sys._enumsorts[child_sort]
+                quorums         = QInference.tran_sys._quorums_consts[qsort]
+                qidx            = int(str(arg)[-2])
+                elements        = quorums[qidx]
+                for elem_id in elements:
+                    elem = child_elements[elem_id] 
+                    if elem in args:
+                        member_args = [elem, arg]
+                        literals.append(Function(member_func, member_args))
+        return literals
+
     def set_repr_state(self):
         values = self.prime.values
         literals = []
-        for atom_id, atom in enumerate(self.atoms):
+        atoms    = []
+        for atom_id, atom in enumerate(QInference.atoms):
             val = values[atom_id]
             if val == '0':
                 literals.append(Not(atom))
+                atoms.append(atom)
             elif val == '1':
                 literals.append(atom)
+                atoms.append(atom)
             else:
                 assert(val == '-')
+        literals += self._add_member_literals_for_quorums(atoms)
         self.repr_state =  And(literals) if len(literals) != 0 else TRUE()
         vprint_title(self.options, 'set_repr_state', 5)
         vprint(self.options, f'repr_state: {pretty_print_str(self.repr_state)}', 5)
@@ -113,6 +139,7 @@ class QInference():
                 self.full_occur_sorts.append([sort, qvars])
         vprint_title(self.options, 'record_fully_occuring_sorts', 5)
         vprint(self.options, f'full_occur_sorts: {str(self.full_occur_sorts)}' , 5)
+
 
     def set_qvar_pairwise_neq_constraints(self):
         vprint_title(self.options, 'set_qvar_pairwise_neq_constraints', 5)
