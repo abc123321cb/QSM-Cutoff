@@ -209,7 +209,6 @@ class Protocol():
 
     def _init_atoms(self, reachblty) -> None:
         atom_line = '.a'
-        vprint_title(self.options, 'init_atoms', 5)
         for atom in reachblty.stvars:
             predicate = '' 
             args     = []

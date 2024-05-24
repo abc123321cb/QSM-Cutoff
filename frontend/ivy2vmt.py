@@ -54,7 +54,7 @@ class print_module_vmt():
         self.pre2nex = {}
         self.actions = set()
         self.helpers = {}
-        self.definitions = set()
+        self.definitions = [] 
         self.defn_labels = []
         self.defs = set()
         self.str = {}
@@ -80,7 +80,7 @@ class print_module_vmt():
             if type(self.mod.updates[i]) == ia.DerivedUpdate:
                 defn = self.mod.updates[i].defn
 #                 print("definitions: %s" % str(defn))
-                self.definitions.add(defn)
+                self.definitions.append(defn)
             self.mod.definitions = []
 #         if len(self.mod.definitions) != 0:
 #             print("definitions: %s" % str(self.mod.definitions))
