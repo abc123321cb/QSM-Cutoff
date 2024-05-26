@@ -475,15 +475,16 @@ class QInference():
                     is_neg = True
                     term = term.arg(0)
                 func_name = term.function_name()
-                func_names.add((is_neg, func_name))
+                func_names.add((is_neg, func_name, term))
         return list(func_names)
 
     def _get_sort_count(self, sort, func_names):
         sort_count = 0
-        for (is_neg, func) in func_names:
+        for (is_neg, func, term) in func_names:
             for arg_sort in func.symbol_type()._param_types:
-                assert(arg_sort == sort)
-                sort_count += 1
+                # assert(arg_sort == sort)
+                if arg_sort == sort:
+                    sort_count += 1
         return sort_count
 
     def _add_sort_qvars(self, sort, sort_count):
@@ -508,12 +509,16 @@ class QInference():
         sort_count = self._get_sort_count(sort, func_names)
         sort_qvars = self._add_sort_qvars(sort, sort_count) 
         sort_count = 0
-        for (is_neg, func) in func_names:
+        for (is_neg, func, term) in func_names:
             args = []
-            for _ in func.symbol_type()._param_types:
-                qvar = sort_qvars[sort_count]
-                sort_count += 1
-                args.append(qvar)
+            for arg_id, arg_sort in enumerate(func.symbol_type()._param_types):
+                if arg_sort != sort:
+                    qvar = term.arg(arg_id)
+                    args.append(qvar)
+                else:
+                    qvar = sort_qvars[sort_count]
+                    sort_count += 1
+                    args.append(qvar)
             term = Function(func, args)
             if is_neg:
                 term = Not(term)
