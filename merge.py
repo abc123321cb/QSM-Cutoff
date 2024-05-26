@@ -67,18 +67,18 @@ def add_member_terms_for_quorums(atoms, tran_sys):
 def get_qterms(tran_sys, atoms, prime):
     values = prime.values
     terms = []
-    atoms = []
+    atom_symbols = []
     for atom_id, atom in enumerate(atoms):
         val = values[atom_id]
         if val == '0':
             terms.append(Not(atom))
-            atoms.append(atom)
+            atom_symbols.append(atom)
         elif val == '1':
             terms.append(atom)
-            atoms.append(atom)
+            atom_symbols.append(atom)
         else:
             assert(val == '-')
-    terms += add_member_terms_for_quorums(atoms, tran_sys)
+    terms += add_member_terms_for_quorums(atom_symbols, tran_sys)
     qterms = replace_var_with_qvar(tran_sys, terms)
     return qterms 
 
