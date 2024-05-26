@@ -53,12 +53,15 @@ def add_member_terms_for_quorums(atoms, tran_sys):
             child_elements  = tran_sys._enumsorts[child_sort]
             quorums         = tran_sys._quorums_consts[qsort]
             qidx            = int(str(arg)[-2])
-            elements        = quorums[qidx]
-            for elem_id in elements:
-                elem = child_elements[elem_id] 
+            qelements       = quorums[qidx]
+            for elem_id, elem in enumerate(child_elements):
                 if elem in args:
                     member_args = [elem, arg]
-                    terms.append(Function(member_func, member_args))
+                    member_symb = Function(member_func, member_args)
+                    if elem_id in qelements:
+                        terms.append(member_symb)
+                    else:
+                        terms.append(Not(member_symb))
     return terms 
 
 def get_qterms(tran_sys, atoms, prime):

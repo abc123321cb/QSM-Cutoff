@@ -59,8 +59,12 @@ class QInference():
         literals = []
         args = set()
         for atom in atoms:
-            for arg in atom.args():
+            atom_args = atom.args()
+            if atom.is_equals():
+                atom_args = [atom_args[1]]
+            for arg in atom_args:
                 args.add(arg)
+
         for arg in args:
             if arg.get_type() in QInference.tran_sys._quorums_sorts:
                 qsort           = arg.get_type()
@@ -69,12 +73,15 @@ class QInference():
                 child_elements  = QInference.tran_sys._enumsorts[child_sort]
                 quorums         = QInference.tran_sys._quorums_consts[qsort]
                 qidx            = int(str(arg)[-2])
-                elements        = quorums[qidx]
-                for elem_id in elements:
-                    elem = child_elements[elem_id] 
+                qelements       = quorums[qidx]
+                for elem_id, elem in enumerate(child_elements):
                     if elem in args:
                         member_args = [elem, arg]
-                        literals.append(Function(member_func, member_args))
+                        member_symb = Function(member_func, member_args)
+                        if elem_id in qelements:
+                            literals.append(member_symb)
+                        else:
+                            literals.append(Not(member_symb))
         return literals
 
     def set_repr_state(self):
