@@ -22,6 +22,7 @@ class QInference():
         self.repr_state = TRUE()
         self.relations  = []
         self.vars       = []
+        self.full_occur_quorum_sort = set() 
         # mapping
         self.var2qvar   = dict()
         self.sort2qvars = dict()
@@ -74,14 +75,21 @@ class QInference():
                 quorums         = QInference.tran_sys._quorums_consts[qsort]
                 qidx            = int(str(arg)[-2])
                 qelements       = quorums[qidx]
+                member_count    = 0
                 for elem_id, elem in enumerate(child_elements):
                     if elem in args:
                         member_args = [elem, arg]
                         member_symb = Function(member_func, member_args)
                         if elem_id in qelements:
                             literals.append(member_symb)
+                            member_count += 1
                         else:
                             literals.append(Not(member_symb))
+                if member_count == len(qelements):
+                    self.full_occur_quorum_sort.add(child_sort)
+        vprint_title(self.options, '_add_member_literals_for_quorums', 5)
+        vprint(self.options, f'member literals: {literals}', 5)
+        vprint(self.options, f'fully occuring quorum children sorts: {self.full_occur_quorum_sort}', 5)
         return literals
 
     def set_repr_state(self):
@@ -136,17 +144,15 @@ class QInference():
         vprint(self.options, f'qvars_set: {str(self.qvars_set)}', 5) 
         vprint(self.options, f'sort2qvars: {str(self.sort2qvars)}', 5)
         vprint(self.options, f'var2qvar: {str(self.var2qvar)}', 5)
-            
 
     def record_fully_occuring_sorts(self):
         for sort, qvars in self.sort2qvars.items():
             sort_size = len(QInference.tran_sys._enum2qvar[sort])
-            if  ( (len(qvars) >= min_size) and 
-                  (len(qvars) == sort_size) ):
+            if  (((len(qvars) >= min_size) and (len(qvars) == sort_size)) 
+                or sort in self.full_occur_quorum_sort):
                 self.full_occur_sorts.append([sort, qvars])
         vprint_title(self.options, 'record_fully_occuring_sorts', 5)
         vprint(self.options, f'full_occur_sorts: {str(self.full_occur_sorts)}' , 5)
-
 
     def set_qvar_pairwise_neq_constraints(self):
         vprint_title(self.options, 'set_qvar_pairwise_neq_constraints', 5)
@@ -302,20 +308,20 @@ class QInference():
         constrained_qstate = self._get_state_from_terms(constrained_qterms)
         return constrained_qstate
 
-    def can_infer_univ(self):
+    def can_infer_forall(self):
         can_infer  =  ( (QInference.tran_sys.gen == 'univ')
                        or (len(self.full_occur_sorts) == 0)
                        # or (len(self.relations) <= 1) 
                        or (len(self.qterms) < min_size) 
                       )
-        vprint_title(self.options, 'can_infer_univ', 5)
+        vprint_title(self.options, 'can_infer_forall', 5)
         vprint(self.options, str(can_infer), 5)
         return can_infer
 
-    def infer_univ(self):
+    def infer_forall(self):
         qstate = self.conjunct_qstate_with_neq_constraints()
         self.results.append((qstate, 'forall'))
-        vprint_title(self.options, 'infer_univ', 5)
+        vprint_title(self.options, 'infer_forall', 5)
         vprint(self.options, pretty_print_str(qstate), 5)
 
     def init_infer(self):
@@ -731,8 +737,8 @@ class QInference():
         # if common.gopts.const > 0:
         #     self.propagate_eq_constraints()
         # infer quantifier
-        if self.can_infer_univ():  # case: #(\psi, s) < |s|, for each sort s
-            self.infer_univ()
+        if self.can_infer_forall():  # case: #(\psi, s) < |s|, for each sort s
+            self.infer_forall()
         else: # case: #(\psi, s) = |s|, for some sort s 
             self.init_infer()
             for fs in self.full_occur_sorts:
