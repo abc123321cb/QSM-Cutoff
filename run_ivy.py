@@ -31,5 +31,6 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
         return False
     except subprocess.TimeoutExpired:
         vprint(options, f'[IVY TO]: Timeout after {options.ivy_to}')
+        return False
     vprint(options, f'[IVY RESULT]: PASS')
     return True
