@@ -362,14 +362,22 @@ class Merger():
             self.sort2partitions[sort] = reduced_partitions
 
     def _get_partitions_signatures(self, partitions):
+        vprint_title(self.options, 'get_partitions_signatures', 5)
+        vprint(self.options, f'partitions: {partitions}', 5)
         for partition in partitions:
             for part in partition:
                 part.sort()
             partition.sort()
+        vprint(self.options, f'partitions: {partitions}', 5)
 
         partition_signatrs = []
         for partition in partitions: 
-            signatrs = [', '.join(part) for part in partition]
+            signatrs = []
+            for part in partition:
+                part_str  = ', '.join(part)
+                part_list = part_str.split(', ')
+                part_list.sort()
+                signatrs.append(', '.join(part_list))
             signatr  = ' | '.join(signatrs)
             partition_signatrs.append(signatr)
         return partition_signatrs
@@ -534,14 +542,14 @@ class Merger():
             qvars.append(qvar)
         vprint(self.options, f'qvars: {qvars}', 5)
         
-        neq_terms = [] 
+        neq_terms = set()
         for i in range(len(qvars)-1):
             for j in range(i+1, len(qvars)):
                 if str(qvars[i]) != str(qvars[j]):
                     neq_qvars = [qvars[i], qvars[j]]
                     neq = Not(EqualsOrIff(neq_qvars[0], neq_qvars[1]))
-                    neq_terms.append(neq)
-        return neq_terms
+                    neq_terms.add(neq)
+        return list(neq_terms)
 
     def _get_partition_qvars_constraint(self, partition):
         vprint_title(self.options, 'Merger: get_partition_qvars_constraint', 5)
