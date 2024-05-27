@@ -473,7 +473,7 @@ class QInference():
         self._replace_qvars_with_first_qvar(first_qvar)
 
     def _get_term_func_names_with_sort(self):
-        func_names = set()
+        func_names = {} 
         for terms in self.qvar2terms.values():
             for term in terms:
                 is_neg = False
@@ -481,12 +481,14 @@ class QInference():
                     is_neg = True
                     term = term.arg(0)
                 func_name = term.function_name()
-                func_names.add((is_neg, func_name, term))
-        return list(func_names)
+                if not (is_neg, func_name) in func_names:
+                    func_names[(is_neg, func_name)] = []
+                func_names[(is_neg, func_name)].append(term)
+        return func_names
 
     def _get_sort_count(self, sort, func_names):
         sort_count = 0
-        for (is_neg, func, term) in func_names:
+        for (is_neg, func) in func_names.keys():
             for arg_sort in func.symbol_type()._param_types:
                 # assert(arg_sort == sort)
                 if arg_sort == sort:
@@ -515,10 +517,11 @@ class QInference():
         sort_count = self._get_sort_count(sort, func_names)
         sort_qvars = self._add_sort_qvars(sort, sort_count) 
         sort_count = 0
-        for (is_neg, func, term) in func_names:
+        for (is_neg, func) in func_names.keys():
             args = []
             for arg_id, arg_sort in enumerate(func.symbol_type()._param_types):
                 if arg_sort != sort:
+                    term = func_names[(is_neg, func)][0]
                     qvar = term.arg(arg_id)
                     args.append(qvar)
                 else:
@@ -620,7 +623,7 @@ class QInference():
         if self.num_class == 1:  # single class partition 
             vprint(self.options, 'infer exists', 5)
             self._infer_exists(sort, qvars)
-        elif self.num_mult_class == 0 and self.is_orbit_size_1: # some relation has multiple parameter with type sort  
+        elif self.num_mult_class == 0 and self.is_orbit_size_1 and len(self.qterms) > len(self.qvars_set) : # some relation has multiple parameter with type sort  # FIXME: dirty!!!!!
             vprint(self.options, 'infer multiple exists (for many-arity)', 5)
             self._infer_multi_exists(sort, qvars)
         elif ( self.num_class == (self.num_sing_class + self.num_mult_class)
