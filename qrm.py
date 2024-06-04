@@ -4,7 +4,7 @@ import getopt
 import datetime
 import time
 from os import path
-from frontend.ivy2vmt import compile_ivy2vmt
+from ivy_parser import compile_ivy2vmt
 from verbose import *
 from util import * 
 from forward import *
