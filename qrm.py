@@ -4,11 +4,12 @@ import getopt
 import datetime
 import time
 from os import path
-from ivy_parser import compile_ivy2vmt
+from ivy2vmt import compile_ivy2vmt
+from vmt_parser import vmt_parse
+from transition import get_transition_system
 from verbose import *
 from util import * 
 from forward import *
-from transition import *
 from protocol import Protocol 
 from prime import PrimeOrbits, PrimeOrbit
 from minimize import Minimizer
@@ -134,17 +135,17 @@ def qrm(args):
         options.instance_name = ivy_name.split('.')[0]
         options.vmt_filename  = options.instance_name + '.vmt'
         # step 0: compile ivy
-        compile_ivy2vmt(options.ivy_filename, options.vmt_filename)
+        compile_ivy2vmt(options, options.ivy_filename, options.vmt_filename)
         qrm_result = False
         time_stamp = get_time(options, time_start, time_start)
         for size_str in sizes:
             # step1: generate reachability
             tracemalloc.start()
             vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
-            options.size_str        = size_str
-            options.instance_suffix = size_str.replace('=', '_').replace(',', '_')
-            tran_sys  = get_transition_system(options.vmt_filename, options.size_str)
-            reachblty = get_forward_reachability(tran_sys)
+            options.set_sizes(size_str)
+            tran_sys_orig  = get_transition_system(options.vmt_filename, size_str) # orig
+            tran_sys  = vmt_parse(options, options.vmt_filename)
+            reachblty = get_forward_reachability(tran_sys_orig) #FIXME
             protocol  = Protocol(options)
             protocol.initialize(tran_sys, reachblty)
             time_stamp = get_time(options, time_start, time_stamp)
@@ -161,7 +162,7 @@ def qrm(args):
             # step3: quantifier inference
             tracemalloc.start()
             vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
-            prime_orbits.quantifier_inference(reachblty.atoms, tran_sys)
+            prime_orbits.quantifier_inference(reachblty.atoms, tran_sys) # FIXME 
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)             
 

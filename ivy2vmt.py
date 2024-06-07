@@ -19,6 +19,8 @@ from ivy import ivy_compiler
 from ivy import ivy_isolate
 from ivy import ivy_ast
 
+from verbose import *
+
 for cls in [lg.Eq, lg.Not, lg.And, lg.Or, lg.Implies, lg.Iff, lg.Ite, lg.ForAll, lg.Exists,
             lg.Apply, lg.Var, lg.Const, lg.Lambda, lg.NamedBinder]:
     if hasattr(cls,'__vmt__'):
@@ -152,9 +154,9 @@ class VmtWriter():
                 rhs = lgu.substitute(rhs, arg2vargs)
             fmla = lg.Eq(lhs, rhs)
             if len(vargs) != 0:
-                fmla = lg.ForAll(vargs, f)
+                fmla = lg.ForAll(vargs, fmla)
             res = (fmla, label, 'definition', str(sym))
-            self.vmt[label] = res
+            self.vmt_signature[label] = res
             self.defn_labels.append(label)
         
             sym   = lgu.substitute(sym, self.next2prev)
@@ -410,15 +412,13 @@ def print_isolate(vmt_filename):
         l2s(mod, temporals[0])
         mod.concept_spaces = []
         mod.update_conjs()
-#     ifc.check_fragment()
     vmt_writer = VmtWriter(mod)
     vmt_writer.write(vmt_filename)
     with im.module.theory_context():
-#         ip.print_module(mod)
         pass
         return
 
-def print_module(vmt_filename):
+def print_module(options, vmt_filename):
     isolates = sorted(list(im.module.isolates))
     done_isolates = 0
     for isolate in isolates:
@@ -427,7 +427,7 @@ def print_module(vmt_filename):
             if len(idef.verified()) == 0 or isinstance(idef,ivy_ast.TrustedIsolateDef):
                 continue # skip if nothing to verify
         if isolate:
-            print ('\nPrinting isolate {isolate}:')
+            vprint(options, f'\nPrinting isolate {isolate}:', 5)
         if done_isolates >= 1:
             raise iu.IvyError(None,"Expected exactly one isolate, got %s" % len(isolates))
         with im.module.copy():
@@ -435,7 +435,7 @@ def print_module(vmt_filename):
             print_isolate(vmt_filename)
             done_isolates += 1
 
-def compile_ivy2vmt(ivy_filename, vmt_filename):
+def compile_ivy2vmt(options, ivy_filename, vmt_filename):
     import signal
     signal.signal(signal.SIGINT,signal.SIG_DFL)
     from ivy import ivy_alpha
@@ -444,7 +444,7 @@ def compile_ivy2vmt(ivy_filename, vmt_filename):
     with im.Module():
         with utl.ErrorPrinter():
             ivy_init.source_file(ivy_filename,ivy_init.open_read(ivy_filename),create_isolate=False)
-            print_module(vmt_filename)
-    print ('OK')
+            print_module(options, vmt_filename)
+    vprint (options, 'OK', 5)
     import sys
     sys.stdout.flush()
