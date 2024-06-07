@@ -10,12 +10,20 @@ from pysmt.pretty_printer import pretty_serialize
 from   frontend.utils import eprint, time_str, pretty_print_set, pretty_print, pretty_print_str, SORT_SUFFIX, flatten_and, num_majority, substituteDefinitions, parseSizes
 from   verbose import *
 
+registered_dependent_relations           = {}
+registered_dependent_relations['member'] = lambda elem_size : int(elem_size/2)+1 # member selection function
+
 class DependentType():
-    def __init__(self, dep_relation, set_sort, elem_sort):
+    def __init__(self, dep_relation, set_sort, elem_sort, elem_size, select_func):
         self.dep_relation = dep_relation  # e.g. "member"
         self.set_sort     = set_sort      # e.g. "quorum"
         self.elem_sort    = elem_sort     # e.g. "node"
         self.sets         = []            # e.g. 0 -> [0,1], 1 -> [0,2], 2 -> [1,2] .....
+        from itertools import combinations
+        select_space  = list(range(elem_size))
+        selections    = list(combinations(select_space, select_func(elem_size)))
+        for selection in selections:
+            self.sets.append(list(selection))
 
 class System():
     def __init__(self):
@@ -284,12 +292,6 @@ class TransitionSystem(SmtLibParser):
         for next_sym, prev_sym in self.infinite_system.next2prev.items():
             self.finite_system.next2prev[next_sym.fsubstitute()] = prev_sym.fsubstitute()
 
-    def _get_dep_relations(self):
-        dep_relations = [] 
-        for symbol in self.finite_system.global_symbols:
-            if str(symbol).startswith('member:'): # TODO: ask user to register dependency relations
-                dep_relations.append(symbol)
-        return dep_relations
 
     def _get_set_sort(self, dep_relation):
         dep_type = dep_relation.symbol_type()
@@ -304,19 +306,15 @@ class TransitionSystem(SmtLibParser):
         return elem_sort
 
     def _instantiate_dependent_types(self):
-        dep_relations = self._get_dep_relations()
-        for dep_relation in dep_relations:
-            elem_sort = self._get_element_sort(dep_relation)
-            set_sort  = self._get_set_sort(dep_relation)
-            dep_type  = DependentType(dep_relation, set_sort, elem_sort)
-            from itertools import combinations as comb
-            elem_sort_name = self.get_sort_name_from_finite_sort(elem_sort)
-            elem_size = self.options.sizes[elem_sort_name]
-            universe  = list(range(elem_size))
-            sets      = list(comb(universe, int(elem_size/2)+1))
-            for set_of_indices in sets:
-                dep_type.sets.append(list(set_of_indices))
-            self.dep_types[set_sort] = dep_type
+        for symbol in self.infinite_system.global_symbols:
+            if str(symbol) in registered_dependent_relations:
+                dep_relation  = symbol.fsubstitute() 
+                select_func = registered_dependent_relations[str(symbol)]
+                elem_sort = self._get_element_sort(dep_relation)
+                set_sort  = self._get_set_sort(dep_relation)
+                elem_size = self.get_sort_size(elem_sort)
+                dep_type  = DependentType(dep_relation, set_sort, elem_sort, elem_size, select_func)
+                self.dep_types[set_sort] = dep_type
 
     def set_finite_system(self):
         get_env().fsubstituter.set_ssubs(self.sort_inf2fin, self._idx, False)
@@ -342,6 +340,11 @@ class TransitionSystem(SmtLibParser):
 
     def get_predicates(self):
         return self.infinite_system.next_states
+
+    def get_sort_size(self, sort):
+        sort_name = self.get_sort_name_from_finite_sort(sort)
+        sort_size = self.options.sizes[sort_name]
+        return sort_size
 
     def get_dep_relation(self, set_sort):
         dep_type  = self.dep_types[set_sort]
