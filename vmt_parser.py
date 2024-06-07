@@ -379,9 +379,11 @@ class TransitionSystem(SmtLibParser):
         # e.g. quorum-n1-n2
         elems_in_set = self.get_elements_in_set(set_sort, set_id)
         label_header = self.get_sort_name_from_finite_sort(set_sort)
-        labels = [label_header]
+        labels = []
         for elem in elems_in_set:
             labels.append(pretty_print_str(elem))
+        labels.sort()
+        labels = [label_header] + labels
         return delim.join(labels)
 
 def vmt_parse(options, vmt_filename): 
