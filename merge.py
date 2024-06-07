@@ -1,7 +1,7 @@
 from typing import List
 from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
 from frontend.utils import *
-from frontend.vmt_parser import TransitionSystem
+from vmt_parser import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
 from verbose import *
@@ -16,7 +16,7 @@ def get_used_qvars(sort2qvars, sort):
 
 def get_next_unused_qvar(tran_sys, sort, qvars):
     qvar_id = len(qvars)
-    qvar    = tran_sys._enum2qvar[sort][qvar_id]
+    qvar    = tran_sys.sort2qvars[sort][qvar_id]
     return qvar
 
 def replace_var_with_qvar(tran_sys, terms):
@@ -28,7 +28,7 @@ def replace_var_with_qvar(tran_sys, terms):
     sort2qvars = {}
     for var in sorted(vars, key=str):
         sort = var.constant_type()
-        if not sort in tran_sys._enum2qvar:
+        if not sort in tran_sys.sort2qvars:
             continue
         qvars  = get_used_qvars(sort2qvars, sort)
         qvar   = get_next_unused_qvar(tran_sys, sort, qvars) 
@@ -39,26 +39,24 @@ def replace_var_with_qvar(tran_sys, terms):
     qterms = flatten_cube(qstate)
     return qterms
 
-def add_member_terms_for_quorums(atoms, tran_sys):
+def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
     terms = []
     args = set()
     for atom in atoms:
         for arg in atom.args():
             args.add(arg)
     for arg in args:
-        if arg.get_type() in tran_sys._quorums_sorts:
-            qsort           = arg.get_type()
-            member_func     = tran_sys._quorums_sorts[qsort][0]
-            child_sort      = tran_sys._quorums_sorts[qsort][1]
-            child_elements  = tran_sys._enumsorts[child_sort]
-            quorums         = tran_sys._quorums_consts[qsort]
-            qidx            = int(str(arg)[-2])
-            qelements       = quorums[qidx]
-            for elem_id, elem in enumerate(child_elements):
+        if arg.get_type() in tran_sys.dep_types:
+            set_sort = arg.get_type()
+            set_id   = int(str(arg)[-2])
+            member_func  = tran_sys.get_dep_relation(set_sort)
+            elements     = tran_sys.get_elements(set_sort)
+            elems_in_set = tran_sys.get_elements_in_set(set_sort, set_id)
+            for elem in elements:
                 if elem in args:
                     member_args = [elem, arg]
                     member_symb = Function(member_func, member_args)
-                    if elem_id in qelements:
+                    if elem in elems_in_set:
                         terms.append(member_symb)
                     else:
                         terms.append(Not(member_symb))
@@ -78,7 +76,7 @@ def get_qterms(tran_sys, atoms, prime):
             atom_symbols.append(atom)
         else:
             assert(val == '-')
-    terms += add_member_terms_for_quorums(atom_symbols, tran_sys)
+    terms += add_member_terms_for_dependent_sorts(atom_symbols, tran_sys)
     qterms = replace_var_with_qvar(tran_sys, terms)
     return qterms 
 
@@ -284,7 +282,7 @@ class Merger():
         return True
     
     def _need_enumerate_partitions(self, sort):
-        sort_size    = len(Merger.tran_sys._enumsorts[sort])
+        sort_size    = len(Merger.tran_sys.sort2elems[sort])
         num_signatrs = len(self.sort2signatrs[sort])
         vprint_title(self.options, 'need_enumerate_partitions', 5)
         vprint(self.options, f'sort size: {sort_size}', 5)
@@ -341,7 +339,7 @@ class Merger():
     def _set_sort2qvars(self):
         self._set_sort_count()
         for sort, count in self.sort_count.items():
-            qvars = Merger.tran_sys._enum2qvar[sort]
+            qvars = Merger.tran_sys.sort2qvars[sort]
             new_qvars = []
             for i in range(len(qvars), count):
                 name = 'Q:' + str(sort) + f'{i}'
@@ -350,7 +348,7 @@ class Merger():
 
     def _remove_infeasible_partition(self):
         for sort, partitions in self.sort2partitions.items():
-            sort_size = len(Merger.tran_sys._enumsorts[sort])
+            sort_size = len(Merger.tran_sys.sort2elems[sort])
             remove = set()
             for pid, partition in enumerate(partitions):
                 if len(partition) > sort_size:

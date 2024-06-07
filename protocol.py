@@ -3,13 +3,13 @@ from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
 from pysmt.fnode import FNode
 from forward import Reachability
-from frontend.vmt_parser import TransitionSystem
+from vmt_parser import TransitionSystem
 from frontend.utils import pretty_print_str
 from util import QrmOptions 
 from verbose import *
 
 # utils
-quorum_delim = '-'
+set_delim = '-'
 def format_atom(predicate: str, args: List[str]) -> str:
     return predicate + '(' + ','.join(args) + ')'
 
@@ -47,7 +47,7 @@ class Protocol():
         self.atoms         : List[str]           = [] # atom id -> atom name
         self.atom_Name2Id  : Dict[str,int]       = {} # atom name -> atom id
         self.atom_sig      : List[List[str]]     = [] # atom id -> [predname, arg1, arg2,..]
-        self.quorums       : Dict[str, int]      = {} # quorum name -> member sort id
+        self.set_name2elem_sort_id  : Dict[str, int]  = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
         self.options = options
@@ -67,7 +67,7 @@ class Protocol():
         lines += f'atoms: {str(self.atoms              )}\n' 
         lines += f'atom name to id: {str(self.atom_Name2Id       )}\n' 
         lines += f'atom signature: {str(self.atom_sig           )}\n' 
-        lines += f'quorum: {str(self.quorums            )}\n' 
+        lines += f'set name to element sort id: {str(self.set_name2elem_sort_id        )}\n' 
         lines += f'reachable states: {str(self.reachable_states   )}\n' 
         lines += f'permutations: {str(self._sorts_permutations)}\n' 
         return lines
@@ -83,13 +83,13 @@ class Protocol():
         for (id, e) in enumerate(elements):
             self.element_Name2Id[e]=id
 
-    def _read_quorum_sort(self, line : str) -> None:
-        # read '.q [member sort] [quorum1] [quorum2] ...' 
-        # .q node q-n1-n2 q-n1-n3 q-n2-n3 ...
-        (sort, quorums) = split_head_tail(line, head=1) 
+    def _read_dependent_sort(self, line : str) -> None:
+        # read '.d [member sort] [quorum1] [quorum2] ...' 
+        # .d node quorum-n1-n2 quorum-n1-n3 quorum-n2-n3 ...
+        (sort, sets) = split_head_tail(line, head=1) 
         sort_id = self.sort_Name2Id[sort]
-        for quorum in quorums:
-            self.quorums[quorum] = sort_id
+        for name in sets:
+            self.set_name2elem_sort_id[name] = sort_id
 
     def _read_predicate(self, line : str) -> None:
         # read '.p [predicate_name] [argsort1] [argsort2] ...'
@@ -144,8 +144,8 @@ class Protocol():
             for line in file:
                 if line.startswith('.s'):
                     self._read_sort(line)
-                if line.startswith('.q'):
-                    self._read_quorum_sort(line)
+                if line.startswith('.d'):
+                    self._read_dependent_sort(line)
                 if line.startswith('.p'):
                     self._read_predicate(line)                    
                 if line.startswith('.a'):
@@ -154,34 +154,29 @@ class Protocol():
                     self._read_states(line, states)
 
     def _init_sort(self, tran_sys : TransitionSystem) -> None:
-        for (sort, elements) in tran_sys._enumsorts.items():
-            sort_line = '.s ' + str(tran_sys._enum2inf[sort])
+        for (sort, elements) in tran_sys.sort2elems.items():
+            line = '.s ' + tran_sys.get_sort_name_from_finite_sort(sort)
             for e in elements:
-                sort_line += ' ' + pretty_print_str(e)
-            self._read_sort(sort_line) 
+                line += ' ' + pretty_print_str(e)
+            self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(sort_line)
+                self.lines.append(line)
 
-    def _init_quorum_sort(self, tran_sys : TransitionSystem) -> None:
-        for (qsort, quorums) in tran_sys._quorums_consts.items():
-            child_sort = (tran_sys._quorums_sorts[qsort])[1]
-            quorum_elements = tran_sys._enumsorts[qsort] 
-            child_elements  = tran_sys._enumsorts[child_sort]
-            qsort_line = '.q ' + str(tran_sys._enum2inf[child_sort])
-            for qidx, qset in quorums.items():
-                elements = [str(tran_sys._enum2inf[qsort])[0]] 
-                for e in qset:
-                    elements.append(pretty_print_str(child_elements[e]))
-                qstr_idx = pretty_print_str(quorum_elements[qidx])
-                qstr_set = quorum_delim.join(elements)
-                qsort_line += ' ' + qstr_set 
-                self.qstr_map[qstr_idx]  = qstr_set
-            self._read_quorum_sort(qsort_line)
+    def _init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
+        for (set_sort, dep_type) in tran_sys.dep_types.items():
+            elem_sort = tran_sys.get_element_sort(set_sort)
+            line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
+            for set_id in range(len(dep_type.sets)):
+                id_label      = tran_sys.get_set_label_with_id(set_sort, set_id)
+                content_label = tran_sys.get_set_label_with_elements(set_sort, set_id, set_delim)
+                line  += ' ' + content_label 
+                self.set_label_map[id_label]  = content_label 
+            self._read_dependent_sort(line)
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(qsort_line)
+                self.lines.append(line) 
 
-    def _init_predicate(self, tran_sys) -> None:
-        for pred in tran_sys.orig._nexstates:
+    def _init_predicate(self, tran_sys : TransitionSystem) -> None:
+        for pred in tran_sys.get_predicates():
             pred_line  = '.p ' + str(pred)
             eq_term    = ''
             param_list = []
@@ -229,8 +224,8 @@ class Protocol():
                 predicate = atom.strip('( )')
 
             for arg in args:
-                if arg in self.qstr_map:
-                    new_args.append(self.qstr_map[arg])
+                if arg in self.set_label_map:
+                    new_args.append(self.set_label_map[arg])
                 else:
                     new_args.append(arg)
             if match_func_eq or match_eq:
@@ -266,12 +261,12 @@ class Protocol():
 
     def initialize(self, tran_sys : TransitionSystem, reachblty : Reachability) -> None:
         ## helper
-        self.qstr_map  = {}
-        self.lines     = []
+        self.set_label_map = {}
+        self.lines         = []
 
         ## init
         self._init_sort(tran_sys)
-        self._init_quorum_sort(tran_sys)
+        self._init_dependent_sort(tran_sys)
         self._init_predicate(tran_sys)
         self._init_atoms(reachblty)
         self._init_reachable_states(reachblty)
@@ -294,7 +289,7 @@ class Protocol():
             new_element_id = permutation[sort_id][old_element_id]
             new_element.append(self.sort_elements[sort_id][new_element_id])
         new_element.sort()
-        return quorum_delim.join(new_element)
+        return set_delim.join(new_element)
 
     def _get_renamed_atom(self, permutation, atom_id) -> str:
         signature = self.atom_sig[atom_id]
@@ -305,10 +300,10 @@ class Protocol():
         # get new arguements
         for (arg_id, arg) in enumerate(args):
             narg = ''
-            if arg in self.quorums:
-                (prefix, elements) = split_head_tail(arg, head=0, delim=quorum_delim) 
-                sort_id = self.quorums[arg]
-                narg = (prefix + quorum_delim)
+            if arg in self.set_name2elem_sort_id:
+                (prefix, elements) = split_head_tail(arg, head=0, delim=set_delim) 
+                sort_id = self.set_name2elem_sort_id[arg]
+                narg = (prefix + set_delim)
                 narg += self._get_renamed_element(permutation, sort_id, elements)
             else:
                 sort    = argsorts[arg_id]

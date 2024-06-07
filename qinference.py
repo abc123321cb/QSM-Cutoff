@@ -1,7 +1,7 @@
 from typing import List
 from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
 from frontend.utils import *
-from frontend.vmt_parser import TransitionSystem
+from vmt_parser import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
 from verbose import *
@@ -22,7 +22,7 @@ class QInference():
         self.repr_state = TRUE()
         self.relations  = []
         self.vars       = []
-        self.full_occur_quorum_sort = set() 
+        self.full_occur_depending_sort = set() 
         # mapping
         self.var2qvar   = dict()
         self.sort2qvars = dict()
@@ -56,7 +56,7 @@ class QInference():
         vprint_title(self.options, 'QInference', 5)
         vprint(self.options, f'prime: {str(self.prime)}', 5)
 
-    def _add_member_literals_for_quorums(self, atoms):
+    def _add_member_literals_for_dependent_sorts(self, atoms):
         literals = []
         args = set()
         for atom in atoms:
@@ -67,29 +67,28 @@ class QInference():
                 args.add(arg)
 
         for arg in args:
-            if arg.get_type() in QInference.tran_sys._quorums_sorts:
-                qsort           = arg.get_type()
-                member_func     = QInference.tran_sys._quorums_sorts[qsort][0]
-                child_sort      = QInference.tran_sys._quorums_sorts[qsort][1]
-                child_elements  = QInference.tran_sys._enumsorts[child_sort]
-                quorums         = QInference.tran_sys._quorums_consts[qsort]
-                qidx            = int(str(arg)[-2])
-                qelements       = quorums[qidx]
-                member_count    = 0
-                for elem_id, elem in enumerate(child_elements):
+            if arg.get_type() in QInference.tran_sys.dep_types:
+                set_sort = arg.get_type()
+                set_id   = int(str(arg)[-2])
+                member_func  = QInference.tran_sys.get_dep_relation(set_sort)
+                elements     = QInference.tran_sys.get_elements(set_sort)
+                elems_in_set = QInference.tran_sys.get_elements_in_set(set_sort, set_id)
+                member_count = 0
+                for elem in elements:
                     if elem in args:
                         member_args = [elem, arg]
                         member_symb = Function(member_func, member_args)
-                        if elem_id in qelements:
+                        if elem in elems_in_set:
                             literals.append(member_symb)
                             member_count += 1
                         else:
                             literals.append(Not(member_symb))
-                if member_count == len(qelements):
-                    self.full_occur_quorum_sort.add(child_sort)
-        vprint_title(self.options, '_add_member_literals_for_quorums', 5)
+                if member_count == len(elems_in_set):
+                    elem_sort = QInference.tran_sys.get_element_sort(set_sort)
+                    self.full_occur_depending_sort.add(elem_sort)
+        vprint_title(self.options, '_add_member_literals_for_dependent_sorts', 5)
         vprint(self.options, f'member literals: {literals}', 5)
-        vprint(self.options, f'fully occuring quorum children sorts: {self.full_occur_quorum_sort}', 5)
+        vprint(self.options, f'fully occuring dependent children sorts: {self.full_occur_depending_sort}', 5)
         return literals
 
     def set_repr_state(self):
@@ -106,7 +105,7 @@ class QInference():
                 atoms.append(atom)
             else:
                 assert(val == '-')
-        literals += self._add_member_literals_for_quorums(atoms)
+        literals += self._add_member_literals_for_dependent_sorts(atoms)
         self.repr_state =  And(literals) if len(literals) != 0 else TRUE()
         vprint_title(self.options, 'set_repr_state', 5)
         vprint(self.options, f'repr_state: {pretty_print_str(self.repr_state)}', 5)
@@ -119,7 +118,7 @@ class QInference():
 
     def _get_next_unused_qvar(self, sort, qvars):
         qvar_id = len(qvars)
-        qvar    = QInference.tran_sys._enum2qvar[sort][qvar_id]
+        qvar    = QInference.tran_sys.sort2qvars[sort][qvar_id]
         return qvar
 
     def record_sort_occurrence_in_vars(self):
@@ -128,7 +127,7 @@ class QInference():
         vprint_title(self.options, 'record_sort_occurrence_in_vars' , 5)
         for var in sorted(self.vars, key=str):
             sort = var.constant_type()
-            if not sort in QInference.tran_sys._enum2qvar:
+            if not sort in QInference.tran_sys.sort2qvars:
                 continue
             qvars  = self._get_used_qvars(sort)
             qvar   = self._get_next_unused_qvar(sort, qvars) 
@@ -147,9 +146,9 @@ class QInference():
 
     def record_fully_occuring_sorts(self):
         for sort, qvars in self.sort2qvars.items():
-            sort_size = len(QInference.tran_sys._enum2qvar[sort])
+            sort_size = len(QInference.tran_sys.sort2qvars[sort])
             if  (((len(qvars) >= min_size) and (len(qvars) == sort_size)) 
-                or sort in self.full_occur_quorum_sort):
+                or sort in self.full_occur_depending_sort):
                 self.full_occur_sorts.append([sort, qvars])
         vprint_title(self.options, 'record_fully_occuring_sorts', 5)
         vprint(self.options, f'full_occur_sorts: {str(self.full_occur_sorts)}' , 5)
@@ -309,11 +308,7 @@ class QInference():
         return constrained_qstate
 
     def can_infer_forall(self):
-        can_infer  =  ( (QInference.tran_sys.gen == 'univ')
-                       or (len(self.full_occur_sorts) == 0)
-                       # or (len(self.relations) <= 1) 
-                       or (len(self.qterms) < min_size) 
-                      )
+        can_infer  =  ( (len(self.full_occur_sorts) == 0) or (len(self.qterms) < min_size) )
         vprint_title(self.options, 'can_infer_forall', 5)
         vprint(self.options, str(can_infer), 5)
         return can_infer
@@ -368,7 +363,7 @@ class QInference():
 
     def _is_unique_qvar(self, qvar, norm_terms):
         return  ( len(norm_terms) == 0
-                  or qvar in QInference.tran_sys.curr._states
+                  or qvar in QInference.tran_sys.finite_system.states
                 )
     
     def _add_key_qvar_to_partition(self, key, qvar):
@@ -496,7 +491,7 @@ class QInference():
         return sort_count
 
     def _add_sort_qvars(self, sort, sort_count):
-        qvars = QInference.tran_sys._enum2qvar[sort]
+        qvars = QInference.tran_sys.sort2qvars[sort]
         if (len(qvars) < sort_count):
             new_qvars = []
             for i in range(len(qvars), sort_count):

@@ -10,6 +10,7 @@ class QrmOptions():
         self.ivy_filename  = ''
         self.vmt_filename  = ''
         self.size_str      = ''
+        self.sizes         = {} # sort name to size
         self.instance_suffix = ''
         self.mode  = Mode.ivy
         self.useMC = UseMC.sat
@@ -31,6 +32,24 @@ class QrmOptions():
     def write_log(self, lines) -> None:
         self.log_fout.write(lines)
         self.log_fout.flush()
+
+    def set_sizes(self, size_str):
+        self.size_str        = size_str
+        self.instance_suffix = size_str.replace('=', '_').replace(',', '_')
+        import re
+        tokens = re.split('=|,', self.size_str)
+        i = 0
+        while i < len(tokens)-1:
+            sort = tokens[i]
+            size = tokens[i+1]
+            i += 2
+            if len(sort) == 0 or len(size) == 0:
+                break
+            if not size.isdigit():
+                break
+            if sort in self.sizes:
+                break
+            self.sizes[sort] = int(size)
 
 def get_instances_from_yaml(yaml_name):
     import yaml
