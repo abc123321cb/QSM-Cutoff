@@ -154,10 +154,16 @@ class Protocol():
                     self._read_states(line, states)
 
     def _init_sort(self, tran_sys : TransitionSystem) -> None:
-        for (sort, elements) in tran_sys.sort2elems.items():
+        for (sort, sort_elems) in tran_sys.sort2elems.items():
             line = '.s ' + tran_sys.get_sort_name_from_finite_sort(sort)
-            for e in elements:
-                line += ' ' + pretty_print_str(e)
+            if sort in tran_sys.dep_types:
+                num_sets = len(sort_elems)
+                sort_elems = []
+                for set_id in range(num_sets):
+                    sort_elems.append(tran_sys.get_set_label_with_elements(sort, set_id, set_delim))
+            else:
+                sort_elems = [pretty_print_str(elem) for elem in sort_elems]
+            line += ' ' + ' '.join(sort_elems)
             self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
@@ -177,7 +183,7 @@ class Protocol():
 
     def _init_predicate(self, tran_sys : TransitionSystem) -> None:
         for pred in tran_sys.get_predicates():
-            pred_line  = '.p ' + str(pred)
+            line  = '.p ' + str(pred)
             eq_term    = ''
             param_list = []
             pred_sym = pred.symbol_type()
@@ -194,16 +200,16 @@ class Protocol():
                eq_term = '='
                param_list.append(str(pred_sym._return_type))
             
-            pred_line += eq_term
+            line += eq_term
             if len(param_list) > 0:
-                pred_line += ' ' + ' '.join(param_list)
+                line += ' ' + ' '.join(param_list)
             
-            self._read_predicate(pred_line)
+            self._read_predicate(line)
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(pred_line)
+                self.lines.append(line)
 
     def _init_atoms(self, reachblty) -> None:
-        atom_line = '.a'
+        line = '.a'
         for atom in reachblty.stvars:
             predicate = '' 
             args     = []
@@ -232,10 +238,10 @@ class Protocol():
                 atom = format_eq_atom(predicate, new_args)
             else:
                 atom = format_atom(predicate,new_args)
-            atom_line +=  ' ' + atom
-        self._read_atoms(atom_line)
+            line +=  ' ' + atom
+        self._read_atoms(line)
         if self.options.writeReach or self.options.verbosity > 3:
-            self.lines.append(atom_line)
+            self.lines.append(line)
 
     def _init_reachable_states(self, reachblty) -> None:
         for state in reachblty.states:

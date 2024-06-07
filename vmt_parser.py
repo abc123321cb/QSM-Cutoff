@@ -97,10 +97,6 @@ class TransitionSystem(SmtLibParser):
             self.sort2qvars[enum_sort] = enum_qvars
             self.sort_inf2fin[sort]       = enum_sort
             self.sort_fin2inf[enum_sort]  = sort
-            
-            vprint_title(self.options, 'TransitionSystem:_add_sort', 5)
-            vprint(self.options, f'(enumsort) {str(sort)} <-> {str(enum_sort)}', 5)
-            vprint(self.options, f'\t {pretty_print_set(enum_qvars)} <-> {pretty_print_set(enum_elems)}', 5)
 
     def _read_sort(self, fmla, annot_list):
         assert(len(annot_list)==1)
@@ -376,9 +372,9 @@ class TransitionSystem(SmtLibParser):
         return pretty_print_str(sets[set_id])
 
     def get_set_label_with_elements(self, set_sort, set_id, delim):
-        # e.g. quorum-n1-n2
+        # e.g. q-n1-n2
         elems_in_set = self.get_elements_in_set(set_sort, set_id)
-        label_header = self.get_sort_name_from_finite_sort(set_sort)
+        label_header = self.get_sort_name_from_finite_sort(set_sort)[0]
         labels = []
         for elem in elems_in_set:
             labels.append(pretty_print_str(elem))
