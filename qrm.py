@@ -143,8 +143,8 @@ def qrm(args):
             tracemalloc.start()
             vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             options.set_sizes(size_str)
-            tran_sys_orig  = get_transition_system(options.vmt_filename, size_str) # orig
             tran_sys  = vmt_parse(options, options.vmt_filename)
+            tran_sys_orig  = get_transition_system(options.vmt_filename, options.sizes) # orig
             reachblty = get_forward_reachability(tran_sys_orig) #FIXME
             protocol  = Protocol(options)
             protocol.initialize(tran_sys, reachblty)

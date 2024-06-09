@@ -2,9 +2,14 @@ from typing import Type
 from frontend.vmt_parser import TransitionSystem, vmt_parse
 import frontend.common as common
 
-def get_transition_system(vmt_filename : str, size_str : str) -> TransitionSystem:
+def get_transition_system(vmt_filename : str, sizes) -> TransitionSystem:
     # frontend setup
     common.initialize() 
+    size_str_list = []
+    for sort, size in sizes.items():
+        size_str_list.append(f'{sort}={size}')
+    size_str = ','.join(size_str_list)
+    print(size_str)
     common.gopts.size = size_str
 
     # parse vmt

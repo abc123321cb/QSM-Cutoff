@@ -95,25 +95,27 @@ class TransitionSystem(SmtLibParser):
         return enum_qvars
 
     def _add_sort(self, sort, size):
+        assert(size > 0)
+        self.options.sizes[str(sort)] = size
         self.infinite_sorts.add(sort)
-        if  size > 0:
-            enum_elem_names = self._get_enum_element_names(sort, size)
-            enum_sort       = self._get_enum_sort(sort, enum_elem_names)
-            enum_elems      = self._get_enum_elements(enum_sort, enum_elem_names)
-            enum_qvars      = self._get_enum_qvars(enum_sort, enum_elem_names)
-            self.sort2elems[enum_sort] = enum_elems
-            self.sort2qvars[enum_sort] = enum_qvars
-            self.sort_inf2fin[sort]       = enum_sort
-            self.sort_fin2inf[enum_sort]  = sort
+        enum_elem_names = self._get_enum_element_names(sort, size)
+        enum_sort       = self._get_enum_sort(sort, enum_elem_names)
+        enum_elems      = self._get_enum_elements(enum_sort, enum_elem_names)
+        enum_qvars      = self._get_enum_qvars(enum_sort, enum_elem_names)
+        self.sort2elems[enum_sort]    = enum_elems
+        self.sort2qvars[enum_sort]    = enum_qvars
+        self.sort_inf2fin[sort]       = enum_sort
+        self.sort_fin2inf[enum_sort]  = sort
 
     def _read_sort(self, fmla, annot_list):
         assert(len(annot_list)==1)
-        size = annot_list[0]
+        size = int(annot_list[0])
         sort = fmla.symbol_type()
         sort_str = str(sort)
         if sort_str in self.options.sizes:
             size = self.options.sizes[sort_str]
-        self._add_sort(sort, size)
+        if size > 0:
+            self._add_sort(sort, size)
 
     def _read_init(self, fmla):
         self.infinite_system.init.add(fmla)
@@ -181,19 +183,39 @@ class TransitionSystem(SmtLibParser):
         defn_name = annot_list[0]
         self.infinite_system.definitions[defn_name] = fmla 
 
-    def _read_declared_sort(self, script):
-        declares = script.filter_by_command_name('declare-sort')
-        for declare in declares:
-            sort = declare.args[0]
-            if sort not in self.infinite_sorts:
-                assert(0)
-
     def _read_declared_symbols(self, script):
         symbols = script.get_declared_symbols()
         for sym in symbols:
             self.infinite_system.symbols.add(sym)
             if sym not in self.infinite_system.states and sym not in self.infinite_system.next_states:
                 self.infinite_system.non_state_symbols.add(sym)
+
+    def _get_set_sort(self, dep_relation, inf2fin=False):
+        dep_type = dep_relation.symbol_type()
+        assert(len(dep_type.param_types) == 2)
+        set_sort  = dep_type.param_types[1]
+        if inf2fin:
+            return self.sort_inf2fin[set_sort]
+        return set_sort
+
+    def _get_element_sort(self, dep_relation, inf2fin=False):
+        dep_type = dep_relation.symbol_type()
+        assert(len(dep_type.param_types) == 2)
+        elem_sort = dep_type.param_types[0]
+        if inf2fin:
+            return self.sort_inf2fin[elem_sort]
+        return elem_sort
+
+    def _add_dependent_sorts(self):
+        from math import comb 
+        for symbol in self.infinite_system.global_symbols:
+            if str(symbol) in registered_dependent_relations:
+                dep_relation  = symbol 
+                select_func   = registered_dependent_relations[str(symbol)]
+                elem_sort     = self._get_element_sort(dep_relation, inf2fin=True) # finite
+                set_sort      = self._get_set_sort(dep_relation) # infinite
+                elem_size     = self.get_sort_size(elem_sort)
+                self._add_sort(set_sort, comb(elem_size, select_func(elem_size)))
 
     def read_infinite_system_from_vmt(self, vmt_file):
         script = self._parser.get_script(vmt_file)
@@ -202,7 +224,7 @@ class TransitionSystem(SmtLibParser):
         for fmla, annot in annotations.items():
             for label, annot_set in annot.items():
                 annot_list = list(annot_set)
-                if label == 'sort':
+                if   label == 'sort':
                     self._read_sort(fmla, annot_list)
                 elif label == 'init':
                     self._read_init(fmla)
@@ -220,8 +242,8 @@ class TransitionSystem(SmtLibParser):
                     self._read_global_symbol(fmla, annot_list)
                 else:
                     assert(0)
-        self._read_declared_sort(script)
         self._read_declared_symbols(script)
+        self._add_dependent_sorts()
 
     def _set_finitized_init(self):
         self.finite_system.init = set()
@@ -292,32 +314,20 @@ class TransitionSystem(SmtLibParser):
         for next_sym, prev_sym in self.infinite_system.next2prev.items():
             self.finite_system.next2prev[next_sym.fsubstitute()] = prev_sym.fsubstitute()
 
-
-    def _get_set_sort(self, dep_relation):
-        dep_type = dep_relation.symbol_type()
-        assert(len(dep_type.param_types) == 2)
-        set_sort  = dep_type.param_types[1]
-        return set_sort
-
-    def _get_element_sort(self, dep_relation):
-        dep_type = dep_relation.symbol_type()
-        assert(len(dep_type.param_types) == 2)
-        elem_sort = dep_type.param_types[0]
-        return elem_sort
-
     def _instantiate_dependent_types(self):
         for symbol in self.infinite_system.global_symbols:
             if str(symbol) in registered_dependent_relations:
-                dep_relation  = symbol.fsubstitute() 
-                select_func = registered_dependent_relations[str(symbol)]
-                elem_sort = self._get_element_sort(dep_relation)
-                set_sort  = self._get_set_sort(dep_relation)
-                elem_size = self.get_sort_size(elem_sort)
-                dep_type  = DependentType(dep_relation, set_sort, elem_sort, elem_size, select_func)
+                dep_relation = symbol.fsubstitute() 
+                select_func  = registered_dependent_relations[str(symbol)]
+                elem_sort    = self._get_element_sort(dep_relation)
+                set_sort     = self._get_set_sort(dep_relation)
+                elem_size    = self.get_sort_size(elem_sort)
+                dep_type     = DependentType(dep_relation, set_sort, elem_sort, elem_size, select_func)
                 self.dep_types[set_sort] = dep_type
 
     def set_finite_system(self):
         get_env().fsubstituter.set_ssubs(self.sort_inf2fin, self._idx, False)
+        self._instantiate_dependent_types()
         self._set_finitized_init()
         self._set_finitized_axioms()
         self._set_finitized_actions()
@@ -331,7 +341,6 @@ class TransitionSystem(SmtLibParser):
         self._set_finitized_leq_symbols()
         self._set_finitized_prev_to_next()
         self._set_finitized_next_to_prev()
-        self._instantiate_dependent_types()
         self._idx += 1
 
     # public access functions 
