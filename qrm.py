@@ -145,7 +145,7 @@ def qrm(args):
             options.set_sizes(size_str)
             tran_sys  = vmt_parse(options, options.vmt_filename)
             tran_sys_orig  = get_transition_system(options.vmt_filename, options.sizes) # orig
-            reachblty = get_forward_reachability(tran_sys_orig) #FIXME
+            reachblty = get_forward_reachability(tran_sys_orig, tran_sys, options) #FIXME
             protocol  = Protocol(options)
             protocol.initialize(tran_sys, reachblty)
             time_stamp = get_time(options, time_start, time_stamp)
