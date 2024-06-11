@@ -4,6 +4,7 @@ from frontend.utils import *
 from vmt_parser import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
+from util import FormulaPrinter as printer
 from verbose import *
 from more_itertools import set_partitions
 from itertools import product, permutations
@@ -14,12 +15,12 @@ def get_used_qvars(sort2qvars, sort):
     qvars = sort2qvars[sort]
     return qvars
 
-def get_next_unused_qvar(tran_sys, sort, qvars):
+def get_next_unused_qvar(tran_sys : TransitionSystem, sort, qvars):
     qvar_id = len(qvars)
     qvar    = tran_sys.sort2qvars[sort][qvar_id]
     return qvar
 
-def replace_var_with_qvar(tran_sys, terms):
+def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
     # relabel each var into qvar with index being order of occurrence
     # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
     state =  And(terms) if len(terms) != 0 else TRUE()
@@ -43,7 +44,10 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
     terms = []
     args = set()
     for atom in atoms:
-        for arg in atom.args():
+        atom_args = atom.args()
+        if atom.is_equals():
+            atom_args = [atom_args[1]]
+        for arg in atom_args:
             args.add(arg)
     for arg in args:
         if arg.get_type() in tran_sys.dep_types:
@@ -62,7 +66,7 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
                         terms.append(Not(member_symb))
     return terms 
 
-def get_qterms(tran_sys, atoms, prime):
+def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
     values = prime.values
     terms = []
     atom_symbols = []
@@ -92,8 +96,11 @@ def split_signed_func_name(func_name):
     fname   = splitted[1]
     return (is_neg, fname)
 
-def get_signed_func_name(sign, atom):
-    return sign + '.' + str(atom.function_name())
+def get_signed_func_name(sign, fname : str, is_equals=False):
+    if is_equals:
+        return sign + '.' + fname + '=' 
+    else:
+        return sign + '.' + fname
 
 class QPrime():
     # static members
@@ -118,10 +125,26 @@ class QPrime():
         for term in terms:
             (sign, atom)  = split_term(term)
             if atom.is_function_application():
-                fname = get_signed_func_name(sign, atom)
+                fsymbol = atom.function_name()
+                fname = get_signed_func_name(sign, str(fsymbol))
                 self.add_fname_args(fname, atom.args())
+            elif atom.is_equals():
+                lhs = atom.arg(0)
+                # func_name2symbol
+                fsymbol = None
+                if lhs.is_function_application():
+                    fsymbol = lhs.function_name()
+                else:
+                    fsymbol = lhs
+                args = []
+                if lhs.is_function_application():
+                    args += fsymbol.symbol_type()._param_types
+                args.append(atom.arg(1))
+                fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
+                self.add_fname_args(fname, tuple(args))
 
         vprint_title(self.options, 'QPrime: set_function_name_to_arguments', 5)
+        vprint(self.options, f'terms: {terms}', 5)
         vprint(self.options, f'func_name2args: {self.func_name2args}', 5)
 
     def _get_arg_signature(self, signed_fname, func_id, arg_id, qvar):
@@ -143,6 +166,7 @@ class QPrime():
                     self._add_qvar_signature(qvar, signatr)
         vprint_title(self.options, 'QPrime: set_qvar_to_argument_signatures', 5)
         vprint(self.options, f'qvar2arg_signatr: {self.qvar2arg_signatrs}', 5)
+        vprint(self.options, f'signatr2qvar: {self.signatr2qvar}', 5)
 
     def _add_sort_part_signatures(self, qvar, part_signatr):
         sort = qvar.symbol_type()
@@ -207,23 +231,39 @@ class Merger():
     def _add_fname_args(self, fname, args):
         if not fname in self.func_name2args: 
             self.func_name2args[fname] = [] 
-        self.func_name2args [fname].append(args)
+        self.func_name2args[fname].append(args)
 
     def initialize(self):
         # set: (1) self.atoms, (2) self.func_name2symbol, (3) self.func2name_args
         terms = get_qterms(Merger.tran_sys, Merger.atoms, self.sub_repr_primes[0])
         for term in terms:
             (sign, atom)  = split_term(term)
+            # atoms
+            self.atoms.append(atom)
             if atom.is_function_application():
-                # atoms
-                self.atoms.append(atom)
                 # func_name2symbol
                 fsymbol = atom.function_name()
                 self.func_name2symbol[str(fsymbol)] = fsymbol
                 # func_name2args
                 args    = fsymbol.symbol_type()._param_types
-                fname   = get_signed_func_name(sign, atom) 
+                fname   = get_signed_func_name(sign, str(fsymbol)) 
                 self._add_fname_args(fname, args)
+            elif atom.is_equals():
+                lhs = atom.arg(0)
+                # func_name2symbol
+                fsymbol = None
+                if lhs.is_function_application():
+                    fsymbol = lhs.function_name()
+                else:
+                    fsymbol = lhs
+                self.func_name2symbol[str(fsymbol)+'='] = fsymbol
+                # func_name2args
+                args = []
+                if lhs.is_function_application():
+                    args += fsymbol.symbol_type()._param_types
+                args.append(atom.arg(1))
+                fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
+                self._add_fname_args(fname, tuple(args))
 
         vprint_title(self.options, 'Merger: _set_atom_list', 5)
         vprint(self.options, f'terms:  {terms      }', 5)
@@ -439,17 +479,31 @@ class Merger():
             args.append(qvar)
         return args
 
+    def _get_merged_term(self, signed_fname, func_id, func_args):
+        args = self._get_func_mapped_args(signed_fname, func_id, func_args)
+        (sign, fname) = split_signed_func_name(signed_fname)
+        fsymbol = self.func_name2symbol[fname]
+        merged_term = None
+        if fname.endswith('='):
+            lhs = None
+            if len(args) > 1:
+                lhs = Function(fsymbol, args[:-1])
+            else: 
+                lhs = fsymbol
+            rhs = args[-1]
+            merged_term = EqualsOrIff(lhs,rhs)
+        else:
+            merged_term = Function(fsymbol, args)
+        if sign == '1':
+            merged_term = Not(merged_term)
+        return merged_term
+
     def _get_merged_terms(self):
         self._map_arg_signature_to_qvar()
         merged_terms = []
         for signed_fname, arg_list in self.func_name2args.items():
             for func_id, func_args in enumerate(arg_list):
-                args = self._get_func_mapped_args(signed_fname, func_id, func_args)
-                (sign, fname) = split_signed_func_name(signed_fname)
-                fsymbol = self.func_name2symbol[fname]
-                merged_term = Function(fsymbol, args)
-                if sign == '1':
-                    merged_term = Not(merged_term)
+                merged_term = self._get_merged_term(signed_fname, func_id, func_args)
                 merged_terms.append(merged_term)
         return merged_terms
 
@@ -462,7 +516,7 @@ class Merger():
             qstate = Exists(qvars, qstate)
         qclause = Not(qstate)
         vprint_title(self.options, 'Merger: _get_unconstrained_qclause', 5)
-        vprint(self.options, f'qclause: {pretty_print_str(qclause)}', 5) 
+        vprint(self.options, f'qclause: {printer.pretty_print_str(qclause)}', 5) 
         return qclause
 
     def _get_all_qvars(self):
@@ -632,7 +686,7 @@ class Merger():
         # qstate: forall Q ( ~merge_terms | (eq1 & eq2) | (eq3 & eq4) )
         qclause = Not(qstate)
         vprint_title(self.options, 'Merger: _get_constrained_qclause', 5)
-        vprint(self.options, f'qclause: {pretty_print_str(qclause)}', 5)
+        vprint(self.options, f'qclause: {printer.pretty_print_str(qclause)}', 5)
         return qclause 
 
     def merge(self):
