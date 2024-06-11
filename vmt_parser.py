@@ -1,17 +1,47 @@
 from __future__ import print_function
 import sys
 from pysmt.smtlib.parser import SmtLibParser
-from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, Int, Ite, ForAll,\
-                            Function, Enum, UnsatCoreSolver, Exists, Implies, TRUE
-from pysmt.typing import INT, BVType, EnumType, BOOL, FunctionType
+from pysmt.shortcuts import Symbol, Not, Enum
+from pysmt.typing import EnumType
 from pysmt.environment import get_env
-from pysmt.pretty_printer import pretty_serialize
 
-from   frontend.utils import eprint, time_str, pretty_print_set, pretty_print, pretty_print_str, SORT_SUFFIX, flatten_and, num_majority, substituteDefinitions, parseSizes
-from   verbose import *
+from util import FormulaPrinter as printer
+from util import SORT_SUFFIX
+from verbose import *
 
 registered_dependent_relations           = {}
 registered_dependent_relations['member'] = lambda elem_size : int(elem_size/2)+1 # member selection function
+
+# utils
+def flatten_or(cube):
+    flat = set()
+    cube_flat = cube
+        
+    if (cube_flat.is_or()):
+        for arg in cube_flat.args():
+            for flat_arg in flatten_or(arg):
+                flat.add(flat_arg)
+    else:
+        flat.add(cube_flat)
+    return flat
+
+def flatten_and(formula):
+    flat = set()
+    if (formula.is_and()):
+        for arg in formula.args():
+            for flat_arg in flatten_and(arg):
+                flat.add(flat_arg)
+    elif (formula.is_not()):
+        formulaNeg = formula.arg(0)
+        if formulaNeg.is_or():
+            for arg in formulaNeg.args():
+                for flat_arg in flatten_or(arg):
+                    flat.add(Not(flat_arg))
+        else:
+            flat.add(formula)
+    else:
+        flat.add(formula)
+    return flat
 
 class DependentType():
     def __init__(self, dep_relation, set_sort, elem_sort, elem_size, select_func):
@@ -57,7 +87,7 @@ class TransitionSystem(SmtLibParser):
         self.sort_inf2fin    = dict()   # infinite sort to enumsort
         self.infinite_system = System() # original infinite system from vmt
         self.finite_system   = System() # finitized system 
-        self._idx = 0                   # FIXME ????
+        self._idx = 0                   # subscript for enum type
         # dependent sorts
         self.dep_types       = dict()   # "quorum" to quorum meta data (e.g. "member", "node" ...) 
 
@@ -213,8 +243,8 @@ class TransitionSystem(SmtLibParser):
                 dep_relation  = symbol 
                 select_func   = registered_dependent_relations[str(symbol)]
                 elem_sort     = self._get_element_sort(dep_relation, inf2fin=True) # finite
-                set_sort      = self._get_set_sort(dep_relation) # infinite
                 elem_size     = self.get_sort_size(elem_sort)
+                set_sort      = self._get_set_sort(dep_relation) # infinite
                 self._add_sort(set_sort, comb(elem_size, select_func(elem_size)))
 
     def read_infinite_system_from_vmt(self, vmt_file):
@@ -381,15 +411,15 @@ class TransitionSystem(SmtLibParser):
 
     def get_set_label_with_id(self, set_sort, set_id):
         sets = self.get_sets(set_sort) 
-        return pretty_print_str(sets[set_id])
+        return printer.pretty_print_enum_constant(sets[set_id])
 
     def get_set_label_with_elements(self, set_sort, set_id, delim):
         # e.g. q-n1-n2
         elems_in_set = self.get_elements_in_set(set_sort, set_id)
-        label_header = self.get_sort_name_from_finite_sort(set_sort)[0]
+        label_header = self.get_sort_name_from_finite_sort(set_sort)
         labels = []
         for elem in elems_in_set:
-            labels.append(pretty_print_str(elem))
+            labels.append(printer.pretty_print_enum_constant(elem))
         labels.sort()
         labels = [label_header] + labels
         return delim.join(labels)

@@ -1,10 +1,11 @@
 import sys
 from typing import Dict,List
 from pysat.solvers import Cadical153 as SatSolver 
-from frontend.utils import count_quantifiers_and_literals, pretty_print_str
+from frontend.utils import count_quantifiers_and_literals
 from protocol import Protocol 
 from dualrail import DualRailNegation
 from util import QrmOptions
+from util import FormulaPrinter as printer
 from verbose import *
 
 def make_key(values: List[str], protocol : Protocol) -> str:
@@ -95,12 +96,12 @@ class PrimeOrbit():
 
     def set_quantifier_inference_result(self, qclause):
         num_forall, num_exists, num_literals = count_quantifiers_and_literals(qclause)
-        self.num_forall    = num_forall
-        self.num_exists    = num_exists
-        self.num_literals  = num_literals
-        self.qcost         = num_forall + num_exists + num_literals
-        self.qclause       = qclause
-        self.quantified_form = pretty_print_str(qclause)
+        self.num_forall      = num_forall
+        self.num_exists      = num_exists
+        self.num_literals    = num_literals
+        self.qcost           = num_forall + num_exists + num_literals
+        self.qclause         = qclause
+        self.quantified_form = printer.pretty_print_str(qclause)
 
     @staticmethod
     def reset() -> None:

@@ -51,6 +51,81 @@ class QrmOptions():
                 break
             self.sizes[sort] = int(size)
 
+from pysmt.pretty_printer import pretty_serialize
+SORT_SUFFIX = ':e'
+class FormulaPrinter():
+
+    name_set   = set()
+    sort_count = {}
+    qvar_count = 0
+
+    @staticmethod
+    def reset():
+        FormulaPrinter.name_set   = set()
+        FormulaPrinter.sort_count = {}
+        FormulaPrinter.qvar_count = 0
+
+    def pretty_print_enum_constant(enum):
+        assert(enum.is_enum_constant())
+        name = enum.constant_value()
+        prefix = name.rstrip('1234567890')
+        suffix = name[len(prefix):]
+        prefix = prefix.rstrip(':1234567890')
+        assert(prefix.endswith(SORT_SUFFIX))
+        prefix = prefix[:-2]
+        return prefix+suffix
+
+    def pretty_print_quantified_var(qvar):
+        name   = str(qvar)
+        suffix = name.rstrip('1234567890')
+        name   = name[len(suffix):]
+        assert(len(name) != 0)
+        var_type = qvar.symbol_type()
+        sort_name = str(var_type)[0].upper()
+        if sort_name not in FormulaPrinter.sort_count:
+            FormulaPrinter.sort_count[sort_name] = 0
+        name = sort_name + str(FormulaPrinter.sort_count[sort_name])
+        FormulaPrinter.sort_count[sort_name] += 1
+        if name in FormulaPrinter.name_set:
+            name = name + '_' + str(FormulaPrinter.qvar_count)
+            FormulaPrinter.qvar_count += 1
+        FormulaPrinter.name_set.add(name)
+        return name
+    
+    def pretty_print_free_var(fvar):
+        name = str(fvar)
+        name = name.lstrip('_')
+        suffix = name.rstrip('1234567890')
+        if len(suffix) != 0:
+            tmp_name = name[:len(suffix)]
+            if tmp_name.endswith(SORT_SUFFIX):
+                name = tmp_name[:-2]
+        return name
+
+    def pretty_print_str(fmla, mode=0, reset=True):
+        FormulaPrinter.reset()
+        subs = {}
+        qvars   = fmla.get_quantifier_variables()
+        for qvar in qvars:
+            name = FormulaPrinter.pretty_print_quantified_var(qvar)
+            subs[qvar] = name
+        fvars = fmla.get_free_variables()
+        for fvar in fvars:
+            name = FormulaPrinter.pretty_print_free_var(fvar)
+            subs[fvar] = name
+        enums = fmla.get_enum_constants()
+        for enum in enums:
+            name = FormulaPrinter.pretty_print_enum_constant(enum)
+            subs[enum] = name
+        if reset:
+            mode = 0
+        return pretty_serialize(fmla, mode=mode, subs=subs)
+
+    def pretty_print_set(set_to_print, mode=1):
+        list_to_print = [pretty_serialize(elem) for elem in set_to_print]
+        res = '[ ' + ', '.join(list_to_print) + ' ]'
+        return res
+
 def get_instances_from_yaml(yaml_name):
     import yaml
     import itertools

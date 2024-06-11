@@ -4,8 +4,8 @@ from itertools import permutations, product
 from pysmt.fnode import FNode
 from forward import Reachability
 from vmt_parser import TransitionSystem
-from frontend.utils import pretty_print_str
-from util import QrmOptions 
+from util import QrmOptions
+from util import FormulaPrinter as printer 
 from verbose import *
 
 # utils
@@ -162,7 +162,7 @@ class Protocol():
                 for set_id in range(num_sets):
                     sort_elems.append(tran_sys.get_set_label_with_elements(sort, set_id, set_delim))
             else:
-                sort_elems = [pretty_print_str(elem) for elem in sort_elems]
+                sort_elems = [printer.pretty_print_enum_constant(elem) for elem in sort_elems]
             line += ' ' + ' '.join(sort_elems)
             self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:

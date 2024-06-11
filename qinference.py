@@ -4,6 +4,7 @@ from frontend.utils import *
 from vmt_parser import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
+from util import FormulaPrinter as printer
 from verbose import *
  
 
@@ -108,7 +109,7 @@ class QInference():
         literals += self._add_member_literals_for_dependent_sorts(atoms)
         self.repr_state =  And(literals) if len(literals) != 0 else TRUE()
         vprint_title(self.options, 'set_repr_state', 5)
-        vprint(self.options, f'repr_state: {pretty_print_str(self.repr_state)}', 5)
+        vprint(self.options, f'repr_state: {printer.pretty_print_str(self.repr_state)}', 5)
 
     def _get_used_qvars(self, sort):
         if not sort in self.sort2qvars:         
@@ -161,7 +162,7 @@ class QInference():
                 for j in range(i+1, len(qvars)):
                     neq = Not(EqualsOrIff(qvars[i], qvars[j]))
                     self.neq_constraints[sort].append(neq)
-                    vprint(self.options, pretty_print_str(neq), 5)
+                    vprint(self.options, printer.pretty_print_str(neq), 5)
 
     def _get_instantiated_vars(self, sort):
         if sort not in self.sort2ivars:
@@ -192,8 +193,8 @@ class QInference():
         self.qstate = self.qstate.simple_substitute(self.var2qvar)
         self.qterms = flatten_cube(self.qstate)
         vprint_title(self.options, 'set_qstate', 5)
-        vprint(self.options, f'qstate: {pretty_print_str(self.qstate)}', 5)
-        vprint(self.options, f'qterms: {pretty_print_set(self.qterms)}', 5)
+        vprint(self.options, f'qstate: {printer.pretty_print_str(self.qstate)}', 5)
+        vprint(self.options, f'qterms: {printer.pretty_print_set(self.qterms)}', 5)
 
     def _split_eq(self, eq_term):
         lhs = eq_term.arg(0)
@@ -289,10 +290,10 @@ class QInference():
         vprint_title(self.options, 'get_state_from_terms', 5)
         vprint(self.options, f'{qterms}', 5)
         qstate = And(qterms)
-        vprint(self.options, f'qstate before exist: {pretty_print_str(qstate)}', 5)
+        vprint(self.options, f'qstate before exist: {printer.pretty_print_str(qstate)}', 5)
         if len(self.qvars_set) != 0: 
             qstate = Exists(self.qvars_set, qstate)
-        vprint(self.options, f'qstate after exist: {pretty_print_str(qstate)}', 5)
+        vprint(self.options, f'qstate after exist: {printer.pretty_print_str(qstate)}', 5)
         return qstate
 
     def conjunct_qstate_with_neq_constraints(self):
@@ -317,7 +318,7 @@ class QInference():
         qstate = self.conjunct_qstate_with_neq_constraints()
         self.results.append((qstate, 'forall'))
         vprint_title(self.options, 'infer_forall', 5)
-        vprint(self.options, pretty_print_str(qstate), 5)
+        vprint(self.options, printer.pretty_print_str(qstate), 5)
 
     def init_infer(self):
         vprint_title(self.options, 'init_infer', 5)
@@ -719,7 +720,7 @@ class QInference():
             qstate = result[0]
             qstate = Not(qstate)
             self.results[i] = (qstate, result[1])
-            vprint(self.options, f'({pretty_print_str(qstate)}, {result[1]})', 5)
+            vprint(self.options, f'({printer.pretty_print_str(qstate)}, {result[1]})', 5)
 
     def infer_quantifier(self):
         # original
