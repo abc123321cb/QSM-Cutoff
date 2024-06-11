@@ -1,18 +1,19 @@
 from __future__ import print_function
 import sys
 from pysmt.smtlib.parser import SmtLibParser
-from pysmt.shortcuts import Symbol, Not, Enum
+from pysmt.shortcuts import Symbol, Not, Enum, Function
 from pysmt.typing import EnumType
 from pysmt.environment import get_env
 
 from util import FormulaPrinter as printer
-from util import SORT_SUFFIX
+from util import SORT_SUFFIX, SET_DELIM
 from verbose import *
 
 registered_dependent_relations           = {}
 registered_dependent_relations['member'] = lambda elem_size : int(elem_size/2)+1 # member selection function
 
 # utils
+set_delim = SET_DELIM
 def flatten_or(cube):
     flat = set()
     cube_flat = cube
@@ -60,7 +61,7 @@ class System():
         # formulas
         self.init              = set()
         self.axioms            = set()
-        self.actions           = list()
+        self.actions           = list()  
         self.invar_props       = set()   # invariant properties
         self.definitions       = dict()
         # symbols
@@ -80,7 +81,7 @@ class TransitionSystem(SmtLibParser):
         self.options    = options
         self._parser    = SmtLibParser(env,interactive)
         # data
-        self.infinite_sorts  = set()    # sort of infinite size
+        self.infinite_sorts  = dict()   # sort name to sort of infinite size
         self.sort2elems      = dict()   # finite sort to finite set of elements
         self.sort2qvars      = dict()   # finit sort to quantified variables
         self.sort_fin2inf    = dict()   # finit sort to infinite sort
@@ -126,8 +127,8 @@ class TransitionSystem(SmtLibParser):
 
     def _add_sort(self, sort, size):
         assert(size > 0)
-        self.options.sizes[str(sort)] = size
-        self.infinite_sorts.add(sort)
+        self.options.sizes[str(sort)]  = size
+        self.infinite_sorts[str(sort)] = sort
         enum_elem_names = self._get_enum_element_names(sort, size)
         enum_sort       = self._get_enum_sort(sort, enum_elem_names)
         enum_elems      = self._get_enum_elements(enum_sort, enum_elem_names)
@@ -377,32 +378,49 @@ class TransitionSystem(SmtLibParser):
     def get_sort_name_from_finite_sort(self, sort):
         return str(self.sort_fin2inf[sort])
 
+    def get_finite_sort_from_sort_name(self, sort_name):
+        inf_sort = self.infinite_sorts[sort_name]
+        return self.sort_inf2fin[inf_sort]
+
     def get_predicates(self):
-        return self.infinite_system.next_states
+        return list(self.infinite_system.next_states)
 
     def get_sort_size(self, sort):
         sort_name = self.get_sort_name_from_finite_sort(sort)
         sort_size = self.options.sizes[sort_name]
         return sort_size
 
+    def get_finite_sort_elements_str(self, sort_name):
+        sort = self.get_finite_sort_from_sort_name(sort_name)
+        sort_elems = self.sort2elems[sort]
+        if sort in self.dep_types:
+            num_sets   = len(sort_elems)
+            sort_elems = []
+            for set_id in range(num_sets):
+                sort_elems.append(self.get_set_label_with_elements(sort, set_id))
+        else:
+            sort_elems = [printer.pretty_print_enum_constant(elem) for elem in sort_elems]
+        return sort_elems
+
+    # dependent types
     def get_dep_relation(self, set_sort):
         dep_type  = self.dep_types[set_sort]
         return dep_type.dep_relation
 
-    def get_element_sort(self, set_sort):
+    def get_dep_element_sort(self, set_sort):
         dep_type  = self.dep_types[set_sort]
         elem_sort = dep_type.elem_sort
         return elem_sort
 
-    def get_elements(self, set_sort):
-        elem_sort = self.get_element_sort(set_sort)
+    def get_dep_elements(self, set_sort):
+        elem_sort = self.get_dep_element_sort(set_sort)
         return self.sort2elems[elem_sort]
 
-    def get_sets(self, set_sort):
+    def get_dep_sets(self, set_sort):
         return self.sort2elems[set_sort]
 
-    def get_elements_in_set(self, set_sort, set_id):
-        elements     = self.get_elements(set_sort)
+    def get_dep_elements_in_set(self, set_sort, set_id):
+        elements     = self.get_dep_elements(set_sort)
         elem_indices = self.dep_types[set_sort].sets[set_id]
         elems_in_set = set()
         for elem_id in elem_indices:
@@ -410,19 +428,37 @@ class TransitionSystem(SmtLibParser):
         return  elems_in_set 
 
     def get_set_label_with_id(self, set_sort, set_id):
-        sets = self.get_sets(set_sort) 
+        sets = self.get_dep_sets(set_sort) 
         return printer.pretty_print_enum_constant(sets[set_id])
 
-    def get_set_label_with_elements(self, set_sort, set_id, delim):
+    def get_set_label_with_elements(self, set_sort, set_id):
         # e.g. q-n1-n2
-        elems_in_set = self.get_elements_in_set(set_sort, set_id)
+        elems_in_set = self.get_dep_elements_in_set(set_sort, set_id)
         label_header = self.get_sort_name_from_finite_sort(set_sort)
         labels = []
         for elem in elems_in_set:
             labels.append(printer.pretty_print_enum_constant(elem))
         labels.sort()
         labels = [label_header] + labels
-        return delim.join(labels)
+        return set_delim.join(labels)
+    
+    def get_dep_axioms(self):
+        axioms = []
+        for set_sort in self.dep_types.keys():
+            dep_relation = self.get_dep_relation(set_sort)
+            dep_sets     = self.get_dep_sets(set_sort)
+            dep_elems    = self.get_dep_elements(set_sort)
+            for set_id, dep_set in enumerate(dep_sets):
+                elems_in_set = self.get_dep_elements_in_set(set_sort, set_id)
+                subst = {}
+                subst[dep_set] = self.get_set_label_with_elements(set_sort, set_id)
+                for elem in dep_elems:
+                    args = [elem, dep_set]
+                    dep_symbol = Function(dep_relation, args)
+                    if elem not in elems_in_set:
+                        dep_symbol = Not(dep_symbol)
+                    axioms.append(printer.pretty_print_str(dep_symbol, subst))
+        return axioms
 
 def vmt_parse(options, vmt_filename): 
     tran_sys = TransitionSystem(options)

@@ -4,12 +4,12 @@ from itertools import permutations, product
 from pysmt.fnode import FNode
 from forward import Reachability
 from vmt_parser import TransitionSystem
-from util import QrmOptions
+from util import QrmOptions, SET_DELIM
 from util import FormulaPrinter as printer 
 from verbose import *
 
 # utils
-set_delim = '-'
+set_delim = SET_DELIM
 def format_atom(predicate: str, args: List[str]) -> str:
     return predicate + '(' + ','.join(args) + ')'
 
@@ -155,26 +155,20 @@ class Protocol():
 
     def _init_sort(self, tran_sys : TransitionSystem) -> None:
         for (sort, sort_elems) in tran_sys.sort2elems.items():
-            line = '.s ' + tran_sys.get_sort_name_from_finite_sort(sort)
-            if sort in tran_sys.dep_types:
-                num_sets = len(sort_elems)
-                sort_elems = []
-                for set_id in range(num_sets):
-                    sort_elems.append(tran_sys.get_set_label_with_elements(sort, set_id, set_delim))
-            else:
-                sort_elems = [printer.pretty_print_enum_constant(elem) for elem in sort_elems]
-            line += ' ' + ' '.join(sort_elems)
+            sort_name  = tran_sys.get_sort_name_from_finite_sort(sort)
+            sort_elems = tran_sys.get_finite_sort_elements_str(sort_name)
+            line = '.s ' + sort_name + ' ' + ' '.join(sort_elems)
             self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
 
     def _init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
         for (set_sort, dep_type) in tran_sys.dep_types.items():
-            elem_sort = tran_sys.get_element_sort(set_sort)
+            elem_sort = tran_sys.get_dep_element_sort(set_sort)
             line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
             for set_id in range(len(dep_type.sets)):
                 id_label      = tran_sys.get_set_label_with_id(set_sort, set_id)
-                content_label = tran_sys.get_set_label_with_elements(set_sort, set_id, set_delim)
+                content_label = tran_sys.get_set_label_with_elements(set_sort, set_id)
                 line  += ' ' + content_label 
                 self.set_label_map[id_label]  = content_label 
             self._read_dependent_sort(line)

@@ -53,6 +53,7 @@ class QrmOptions():
 
 from pysmt.pretty_printer import pretty_serialize
 SORT_SUFFIX = ':e'
+SET_DELIM   = '_'
 class FormulaPrinter():
 
     name_set   = set()
@@ -102,9 +103,8 @@ class FormulaPrinter():
                 name = tmp_name[:-2]
         return name
 
-    def pretty_print_str(fmla, mode=0, reset=True):
+    def pretty_print_str(fmla, subs={}, mode=0, reset=True):
         FormulaPrinter.reset()
-        subs = {}
         qvars   = fmla.get_quantifier_variables()
         for qvar in qvars:
             name = FormulaPrinter.pretty_print_quantified_var(qvar)
@@ -115,8 +115,9 @@ class FormulaPrinter():
             subs[fvar] = name
         enums = fmla.get_enum_constants()
         for enum in enums:
-            name = FormulaPrinter.pretty_print_enum_constant(enum)
-            subs[enum] = name
+            if enum not in subs:
+                name = FormulaPrinter.pretty_print_enum_constant(enum)
+                subs[enum] = name
         if reset:
             mode = 0
         return pretty_serialize(fmla, mode=mode, subs=subs)
