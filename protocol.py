@@ -156,7 +156,7 @@ class Protocol():
     def _init_sort(self, tran_sys : TransitionSystem) -> None:
         for (sort, sort_elems) in tran_sys.sort2elems.items():
             sort_name  = tran_sys.get_sort_name_from_finite_sort(sort)
-            sort_elems = tran_sys.get_finite_sort_elements_str(sort_name)
+            sort_elems = tran_sys.get_pretty_elements_of_sort(sort_name)
             line = '.s ' + sort_name + ' ' + ' '.join(sort_elems)
             self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:
@@ -164,11 +164,11 @@ class Protocol():
 
     def _init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
         for (set_sort, dep_type) in tran_sys.dep_types.items():
-            elem_sort = tran_sys.get_dep_element_sort(set_sort)
+            elem_sort = tran_sys.get_dependent_element_sort(set_sort)
             line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
             for set_id in range(len(dep_type.sets)):
-                id_label      = tran_sys.get_set_label_with_id(set_sort, set_id)
-                content_label = tran_sys.get_set_label_with_elements(set_sort, set_id)
+                id_label      = tran_sys.get_indexed_set(set_sort, set_id)
+                content_label = tran_sys.get_pretty_set(set_sort, set_id)
                 line  += ' ' + content_label 
                 self.set_label_map[id_label]  = content_label 
             self._read_dependent_sort(line)
@@ -176,23 +176,23 @@ class Protocol():
                 self.lines.append(line) 
 
     def _init_predicate(self, tran_sys : TransitionSystem) -> None:
-        for pred in tran_sys.get_predicates():
-            line  = '.p ' + str(pred)
+        for var in tran_sys.get_state_variables():
+            line  = '.p ' + str(var)
             eq_term    = ''
             param_list = []
-            pred_sym = pred.symbol_type()
-            if not pred_sym.is_function_type():
-                if not pred.is_literal(): # case1: (start_node = n0)
-                    param_list = [str(pred_sym)]
+            var_sym = var.symbol_type()
+            if not var_sym.is_function_type():
+                if not var.is_literal(): # case1: (start_node = n0)
+                    param_list = [str(var_sym)]
                     eq_term    = '='
                 # else case2: bool type, no parameters 
             else: # case3: predicate/case 4: function (predicate is a function with return type bool)
-                param_list =  [str(s) for s in pred_sym._param_types]
+                param_list =  [str(s) for s in var_sym._param_types]
             # case 4: general function (dst(p0) = n0)
-            if (pred_sym.is_function_type() and
-               not pred_sym._return_type.is_bool_type()): 
+            if (var_sym.is_function_type() and
+               not var_sym._return_type.is_bool_type()): 
                eq_term = '='
-               param_list.append(str(pred_sym._return_type))
+               param_list.append(str(var_sym._return_type))
             
             line += eq_term
             if len(param_list) > 0:

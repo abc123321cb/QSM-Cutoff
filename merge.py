@@ -53,9 +53,9 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
         if arg.get_type() in tran_sys.dep_types:
             set_sort = arg.get_type()
             set_id   = int(str(arg)[-2])
-            member_func  = tran_sys.get_dep_relation(set_sort)
-            elements     = tran_sys.get_dep_elements(set_sort)
-            elems_in_set = tran_sys.get_dep_elements_in_set(set_sort, set_id)
+            member_func  = tran_sys.get_dependent_relation(set_sort)
+            elements     = tran_sys.get_dependent_elements(set_sort)
+            elems_in_set = tran_sys.get_dependent_elements_in_set(set_sort, set_id)
             for elem in elements:
                 if elem in args:
                     member_args = [elem, arg]

@@ -51,11 +51,12 @@ class QrmOptions():
                 break
             self.sizes[sort] = int(size)
 
-from pysmt.pretty_printer import pretty_serialize
+
 SORT_SUFFIX = ':e'
 SET_DELIM   = '_'
+from pysmt.pretty_printer import pretty_serialize
 class FormulaPrinter():
-
+    # static data
     name_set   = set()
     sort_count = {}
     qvar_count = 0
@@ -126,6 +127,40 @@ class FormulaPrinter():
         list_to_print = [pretty_serialize(elem) for elem in set_to_print]
         res = '[ ' + ', '.join(list_to_print) + ' ]'
         return res
+
+from pysmt.shortcuts import Not
+class FormulaUtility():
+
+    @staticmethod
+    def flatten_or(cube):
+        flat = set()
+        cube_flat = cube
+
+        if (cube_flat.is_or()):
+            for arg in cube_flat.args():
+                for flat_arg in FormulaUtility.flatten_or(arg):
+                    flat.add(flat_arg)
+        else:
+            flat.add(cube_flat)
+        return flat
+
+    def flatten_and(formula):
+        flat = set()
+        if (formula.is_and()):
+            for arg in formula.args():
+                for flat_arg in FormulaUtility.flatten_and(arg):
+                    flat.add(flat_arg)
+        elif (formula.is_not()):
+            formulaNeg = formula.arg(0)
+            if formulaNeg.is_or():
+                for arg in formulaNeg.args():
+                    for flat_arg in FormulaUtility.flatten_or(arg):
+                        flat.add(Not(flat_arg))
+            else:
+                flat.add(formula)
+        else:
+            flat.add(formula)
+        return flat 
 
 def get_instances_from_yaml(yaml_name):
     import yaml

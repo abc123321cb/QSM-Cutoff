@@ -71,9 +71,9 @@ class QInference():
             if arg.get_type() in QInference.tran_sys.dep_types:
                 set_sort = arg.get_type()
                 set_id   = int(str(arg)[-2])
-                member_func  = QInference.tran_sys.get_dep_relation(set_sort)
-                elements     = QInference.tran_sys.get_dep_elements(set_sort)
-                elems_in_set = QInference.tran_sys.get_dep_elements_in_set(set_sort, set_id)
+                member_func  = QInference.tran_sys.get_dependent_relation(set_sort)
+                elements     = QInference.tran_sys.get_dependent_elements(set_sort)
+                elems_in_set = QInference.tran_sys.get_dependent_elements_in_set(set_sort, set_id)
                 member_count = 0
                 for elem in elements:
                     if elem in args:
@@ -85,7 +85,7 @@ class QInference():
                         else:
                             literals.append(Not(member_symb))
                 if member_count == len(elems_in_set):
-                    elem_sort = QInference.tran_sys.get_dep_element_sort(set_sort)
+                    elem_sort = QInference.tran_sys.get_dependent_element_sort(set_sort)
                     self.full_occur_depending_sort.add(elem_sort)
         vprint_title(self.options, '_add_member_literals_for_dependent_sorts', 5)
         vprint(self.options, f'member literals: {literals}', 5)
