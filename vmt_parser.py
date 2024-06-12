@@ -1,9 +1,10 @@
 from __future__ import print_function
 import sys
 from pysmt.smtlib.parser import SmtLibParser
-from pysmt.shortcuts import Symbol, Not, Enum, Function
+from pysmt.shortcuts import Symbol, Not, Enum, Function, EqualsOrIff
 from pysmt.typing import EnumType
 from pysmt.environment import get_env
+from itertools import combinations, product
 
 from util import FormulaPrinter as printer
 from util import SORT_SUFFIX, SET_DELIM
@@ -63,7 +64,6 @@ class DependentType():
         self.elem_sort    = elem_sort     # e.g. "node"
         self.element_universe = elements
         self.sets         = []            # e.g. 0 -> [0,1], 1 -> [0,2], 2 -> [1,2] .....
-        from itertools import combinations
         elem_size     = len(elements)
         select_space  = list(range(elem_size))
         selections    = list(combinations(select_space, select_func(elem_size)))
@@ -164,6 +164,55 @@ class TransitionSystem(SmtLibParser):
                 dep_type     = DependentType(dep_relation, set_sort, elem_sort, elements, select_func)
                 self.dep_types[set_sort] = dep_type
 
+    def _get_filtered_state_variables(self, var_filter='non-global'):
+        non_global_vars = []
+        global_vars     = []
+        for symbol in self.finite_system.states:
+            if symbol in self.finite_system.global_symbols:
+                global_vars.append(symbol)
+            else:
+                non_global_vars.append(symbol)
+        return global_vars if var_filter == 'global' else non_global_vars
+
+    def _get_all_params_of_param_types(self, param_types):
+        elems = []
+        for ptype in param_types:
+            elems.append(self.sort2elems[ptype])
+        all_params = list(product(*elems))
+        all_params = [list(params) for params in all_params]
+        return all_params
+
+    def _get_instantiated_variables(self, var, var_type):
+        if var_type.is_bool_type():
+            return [var]
+        eq_symbols = []
+        for elem in self.sort2elems[var_type]:
+            eq_symbols.append(EqualsOrIff(var, elem))
+        return eq_symbols
+
+    def _get_instantiated_functions(self, func_symbol):
+        func_type   = func_symbol.symbol_type()
+        param_types = func_type._param_types
+        return_type = func_type._return_type
+        all_params  = self._get_all_params_of_param_types(param_types)
+        functions  = []
+        for params in all_params:
+            func  = Function(func_symbol, params)
+            funcs = self._get_instantiated_variables(func, return_type)
+            functions += funcs
+        return functions 
+
+    def _get_filtered_ground_atoms(self, var_filter='non-global'):
+        state_vars = self._get_filtered_state_variables(var_filter)
+        atoms = []
+        for var in state_vars:
+            var_type = var.symbol_type() 
+            if var_type.is_function_type(): 
+                atoms += self._get_instantiated_functions(var)
+            else: 
+                atoms += self._get_instantiated_variables(var, var_type)
+        return atoms
+
     #------------------------------------------------------------
     # TransitionSystem: public methods
     #------------------------------------------------------------
@@ -230,9 +279,23 @@ class TransitionSystem(SmtLibParser):
         sort_name = self.get_sort_name_from_finite_sort(sort)
         return self.options.sizes[sort_name]
 
-    def get_indexed_set(self, set_sort, set_id):
-        sets = self.get_dependent_sets(set_sort) 
-        return printer.pretty_print_enum_constant(sets[set_id])
+    def get_dependent_relation(self, set_sort):
+        dep_type  = self.dep_types[set_sort]
+        return dep_type.dep_relation
+
+    def get_dependent_element_sort(self, set_sort):
+        dep_type  = self.dep_types[set_sort]
+        return dep_type.elem_sort
+
+    def get_dependent_elements(self, set_sort):
+        elem_sort = self.get_dependent_element_sort(set_sort)
+        return self.sort2elems[elem_sort]
+
+    def get_dependent_sets(self, set_sort):
+        return self.sort2elems[set_sort]
+
+    def get_dependent_elements_in_set(self, set_sort, set_id):
+        return self.dep_types[set_sort].get_elements_in_set(set_id)
 
     def get_pretty_set(self, set_sort, set_id):
         # e.g. quorum_node0_node1
@@ -264,34 +327,23 @@ class TransitionSystem(SmtLibParser):
         else:
             return self.get_pretty_elements_of_non_dependent_sort(sort)
 
-    def get_dependent_relation(self, set_sort):
-        dep_type  = self.dep_types[set_sort]
-        return dep_type.dep_relation
-
-    def get_dependent_element_sort(self, set_sort):
-        dep_type  = self.dep_types[set_sort]
-        return dep_type.elem_sort
-
-    def get_dependent_elements(self, set_sort):
-        elem_sort = self.get_dependent_element_sort(set_sort)
-        return self.sort2elems[elem_sort]
-
-    def get_dependent_sets(self, set_sort):
-        return self.sort2elems[set_sort]
-
-    def get_dependent_elements_in_set(self, set_sort, set_id):
-        return self.dep_types[set_sort].get_elements_in_set(set_id)
+    def get_pretty_set_substitution_map(self):
+        subst = {}
+        for set_sort in self.dep_types.keys():
+            dep_sets = self.get_dependent_sets(set_sort)
+            for set_id, dep_set in enumerate(dep_sets):
+                subst[dep_set] = self.get_pretty_set(set_sort, set_id)
+        return subst
 
     def get_dependent_axioms(self):
         axioms = []
+        subst  = self.get_pretty_set_substitution_map()
         for set_sort in self.dep_types.keys():
             dep_relation = self.get_dependent_relation(set_sort)
             dep_sets     = self.get_dependent_sets(set_sort)
             dep_elems    = self.get_dependent_elements(set_sort)
             for set_id, dep_set in enumerate(dep_sets):
                 elems_in_set   = self.get_dependent_elements_in_set(set_sort, set_id)
-                subst          = {}
-                subst[dep_set] = self.get_pretty_set(set_sort, set_id)
                 for elem in dep_elems:
                     args = [elem, dep_set]
                     dep_symbol = Function(dep_relation, args)
@@ -299,6 +351,14 @@ class TransitionSystem(SmtLibParser):
                         dep_symbol = Not(dep_symbol)
                     axioms.append(printer.pretty_print_str(dep_symbol, subst))
         return axioms
+
+    def get_pretty_filtered_atoms(self, var_filter='non-global'):
+        atoms = self._get_filtered_ground_atoms(var_filter)
+        subst = self.get_pretty_set_substitution_map()
+        dfs_atoms = []
+        for atom in atoms:
+            dfs_atoms.append(printer.pretty_print_str(atom, subst).replace(' ',''))
+        return dfs_atoms
 
 def vmt_parse(options, vmt_filename): 
     tran_sys = TransitionSystem(options)

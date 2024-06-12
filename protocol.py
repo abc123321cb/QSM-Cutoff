@@ -2,7 +2,6 @@ import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
 from pysmt.fnode import FNode
-from forward import Reachability
 from vmt_parser import TransitionSystem
 from util import QrmOptions, SET_DELIM
 from util import FormulaPrinter as printer 
@@ -35,7 +34,17 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
         return True
     return False
 
+class Reachability():
+    def __init__(self, atoms, states, pretty_set_subst) -> None:
+        self.atoms  = atoms     # type : List[formula] 
+        self.states = states    # type : List[str] 
+                                # each state in states is string consisting of '0', '1', '-' 
+        self.stvars = []        # type: List[str]
+        for atom in self.atoms:
+            self.stvars.append(printer.pretty_print_str(atom, pretty_set_subst).replace(' ',''))
+
 class Protocol():
+    # static data
     def __init__(self, options : QrmOptions, filename='') -> None:
         # member datas
         self.sorts           : List[str]       = [] # sort id -> sort name 
@@ -167,10 +176,7 @@ class Protocol():
             elem_sort = tran_sys.get_dependent_element_sort(set_sort)
             line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
             for set_id in range(len(dep_type.sets)):
-                id_label      = tran_sys.get_indexed_set(set_sort, set_id)
-                content_label = tran_sys.get_pretty_set(set_sort, set_id)
-                line  += ' ' + content_label 
-                self.set_label_map[id_label]  = content_label 
+                line  += ' ' + tran_sys.get_pretty_set(set_sort, set_id) 
             self._read_dependent_sort(line)
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line) 
@@ -202,9 +208,9 @@ class Protocol():
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
 
-    def _init_atoms(self, reachblty) -> None:
+    def _init_atoms(self, atoms) -> None:
         line = '.a'
-        for atom in reachblty.stvars:
+        for atom in atoms:
             predicate = '' 
             args     = []
             new_args = []
@@ -224,10 +230,7 @@ class Protocol():
                 predicate = atom.strip('( )')
 
             for arg in args:
-                if arg in self.set_label_map:
-                    new_args.append(self.set_label_map[arg])
-                else:
-                    new_args.append(arg)
+                new_args.append(arg)
             if match_func_eq or match_eq:
                 atom = format_eq_atom(predicate, new_args)
             else:
@@ -243,7 +246,8 @@ class Protocol():
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(state)
 
-    def _write_reachability(self, filename) -> None:
+    def write_reachability(self) -> None:
+        filename = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
         outF = open(filename, "w")
         for line in self.lines:
             outF.write(line+'\n')
@@ -261,26 +265,35 @@ class Protocol():
 
     def initialize(self, tran_sys : TransitionSystem, reachblty : Reachability) -> None:
         ## helper
-        self.set_label_map = {}
         self.lines         = []
 
         ## init
         self._init_sort(tran_sys)
         self._init_dependent_sort(tran_sys)
         self._init_predicate(tran_sys)
-        self._init_atoms(reachblty)
+        self._init_atoms(reachblty.stvars)
         self._init_reachable_states(reachblty)
         self._init_sorts_permutations()
 
         # write protocols
         if (self.options.writeReach):
-            R_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
-            self._write_reachability(R_filename)
+            self.write_reachability()
 
         vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
         vprint(self.options, '\n'.join(self.lines), 3)
         vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
         vprint(self.options, f'[FW NOTE]: number of reachable states: {len(self.reachable_states)}', 2)
+
+    def initialize_from_transition_system(self, tran_sys, state_vars) -> None:
+        ## helper
+        self.lines         = []
+
+        ## init
+        self._init_sort(tran_sys)
+        self._init_dependent_sort(tran_sys)
+        self._init_predicate(tran_sys)
+        self._init_atoms(state_vars)
+        self._init_sorts_permutations()
     
     def _get_renamed_element(self, permutation, sort_id, element) -> str:
         new_element = []
