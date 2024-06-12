@@ -176,7 +176,7 @@ def qrm(args):
 
             # step5: ivy_check
             tracemalloc.start()
-            vprint_step_banner(options, f'[IVY]: Ivy Check on [{options.instance_name}: {size_str}]')
+            vprint_step_banner(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {size_str}]')
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
             time_stamp = get_time(options, time_start, time_stamp)
@@ -184,10 +184,10 @@ def qrm(args):
 
         vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, disable_print)
         if qrm_result:
-            vprint(options, '[QRM RESULT]: Pass', 0, disable_print)
+            vprint(options, '[QRM RESULT]: PASS', 0, disable_print)
             pass_count += 1
         else:
-            vprint(options, '[QRM RESULT]: Fail', 0, disable_print)
+            vprint(options, '[QRM RESULT]: FAIL', 0, disable_print)
 
     if pass_count != len(instances):
         sys.exit(1)
