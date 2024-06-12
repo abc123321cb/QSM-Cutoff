@@ -23,7 +23,8 @@ class AccessAction():
 
     def _get_action_header(self):
         line  = f'action {self._action_name}'
-        line += f'({', '.join(self._param_types_str)})'
+        if len(self.param_types):
+            line += f'({', '.join(self._param_types_str)})'
         line += f' returns(x: {self._return_type_str}) = ' 
         line += '{\n'
         return line
