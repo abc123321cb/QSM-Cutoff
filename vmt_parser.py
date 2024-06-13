@@ -62,20 +62,16 @@ class DependentType():
         self.dep_relation = dep_relation  # e.g. "member"
         self.set_sort     = set_sort      # e.g. "quorum"
         self.elem_sort    = elem_sort     # e.g. "node"
-        self.element_universe = elements
         self.sets         = []            # e.g. 0 -> [0,1], 1 -> [0,2], 2 -> [1,2] .....
         elem_size     = len(elements)
         select_space  = list(range(elem_size))
         selections    = list(combinations(select_space, select_func(elem_size)))
         for selection in selections:
-            self.sets.append(list(selection))
+            elems_in_set = [elements[elem_id] for elem_id in selection]
+            self.sets.append(elems_in_set)
 
     def get_elements_in_set(self, set_id):
-        elem_indices = self.sets[set_id]
-        elems_in_set = set()
-        for elem_id in elem_indices:
-            elems_in_set.add(self.element_universe[elem_id])
-        return  elems_in_set 
+        return  self.sets[set_id] 
 
 #*************************************************************************
 # class: TransistionSystem
