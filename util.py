@@ -24,6 +24,7 @@ class QrmOptions():
         self.merge_suborbits = False
         self.ivy_to          = 120 
         self.qrm_to          = 3600 
+        self.python_include_path = ''
 
     def open_log(self) -> None:
         assert(self.writeLog)

@@ -20,11 +20,12 @@ faulthandler.enable()
 
 def usage ():
     print('Usage:')
-    print('python3 qrm.py -i FILE.ivy -s SORT_SIZE [options]')
-    print('python3 qrm.py -y FILE.yaml [options]')
+    print('python3 qrm.py -i FILE.ivy -s SORT_SIZE -t PYHON_INCLUDE_PATH [options]')
+    print('python3 qrm.py -y FILE.yaml             -t PYHON_INCLUDE_PATH [options]')
     print('-i FILE.ivy -s SORT_SIZE  read ivy file and check with the given sort size')
     print('                          (format: -s [sort1=size1,sort2=size2 ...])')
     print('-y FILE.yaml              check all cases in the given yaml file')
+    print('-t PYTHON_INCLUDE_PATH    set python include path (e.g. /usr/include/python3.XX)') #FIXME!!!!!
     print('')
     print('Options:')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
@@ -70,7 +71,7 @@ def get_peak_memory_and_reset(options):
 
 def qrm(args):
     try:
-        opts, args = getopt.getopt(args, "i:s:y:v:l:c:rpqwamhd")
+        opts, args = getopt.getopt(args, "i:s:y:t:v:l:c:rpqwamhd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -88,6 +89,8 @@ def qrm(args):
             options.mode = Mode.yaml
             if file_exist(optv):
                 options.yaml_filename = optv
+        elif optc == '-t':
+            options.python_include_path = optv
         elif optc == '-v':
             options.verbosity = int(optv)
             if options.verbosity < 0 or options.verbosity > 5:
