@@ -55,8 +55,7 @@ class DfsStates():
         FiniteIvy.set_state_var_to_access_action(self.var2access_action)
         FiniteIvy.write_ivy()
         FiniteIvy.compile_finite_ivy_to_cpp()
-        FiniteIvy.relocate_compilation_results()
-        self.ivy_exec_name = FiniteIvy.executable_name
+        FiniteIvy.build_ivy2cpp_python_module()
 
     def initialize(self):
         self._init_access_actions()
@@ -64,8 +63,17 @@ class DfsStates():
         self._init_protocol()
         self._init_finite_ivy()
 
+    def run_protocol(self):
+        import ivy2cpp
+        ivy2cpp.run_protocol()
+
+    def clean(self):
+        FiniteIvy.clean()
+
     def solve_reachability(self):
         self.initialize()
+        self.run_protocol()
+        self.clean()
 
     def get_protocol(self):
         return self.protocol
