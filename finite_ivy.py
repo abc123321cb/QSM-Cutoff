@@ -4,7 +4,7 @@ from util import QrmOptions
 from vmt_parser import TransitionSystem
 from verbose import *
 
-class IvyAccessAction():
+class FiniteIvyAccessAction():
     def __init__(self, symbol, param_types, return_type):
         self.symbol      = symbol
         self.param_types = param_types 
@@ -48,7 +48,7 @@ class IvyAccessAction():
         lines.append(self._get_export_action())
         return lines
 
-class FiniteIvy():
+class FiniteIvyGenerator():
     # static datas
     tran_sys : TransitionSystem
     options  : QrmOptions
@@ -63,118 +63,140 @@ class FiniteIvy():
     object_name         = '' #instance_name.size.finite.o
     wrapper_object_name =  '' #instance_name.size.finite_wrap.o
 
-    swig_interface_name = 'ivy2cpp.i'
-    library_name        = '_ivy2cpp.so'
+    swig_interface_name = 'ivy_exec.i'
+    library_name        = '_ivy_exec.so'
 
     @staticmethod
     def _reset():
-        FiniteIvy.lines = []
+        FiniteIvyGenerator.lines = []
 
     def _get_finite_sort_line(line, sort_name):
-        sort_elems = FiniteIvy.tran_sys.get_pretty_elements_of_sort(sort_name)
+        sort_elems = FiniteIvyGenerator.tran_sys.get_pretty_elements_of_sort(sort_name)
         line = line + ' = {' + ', '.join(sort_elems) + '}\n'
         return line
 
     def _set_lines_from_source_ivy():
-        source_ivy = open(FiniteIvy.options.ivy_filename, 'r')
+        source_ivy = open(FiniteIvyGenerator.options.ivy_filename, 'r')
         for line in source_ivy.readlines():
             if line.startswith('type'): # type sort
                 line = line.strip('\n')
                 sort = line.split(' ')[1]
-                line = FiniteIvy._get_finite_sort_line(line, sort)
-            FiniteIvy.lines.append(line)
+                line = FiniteIvyGenerator._get_finite_sort_line(line, sort)
+            FiniteIvyGenerator.lines.append(line)
         source_ivy.close()
 
     def _add_comment_lines():
-        FiniteIvy.lines.append('\n')
-        FiniteIvy.lines.append('### For DFS reachability ###\n')
+        FiniteIvyGenerator.lines.append('\n')
+        FiniteIvyGenerator.lines.append('### For DFS reachability ###\n')
 
     def _add_dependent_sort_axiom_lines():
-        FiniteIvy.lines.append('\n')
-        FiniteIvy.lines.append('## Dependent relation axioms ##\n')
-        axioms = FiniteIvy.tran_sys.get_dependent_axioms()
+        FiniteIvyGenerator.lines.append('\n')
+        FiniteIvyGenerator.lines.append('## Dependent relation axioms ##\n')
+        axioms = FiniteIvyGenerator.tran_sys.get_dependent_axioms()
         for axiom in axioms:
-            FiniteIvy.lines.append('axiom ' +axiom+'\n')
+            FiniteIvyGenerator.lines.append('axiom ' +axiom+'\n')
 
     def _add_access_action_lines():
-        FiniteIvy.lines.append('\n')
-        FiniteIvy.lines.append('## Access actions ##\n')
-        for access_action in FiniteIvy.var2access_action.values():
+        FiniteIvyGenerator.lines.append('\n')
+        FiniteIvyGenerator.lines.append('## Access actions ##\n')
+        for access_action in FiniteIvyGenerator.var2access_action.values():
             for line in access_action.get_action_lines():
-                FiniteIvy.lines.append(line)
-            FiniteIvy.lines.append('\n')
+                FiniteIvyGenerator.lines.append(line)
+            FiniteIvyGenerator.lines.append('\n')
 
     def _write_lines_to_finite_ivy():
-        finite_ivy = open(FiniteIvy.finite_ivy_name, 'w')
-        for line in FiniteIvy.lines:
+        finite_ivy = open(FiniteIvyGenerator.finite_ivy_name, 'w')
+        for line in FiniteIvyGenerator.lines:
             finite_ivy.write(line)
         finite_ivy.close()
 
     def set_path_and_file_names():
-        name = FiniteIvy.options.instance_name + '.' + FiniteIvy.options.instance_suffix + '.finite'
+        name = FiniteIvyGenerator.options.instance_name + '.' + FiniteIvyGenerator.options.instance_suffix + '.finite'
         segments  = name.split('/')
-        FiniteIvy.path_name            = '/'.join(segments[:-1])
-        FiniteIvy.file_name_prefix     = segments[-1]
-        FiniteIvy.finite_ivy_name      = segments[-1]  + '.ivy'
-        FiniteIvy.cpp_name             = segments[-1]  + '.cpp'
-        FiniteIvy.wrapper_name         = segments[-1]  + '_wrap.cpp'
-        FiniteIvy.object_name          = segments[-1]  + '.o'
-        FiniteIvy.wrapper_object_name  = segments[-1]  + '_wrap.o'
+        FiniteIvyGenerator.path_name            = '/'.join(segments[:-1])
+        FiniteIvyGenerator.file_name_prefix     = segments[-1]
+        FiniteIvyGenerator.finite_ivy_name      = segments[-1]  + '.ivy'
+        FiniteIvyGenerator.cpp_name             = segments[-1]  + '.cpp'
+        FiniteIvyGenerator.wrapper_name         = segments[-1]  + '_wrap.cpp'
+        FiniteIvyGenerator.object_name          = segments[-1]  + '.o'
+        FiniteIvyGenerator.wrapper_object_name  = segments[-1]  + '_wrap.o'
 
     def set_transition_system(tran_sys : TransitionSystem):
-        FiniteIvy.tran_sys = tran_sys
+        FiniteIvyGenerator.tran_sys = tran_sys
 
     def set_options(options : QrmOptions):
-        FiniteIvy.options  = options
+        FiniteIvyGenerator.options  = options
 
     def set_state_var_to_access_action(var2access_action):
-        FiniteIvy.var2access_action = var2access_action
+        FiniteIvyGenerator.var2access_action = var2access_action
 
     def write_ivy():
-        FiniteIvy._reset()
-        FiniteIvy._set_lines_from_source_ivy()
-        FiniteIvy._add_comment_lines()
-        FiniteIvy._add_dependent_sort_axiom_lines()
-        FiniteIvy._add_access_action_lines()
-        FiniteIvy._write_lines_to_finite_ivy()
+        FiniteIvyGenerator._reset()
+        FiniteIvyGenerator._set_lines_from_source_ivy()
+        FiniteIvyGenerator._add_comment_lines()
+        FiniteIvyGenerator._add_dependent_sort_axiom_lines()
+        FiniteIvyGenerator._add_access_action_lines()
+        FiniteIvyGenerator._write_lines_to_finite_ivy()
 
     def _append_cpp():
-        cpp_file = open(FiniteIvy.cpp_name, 'a')
+        cpp_file = open(FiniteIvyGenerator.cpp_name, 'a')
         lines = []
-        lines.append('int run_protocol(){\n')
-        lines.append('\tif (!__ivy_out.is_open())\n')
-        lines.append('\t\t__ivy_out.basic_ios<char>::rdbuf(std::cout.rdbuf());\n')
-        lines.append('\t' + FiniteIvy.file_name_prefix.replace('.', '__') + '_repl ivy;\n')
-        lines.append('\tivy.__init();\n')
-        lines.append('\tivy.__unlock();\n')
-        lines.append('\tcmd_reader *cr = new cmd_reader(ivy);\n')
-        lines.append('\tbool stop_protocol;\n')
-        lines.append('\twhile (std::cin >> stop_protocol){\n')
-        lines.append('\t\tif (stop_protocol)\n')
-        lines.append('\t\t\tbreak;\n')
-        lines.append('\t\tcr->read();\n')
-        lines.append('\t}\n')
-        lines.append('\treturn 0;\n')
-        lines.append('}')
+        protocol_class_name = FiniteIvyGenerator.file_name_prefix.replace('.', '__') + '_repl'
 
-        # int run_protocol(){
-        #     if (!__ivy_out.is_open())
-        #         __ivy_out.basic_ios<char>::rdbuf(std::cout.rdbuf());
-        #     toy_consensus__node_3_value_3__finite_repl ivy;
-        #     ivy.__init();
-        # 
-        #     ivy.__unlock();
-        # 
-        #     cmd_reader *cr = new cmd_reader(ivy);
-        # 
-        #     bool stop_protocol;
-        #     while (std::cin >> stop_protocol){
-        #         if (stop_protocol)
-        #             break;
-        #         cr->read();
-        #     }
-        #         
-        #     return 0;
+        lines.append('\n')
+        lines.append(protocol_class_name + ' * ivy_exec;\n') 
+        lines.append('cmd_reader* ivy_exec_cr;\n') 
+        lines.append('std::ostringstream ivy_exec_stream;\n')
+
+        lines.append('\n')
+        lines.append('void ivy_exec_init(){\n') 
+        lines.append('\t__ivy_out.basic_ios<char>::rdbuf(ivy_exec_stream.rdbuf());\n') 
+        lines.append('\tivy_exec = new ' + protocol_class_name + ';\n') 
+        lines.append('\tivy_exec -> __init();\n') 
+        lines.append('\tivy_exec -> __unlock();\n') 
+        lines.append('\tivy_exec_cr = new cmd_reader(*ivy_exec);\n') 
+        lines.append('}\n') 
+
+        lines.append('\n')
+        lines.append('void ivy_exec_reset_buffer(){\n') 
+        lines.append('\tivy_exec_stream.str("");\n') 
+        lines.append('}\n') 
+
+        lines.append('\n')
+        lines.append('std::string ivy_exec_run_protocol(std::string input){\n') 
+        lines.append('\tif (input == "STOP_PROTOCOL"){\n') 
+        lines.append('\t\tdelete ivy_exec_cr;\n') 
+        lines.append('\t\tdelete ivy_exec;\n') 
+        lines.append('\t\treturn "";\n') 
+        lines.append('\t}\n') 
+        lines.append('\tivy_exec_cr->process(input);\n') 
+        lines.append('\treturn ivy_exec_stream.str();\n') 
+        lines.append('}\n') 
+
+        # toy_consensus__node_3_value_3__finite_repl * ivy_exec;
+        # cmd_reader* ivy_exec_cr;
+        # std::ostringstream ivy_exec_stream;
+
+        # void ivy_exec_init() {
+        #   __ivy_out.basic_ios<char>::rdbuf(ivy_exec_stream.rdbuf());
+        #   ivy_exec = new toy_consensus__node_3_value_3__finite_repl;
+        #   ivy_exec -> __init();
+        #   ivy_exec -> __unlock();
+        #   ivy_exec_cr = new cmd_reader(*ivy_exec);
+        # }
+
+        # void ivy_exec_reset_buffer(){
+        #     ivy_exec_stream.str("");
+        # }
+
+        # std::string ivy_exec_run_protocol(std::string input){
+        #   if (input == "STOP_PROTOCOL"){
+        #       delete ivy_exec_cr;
+        #       delete ivy_exec;
+        #       return "";                 
+        #   }
+        #   ivy_exec_cr->process(input);
+        #   return ivy_exec_stream.str() 
         # }
 
         for line in lines:
@@ -182,118 +204,132 @@ class FiniteIvy():
         cpp_file.close()
 
     def compile_finite_ivy_to_cpp():
-        ivy_args = ['ivy_to_cpp', 'target=repl', FiniteIvy.finite_ivy_name]
+        ivy_args = ['ivy_to_cpp', 'target=repl', FiniteIvyGenerator.finite_ivy_name]
         ivy_cmd  = ' '.join(ivy_args)
-        vprint(FiniteIvy.options, ivy_cmd)
+        vprint(FiniteIvyGenerator.options, ivy_cmd)
         try:
-            if FiniteIvy.options.write_log:
-                subprocess.run(ivy_args, text=True, check=True, stdout=FiniteIvy.options.log_fout) 
+            if FiniteIvyGenerator.options.write_log:
+                subprocess.run(ivy_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(ivy_args, capture_output=True, text=True, check=True) 
             sys.stdout.flush()
         except subprocess.CalledProcessError as error:
             if error.returncode == 1:
-                vprint(FiniteIvy.options, f'[IVY_TO_CPP RESULT]: FAIL ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[IVY_TO_CPP RESULT]: FAIL ... exit with return code {error.returncode}')
             else:
-                vprint(FiniteIvy.options, f'[IVY_TO_CPP RESULT]: ABORT ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[IVY_TO_CPP RESULT]: ABORT ... exit with return code {error.returncode}')
             return False
-        if not os.path.isfile(FiniteIvy.cpp_name):
-            vprint(FiniteIvy.options, f'[IVY_TO_CPP RESULT]: FAIL ... cannot fined {FiniteIvy.cpp_name}')
+        if not os.path.isfile(FiniteIvyGenerator.cpp_name):
+            vprint(FiniteIvyGenerator.options, f'[IVY_TO_CPP RESULT]: FAIL ... cannot fined {FiniteIvyGenerator.cpp_name}')
             return False
-        FiniteIvy._append_cpp()
-        vprint(FiniteIvy.options, f'[IVY_TO_CPP RESULT]: OK')
+        FiniteIvyGenerator._append_cpp()
+        vprint(FiniteIvyGenerator.options, f'[IVY_TO_CPP RESULT]: OK')
         return True
 
     def _generate_cpp_wrapper():
         swig      = ['swig']
         flags     = ['-c++', '-python', '-o']
-        wrapper   = [FiniteIvy.wrapper_name]
-        interface = [FiniteIvy.swig_interface_name]
+        wrapper   = [FiniteIvyGenerator.wrapper_name]
+        interface = [FiniteIvyGenerator.swig_interface_name]
         swig_args = swig + flags + wrapper + interface
         swig_cmd  = ' '.join(swig_args)
-        vprint(FiniteIvy.options, swig_cmd)
+        vprint(FiniteIvyGenerator.options, swig_cmd)
         try:
-            if FiniteIvy.options.write_log:
-                subprocess.run(swig_args, text=True, check=True, stdout=FiniteIvy.options.log_fout) 
+            if FiniteIvyGenerator.options.write_log:
+                subprocess.run(swig_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(swig_args, capture_output=True, text=True, check=True) 
             sys.stdout.flush()
         except subprocess.CalledProcessError as error:
             if error.returncode == 1:
-                vprint(FiniteIvy.options, f'[SWIG RESULT]: FAIL ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[SWIG RESULT]: FAIL ... exit with return code {error.returncode}')
             else:
-                vprint(FiniteIvy.options, f'[SWIG RESULT]: ABORT ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[SWIG RESULT]: ABORT ... exit with return code {error.returncode}')
             return False
-        if not os.path.isfile(FiniteIvy.wrapper_name):
-            vprint(FiniteIvy.options, f'[SWIG RESULT]: FAIL ... cannot fined {FiniteIvy.wrapper_name}')
+        if not os.path.isfile(FiniteIvyGenerator.wrapper_name):
+            vprint(FiniteIvyGenerator.options, f'[SWIG RESULT]: FAIL ... cannot fined {FiniteIvyGenerator.wrapper_name}')
             return False
-        vprint(FiniteIvy.options, f'[SWIG RESULT]: OK')
+        vprint(FiniteIvyGenerator.options, f'[SWIG RESULT]: OK')
         return True
 
     def _compile_cpp():
         gpp       = ['g++']
         flags     = ['-std=c++11', '-fpic', '-pthread', '-O3']
-        source    = [FiniteIvy.cpp_name, FiniteIvy.wrapper_name]
-        include   = ['-I'+FiniteIvy.options.python_include_path]
+        source    = [FiniteIvyGenerator.cpp_name, FiniteIvyGenerator.wrapper_name]
+        include   = ['-I'+FiniteIvyGenerator.options.python_include_path]
         flag      = ['-c']
         gpp_args  = gpp + flags + source + include + flag
         gpp_cmd   = ' '.join(gpp_args)
-        vprint(FiniteIvy.options, gpp_cmd)
+        vprint(FiniteIvyGenerator.options, gpp_cmd)
         try:
-            if FiniteIvy.options.write_log:
-                subprocess.run(gpp_args, text=True, check=True, stdout=FiniteIvy.options.log_fout) 
+            if FiniteIvyGenerator.options.write_log:
+                subprocess.run(gpp_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(gpp_args, capture_output=True, text=True, check=True) 
             sys.stdout.flush()
         except subprocess.CalledProcessError as error:
             if error.returncode == 1:
-                vprint(FiniteIvy.options, f'[G++ RESULT]: FAIL ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[G++ RESULT]: FAIL ... exit with return code {error.returncode}')
             else:
-                vprint(FiniteIvy.options, f'[G++ RESULT]: ABORT ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[G++ RESULT]: ABORT ... exit with return code {error.returncode}')
             return False
-        if not os.path.isfile(FiniteIvy.object_name):
-            vprint(FiniteIvy.options, f'[G++ RESULT]: FAIL ... cannot fined {FiniteIvy.object_name}')
+        if not os.path.isfile(FiniteIvyGenerator.object_name):
+            vprint(FiniteIvyGenerator.options, f'[G++ RESULT]: FAIL ... cannot fined {FiniteIvyGenerator.object_name}')
             return False
-        if not os.path.isfile(FiniteIvy.wrapper_object_name):
-            vprint(FiniteIvy.options, f'[G++ RESULT]: FAIL ... cannot fined {FiniteIvy.wrapper_object_name}')
+        if not os.path.isfile(FiniteIvyGenerator.wrapper_object_name):
+            vprint(FiniteIvyGenerator.options, f'[G++ RESULT]: FAIL ... cannot fined {FiniteIvyGenerator.wrapper_object_name}')
             return False
-        vprint(FiniteIvy.options, f'[G++ RESULT]: OK')
+        vprint(FiniteIvyGenerator.options, f'[G++ RESULT]: OK')
         return True      
 
     def _link_library():
         gpp       = ['g++']
         flag1     = ['-shared']
-        objects   = [FiniteIvy.object_name, FiniteIvy.wrapper_object_name]
+        objects   = [FiniteIvyGenerator.object_name, FiniteIvyGenerator.wrapper_object_name]
         flag2     = ['-o']
-        library   = [FiniteIvy.library_name]
+        library   = [FiniteIvyGenerator.library_name]
         flags     = ['-lm', '-lstdc++']
         link_args = gpp + flag1 + objects + flag2 + library + flags
         link_cmd  = ' '.join(link_args)
-        vprint(FiniteIvy.options, link_cmd)
+        vprint(FiniteIvyGenerator.options, link_cmd)
         try:
-            if FiniteIvy.options.write_log:
-                subprocess.run(link_args, text=True, check=True, stdout=FiniteIvy.options.log_fout) 
+            if FiniteIvyGenerator.options.write_log:
+                subprocess.run(link_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(link_args, capture_output=True, text=True, check=True) 
             sys.stdout.flush()
         except subprocess.CalledProcessError as error:
             if error.returncode == 1:
-                vprint(FiniteIvy.options, f'[LINK RESULT]: FAIL ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[LINK RESULT]: FAIL ... exit with return code {error.returncode}')
             else:
-                vprint(FiniteIvy.options, f'[LINK RESULT]: ABORT ... exit with return code {error.returncode}')
+                vprint(FiniteIvyGenerator.options, f'[LINK RESULT]: ABORT ... exit with return code {error.returncode}')
             return False
-        if not os.path.isfile(FiniteIvy.library_name):
-            vprint(FiniteIvy.options, f'[LINK RESULT]: FAIL ... cannot fined {FiniteIvy.library_name}')
+        if not os.path.isfile(FiniteIvyGenerator.library_name):
+            vprint(FiniteIvyGenerator.options, f'[LINK RESULT]: FAIL ... cannot fined {FiniteIvyGenerator.library_name}')
             return False
-        vprint(FiniteIvy.options, f'[LINK RESULT]: OK')
+        vprint(FiniteIvyGenerator.options, f'[LINK RESULT]: OK')
         return True      
 
-    def build_ivy2cpp_python_module():
-        FiniteIvy._generate_cpp_wrapper()
-        FiniteIvy._compile_cpp()
-        FiniteIvy._link_library()
+    def build_ivy_exec_python_module():
+        FiniteIvyGenerator._generate_cpp_wrapper()
+        FiniteIvyGenerator._compile_cpp()
+        FiniteIvyGenerator._link_library()
 
     def clean():
-        mv_cmd = f'mv {FiniteIvy.file_name_prefix}* {FiniteIvy.path_name}'
+        mv_cmd = f'mv {FiniteIvyGenerator.file_name_prefix}* {FiniteIvyGenerator.path_name}'
         os.system(mv_cmd)
-        os.system('rm -f *.o *_wrap* *.pyc *.pyo _ivy2cpp.so ivy2cpp.py')
+        os.system('rm -f *.o *_wrap* *.pyc *.pyo _ivy_exec.so ivy_exec.py')
+
+from importlib import reload
+import ivy_exec
+class FiniteIvyExecutor():
+    def __init__(self):
+        reload(ivy_exec)
+        ivy_exec.ivy_exec_init()
+
+    def run_protocol(self, ivy_command : str):
+        result = ivy_exec.ivy_exec_run_protocol(ivy_command)
+        result = result.strip(' ').split(' ')[-1].strip('\n>') 
+        ivy_exec.ivy_exec_reset_buffer()
+        print(result)
+

@@ -9,18 +9,20 @@ from util import QrmOptions
 from vmt_parser import TransitionSystem
 from protocol import Protocol, Reachability
 from verbose import *
-from finite_ivy import IvyAccessAction, FiniteIvy
+from finite_ivy import FiniteIvyAccessAction, FiniteIvyGenerator, FiniteIvyExecutor
 import repycudd
 
 class DfsStates():
     def __init__(self,  tran_sys : TransitionSystem, options : QrmOptions):
-        self.var2access_action = {} # state variable symbol to access action meta type
         self.tran_sys = tran_sys
         self.options  = options
-        self.protocol = None
+
+        self.var2access_action = {} # state variable symbol to access action meta type
         self.state_vars    = []
         self.global_vars   = []
-        self.ivy_exec_name = ''
+
+        self.protocol     = None
+        self.ivy_executor = None
         
     def _init_access_actions(self):
         state_vars = self.tran_sys.get_state_variables()
@@ -37,38 +39,41 @@ class DfsStates():
                 # case 4: function (predicate is a function with return type bool)
                 param_types = list(var_type._param_types)
                 return_type = var_type._return_type
-            access_action = IvyAccessAction(var, param_types, return_type)
+            access_action = FiniteIvyAccessAction(var, param_types, return_type)
             self.var2access_action[var] = access_action
 
     def _init_state_variables(self):
         self.state_vars  = self.tran_sys.get_pretty_filtered_atoms(var_filter='non-global')
         self.global_vars = self.tran_sys.get_pretty_filtered_atoms(var_filter='global')
 
+    def _init_finite_ivy_generator(self):
+        FiniteIvyGenerator.set_transition_system(self.tran_sys)
+        FiniteIvyGenerator.set_options(self.options)
+        FiniteIvyGenerator.set_path_and_file_names()
+        FiniteIvyGenerator.set_state_var_to_access_action(self.var2access_action)
+        FiniteIvyGenerator.write_ivy()
+        FiniteIvyGenerator.compile_finite_ivy_to_cpp()
+        FiniteIvyGenerator.build_ivy_exec_python_module()
+
     def _init_protocol(self):
         self.protocol = Protocol(self.options)                
         self.protocol.initialize_from_transition_system(self.tran_sys, self.state_vars)
-
-    def _init_finite_ivy(self):
-        FiniteIvy.set_transition_system(self.tran_sys)
-        FiniteIvy.set_options(self.options)
-        FiniteIvy.set_path_and_file_names()
-        FiniteIvy.set_state_var_to_access_action(self.var2access_action)
-        FiniteIvy.write_ivy()
-        FiniteIvy.compile_finite_ivy_to_cpp()
-        FiniteIvy.build_ivy2cpp_python_module()
 
     def initialize(self):
         self._init_access_actions()
         self._init_state_variables()
         self._init_protocol()
-        self._init_finite_ivy()
+        self._init_finite_ivy_generator() 
 
     def run_protocol(self):
-        import ivy2cpp
-        ivy2cpp.run_protocol()
+        self.ivy_executor = FiniteIvyExecutor() 
+        self.ivy_executor.run_protocol('get_vote(node0,value0)')
+        self.ivy_executor.run_protocol('cast_vote(node0,value0)')
+        self.ivy_executor.run_protocol('get_vote(node0,value0)')
+
 
     def clean(self):
-        FiniteIvy.clean()
+        FiniteIvyGenerator.clean()
 
     def solve_reachability(self):
         self.initialize()
