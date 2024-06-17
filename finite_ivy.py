@@ -53,7 +53,7 @@ class FiniteIvyGenerator():
     tran_sys : TransitionSystem
     options  : QrmOptions
     lines               = []
-    var2access_action = {}
+    var2access_action   = {}
 
     path_name           = '' #path_name
     file_name_prefix    = '' #instance_name.size.finite
@@ -67,7 +67,7 @@ class FiniteIvyGenerator():
     library_name        = '_ivy_exec.so'
 
     @staticmethod
-    def _reset():
+    def _reset_lines():
         FiniteIvyGenerator.lines = []
 
     def _get_finite_sort_line(line, sort_name):
@@ -127,11 +127,27 @@ class FiniteIvyGenerator():
     def set_options(options : QrmOptions):
         FiniteIvyGenerator.options  = options
 
-    def set_state_var_to_access_action(var2access_action):
-        FiniteIvyGenerator.var2access_action = var2access_action
+    def set_state_var_to_access_action():
+        FiniteIvyGenerator.var2access_action = {}
+        state_vars = FiniteIvyGenerator.tran_sys.get_state_variables()
+        for var in state_vars:
+            param_types = []
+            return_type = None
+            var_type = var.symbol_type()
+            if not var_type.is_function_type():
+                # case1: (start_node = n0)
+                # case2: bool type, no parameters
+                return_type = var_type 
+            else: 
+                # case3: predicate
+                # case 4: function (predicate is a function with return type bool)
+                param_types = list(var_type._param_types)
+                return_type = var_type._return_type
+            access_action = FiniteIvyAccessAction(var, param_types, return_type)
+            FiniteIvyGenerator.var2access_action[var] = access_action
 
     def write_ivy():
-        FiniteIvyGenerator._reset()
+        FiniteIvyGenerator._reset_lines()
         FiniteIvyGenerator._set_lines_from_source_ivy()
         FiniteIvyGenerator._add_comment_lines()
         FiniteIvyGenerator._add_dependent_sort_axiom_lines()
@@ -321,15 +337,15 @@ class FiniteIvyGenerator():
         os.system('rm -f *.o *_wrap* *.pyc *.pyo _ivy_exec.so ivy_exec.py')
 
 from importlib import reload
-import ivy_exec
 class FiniteIvyExecutor():
     def __init__(self):
-        reload(ivy_exec)
-        ivy_exec.ivy_exec_init()
+        import ivy_exec
+        self.ivy_exec = reload(ivy_exec)
+        self.ivy_exec.ivy_exec_init()
 
     def run_protocol(self, ivy_command : str):
-        result = ivy_exec.ivy_exec_run_protocol(ivy_command)
+        result = self.ivy_exec.ivy_exec_run_protocol(ivy_command)
         result = result.strip(' ').split(' ')[-1].strip('\n>') 
-        ivy_exec.ivy_exec_reset_buffer()
+        self.ivy_exec.ivy_exec_reset_buffer()
         print(result)
 
