@@ -37,17 +37,11 @@ class InfiniteSystem(System):
 
     def read_action(self, fmla, annot_list):
         assert(len(annot_list) == 1)
-        action_name = annot_list[0]
-        action      = fmla
-        if action.is_exists():
-            qvars = action.quantifier_vars()
-            for qvar in qvars:
-                self.symbols.add(qvar)
-                self.non_state_symbols.add(qvar)
-            action = action.arg(0)
-        self.actions.append([action, action_name, fmla])
+        action_symbol = fmla.function_name()
+        self.actions.append(action_symbol)
 
     def read_invariant_property(self, fmla, annot_list):
+
         assert(len(annot_list) == 1)
         clauses = futil.flatten_and(fmla)
         for clause in clauses:
@@ -117,11 +111,7 @@ class FiniteSystem(System):
     def set_finitized_actions(self):
         self.actions = list()
         for action in self.infinite_system.actions:
-            fin_action = []
-            fin_action.append(action[0].fsubstitute())
-            fin_action.append(action[1])
-            fin_action.append(action[2].fsubstitute())
-            self.actions.append(fin_action)
+            self.actions.append(action.fsubstitute())
 
     def set_finitized_invariant_properties(self):
         self.invar_props = set()

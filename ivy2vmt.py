@@ -221,6 +221,34 @@ class VmtWriter():
             action = lg.Exists(evars, action)
         return action
 
+    def _set_action_line(self, action_name, formal_params, key):
+        if action_name.startswith('ext:'):
+            action_name = action_name[4:]
+        str_params = [str(param.sort) for param in formal_params]  
+
+        prefix = '(declare-fun '
+        suffix = ' ('
+        if str_params:
+            suffix += ' '.join(f'{sort}' for sort in str_params)
+        suffix += ')'
+        suffix += ' Bool'
+        suffix += ')'
+        line    = prefix + action_name + suffix + '\n'
+
+        line +=  '(define-fun ' +  '.' + action_name + ' ('
+        if str_params:
+            line += ' '.join(f'(V{id} {sort})' for id,sort in enumerate(str_params))
+        line += ')'
+        line += ' Bool'
+        line += ' (! '
+        if str_params:
+            line += '(' + action_name + ' '
+            line += ' '.join(f'V{id}' for id,_ in enumerate(formal_params)) + ')'
+        else:
+            line += action_name
+        line += ' :action true))'
+        self.symbol_line[key] = line + '\n'
+
     def _init_actions(self):
         for name, action in self.mod.actions.items():
             ag = ivy_art.AnalysisGraph()
@@ -235,10 +263,11 @@ class VmtWriter():
             update_vars = set(update[0])
             trans_fmla = self._get_action_transition_formula(fmla, update_vars)
             self._set_new_symbols_line(trans_fmla)
-            
+
             actname = 'action_' + name
             self.actions.add(actname)
-            self.vmt_signature[actname] = (trans_fmla, actname, 'action', name)
+            self._set_action_line(name, action.formal_params, actname)
+            # self.vmt_signature[actname] = (trans_fmla, actname, 'action', name)
 
     def _set_global_line(self, sym, key):
         sort = sym.sort
@@ -379,9 +408,10 @@ class VmtWriter():
 
     def _write_actions(self):
         for action in sorted(self.actions, key=lambda v: str(v)):
-            line = self._get_vmt_line(action)
+            line = self.symbol_line[str(action)]
             self.vmt_file.write(line)
             self.vmt_file.write('\n')
+        self.vmt_file.write('\n')
 
     def write(self, vmt_filename):
         self.vmt_file = open(vmt_filename, 'w')
