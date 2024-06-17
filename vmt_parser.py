@@ -209,6 +209,13 @@ class TransitionSystem(SmtLibParser):
                 atoms += self._get_instantiated_variables(var, var_type)
         return atoms
 
+    def _get_all_parameterized_actions(self):
+        actions = self.finite_system.actions
+        parameterized_actions = []
+        for action in actions:
+            parameterized_actions += self._get_instantiated_functions(action)
+        return parameterized_actions
+
     #------------------------------------------------------------
     # TransitionSystem: public methods
     #------------------------------------------------------------
@@ -351,10 +358,18 @@ class TransitionSystem(SmtLibParser):
     def get_pretty_filtered_atoms(self, var_filter='non-global'):
         atoms = self._get_filtered_ground_atoms(var_filter)
         subst = self.get_pretty_set_substitution_map()
-        dfs_atoms = []
+        pretty_atoms = []
         for atom in atoms:
-            dfs_atoms.append(printer.pretty_print_str(atom, subst).replace(' ',''))
-        return dfs_atoms
+            pretty_atoms.append(printer.pretty_print_str(atom, subst).replace(' ',''))
+        return pretty_atoms
+
+    def get_pretty_parameterized_actions(self):
+        actions = self._get_all_parameterized_actions()
+        subst = self.get_pretty_set_substitution_map()
+        pretty_actions = []
+        for action in actions:
+            pretty_actions.append(printer.pretty_print_str(action, subst).replace(' ',''))
+        return pretty_actions 
 
 def vmt_parse(options, vmt_filename): 
     tran_sys = TransitionSystem(options)

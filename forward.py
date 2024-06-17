@@ -21,6 +21,7 @@ class DfsStates():
         self.global_vars     = []
         self.get_state_vars  = []
         self.get_global_vars = []
+        self.ivy_actions     = []
 
         self.protocol     = None
         self.ivy_executor = None
@@ -30,6 +31,7 @@ class DfsStates():
         self.global_vars = self.tran_sys.get_pretty_filtered_atoms(var_filter='global')
         self.get_state_vars  = ['get_' + str(state_var)  for state_var in self.state_vars]
         self.get_global_vars = ['get_' + str(global_var) for global_var in self.global_vars] 
+        self.ivy_actions = self.tran_sys.get_pretty_parameterized_actions()
 
     def _init_finite_ivy_generator(self):
         FiniteIvyGenerator.set_transition_system(self.tran_sys)
