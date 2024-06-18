@@ -160,6 +160,7 @@ class FiniteIvyGenerator():
         protocol_class_name = FiniteIvyGenerator.file_name_prefix.replace('.', '__') + '_repl'
 
         lines.append('\n')
+        lines.append('#include <vector>\n')
         lines.append(protocol_class_name + ' * ivy_exec;\n') 
         lines.append('cmd_reader* ivy_exec_cr;\n') 
         lines.append('std::ostringstream ivy_exec_stream;\n')
@@ -179,16 +180,20 @@ class FiniteIvyGenerator():
         lines.append('}\n') 
 
         lines.append('\n')
-        lines.append('std::string ivy_exec_run_protocol(std::string input){\n') 
-        lines.append('\tif (input == "STOP_PROTOCOL"){\n') 
-        lines.append('\t\tdelete ivy_exec_cr;\n') 
-        lines.append('\t\tdelete ivy_exec;\n') 
-        lines.append('\t\treturn "";\n') 
+        lines.append('std::string ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
+        lines.append('\tfor (int i=0; i<inputs.size(); ++i){\n')
+        lines.append('\t\tstd::string input = inputs[i];\n')
+        lines.append('\t\tif (input == "STOP_PROTOCOL"){\n')
+        lines.append('\t\t\tdelete ivy_exec_cr;\n')
+        lines.append('\t\t\tdelete ivy_exec;\n')
+        lines.append('\t\t\treturn "";\n') 
+        lines.append('\t\t}\n') 
+        lines.append('\t\tivy_exec_cr->process(input);\n') 
         lines.append('\t}\n') 
-        lines.append('\tivy_exec_cr->process(input);\n') 
-        lines.append('\treturn ivy_exec_stream.str();\n') 
-        lines.append('}\n') 
+        lines.append('\treturn ivy_exec_stream.str();\n')   
+        lines.append('}\n')                                                                    
 
+        # #include <vector> 
         # toy_consensus__node_3_value_3__finite_repl * ivy_exec;
         # cmd_reader* ivy_exec_cr;
         # std::ostringstream ivy_exec_stream;
@@ -205,14 +210,17 @@ class FiniteIvyGenerator():
         #     ivy_exec_stream.str("");
         # }
 
-        # std::string ivy_exec_run_protocol(std::string input){
-        #   if (input == "STOP_PROTOCOL"){
-        #       delete ivy_exec_cr;
-        #       delete ivy_exec;
-        #       return "";                 
+        # std::string ivy_exec_run_protocol(std::vector<std::string> inputs){
+        #   for (int i=0; i<inputs.size(); ++i){
+        #       std::string input = inputs[i];
+        #       if (input == "STOP_PROTOCOL"){
+        #           delete ivy_exec_cr;
+        #           delete ivy_exec;
+        #           return "";                 
+        #       }
+        #       ivy_exec_cr->process(input);
         #   }
-        #   ivy_exec_cr->process(input);
-        #   return ivy_exec_stream.str() 
+        #   return ivy_exec_stream.str();
         # }
 
         for line in lines:
@@ -338,14 +346,40 @@ class FiniteIvyGenerator():
 
 from importlib import reload
 class FiniteIvyExecutor():
-    def __init__(self):
+    def __init__(self,  state_vars, global_vars, ivy_actions):
         import ivy_exec
         self.ivy_exec = reload(ivy_exec)
         self.ivy_exec.ivy_exec_init()
+        self.state_vars  = state_vars 
+        self.global_vars = global_vars
+        self.ivy_actions = ivy_actions
 
-    def run_protocol(self, ivy_command : str):
-        result = self.ivy_exec.ivy_exec_run_protocol(ivy_command)
-        result = result.strip(' ').split(' ')[-1].strip('\n>') 
+        self.get_state_vars  = self.ivy_exec.StrVector(len(state_vars)) 
+        for i, state_var in enumerate(state_vars):
+            self.get_state_vars[i] = 'get_' + str(state_var)
+        
+        self.get_global_vars = self.ivy_exec.StrVector(len(global_vars)) 
+        for i, global_var in enumerate(global_vars):
+            self.get_global_vars[i] = 'get_' + str(global_var)
+
+    def _decode_ivy_state(self, result : str):
+        return result.strip('\n> = ').split('\n> = ')
+
+    def get_state(self):
+        result = self.ivy_exec.ivy_exec_run_protocol(self.get_state_vars)
+        result = self._decode_ivy_state(result)
         self.ivy_exec.ivy_exec_reset_buffer()
-        print(result)
+        return result
+
+    def get_global_state(self):
+        result = self.ivy_exec.ivy_exec_run_protocol(self.get_global_vars)
+        result = self._decode_ivy_state(result)
+        self.ivy_exec.ivy_exec_reset_buffer()
+        return result
+
+    def execute_ivy_action(self, action : str):
+        ivy_action    = self.ivy_exec.StrVector(1) 
+        ivy_action[0] = action
+        self.ivy_exec.ivy_exec_run_protocol(ivy_action)
+        self.ivy_exec.ivy_exec_reset_buffer()
 

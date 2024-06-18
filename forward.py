@@ -26,6 +26,9 @@ class DfsStates():
         self.protocol     = None
         self.ivy_executor = None
 
+        self.global_states   =  []
+        
+
     def _init_state_variables(self):
         self.state_vars  = self.tran_sys.get_pretty_filtered_atoms(var_filter='non-global')
         self.global_vars = self.tran_sys.get_pretty_filtered_atoms(var_filter='global')
@@ -52,10 +55,13 @@ class DfsStates():
         self._init_finite_ivy_generator() 
 
     def run_protocol(self):
-        self.ivy_executor = FiniteIvyExecutor() 
-        self.ivy_executor.run_protocol('get_vote(node0,value0)')
-        self.ivy_executor.run_protocol('cast_vote(node0,value0)')
-        self.ivy_executor.run_protocol('get_vote(node0,value0)')
+        self.ivy_executor = FiniteIvyExecutor(self.state_vars, self.global_vars, self.ivy_actions) 
+        print(self.global_vars)
+        print(self.ivy_executor.get_global_state()) 
+        print(self.state_vars)
+        print(self.ivy_executor.get_state()       ) 
+        self.ivy_executor.execute_ivy_action('cast_vote(node0,value0)')
+        print(self.ivy_executor.get_state()       ) 
 
     def clean(self):
         FiniteIvyGenerator.clean()
