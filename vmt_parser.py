@@ -6,6 +6,7 @@ from pysmt.typing import EnumType
 from pysmt.environment import get_env
 from itertools import combinations, product
 
+import re
 from util import FormulaPrinter as printer
 from util import SORT_SUFFIX, SET_DELIM
 from verbose import *
@@ -161,14 +162,26 @@ class TransitionSystem(SmtLibParser):
                 self.dep_types[set_sort] = dep_type
 
     def _get_filtered_state_variables(self, var_filter='non-global'):
-        non_global_vars = []
-        global_vars     = []
-        for symbol in self.finite_system.states:
-            if symbol in self.finite_system.global_symbols:
-                global_vars.append(symbol)
-            else:
-                non_global_vars.append(symbol)
-        return global_vars if var_filter == 'global' else non_global_vars
+        if var_filter == 'global':
+            global_vars = []
+            for symbol in self.finite_system.states:
+                if symbol in self.finite_system.global_symbols:
+                    global_vars.append(symbol)
+            return global_vars
+        elif var_filter == 'non_global':
+            non_global_vars = []
+            for symbol in self.finite_system.states:
+                if not symbol in self.finite_system.global_symbols:
+                    non_global_vars.append(symbol)
+            return non_global_vars
+        else:
+            indep_vars = [] 
+            for prev_symbol in self.finite_system.states:
+                if prev_symbol not in self.finite_system.global_symbols:
+                    next_symbol = self.finite_system.prev2next[prev_symbol]
+                    if printer.pretty_print_str(next_symbol) not in self.finite_system.definitions.keys():
+                        indep_vars.append(prev_symbol)
+            return indep_vars
 
     def _get_all_params_of_param_types(self, param_types):
         elems = []
@@ -178,15 +191,15 @@ class TransitionSystem(SmtLibParser):
         all_params = [list(params) for params in all_params]
         return all_params
 
-    def _get_instantiated_variables(self, var, var_type):
-        if var_type.is_bool_type():
+    def _get_instantiated_variables(self, var, var_type, to_eq_term=True):
+        if var_type.is_bool_type() or not to_eq_term:
             return [var]
         eq_symbols = []
         for elem in self.sort2elems[var_type]:
             eq_symbols.append(EqualsOrIff(var, elem))
         return eq_symbols
 
-    def _get_instantiated_functions(self, func_symbol):
+    def _get_instantiated_functions(self, func_symbol, to_eq_term=True):
         func_type   = func_symbol.symbol_type()
         param_types = func_type._param_types
         return_type = func_type._return_type
@@ -194,19 +207,19 @@ class TransitionSystem(SmtLibParser):
         functions  = []
         for params in all_params:
             func  = Function(func_symbol, params)
-            funcs = self._get_instantiated_variables(func, return_type)
+            funcs = self._get_instantiated_variables(func, return_type, to_eq_term)
             functions += funcs
         return functions 
 
-    def _get_filtered_ground_atoms(self, var_filter='non-global'):
+    def _get_filtered_ground_atoms(self, var_filter='non-global', to_eq_term=True):
         state_vars = self._get_filtered_state_variables(var_filter)
         atoms = []
         for var in state_vars:
             var_type = var.symbol_type() 
             if var_type.is_function_type(): 
-                atoms += self._get_instantiated_functions(var)
+                atoms += self._get_instantiated_functions(var, to_eq_term)
             else: 
-                atoms += self._get_instantiated_variables(var, var_type)
+                atoms += self._get_instantiated_variables(var, var_type, to_eq_term)
         return atoms
 
     def _get_all_parameterized_actions(self):
@@ -357,6 +370,15 @@ class TransitionSystem(SmtLibParser):
 
     def get_pretty_filtered_atoms(self, var_filter='non-global'):
         atoms = self._get_filtered_ground_atoms(var_filter)
+        subst = self.get_pretty_set_substitution_map()
+        pretty_atoms = []
+        for atom in atoms:
+            pretty_atoms.append(printer.pretty_print_str(atom, subst).replace(' ',''))
+        return pretty_atoms
+    
+    def get_pretty_ivy_variables(self):
+        atoms  = self._get_filtered_ground_atoms(var_filter='global', to_eq_term=False)
+        atoms += self._get_filtered_ground_atoms(var_filter='independent', to_eq_term=False)
         subst = self.get_pretty_set_substitution_map()
         pretty_atoms = []
         for atom in atoms:

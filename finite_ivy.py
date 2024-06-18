@@ -1,8 +1,10 @@
 import os
 import subprocess
+from typing import List
 from util import QrmOptions
 from vmt_parser import TransitionSystem
 from verbose import *
+import re
 
 class FiniteIvyAccessAction():
     def __init__(self, symbol, param_types, return_type):
@@ -54,6 +56,8 @@ class FiniteIvyGenerator():
     options  : QrmOptions
     lines               = []
     var2access_action   = {}
+    ivy_state_vars = []
+    cpp_state_vars = []
 
     path_name           = '' #path_name
     file_name_prefix    = '' #instance_name.size.finite
@@ -61,7 +65,7 @@ class FiniteIvyGenerator():
     cpp_name            = '' #instance_name.size.finite.cpp
     wrapper_name        = '' #instance_name.size.finite_wrap.cpp
     object_name         = '' #instance_name.size.finite.o
-    wrapper_object_name =  '' #instance_name.size.finite_wrap.o
+    wrapper_object_name = '' #instance_name.size.finite_wrap.o
 
     swig_interface_name = 'ivy_exec.i'
     library_name        = '_ivy_exec.so'
@@ -146,6 +150,26 @@ class FiniteIvyGenerator():
             access_action = FiniteIvyAccessAction(var, param_types, return_type)
             FiniteIvyGenerator.var2access_action[var] = access_action
 
+    def set_state_variables(element_Name2Id, ivy_state_vars):
+        FiniteIvyGenerator.ivy_state_vars = ivy_state_vars
+        FiniteIvyGenerator.cpp_state_vars = []
+        for atom in ivy_state_vars:
+            var_name = ''
+            args     = []
+            match  = re.search(r'(\w+)\(([^)]+)\)',  atom)
+            if match: # case 3: predicate 
+                var_name = match.group(1)
+                args     = match.group(2).split(',')
+            else:
+                var_name = atom.strip('( )')
+            args = [str(element_Name2Id[arg]) for arg in args]
+            ivy_var = ''
+            if len(args) > 0:
+                ivy_var = var_name + '[' + ']['.join(args) + ']'
+            else:
+                ivy_var = var_name
+            FiniteIvyGenerator.cpp_state_vars.append(ivy_var)
+
     def write_ivy():
         FiniteIvyGenerator._reset_lines()
         FiniteIvyGenerator._set_lines_from_source_ivy()
@@ -180,17 +204,21 @@ class FiniteIvyGenerator():
         lines.append('}\n') 
 
         lines.append('\n')
-        lines.append('std::string ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
+        lines.append('std::string ivy_exec_get_buffer(){\n') 
+        lines.append('\treturn ivy_exec_stream.str();\n') 
+        lines.append('}\n') 
+
+        lines.append('\n')
+        lines.append('void ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
         lines.append('\tfor (int i=0; i<inputs.size(); ++i){\n')
         lines.append('\t\tstd::string input = inputs[i];\n')
         lines.append('\t\tif (input == "STOP_PROTOCOL"){\n')
         lines.append('\t\t\tdelete ivy_exec_cr;\n')
         lines.append('\t\t\tdelete ivy_exec;\n')
-        lines.append('\t\t\treturn "";\n') 
+        lines.append('\t\t\treturn;\n') 
         lines.append('\t\t}\n') 
         lines.append('\t\tivy_exec_cr->process(input);\n') 
         lines.append('\t}\n') 
-        lines.append('\treturn ivy_exec_stream.str();\n')   
         lines.append('}\n')                                                                    
 
         # #include <vector> 
@@ -210,17 +238,20 @@ class FiniteIvyGenerator():
         #     ivy_exec_stream.str("");
         # }
 
-        # std::string ivy_exec_run_protocol(std::vector<std::string> inputs){
+        # std::string ivy_exec_get_buffer(){
+        #     return ivy_exec_stream.str();
+        # }
+
+        # void ivy_exec_run_protocol(std::vector<std::string> inputs){
         #   for (int i=0; i<inputs.size(); ++i){
         #       std::string input = inputs[i];
         #       if (input == "STOP_PROTOCOL"){
         #           delete ivy_exec_cr;
         #           delete ivy_exec;
-        #           return "";                 
+        #           return;                 
         #       }
         #       ivy_exec_cr->process(input);
         #   }
-        #   return ivy_exec_stream.str();
         # }
 
         for line in lines:
@@ -346,40 +377,52 @@ class FiniteIvyGenerator():
 
 from importlib import reload
 class FiniteIvyExecutor():
-    def __init__(self,  state_vars, global_vars, ivy_actions):
+    def __init__(self,  dfs_state_vars, dfs_global_vars, ivy_state_vars):
         import ivy_exec
         self.ivy_exec = reload(ivy_exec)
         self.ivy_exec.ivy_exec_init()
-        self.state_vars  = state_vars 
-        self.global_vars = global_vars
-        self.ivy_actions = ivy_actions
+        self.dfs_state_vars  = dfs_state_vars 
+        self.dfs_global_vars = dfs_global_vars
+        self.ivy_state_vars  = ivy_state_vars
 
-        self.get_state_vars  = self.ivy_exec.StrVector(len(state_vars)) 
-        for i, state_var in enumerate(state_vars):
-            self.get_state_vars[i] = 'get_' + str(state_var)
+        self.get_dfs_state_vars  = self.ivy_exec.StrVector(len(dfs_state_vars)) 
+        for i, state_var in enumerate(dfs_state_vars):
+            self.get_dfs_state_vars[i] = 'get_' + state_var
         
-        self.get_global_vars = self.ivy_exec.StrVector(len(global_vars)) 
-        for i, global_var in enumerate(global_vars):
-            self.get_global_vars[i] = 'get_' + str(global_var)
+        self.get_dfs_global_vars = self.ivy_exec.StrVector(len(dfs_global_vars)) 
+        for i, global_var in enumerate(dfs_global_vars):
+            self.get_dfs_global_vars[i] = 'get_' + global_var
 
-    def _decode_ivy_state(self, result : str):
-        return result.strip('\n> = ').split('\n> = ')
+    def _decode_ivy_state(self, result : str) -> str:
+        return ','.join(result.strip('\n> = ').split('\n> = '))
 
-    def get_state(self):
-        result = self.ivy_exec.ivy_exec_run_protocol(self.get_state_vars)
-        result = self._decode_ivy_state(result)
+    def get_dfs_state(self) -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
+        self.ivy_exec.ivy_exec_run_protocol(self.get_dfs_state_vars)
+        result = self.ivy_exec.ivy_exec_get_buffer()
+        result = self._decode_ivy_state(result)
         return result
 
-    def get_global_state(self):
-        result = self.ivy_exec.ivy_exec_run_protocol(self.get_global_vars)
-        result = self._decode_ivy_state(result)
+    def get_dfs_global_state(self)  -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
+        self.ivy_exec.ivy_exec_run_protocol(self.get_dfs_global_vars)
+        result = self.ivy_exec.ivy_exec_get_buffer()
+        result = self._decode_ivy_state(result)
         return result
 
-    def execute_ivy_action(self, action : str):
+    def get_ivy_state(self) -> str:
+        self.ivy_exec.ivy_exec_reset_buffer()
+        self.ivy_exec.ivy_exec_run_protocol(self.get_ivy_state_vars)
+        result = self.ivy_exec.ivy_exec_get_buffer()
+        result = self._decode_ivy_state(result)
+        return result
+
+    def execute_ivy_action(self, action : str) -> bool:
+        prev_result   = self.ivy_exec.ivy_exec_get_buffer()
         ivy_action    = self.ivy_exec.StrVector(1) 
         ivy_action[0] = action
-        self.ivy_exec.ivy_exec_run_protocol(ivy_action)
         self.ivy_exec.ivy_exec_reset_buffer()
-
+        self.ivy_exec.ivy_exec_run_protocol(ivy_action)
+        result        = self.ivy_exec.ivy_exec_get_buffer() 
+        successful_action = (result != prev_result)
+        return successful_action

@@ -17,58 +17,58 @@ class DfsStates():
         self.tran_sys = tran_sys
         self.options  = options
 
-        self.state_vars      = []
-        self.global_vars     = []
-        self.get_state_vars  = []
-        self.get_global_vars = []
+        self.dfs_state_vars  = []
+        self.dfs_global_vars = []
         self.ivy_actions     = []
+        self.ivy_state_vars  = []
 
-        self.protocol     = None
-        self.ivy_executor = None
+        self.protocol        = None
+        self.ivy_executor    = None
 
-        self.global_states   =  []
+        self.global_state    = []
+        self.sym_reduced_reachable_states = set()
         
-
     def _init_state_variables(self):
-        self.state_vars  = self.tran_sys.get_pretty_filtered_atoms(var_filter='non-global')
-        self.global_vars = self.tran_sys.get_pretty_filtered_atoms(var_filter='global')
-        self.get_state_vars  = ['get_' + str(state_var)  for state_var in self.state_vars]
-        self.get_global_vars = ['get_' + str(global_var) for global_var in self.global_vars] 
+        self.dfs_state_vars  = self.tran_sys.get_pretty_filtered_atoms(var_filter='non-global')
+        self.dfs_global_vars = self.tran_sys.get_pretty_filtered_atoms(var_filter='global')
+        self.ivy_state_vars  = self.tran_sys.get_pretty_ivy_variables()
         self.ivy_actions = self.tran_sys.get_pretty_parameterized_actions()
+
+    def _init_protocol(self):
+        self.protocol = Protocol(self.options)                
+        self.protocol.initialize_from_transition_system(self.tran_sys, self.dfs_state_vars)
 
     def _init_finite_ivy_generator(self):
         FiniteIvyGenerator.set_transition_system(self.tran_sys)
         FiniteIvyGenerator.set_options(self.options)
         FiniteIvyGenerator.set_path_and_file_names()
         FiniteIvyGenerator.set_state_var_to_access_action()
+        FiniteIvyGenerator.set_state_variables(self.protocol.element_Name2Id, self.ivy_state_vars)
         FiniteIvyGenerator.write_ivy()
         FiniteIvyGenerator.compile_finite_ivy_to_cpp()
         FiniteIvyGenerator.build_ivy_exec_python_module()
-
-    def _init_protocol(self):
-        self.protocol = Protocol(self.options)                
-        self.protocol.initialize_from_transition_system(self.tran_sys, self.state_vars)
 
     def initialize(self):
         self._init_state_variables()
         self._init_protocol()
         self._init_finite_ivy_generator() 
 
-    def run_protocol(self):
-        self.ivy_executor = FiniteIvyExecutor(self.state_vars, self.global_vars, self.ivy_actions) 
-        print(self.global_vars)
-        print(self.ivy_executor.get_global_state()) 
-        print(self.state_vars)
-        print(self.ivy_executor.get_state()       ) 
-        self.ivy_executor.execute_ivy_action('cast_vote(node0,value0)')
-        print(self.ivy_executor.get_state()       ) 
+    def _add_new_reachable_state_orbit(self, state):
+        # TODO: symmetric oribt
+        self.sym_reduced_reachable_states.add(state)
+
+    def symmetry_aware_depth_first_search_reachability(self):
+        self.ivy_executor = FiniteIvyExecutor(self.dfs_state_vars, self.dfs_global_vars, self.ivy_state_vars) 
+        self.global_state = self.ivy_executor.get_dfs_global_state()
+        initial_state     = self.ivy_executor.get_dfs_state()
+        self._add_new_reachable_state(initial_state)
 
     def clean(self):
         FiniteIvyGenerator.clean()
 
     def solve_reachability(self):
         self.initialize()
-        self.run_protocol()
+        self.symmetry_aware_depth_first_search_reachability()
         self.clean()
 
     def get_protocol(self):
