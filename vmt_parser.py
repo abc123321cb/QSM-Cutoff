@@ -6,7 +6,6 @@ from pysmt.typing import EnumType
 from pysmt.environment import get_env
 from itertools import combinations, product
 
-import re
 from util import FormulaPrinter as printer
 from util import SORT_SUFFIX, SET_DELIM
 from verbose import *
