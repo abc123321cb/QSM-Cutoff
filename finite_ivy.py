@@ -209,6 +209,12 @@ class FiniteIvyGenerator():
         lines.append('}\n') 
 
         lines.append('\n')
+        lines.append('void ivy_exec_set_state(std::vector<std::string> state_values){\n')
+        for i, state_var in enumerate(FiniteIvyGenerator.cpp_state_vars):
+            lines.append('\t std::stringstream(state_values[' + str(i) + ']) >> ivy_exec -> ' + state_var + ';\n')
+        lines.append('}\n')  
+
+        lines.append('\n')
         lines.append('void ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
         lines.append('\tfor (int i=0; i<inputs.size(); ++i){\n')
         lines.append('\t\tstd::string input = inputs[i];\n')
@@ -220,7 +226,7 @@ class FiniteIvyGenerator():
         lines.append('\t\tivy_exec_cr->process(input);\n') 
         lines.append('\t}\n') 
         lines.append('}\n')                                                                    
-
+        
         # #include <vector> 
         # toy_consensus__node_3_value_3__finite_repl * ivy_exec;
         # cmd_reader* ivy_exec_cr;
@@ -393,6 +399,10 @@ class FiniteIvyExecutor():
         for i, global_var in enumerate(dfs_global_vars):
             self.get_dfs_global_vars[i] = 'get_' + global_var
 
+        self.get_ivy_state_vars = self.ivy_exec.StrVector(len(ivy_state_vars)) 
+        for i, state_var in enumerate(ivy_state_vars):
+            self.get_ivy_state_vars[i] = 'get_' + state_var
+
     def _decode_ivy_state(self, result : str) -> str:
         return ','.join(result.strip('\n> = ').split('\n> = '))
 
@@ -410,12 +420,19 @@ class FiniteIvyExecutor():
         result = self._decode_ivy_state(result)
         return result
 
-    def get_ivy_state(self) -> str:
+    def backup_ivy_state(self) -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
         self.ivy_exec.ivy_exec_run_protocol(self.get_ivy_state_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
         result = self._decode_ivy_state(result)
         return result
+
+    def restore_ivy_state(self, ivy_state : str):
+        ivy_state = ivy_state.split(',')
+        ivy_state_values = self.ivy_exec.StrVector(len(ivy_state)) 
+        for i, value in enumerate(ivy_state):
+            ivy_state_values[i] = value
+        self.ivy_exec.ivy_exec_set_state(ivy_state_values)
 
     def execute_ivy_action(self, action : str) -> bool:
         prev_result   = self.ivy_exec.ivy_exec_get_buffer()

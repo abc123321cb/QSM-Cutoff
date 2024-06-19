@@ -168,10 +168,10 @@ class TransitionSystem(SmtLibParser):
                 if symbol in self.finite_system.global_symbols:
                     global_vars.append(symbol)
             return global_vars
-        elif var_filter == 'non_global':
+        elif var_filter == 'non-global':
             non_global_vars = []
             for symbol in self.finite_system.states:
-                if not symbol in self.finite_system.global_symbols:
+                if symbol not in self.finite_system.global_symbols:
                     non_global_vars.append(symbol)
             return non_global_vars
         else:
@@ -191,7 +191,7 @@ class TransitionSystem(SmtLibParser):
         all_params = [list(params) for params in all_params]
         return all_params
 
-    def _get_instantiated_variables(self, var, var_type, to_eq_term=True):
+    def _get_instantiated_variables(self, var, var_type, to_eq_term=False):
         if var_type.is_bool_type() or not to_eq_term:
             return [var]
         eq_symbols = []
@@ -199,7 +199,7 @@ class TransitionSystem(SmtLibParser):
             eq_symbols.append(EqualsOrIff(var, elem))
         return eq_symbols
 
-    def _get_instantiated_functions(self, func_symbol, to_eq_term=True):
+    def _get_instantiated_functions(self, func_symbol, to_eq_term=False):
         func_type   = func_symbol.symbol_type()
         param_types = func_type._param_types
         return_type = func_type._return_type
@@ -211,7 +211,7 @@ class TransitionSystem(SmtLibParser):
             functions += funcs
         return functions 
 
-    def _get_filtered_ground_atoms(self, var_filter='non-global', to_eq_term=True):
+    def _get_filtered_ground_atoms(self, var_filter='non-global', to_eq_term=False):
         state_vars = self._get_filtered_state_variables(var_filter)
         atoms = []
         for var in state_vars:
@@ -377,8 +377,8 @@ class TransitionSystem(SmtLibParser):
         return pretty_atoms
     
     def get_pretty_ivy_variables(self):
-        atoms  = self._get_filtered_ground_atoms(var_filter='global', to_eq_term=False)
-        atoms += self._get_filtered_ground_atoms(var_filter='independent', to_eq_term=False)
+        atoms  = self._get_filtered_ground_atoms(var_filter='global')
+        atoms += self._get_filtered_ground_atoms(var_filter='independent')
         subst = self.get_pretty_set_substitution_map()
         pretty_atoms = []
         for atom in atoms:

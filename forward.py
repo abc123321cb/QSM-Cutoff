@@ -60,8 +60,28 @@ class DfsStates():
     def symmetry_aware_depth_first_search_reachability(self):
         self.ivy_executor = FiniteIvyExecutor(self.dfs_state_vars, self.dfs_global_vars, self.ivy_state_vars) 
         self.global_state = self.ivy_executor.get_dfs_global_state()
-        initial_state     = self.ivy_executor.get_dfs_state()
-        self._add_new_reachable_state(initial_state)
+        initial_dfs_state = self.ivy_executor.get_dfs_state()
+        initial_ivy_state = self.ivy_executor.backup_ivy_state()
+        print([(self.dfs_state_vars[i], val) for i,val in enumerate(initial_dfs_state.split(','))])
+        print()
+
+        self.ivy_executor.execute_ivy_action('cast_vote(node0,value0)')
+        print('cast_vote(node0, value0)')
+        print()
+
+        updated_dfs_state = self.ivy_executor.get_dfs_state()
+        print([(self.dfs_state_vars[i], val) for i,val in enumerate(updated_dfs_state.split(','))])
+        print()
+
+        self.ivy_executor.restore_ivy_state(initial_ivy_state) 
+        print('set to initial state')
+        print()
+
+        updated_dfs_state = self.ivy_executor.get_dfs_state()
+        print([(self.dfs_state_vars[i], val) for i,val in enumerate(updated_dfs_state.split(','))])
+        print()
+
+        self._add_new_reachable_state(initial_dfs_state)
 
     def clean(self):
         FiniteIvyGenerator.clean()
