@@ -6,6 +6,7 @@ from pysmt.typing import EnumType
 from pysmt.environment import get_env
 from itertools import combinations, product
 
+import re
 from util import FormulaPrinter as printer
 from util import SORT_SUFFIX, SET_DELIM
 from verbose import *
@@ -91,7 +92,8 @@ class TransitionSystem(SmtLibParser):
         self.finite_system   = FiniteSystem()   # finitized system 
         self._idx = 0                   # subscript for enum type
         # dependent sorts
-        self.dep_types       = dict()   # "quorum" to quorum meta data (e.g. "member", "node" ...) 
+        self.dep_types        = dict()   # "quorum" to quorum meta data (e.g. "member", "node" ...) 
+        self.pretty_set_subst = None 
 
     #------------------------------------------------------------
     # TransitionSystem: helper methods     
@@ -159,74 +161,6 @@ class TransitionSystem(SmtLibParser):
                 elements     = self.sort2elems[elem_sort]
                 dep_type     = DependentType(dep_relation, set_sort, elem_sort, elements, select_func)
                 self.dep_types[set_sort] = dep_type
-
-    def _get_filtered_state_variables(self, var_filter='non-global'):
-        if var_filter == 'global':
-            global_vars = []
-            for symbol in self.finite_system.states:
-                if symbol in self.finite_system.global_symbols:
-                    global_vars.append(symbol)
-            return global_vars
-        elif var_filter == 'non-global':
-            non_global_vars = []
-            for symbol in self.finite_system.states:
-                if symbol not in self.finite_system.global_symbols:
-                    non_global_vars.append(symbol)
-            return non_global_vars
-        else:
-            indep_vars = [] 
-            for prev_symbol in self.finite_system.states:
-                if prev_symbol not in self.finite_system.global_symbols:
-                    next_symbol = self.finite_system.prev2next[prev_symbol]
-                    if printer.pretty_print_str(next_symbol) not in self.finite_system.definitions.keys():
-                        indep_vars.append(prev_symbol)
-            return indep_vars
-
-    def _get_all_params_of_param_types(self, param_types):
-        elems = []
-        for ptype in param_types:
-            elems.append(self.sort2elems[ptype])
-        all_params = list(product(*elems))
-        all_params = [list(params) for params in all_params]
-        return all_params
-
-    def _get_instantiated_variables(self, var, var_type, to_eq_term=False):
-        if var_type.is_bool_type() or not to_eq_term:
-            return [var]
-        eq_symbols = []
-        for elem in self.sort2elems[var_type]:
-            eq_symbols.append(EqualsOrIff(var, elem))
-        return eq_symbols
-
-    def _get_instantiated_functions(self, func_symbol, to_eq_term=False):
-        func_type   = func_symbol.symbol_type()
-        param_types = func_type._param_types
-        return_type = func_type._return_type
-        all_params  = self._get_all_params_of_param_types(param_types)
-        functions  = []
-        for params in all_params:
-            func  = Function(func_symbol, params)
-            funcs = self._get_instantiated_variables(func, return_type, to_eq_term)
-            functions += funcs
-        return functions 
-
-    def _get_filtered_ground_atoms(self, var_filter='non-global', to_eq_term=False):
-        state_vars = self._get_filtered_state_variables(var_filter)
-        atoms = []
-        for var in state_vars:
-            var_type = var.symbol_type() 
-            if var_type.is_function_type(): 
-                atoms += self._get_instantiated_functions(var, to_eq_term)
-            else: 
-                atoms += self._get_instantiated_variables(var, var_type, to_eq_term)
-        return atoms
-
-    def _get_all_parameterized_actions(self):
-        actions = self.finite_system.actions
-        parameterized_actions = []
-        for action in actions:
-            parameterized_actions += self._get_instantiated_functions(action)
-        return parameterized_actions
 
     #------------------------------------------------------------
     # TransitionSystem: public methods
@@ -343,12 +277,14 @@ class TransitionSystem(SmtLibParser):
             return self.get_pretty_elements_of_non_dependent_sort(sort)
 
     def get_pretty_set_substitution_map(self):
-        subst = {}
+        if self.pretty_set_subst != None:
+            return self.pretty_set_subst
+        self.pretty_set_subst = {}
         for set_sort in self.dep_types.keys():
             dep_sets = self.get_dependent_sets(set_sort)
             for set_id, dep_set in enumerate(dep_sets):
-                subst[dep_set] = self.get_pretty_set(set_sort, set_id)
-        return subst
+                self.pretty_set_subst[dep_set] = self.get_pretty_set(set_sort, set_id)
+        return self.pretty_set_subst
 
     def get_dependent_axioms(self):
         axioms = []
@@ -366,31 +302,6 @@ class TransitionSystem(SmtLibParser):
                         dep_symbol = Not(dep_symbol)
                     axioms.append(printer.pretty_print_str(dep_symbol, subst))
         return axioms
-
-    def get_pretty_filtered_atoms(self, var_filter='non-global'):
-        atoms = self._get_filtered_ground_atoms(var_filter)
-        subst = self.get_pretty_set_substitution_map()
-        pretty_atoms = []
-        for atom in atoms:
-            pretty_atoms.append(printer.pretty_print_str(atom, subst).replace(' ',''))
-        return pretty_atoms
-    
-    def get_pretty_ivy_variables(self):
-        atoms  = self._get_filtered_ground_atoms(var_filter='global')
-        atoms += self._get_filtered_ground_atoms(var_filter='independent')
-        subst = self.get_pretty_set_substitution_map()
-        pretty_atoms = []
-        for atom in atoms:
-            pretty_atoms.append(printer.pretty_print_str(atom, subst).replace(' ',''))
-        return pretty_atoms
-
-    def get_pretty_parameterized_actions(self):
-        actions = self._get_all_parameterized_actions()
-        subst = self.get_pretty_set_substitution_map()
-        pretty_actions = []
-        for action in actions:
-            pretty_actions.append(printer.pretty_print_str(action, subst).replace(' ',''))
-        return pretty_actions 
 
 def vmt_parse(options, vmt_filename): 
     tran_sys = TransitionSystem(options)
