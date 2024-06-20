@@ -12,17 +12,27 @@ class FiniteIvyAccessAction():
         self.param_types = param_types 
         self.return_type = return_type
 
-        self._symbol_name     = str(symbol)
-        self._action_name     = f'get_{str(symbol)}'
-        self._param_types_str = [f'{str(ptype)}_{pid}: {str(ptype)}' for pid, ptype in enumerate(param_types)]
-        self._params_list     = [f'{str(ptype)}_{pid}' for pid, ptype in enumerate(param_types)]
-        self._return_type_str = 'bool' if return_type.is_bool_type() else str(return_type)
+        self._symbol_name      = str(symbol)
+        self._action_name      = f'get_{str(symbol)}'
+        self._bool_action_name = f'get_bool_{str(symbol)}'
+        self._params_signature = [f'{str(ptype)}_{pid}: {str(ptype)}' for pid, ptype in enumerate(param_types)]
+        self._params_list      = [f'{str(ptype)}_{pid}' for pid, ptype in enumerate(param_types)]
+        self._return_type_str  = 'bool' if return_type.is_bool_type() else str(return_type)
+        self._return_signature = 'result: bool' if return_type.is_bool_type() else f'result: {str(return_type)}'
 
     def _get_action_header(self):
         line  = f'action {self._action_name}'
         if len(self.param_types):
-            line += f'({', '.join(self._param_types_str)})'
+            line += f'({', '.join(self._params_signature)})'
         line += f' returns(x: {self._return_type_str}) = ' 
+        line += '{\n'
+        return line
+
+    def _get_bool_action_header(self):
+        line  = f'action {self._bool_action_name}'
+        bool_params_signature = self._params_signature + [self._return_signature]
+        line += f'({', '.join(bool_params_signature)})'
+        line += f' returns(x: bool) = ' 
         line += '{\n'
         return line
 
@@ -34,11 +44,24 @@ class FiniteIvyAccessAction():
         line += '\n'
         return line
 
+    def _get_bool_action_body(self):
+        line = '    x := ('
+        line += f'{self._symbol_name}'
+        if len(self.param_types):
+            line += f'({', '.join(self._params_list)})'
+        line += ' = result)\n'
+        return line
+
     def _get_action_end(self):
         return '}\n'
 
     def _get_export_action(self):
         line  = f'export {self._action_name}'
+        line += '\n'
+        return line
+
+    def _get_bool_export_action(self):
+        line  = f'export {self._bool_action_name}'
         line += '\n'
         return line
 
@@ -48,6 +71,14 @@ class FiniteIvyAccessAction():
         lines.append(self._get_action_body())
         lines.append(self._get_action_end())
         lines.append(self._get_export_action())
+        return lines
+
+    def get_bool_action_lines(self):
+        lines = []
+        lines.append(self._get_bool_action_header())
+        lines.append(self._get_bool_action_body())
+        lines.append(self._get_action_end())
+        lines.append(self._get_bool_export_action())
         return lines
 
 class FiniteIvyGenerator():
@@ -107,6 +138,9 @@ class FiniteIvyGenerator():
             for line in access_action.get_action_lines():
                 FiniteIvyGenerator.lines.append(line)
             FiniteIvyGenerator.lines.append('\n')
+            for line in access_action.get_bool_action_lines():
+                FiniteIvyGenerator.lines.append(line)
+            FiniteIvyGenerator.lines.append('\n')
 
     def _write_lines_to_finite_ivy():
         finite_ivy = open(FiniteIvyGenerator.finite_ivy_name, 'w')
@@ -153,7 +187,7 @@ class FiniteIvyGenerator():
     def set_state_variables(element_Name2Id, ivy_state_vars):
         FiniteIvyGenerator.ivy_state_vars = ivy_state_vars
         FiniteIvyGenerator.cpp_state_vars = []
-        for atom in ivy_state_vars:
+        for atom in FiniteIvyGenerator.ivy_state_vars:
             var_name = ''
             args     = []
             match  = re.search(r'(\w+)\(([^)]+)\)',  atom)
@@ -199,6 +233,11 @@ class FiniteIvyGenerator():
         lines.append('}\n') 
 
         lines.append('\n')
+        lines.append('void ivy_exec_set_buffer(std::string buffer_str){\n') 
+        lines.append('\tivy_exec_stream.str(buffer_str);\n') 
+        lines.append('}\n') 
+
+        lines.append('\n')
         lines.append('void ivy_exec_reset_buffer(){\n') 
         lines.append('\tivy_exec_stream.str("");\n') 
         lines.append('}\n') 
@@ -215,16 +254,23 @@ class FiniteIvyGenerator():
         lines.append('}\n')  
 
         lines.append('\n')
-        lines.append('void ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
+        lines.append('bool ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
         lines.append('\tfor (int i=0; i<inputs.size(); ++i){\n')
         lines.append('\t\tstd::string input = inputs[i];\n')
         lines.append('\t\tif (input == "STOP_PROTOCOL"){\n')
         lines.append('\t\t\tdelete ivy_exec_cr;\n')
         lines.append('\t\t\tdelete ivy_exec;\n')
-        lines.append('\t\t\treturn;\n') 
+        lines.append('\t\t\treturn false;\n') 
         lines.append('\t\t}\n') 
-        lines.append('\t\tivy_exec_cr->process(input);\n') 
+        lines.append('\t\ttry {\n')
+        lines.append('\t\t\tivy_exec_cr->process(input);\n') 
+        lines.append('\t\t}\n')
+        lines.append('\t\tcatch (ivy_assume_err & err) {\n')
+        lines.append('\t\t\tivy_exec -> __unlock();\n')
+        lines.append('\t\t\treturn false;\n')
+        lines.append('\t\t}\n')
         lines.append('\t}\n') 
+        lines.append('\treturn true;\n')
         lines.append('}\n')                                                                    
         
         for line in lines:
