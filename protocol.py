@@ -213,7 +213,6 @@ class Protocol():
         for atom in atoms:
             predicate = '' 
             args     = []
-            new_args = []
             match_pred    = re.search(r'(\w+)\(([^)]+)\)',  atom)
             match_eq      = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
             match_func_eq = re.search(r'\((\w+)\((\w+)\)=(\w+)\)', atom)
@@ -229,12 +228,10 @@ class Protocol():
             else: # case 2: bool
                 predicate = atom.strip('( )')
 
-            for arg in args:
-                new_args.append(arg)
             if match_func_eq or match_eq:
-                atom = format_eq_atom(predicate, new_args)
+                atom = format_eq_atom(predicate, args)
             else:
-                atom = format_atom(predicate,new_args)
+                atom = format_atom(predicate, args)
             line +=  ' ' + atom
         self._read_atoms(line)
         if self.options.writeReach or self.options.verbosity > 3:
