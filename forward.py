@@ -35,14 +35,18 @@ class ForwardReachability():
 
     def _init_protocol(self):
         self.protocol = Protocol(self.options)                
-        self.protocol.initialize_from_transition_system(self.tran_sys, self.instantiator.protocol_atoms)
+        self.protocol.init_sort(self.tran_sys)
+        self.protocol.init_dependent_sort(self.tran_sys)
+        self.protocol.init_predicate(self.tran_sys)
+        self.protocol.init_atoms(self.instantiator.protocol_atoms, self.instantiator.protocol_atoms_fmls)
+        self.protocol.init_sorts_permutations()
 
     def _init_finite_ivy_generator(self):
         FiniteIvyGenerator.set_transition_system(self.tran_sys)
         FiniteIvyGenerator.set_options(self.options)
         FiniteIvyGenerator.set_path_and_file_names()
         FiniteIvyGenerator.set_state_var_to_access_action()
-        FiniteIvyGenerator.set_state_variables(self.protocol.element_Name2Id, self.instantiator.ivy_state_vars)
+        FiniteIvyGenerator.set_state_variables(self.protocol.constant_Name2Id, self.instantiator.ivy_state_vars)
         FiniteIvyGenerator.write_ivy()
         FiniteIvyGenerator.compile_finite_ivy_to_cpp()
         FiniteIvyGenerator.build_ivy_exec_python_module()
@@ -96,7 +100,12 @@ class ForwardReachability():
         for dfs_state in self.dfs_explored_states:
             protocol_state = ''.join(dfs_state.split(','))
             protocol_states.append(protocol_state)
-        self.protocol._init_reachable_states(protocol_states)
+        self.protocol.init_reachable_states(protocol_states)
+
+        # write protocols
+        if (self.options.writeReach):
+            self.protocol.write_reachability()
+        self.protocol.print_verbose()
 
     #------------------------------------------------------------
     # ForwardReachability: utils
@@ -115,19 +124,8 @@ class ForwardReachability():
         self._update_protocol_states()
         self._clean()
 
-        # write protocols
-        if (self.options.writeReach):
-            self.protocol.write_reachability()
-        self.protocol.print_verbose()
-
-    def get_protocol(self):
-        return self.protocol
-
-    def get_protocol_atoms_fmla(self):
-        return self.instantiator.protocol_atoms_fmls
-
 def get_forward_reachability(tran_sys : TransitionSystem, options:QrmOptions):
     # dfs
     fr_solver = ForwardReachability(tran_sys, options)
     fr_solver.solve_reachability()
-    return fr_solver
+    return fr_solver.protocol

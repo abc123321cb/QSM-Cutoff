@@ -6,12 +6,10 @@ import time
 from os import path
 from ivy2vmt import compile_ivy2vmt
 from vmt_parser import vmt_parse
-from transition import get_transition_system
 from verbose import *
 from util import * 
 from forward import *
-from protocol import Protocol 
-from prime import PrimeOrbits, PrimeOrbit
+from prime import PrimeOrbits
 from minimize import Minimizer
 from run_ivy import *
 import tracemalloc
@@ -146,10 +144,8 @@ def qrm(args):
             tracemalloc.start()
             vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             options.set_sizes(size_str)
-            tran_sys  = vmt_parse(options, options.vmt_filename)
-            fr_solver = get_forward_reachability(tran_sys, options) 
-            protocol  = fr_solver.get_protocol()
-            protocol_atoms = fr_solver.get_protocol_atoms_fmla()
+            tran_sys   = vmt_parse(options, options.vmt_filename)
+            protocol   = get_forward_reachability(tran_sys, options) 
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)
 
@@ -164,7 +160,7 @@ def qrm(args):
             # step3: quantifier inference
             tracemalloc.start()
             vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
-            prime_orbits.quantifier_inference(protocol_atoms, tran_sys)
+            prime_orbits.quantifier_inference(protocol.atoms_fmla, tran_sys)
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)             
 

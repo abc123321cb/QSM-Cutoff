@@ -1,19 +1,17 @@
 import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
-from pysmt.fnode import FNode
 from vmt_parser import TransitionSystem
 from util import QrmOptions, SET_DELIM
-from util import FormulaPrinter as printer 
 from verbose import *
 
 # utils
 set_delim = SET_DELIM
-def format_atom(function: str, args: List[str]) -> str:
+def format_relational_atom(function: str, args: List[str]) -> str:
     return function + '(' + ','.join(args) + ')'
 
-def format_eq_atom(predicate: str, args: List[str]) -> str:
-    lhs    = predicate.strip('=')
+def format_equal_atom(function: str, args: List[str]) -> str:
+    lhs    = function.strip('=')
     params = args[:-1]
     rhs    = args[-1]
     atom   = ''
@@ -37,16 +35,19 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
 class Protocol():
     # static data
     def __init__(self, options : QrmOptions, filename='') -> None:
+        ## helper
+        self.lines         = []
         # member datas
-        self.sorts           : List[str]       = [] # sort id -> sort name 
-        self.sort_elements   : List[List[str]] = [] # sort id -> elem names
-        self.sort_Name2Id    : Dict[str,int]   = {} # sort name -> sort id
-        self.element_Name2Id : Dict[str,int]   = {} # elem name -> elem id
-        self.predicates    : Dict[str,List[str]] = {} # (predname, [argsort1, argsort2, ..])
-        self.atom_num      : int                 = 0
-        self.atoms         : List[str]           = [] # atom id -> atom name
-        self.atom_Name2Id  : Dict[str,int]       = {} # atom name -> atom id
-        self.atom_sig      : List[List[str]]     = [] # atom id -> [predname, arg1, arg2,..]
+        self.sorts            : List[str]       = [] # sort id -> sort name 
+        self.sort_constants   : List[List[str]] = [] # sort id -> constant names
+        self.sort_Name2Id     : Dict[str,int]   = {} # sort name -> sort id
+        self.constant_Name2Id : Dict[str,int]   = {} # const name -> const id
+        self.predicates       : Dict[str,List[str]] = {} # (function/constant name, [argsort1, argsort2, ..])
+        self.atom_num         : int                 = 0
+        self.atoms            : List[str]           = [] # atom id -> atom name
+        self.atoms_fmla                             = []
+        self.atom_Name2Id     : Dict[str,int]       = {} # atom name -> atom id
+        self.atom_sig         : List[List[str]]     = [] # atom id -> [predname, arg1, arg2,..]
         self.set_name2elem_sort_id  : Dict[str, int]  = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
@@ -57,31 +58,16 @@ class Protocol():
             self.read(filename)
             self._init_sorts_permutations()
 
-    def __str__(self) -> str:
-        lines = f'sorts: {str(self.sorts)}\n'
-        lines += f'sort elements: {str(self.sort_elements      )}\n' 
-        lines += f'sort name to id: {str(self.sort_Name2Id       )}\n' 
-        lines += f'element name to id: {str(self.element_Name2Id    )}\n' 
-        lines += f'predicates: {str(self.predicates         )}\n' 
-        lines += f'atom number: {str(self.atom_num           )}\n' 
-        lines += f'atoms: {str(self.atoms              )}\n' 
-        lines += f'atom name to id: {str(self.atom_Name2Id       )}\n' 
-        lines += f'atom signature: {str(self.atom_sig           )}\n' 
-        lines += f'set name to element sort id: {str(self.set_name2elem_sort_id        )}\n' 
-        lines += f'reachable states: {str(self.reachable_states   )}\n' 
-        lines += f'permutations: {str(self._sorts_permutations)}\n' 
-        return lines
-
     def _read_sort(self, line : str) -> None:
-        # read '.s [sort_name] [element1] [element2] ...'
+        # read '.s [sort_name] [constant1] [constant2] ...'
         # .s node n1 n2
         sort_id     = len(self.sorts)
-        (sort, elements) = split_head_tail(line, head=1)
+        (sort, constants) = split_head_tail(line, head=1)
         self.sorts.append(sort)
-        self.sort_elements.append(elements)
+        self.sort_constants.append(constants)
         self.sort_Name2Id[sort] = sort_id
-        for (id, e) in enumerate(elements):
-            self.element_Name2Id[e]=id
+        for (id, e) in enumerate(constants):
+            self.constant_Name2Id[e]=id
 
     def _read_dependent_sort(self, line : str) -> None:
         # read '.d [member sort] [quorum1] [quorum2] ...' 
@@ -122,9 +108,9 @@ class Protocol():
                 predicate = atom.strip('( )')
 
             if match_func_eq or match_eq:
-                atom = format_eq_atom(predicate, args)
+                atom = format_equal_atom(predicate, args)
             else:
-                atom = format_atom(predicate, args)
+                atom = format_relational_atom(predicate, args)
             self.atoms.append(atom)
             self.atom_Name2Id[atom]  = id
             signature = [predicate] + args
@@ -153,16 +139,16 @@ class Protocol():
                 if not line.startswith('.') and not line.startswith('#'):
                     self._read_states(line, states)
 
-    def _init_sort(self, tran_sys : TransitionSystem) -> None:
-        for (sort, sort_elems) in tran_sys.sort2consts.items():
-            sort_name  = tran_sys.get_sort_name_from_finite_sort(sort)
-            sort_elems = tran_sys.get_pretty_constants_of_sort(sort_name)
-            line = '.s ' + sort_name + ' ' + ' '.join(sort_elems)
+    def init_sort(self, tran_sys : TransitionSystem) -> None:
+        for (sort, sort_consts) in tran_sys.sort2consts.items():
+            sort_name   = tran_sys.get_sort_name_from_finite_sort(sort)
+            sort_consts = tran_sys.get_pretty_constants_of_sort(sort_name)
+            line = '.s ' + sort_name + ' ' + ' '.join(sort_consts)
             self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
 
-    def _init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
+    def init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
         for (set_sort, dep_type) in tran_sys.dep_types.items():
             elem_sort = tran_sys.get_dependent_element_sort(set_sort)
             line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
@@ -172,7 +158,7 @@ class Protocol():
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line) 
 
-    def _init_predicate(self, tran_sys : TransitionSystem) -> None:
+    def init_predicate(self, tran_sys : TransitionSystem) -> None:
         for var in tran_sys.get_state_variables():
             line  = '.p ' + str(var)
             eq_term    = ''
@@ -199,7 +185,7 @@ class Protocol():
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
 
-    def _init_atoms(self, atoms) -> None:
+    def init_atoms(self, atoms, atoms_fmla) -> None:
         line = '.a'
         for atom in atoms:
             predicate = '' 
@@ -220,41 +206,29 @@ class Protocol():
                 predicate = atom.strip('( )')
 
             if match_func_eq or match_eq:
-                atom = format_eq_atom(predicate, args)
+                atom = format_equal_atom(predicate, args)
             else:
-                atom = format_atom(predicate, args)
+                atom = format_relational_atom(predicate, args)
             line +=  ' ' + atom
         self._read_atoms(line)
+        self.atoms_fmla = atoms_fmla
         if self.options.writeReach or self.options.verbosity > 3:
             self.lines.append(line)
 
-    def _init_reachable_states(self, states) -> None:
+    def init_reachable_states(self, states) -> None:
         for state in states:
             self._read_states(state)
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(state)
 
-
-
-    def _init_sorts_permutations(self) -> None:
+    def init_sorts_permutations(self) -> None:
         all_sorts_permutations = []
-        for elements in self.sort_elements:
-            element_id_list = list(range(len(elements)))
-            sort_permutations = permutations(element_id_list)
+        for constants in self.sort_constants:
+            const_id_list = list(range(len(constants)))
+            sort_permutations = permutations(const_id_list)
             all_sorts_permutations.append(sort_permutations)
         # cartesian product
         self._sorts_permutations = list(product(*all_sorts_permutations))
-
-    def initialize_from_transition_system(self, tran_sys, state_vars) -> None:
-        ## helper
-        self.lines         = []
-
-        ## init
-        self._init_sort(tran_sys)
-        self._init_dependent_sort(tran_sys)
-        self._init_predicate(tran_sys)
-        self._init_atoms(state_vars)
-        self._init_sorts_permutations()
 
     def write_reachability(self) -> None:
         filename = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
@@ -270,14 +244,14 @@ class Protocol():
         vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
         vprint(self.options, f'[FW NOTE]: number of reachable states: {len(self.reachable_states)}', 2)
     
-    def _get_renamed_element(self, permutation, sort_id, element) -> str:
-        new_element = []
-        for e in element:
-            old_element_id = self.element_Name2Id[e]
-            new_element_id = permutation[sort_id][old_element_id]
-            new_element.append(self.sort_elements[sort_id][new_element_id])
-        new_element.sort()
-        return set_delim.join(new_element)
+    def _get_renamed_arguments(self, permutation, sort_id, arguments) -> str:
+        new_constant = []
+        for const in arguments:
+            old_constant_id = self.constant_Name2Id[const]
+            new_constant_id = permutation[sort_id][old_constant_id]
+            new_constant.append(self.sort_constants[sort_id][new_constant_id])
+        new_constant.sort()
+        return set_delim.join(new_constant)
 
     def _get_renamed_atom(self, permutation, atom_id) -> str:
         signature = self.atom_sig[atom_id]
@@ -292,16 +266,16 @@ class Protocol():
                 (prefix, elements) = split_head_tail(arg, head=0, delim=set_delim) 
                 sort_id = self.set_name2elem_sort_id[arg]
                 narg = (prefix + set_delim)
-                narg += self._get_renamed_element(permutation, sort_id, elements)
+                narg += self._get_renamed_arguments(permutation, sort_id, elements)
             else:
                 sort    = argsorts[arg_id]
                 sort_id = self.sort_Name2Id[sort]
-                narg = self._get_renamed_element(permutation, sort_id, [arg])
+                narg = self._get_renamed_arguments(permutation, sort_id, [arg])
             new_args.append(narg)       
         if predicate.endswith('='):
-            return format_eq_atom(predicate, new_args)
+            return format_equal_atom(predicate, new_args)
         else: 
-            return format_atom(predicate, new_args)
+            return format_relational_atom(predicate, new_args)
 
     def _permute_values(self, permutation, values : List[str]) -> List[str]:
         # values is a list of '0', '1', '-'
