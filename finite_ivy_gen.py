@@ -2,6 +2,7 @@ import os
 import subprocess
 from typing import List
 from util import QrmOptions
+from util import FormulaPrinter as printer
 from vmt_parser import TransitionSystem
 from verbose import *
 import re
@@ -15,8 +16,8 @@ class FiniteIvyAccessAction():
         self._symbol_name      = str(symbol)
         self._action_name      = f'get_{str(symbol)}'
         self._bool_action_name = f'get_bool_{str(symbol)}'
-        self._params_signature = [f'{str(ptype)}_{pid}: {str(ptype)}' for pid, ptype in enumerate(param_types)]
-        self._params_list      = [f'{str(ptype)}_{pid}' for pid, ptype in enumerate(param_types)]
+        self._params_signature = [f'{str(ptype)[0]}{pid}: {str(ptype)}' for pid, ptype in enumerate(param_types)]
+        self._params_list      = [f'{str(ptype)[0]}{pid}' for pid, ptype in enumerate(param_types)]
         self._return_type_str  = 'bool' if return_type.is_bool_type() else str(return_type)
         self._return_signature = 'result: bool' if return_type.is_bool_type() else f'result: {str(return_type)}'
 
@@ -259,7 +260,7 @@ class FiniteIvyGenerator():
         lines.append('}\n')  
 
         lines.append('\n')
-        lines.append('bool ivy_exec_run_protocol(std::vector<std::string> inputs){\n')  
+        lines.append('bool ivy_exec_run_actions(std::vector<std::string> inputs){\n')  
         lines.append('\tfor (int i=0; i<inputs.size(); ++i){\n')
         lines.append('\t\tstd::string input = inputs[i];\n')
         lines.append('\t\tif (input == "STOP_PROTOCOL"){\n')
@@ -277,6 +278,23 @@ class FiniteIvyGenerator():
         lines.append('\t}\n') 
         lines.append('\treturn true;\n')
         lines.append('}\n')                                                                    
+
+        lines.append('\n')
+        lines.append('bool ivy_exec_run_action(std::string input){\n')  
+        lines.append('\tif (input == "STOP_PROTOCOL"){\n')
+        lines.append('\t\tdelete ivy_exec_cr;\n')
+        lines.append('\t\tdelete ivy_exec;\n')
+        lines.append('\t\treturn false;\n') 
+        lines.append('\t}\n') 
+        lines.append('\ttry {\n')
+        lines.append('\t\tivy_exec_cr->process(input);\n') 
+        lines.append('\t}\n')
+        lines.append('\tcatch (ivy_assume_err & err) {\n')
+        lines.append('\t\tivy_exec -> __unlock();\n')
+        lines.append('\t\treturn false;\n')
+        lines.append('\t}\n')
+        lines.append('\treturn true;\n')
+        lines.append('}\n')          
         
         for line in lines:
             cpp_file.write(line)

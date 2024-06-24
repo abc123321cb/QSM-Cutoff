@@ -1,9 +1,12 @@
 from importlib import reload
 from finite_ivy_instantiate import FiniteIvyInstantiator
+from verbose import *
+from util import QrmOptions
 
 class FiniteIvyExecutor():
-    def __init__(self, instantiator : FiniteIvyInstantiator):
+    def __init__(self, options : QrmOptions, instantiator : FiniteIvyInstantiator):
         import ivy_exec
+        self.options = options
         self.ivy_exec = reload(ivy_exec)
         self.ivy_exec.ivy_exec_init()
 
@@ -28,21 +31,21 @@ class FiniteIvyExecutor():
 
     def get_dfs_state(self) -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
-        self.ivy_exec.ivy_exec_run_protocol(self.get_dfs_state_vars)
+        self.ivy_exec.ivy_exec_run_actions(self.get_dfs_state_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
         result = self._decode_ivy_state(result)
         return result
 
     def get_dfs_global_state(self)  -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
-        self.ivy_exec.ivy_exec_run_protocol(self.get_dfs_global_vars)
+        self.ivy_exec.ivy_exec_run_actions(self.get_dfs_global_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
         result = self._decode_ivy_state(result)
         return result
 
     def backup_ivy_state(self) -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
-        self.ivy_exec.ivy_exec_run_protocol(self.get_ivy_state_vars)
+        self.ivy_exec.ivy_exec_run_actions(self.get_ivy_state_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
         result = self._decode_ivy_state(result)
         return result
@@ -54,12 +57,10 @@ class FiniteIvyExecutor():
             ivy_state_values[i] = value
         self.ivy_exec.ivy_exec_set_state(ivy_state_values)
 
-    def execute_ivy_action(self, action : str) -> bool:
+    def execute_ivy_action(self, ivy_action : str) -> bool:
         prev_result   = self.ivy_exec.ivy_exec_get_buffer()
-        ivy_action    = self.ivy_exec.StrVector(1) 
-        ivy_action[0] = action
         self.ivy_exec.ivy_exec_reset_buffer()
-        can_execute_action = self.ivy_exec.ivy_exec_run_protocol(ivy_action)
+        can_execute_action = self.ivy_exec.ivy_exec_run_action(ivy_action)
         if not can_execute_action:
             self.ivy_exec.ivy_exec_set_buffer(prev_result)
         result = self.ivy_exec.ivy_exec_get_buffer() 

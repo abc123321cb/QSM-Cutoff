@@ -11,7 +11,7 @@ class FiniteIvyInstantiator():
         self.tran_sys           = tran_sys
         self._global_vars        = [] # global non-defined + global-defined
         self._non_global_vars    = [] # local non-defined + local-defined
-        self._indep_vars         = [] # global + local non-defined
+        self._indep_vars         = [] # local non-defined
         self._initialize()
 
         # instantiated
@@ -42,7 +42,8 @@ class FiniteIvyInstantiator():
 
     def _init_independent_vars(self):
         for symbol in self.tran_sys.finite_system.states:
-            if printer.pretty_print_str(symbol) not in self.tran_sys.finite_system.definitions.keys():
+            if (symbol not in self.tran_sys.finite_system.global_symbols and
+                printer.pretty_print_str(symbol) not in self.tran_sys.finite_system.definitions.keys()):
                 self._indep_vars.append(symbol)
 
     def _initialize(self):

@@ -38,17 +38,17 @@ class Protocol():
         ## helper
         self.lines         = []
         # member datas
-        self.sorts            : List[str]       = [] # sort id -> sort name 
-        self.sort_constants   : List[List[str]] = [] # sort id -> constant names
-        self.sort_Name2Id     : Dict[str,int]   = {} # sort name -> sort id
-        self.constant_Name2Id : Dict[str,int]   = {} # const name -> const id
-        self.predicates       : Dict[str,List[str]] = {} # (function/constant name, [argsort1, argsort2, ..])
-        self.atom_num         : int                 = 0
-        self.atoms            : List[str]           = [] # atom id -> atom name
-        self.atoms_fmla                             = []
-        self.atom_Name2Id     : Dict[str,int]       = {} # atom name -> atom id
-        self.atom_sig         : List[List[str]]     = [] # atom id -> [predname, arg1, arg2,..]
-        self.set_name2elem_sort_id  : Dict[str, int]  = {} # quorum name -> member sort id
+        self.sorts            : List[str]            = [] # sort id -> sort name 
+        self.sort_constants   : List[List[str]]      = [] # sort id -> constant names
+        self.sort_Name2Id     : Dict[str,int]        = {} # sort name -> sort id
+        self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
+        self.predicates       : Dict[str,List[str]]  = {} # (function/constant name, [argsort1, argsort2, ..])
+        self.atom_num         : int                  = 0
+        self.atoms            : List[str]            = [] # atom id -> atom name
+        self.atoms_fmla                              = []
+        self.atom_Name2Id     : Dict[str,int]        = {} # atom name -> atom id
+        self.atom_sig         : List[List[str]]      = [] # atom id -> [predname, arg1, arg2,..]
+        self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
         self.options = options
