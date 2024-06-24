@@ -1,8 +1,6 @@
-from frontend.fr import *
-from frontend.problem import *
 from util import QrmOptions
 from vmt_parser import TransitionSystem
-from protocol import Protocol, Reachability
+from protocol import Protocol
 from verbose import *
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from finite_ivy_gen import FiniteIvyGenerator
@@ -49,7 +47,7 @@ class ForwardReachability():
         FiniteIvyGenerator.compile_finite_ivy_to_cpp()
         FiniteIvyGenerator.build_ivy_exec_python_module()
 
-    def initialize(self):
+    def _initialize(self):
         self._init_instantiator()
         self._init_ivy_actions()
         self._init_protocol()
@@ -65,10 +63,11 @@ class ForwardReachability():
         return node 
 
     def _add_dfs_explored_state(self, node):
-        values = node.dfs_state.split(',')
-        for nvalues in self.protocol.all_permutations(values):
-            nstate = ','.join(nvalues)
-            self.dfs_explored_states.add(nstate)
+        # values = node.dfs_state.split(',')
+        # for nvalues in self.protocol.all_permutations(values):
+        #     nstate = ','.join(nvalues)
+        #     self.dfs_explored_states.add(nstate)
+        self.dfs_explored_states.add(node.dfs_state)
 
     def _restore_ivy_state(self, node):
         self.ivy_executor.restore_ivy_state(node.ivy_state)
@@ -86,17 +85,24 @@ class ForwardReachability():
                 if self._can_dfs_recur_node(child_node):
                     self._symmetry_aware_depth_first_search_recur_node(child_node)
 
-    def symmetry_aware_depth_first_search_reachability(self):
+    def _symmetry_aware_depth_first_search_reachability(self):
         self.ivy_executor = FiniteIvyExecutor(self.instantiator) 
         self.dfs_global_state = self.ivy_executor.get_dfs_global_state()
         initial_node = self._create_dfs_node()
         self._symmetry_aware_depth_first_search_recur_node(initial_node)
 
+    def _update_protocol_states(self):
+        protocol_states = [] 
+        for dfs_state in self.dfs_explored_states:
+            protocol_state = ''.join(dfs_state.split(','))
+            protocol_states.append(protocol_state)
+        self.protocol._init_reachable_states(protocol_states)
+
     #------------------------------------------------------------
-    # ForwardReachability: utilities
+    # ForwardReachability: utils
     #------------------------------------------------------------
 
-    def clean(self):
+    def _clean(self):
         FiniteIvyGenerator.clean()
 
     #------------------------------------------------------------
@@ -104,23 +110,24 @@ class ForwardReachability():
     #------------------------------------------------------------
 
     def solve_reachability(self):
-        self.initialize()
-        self.symmetry_aware_depth_first_search_reachability()
-        self.clean()
+        self._initialize()
+        self._symmetry_aware_depth_first_search_reachability()
+        self._update_protocol_states()
+        self._clean()
+
+        # write protocols
+        if (self.options.writeReach):
+            self.protocol.write_reachability()
+        self.protocol.print_verbose()
 
     def get_protocol(self):
         return self.protocol
 
-def get_forward_reachability(tran_sys_orig, tran_sys, options:QrmOptions) -> FR:
-    # dfs
-    fr = ForwardReachability(tran_sys, options)
-    fr.solve_reachability()
+    def get_protocol_atoms_fmla(self):
+        return self.instantiator.protocol_atoms_fmls
 
-    # forward reachability
-    fr_solver = FR(tran_sys_orig)
-    set_problem(fr_solver)
-    (atoms, states) = fr_solver.solve_reachability()
-    subst = tran_sys.get_pretty_set_substitution_map()
-    reach = Reachability(atoms, states, subst)
-    fr_solver.reset() 
-    return reach
+def get_forward_reachability(tran_sys : TransitionSystem, options:QrmOptions):
+    # dfs
+    fr_solver = ForwardReachability(tran_sys, options)
+    fr_solver.solve_reachability()
+    return fr_solver

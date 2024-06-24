@@ -147,10 +147,9 @@ def qrm(args):
             vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             options.set_sizes(size_str)
             tran_sys  = vmt_parse(options, options.vmt_filename)
-            tran_sys_orig  = get_transition_system(options.vmt_filename, options.sizes) # orig
-            reachblty = get_forward_reachability(tran_sys_orig, tran_sys, options) #FIXME
-            protocol  = Protocol(options)
-            protocol.initialize(tran_sys, reachblty)
+            fr_solver = get_forward_reachability(tran_sys, options) 
+            protocol  = fr_solver.get_protocol()
+            protocol_atoms = fr_solver.get_protocol_atoms_fmla()
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)
 
@@ -165,7 +164,7 @@ def qrm(args):
             # step3: quantifier inference
             tracemalloc.start()
             vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
-            prime_orbits.quantifier_inference(reachblty.atoms, tran_sys) # FIXME 
+            prime_orbits.quantifier_inference(protocol_atoms, tran_sys)
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)             
 
