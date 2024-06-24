@@ -22,34 +22,34 @@ set_delim = SET_DELIM
 #*************************************************************************
 # helpers 
 #*************************************************************************
-def get_enum_element_names(sort, size, idx):
-    enum_elem_names = []
+def get_enum_constant_names(sort, size, idx):
+    enum_const_names = []
     sort_suffix = SORT_SUFFIX + str(idx) + ':'
     for i in range(size):
-        # create the symbol of one finite element of sort
+        # create the symbol of one constant of a finite sort
         symbol_name = str(sort) + ':f' + str(i)
         symbol      = Symbol(symbol_name, sort)
-        elem_name   = str(sort) + sort_suffix + str(i)
-        enum_elem_names.append(elem_name)
-    return enum_elem_names
+        const_name   = str(sort) + sort_suffix + str(i)
+        enum_const_names.append(const_name)
+    return enum_const_names
 
-def get_enum_sort(sort, enum_elem_names, idx):
-    sort_suffix = SORT_SUFFIX + str(idx) + ':'
+def get_enum_sort(sort, enum_const_names, idx):
+    sort_suffix    = SORT_SUFFIX + str(idx) + ':'
     enum_sort_name = str(sort) + sort_suffix
-    enum_sort      = EnumType(enum_sort_name,  enum_elem_names)
+    enum_sort      = EnumType(enum_sort_name,  enum_const_names)
     return enum_sort
 
-def get_enum_elements(enum_sort, enum_elem_names):
-    enum_elems = []
-    for elem_name in enum_elem_names:
-        elem = Enum(elem_name, enum_sort)
-        enum_elems.append(elem)
-    return enum_elems
+def get_enum_constants(enum_sort, enum_const_names):
+    enum_consts = []
+    for const_name in enum_const_names:
+        const = Enum(const_name, enum_sort)
+        enum_consts.append(const)
+    return enum_consts
 
-def get_enum_qvars(enum_sort, enum_elem_names):
+def get_enum_qvars(enum_sort, enum_const_names):
     enum_qvars = []
-    for elem_name in enum_elem_names:
-        qvar_name = 'Q:' + elem_name                
+    for const_name in enum_const_names:
+        qvar_name = 'Q:' + const_name                
         qvar = Symbol(qvar_name, enum_sort)
         enum_qvars.append(qvar)
     return enum_qvars
@@ -59,16 +59,16 @@ def get_enum_qvars(enum_sort, enum_elem_names):
 #*************************************************************************
 class DependentType():
     # static data
-    def __init__(self, dep_relation, set_sort, elem_sort, elements, select_func):
+    def __init__(self, dep_relation, set_sort, elem_sort, constants, select_func):
         self.dep_relation = dep_relation  # e.g. "member"
         self.set_sort     = set_sort      # e.g. "quorum"
         self.elem_sort    = elem_sort     # e.g. "node"
-        self.sets         = []            # e.g. 0 -> [0,1], 1 -> [0,2], 2 -> [1,2] .....
-        elem_size     = len(elements)
-        select_space  = list(range(elem_size))
-        selections    = list(combinations(select_space, select_func(elem_size)))
+        self.sets         = []            # e.g. 0 -> [node0,node1], 1 -> [node0,node2], 2 -> [node1,node2] .....
+        select_domain_size = len(constants)
+        select_domain      = list(range(select_domain_size))
+        selections         = list(combinations(select_domain, select_func(select_domain_size)))
         for selection in selections:
-            elems_in_set = [elements[elem_id] for elem_id in selection]
+            elems_in_set = [constants[const_id] for const_id in selection]
             self.sets.append(elems_in_set)
 
     def get_elements_in_set(self, set_id):
@@ -83,13 +83,13 @@ class TransitionSystem(SmtLibParser):
         self.options    = options
         self._parser    = SmtLibParser(env,interactive)
         # data
-        self.infinite_sorts  = dict()   # sort name to sort of infinite size
-        self.sort2elems      = dict()   # finite sort to finite set of elements
-        self.sort2qvars      = dict()   # finit sort to quantified variables
+        self.infinite_sorts  = dict()   # sort name to sort of infinite domain size
+        self.sort2consts     = dict()   # finite sort to its finite domain of constants
+        self.sort2qvars      = dict()   # finite sort to quantified variables
         self.sort_fin2inf    = dict()   # finit sort to infinite sort
         self.sort_inf2fin    = dict()   # infinite sort to enumsort
-        self.infinite_system = InfiniteSystem() # original infinite system from vmt
-        self.finite_system   = FiniteSystem()   # finitized system 
+        self.infinite_system = InfiniteSystem() # transistion system with sorts of infinite domain 
+        self.finite_system   = FiniteSystem()   #  
         self._idx = 0                   # subscript for enum type
         # dependent sorts
         self.dep_types        = dict()   # "quorum" to quorum meta data (e.g. "member", "node" ...) 
@@ -121,14 +121,14 @@ class TransitionSystem(SmtLibParser):
         assert(size > 0)
         self.options.sizes[str(sort)]  = size
         self.infinite_sorts[str(sort)] = sort
-        enum_elem_names = get_enum_element_names(sort, size, self._idx)
-        enum_sort       = get_enum_sort(sort, enum_elem_names, self._idx)
-        enum_elems      = get_enum_elements(enum_sort, enum_elem_names)
-        enum_qvars      = get_enum_qvars(enum_sort, enum_elem_names)
-        self.sort2elems[enum_sort]    = enum_elems
-        self.sort2qvars[enum_sort]    = enum_qvars
-        self.sort_inf2fin[sort]       = enum_sort
-        self.sort_fin2inf[enum_sort]  = sort
+        enum_const_names = get_enum_constant_names(sort, size, self._idx)
+        enum_sort        = get_enum_sort(sort, enum_const_names, self._idx)
+        enum_consts      = get_enum_constants(enum_sort, enum_const_names)
+        enum_qvars       = get_enum_qvars(enum_sort, enum_const_names)
+        self.sort2consts[enum_sort]  = enum_consts
+        self.sort2qvars[enum_sort]   = enum_qvars
+        self.sort_inf2fin[sort]      = enum_sort
+        self.sort_fin2inf[enum_sort] = sort
 
     def _read_sort(self, fmla, annot_list):
         assert(len(annot_list)==1)
@@ -158,8 +158,8 @@ class TransitionSystem(SmtLibParser):
                 select_func  = registered_dependent_relations[str(symbol)]
                 elem_sort    = self._get_dependent_element_sort(dep_relation)
                 set_sort     = self._get_dependent_set_sort(dep_relation)
-                elements     = self.sort2elems[elem_sort]
-                dep_type     = DependentType(dep_relation, set_sort, elem_sort, elements, select_func)
+                elem_consts  = self.sort2consts[elem_sort]
+                dep_type     = DependentType(dep_relation, set_sort, elem_sort, elem_consts, select_func)
                 self.dep_types[set_sort] = dep_type
 
     #------------------------------------------------------------
@@ -238,10 +238,10 @@ class TransitionSystem(SmtLibParser):
 
     def get_dependent_elements(self, set_sort):
         elem_sort = self.get_dependent_element_sort(set_sort)
-        return self.sort2elems[elem_sort]
+        return self.sort2consts[elem_sort]
 
     def get_dependent_sets(self, set_sort):
-        return self.sort2elems[set_sort]
+        return self.sort2consts[set_sort]
 
     def get_dependent_elements_in_set(self, set_sort, set_id):
         return self.dep_types[set_sort].get_elements_in_set(set_id)
@@ -257,24 +257,24 @@ class TransitionSystem(SmtLibParser):
         labels = [label_header] + labels
         return set_delim.join(labels)
 
-    def get_pretty_elements_of_dependent_sort(self, set_sort):
-        num_sets   = self.get_sort_size(set_sort) 
-        sort_elems = []
+    def get_pretty_constants_of_dependent_sort(self, set_sort):
+        num_sets    = self.get_sort_size(set_sort) 
+        sort_consts = []
         for set_id in range(num_sets):
-            sort_elems.append(self.get_pretty_set(set_sort, set_id))
-        return sort_elems
+            sort_consts.append(self.get_pretty_set(set_sort, set_id))
+        return sort_consts
     
-    def get_pretty_elements_of_non_dependent_sort(self, sort):
-        sort_elems = self.sort2elems[sort]
-        sort_elems = [printer.pretty_print_enum_constant(elem) for elem in sort_elems]
-        return sort_elems
+    def get_pretty_constants_of_non_dependent_sort(self, sort):
+        sort_consts = self.sort2consts[sort]
+        sort_consts = [printer.pretty_print_enum_constant(const) for const in sort_consts]
+        return sort_consts
 
-    def get_pretty_elements_of_sort(self, sort_name):
+    def get_pretty_constants_of_sort(self, sort_name):
         sort = self.get_finite_sort_from_sort_name(sort_name)
         if sort in self.dep_types:
-            return self.get_pretty_elements_of_dependent_sort(sort)
+            return self.get_pretty_constants_of_dependent_sort(sort)
         else:
-            return self.get_pretty_elements_of_non_dependent_sort(sort)
+            return self.get_pretty_constants_of_non_dependent_sort(sort)
 
     def get_pretty_set_substitution_map(self):
         if self.pretty_set_subst != None:

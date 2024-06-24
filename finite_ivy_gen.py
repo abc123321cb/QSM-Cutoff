@@ -106,7 +106,7 @@ class FiniteIvyGenerator():
         FiniteIvyGenerator.lines = []
 
     def _get_finite_sort_line(line, sort_name):
-        sort_elems = FiniteIvyGenerator.tran_sys.get_pretty_elements_of_sort(sort_name)
+        sort_elems = FiniteIvyGenerator.tran_sys.get_pretty_constants_of_sort(sort_name)
         line = line + ' = {' + ', '.join(sort_elems) + '}\n'
         return line
 
@@ -122,7 +122,7 @@ class FiniteIvyGenerator():
 
     def _add_comment_lines():
         FiniteIvyGenerator.lines.append('\n')
-        FiniteIvyGenerator.lines.append('### For DFS reachability ###\n')
+        FiniteIvyGenerator.lines.append('### For QRM DFS reachability ###\n')
 
     def _add_dependent_sort_axiom_lines():
         FiniteIvyGenerator.lines.append('\n')
@@ -216,6 +216,11 @@ class FiniteIvyGenerator():
         cpp_file = open(FiniteIvyGenerator.cpp_name, 'a')
         lines = []
         protocol_class_name = FiniteIvyGenerator.file_name_prefix.replace('.', '__') + '_repl'
+
+        lines.append('\n')
+        lines.append('/***********************************************************/\n')
+        lines.append('/**                For QRM DFS reachability               **/\n')
+        lines.append('/***********************************************************/\n')
 
         lines.append('\n')
         lines.append('#include <vector>\n')

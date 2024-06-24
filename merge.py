@@ -322,7 +322,7 @@ class Merger():
         return True
     
     def _need_enumerate_partitions(self, sort):
-        sort_size    = len(Merger.tran_sys.sort2elems[sort])
+        sort_size    = len(Merger.tran_sys.sort2consts[sort])
         num_signatrs = len(self.sort2signatrs[sort])
         vprint_title(self.options, 'need_enumerate_partitions', 5)
         vprint(self.options, f'sort size: {sort_size}', 5)
@@ -388,7 +388,7 @@ class Merger():
 
     def _remove_infeasible_partition(self):
         for sort, partitions in self.sort2partitions.items():
-            sort_size = len(Merger.tran_sys.sort2elems[sort])
+            sort_size = len(Merger.tran_sys.sort2consts[sort])
             remove = set()
             for pid, partition in enumerate(partitions):
                 if len(partition) > sort_size:
