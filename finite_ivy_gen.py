@@ -216,7 +216,7 @@ class FiniteIvyGenerator():
     def _append_cpp():
         cpp_file = open(FiniteIvyGenerator.cpp_name, 'a')
         lines = []
-        protocol_class_name = FiniteIvyGenerator.file_name_prefix.replace('.', '__') + '_repl'
+        protocol_class_name = FiniteIvyGenerator.file_name_prefix.replace('-', '_').replace('.', '__') + '_repl'
 
         lines.append('\n')
         lines.append('/***********************************************************/\n')
