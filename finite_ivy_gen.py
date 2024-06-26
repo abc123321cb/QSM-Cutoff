@@ -3,7 +3,7 @@ import subprocess
 from typing import List
 from util import QrmOptions
 from util import FormulaPrinter as printer
-from vmt_parser import TransitionSystem
+from transition import TransitionSystem
 from verbose import *
 import re
 

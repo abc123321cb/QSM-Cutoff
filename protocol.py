@@ -1,7 +1,7 @@
 import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
-from vmt_parser import TransitionSystem
+from transition import TransitionSystem
 from util import QrmOptions, SET_DELIM
 from verbose import *
 

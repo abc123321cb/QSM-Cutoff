@@ -1,10 +1,11 @@
+from typing import Type
 from util import QrmOptions
-from vmt_parser import TransitionSystem
+from transition import TransitionSystem
 from protocol import Protocol
-from verbose import *
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from finite_ivy_gen import FiniteIvyGenerator
 from finite_ivy_exec import FiniteIvyExecutor
+from verbose import *
 
 class DfsNode():
     def __init__(self, dfs_state, ivy_state):
@@ -128,7 +129,7 @@ class ForwardReachability():
         self._update_protocol_states()
         self._clean()
 
-def get_forward_reachability(tran_sys : TransitionSystem, options:QrmOptions):
+def get_protocol_forward_reachability(tran_sys : TransitionSystem, options:QrmOptions) -> Type[Protocol]:
     # dfs
     fr_solver = ForwardReachability(tran_sys, options)
     fr_solver.solve_reachability()

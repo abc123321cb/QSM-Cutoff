@@ -2,17 +2,17 @@ import faulthandler
 import sys
 import getopt
 import datetime
-import time
-from os import path
+import tracemalloc
+import os
+
 from ivy2vmt import compile_ivy2vmt
-from vmt_parser import vmt_parse
-from verbose import *
-from util import * 
-from forward import *
+from transition import get_transition_system 
+from forward_reach import get_protocol_forward_reachability
 from prime import PrimeOrbits
 from minimize import Minimizer
-from run_ivy import *
-import tracemalloc
+from run_ivy import run_ivy_check
+from util import * 
+from verbose import *
 
 faulthandler.enable()
 
@@ -42,13 +42,13 @@ def usage_and_exit():
     sys.exit(1)
 
 def file_exist(filename) -> bool:
-    if not path.isfile(filename):
+    if not os.path.isfile(filename):
         print(f'Cannot find file: {filename}')
         usage_and_exit ()
     return True
 
 def rm_log_file_if_exist(filename) -> bool:
-    if path.isfile(filename):
+    if os.path.isfile(filename):
         os.system(f'rm {filename}')
 
 def get_time(options, time_start=None, time_stamp=None):
@@ -144,8 +144,8 @@ def qrm(args):
             tracemalloc.start()
             vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             options.set_sizes(size_str)
-            tran_sys   = vmt_parse(options, options.vmt_filename)
-            protocol   = get_forward_reachability(tran_sys, options) 
+            tran_sys   = get_transition_system(options, options.vmt_filename)
+            protocol   = get_protocol_forward_reachability(tran_sys, options) 
             time_stamp = get_time(options, time_start, time_stamp)
             get_peak_memory_and_reset(options)
 

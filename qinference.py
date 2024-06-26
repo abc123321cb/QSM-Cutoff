@@ -1,7 +1,7 @@
 from typing import List
 from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
 from frontend.utils import *
-from vmt_parser import TransitionSystem
+from transition import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
 from util import FormulaPrinter as printer
