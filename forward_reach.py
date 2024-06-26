@@ -81,8 +81,6 @@ class ForwardReachability():
         return node.dfs_state not in self.dfs_explored_states
 
     def _symmetry_aware_depth_first_search_recur_node(self, node, level=0):
-        vprint_title(self.options, f'level: {level}', 5)
-        vprint(self.options, '\n'.join([str((self.instantiator.dfs_state_vars[i], val)) for i,val in enumerate(node.dfs_state.split(','))]), 5)
         self._add_dfs_explored_state(node)     
         for action in self.ivy_actions:
             self._restore_ivy_state(node) 
@@ -90,13 +88,11 @@ class ForwardReachability():
             if has_change_state:
                 child_node = self._create_dfs_node()
                 if self._can_dfs_recur_node(child_node):
-                    vprint(self.options, action, 5)
                     self._symmetry_aware_depth_first_search_recur_node(child_node, level+1)
 
     def _symmetry_aware_depth_first_search_reachability(self):
         self.ivy_executor     = FiniteIvyExecutor(self.options, self.instantiator) 
         self.dfs_global_state = self.ivy_executor.get_dfs_global_state()
-        vprint(self.options, '\n'.join([str((self.instantiator.dfs_global_vars[i], val)) for i,val in enumerate(self.dfs_global_state.split(','))]), 5)
         initial_node = self._create_dfs_node()
         self._symmetry_aware_depth_first_search_recur_node(initial_node)
 
