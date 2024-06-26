@@ -68,11 +68,12 @@ class ForwardReachability():
         return node 
 
     def _add_dfs_explored_state(self, node):
-        # values = node.dfs_state.split(',')
-        # for nvalues in self.protocol.all_permutations(values):
-        #     nstate = ','.join(nvalues)
-        #     self.dfs_explored_states.add(nstate)
-        self.dfs_explored_states.add(node.dfs_state)
+        values = node.dfs_state.split(',')
+        for nvalues in self.protocol.all_permutations(values):
+            nstate = ','.join(nvalues)
+            self.dfs_explored_states.add(nstate)
+        # use this line instead if disabling symmetry aware
+        # self.dfs_explored_states.add(node.dfs_state) 
 
     def _restore_ivy_state(self, node):
         self.ivy_executor.restore_ivy_state(node.ivy_state)
@@ -81,6 +82,8 @@ class ForwardReachability():
         return node.dfs_state not in self.dfs_explored_states
 
     def _symmetry_aware_depth_first_search_recur_node(self, node, level=0):
+        # vprint_title(self.options, f'level {level}', 5)
+        # vprint(self.options, node.dfs_state, 5)
         self._add_dfs_explored_state(node)     
         for action in self.ivy_actions:
             self._restore_ivy_state(node) 
