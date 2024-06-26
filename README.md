@@ -66,8 +66,8 @@ If you don't have permission to `apt-get install` or `yum install`, try the foll
 
 ## Usage
 ```=python3
-python3 qrm.py -i [IVY FILE] -s [sort1=size1,sort2=size2 ...]
-python3 run_all.py [YAML FILE]
+python3 qrm.py -i [IVY FILE] -s [sort1=size1,sort2=size2 ...]  -t [PYTON INCLUDE PATH]
+python3 run_all.py [YAML FILE] -t [PYTON INCLUDE PATH]
 ```
 Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' as a work around.
 ### Usage for Options
@@ -87,8 +87,8 @@ Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' 
     - print debug info
 #### Experient Options
 ```
-python3 run_all.py [YAML] -v 1 -w       -l log    # write .ptcl, .pis, .qpis, .ivy
-python3 run_all.py [YAML] -v 4 -w -a    -l log    # find all solutions, don't merge suborbits
-python3 run_all.py [YAML] -v 4 -w -a -m -l log    # find all solutions, merge suborbits
+python3 run_all.py [YAML] -v 1 -w       -l log -t [PYTON INCLUDE PATH]   # write .ptcl, .pis, .qpis, .ivy
+python3 run_all.py [YAML] -v 5 -w -a    -l log -t [PYTON INCLUDE PATH]   # find all solutions, don't merge suborbits
+python3 run_all.py [YAML] -v 5 -w -a -m -l log -t [PYTON INCLUDE PATH]   # find all solutions, merge suborbits
 ```
 
