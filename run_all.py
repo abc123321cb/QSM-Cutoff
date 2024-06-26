@@ -7,8 +7,9 @@ from util import *
 from verbose import *
 
 def usage ():
-    print('Usage:   python3 run_all.py FILE.yaml [options]')
+    print('Usage:   python3 run_all.py FILE.yaml -t PYHON_INCLUDE_PATH [options]')
     print('         check all cases in the given yaml file')
+    print('-t PYTHON_INCLUDE_PATH    set python include path (e.g. /usr/include/python3.XX)') #FIXME!!!!!
     print('')
     print('Options:')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
@@ -40,7 +41,7 @@ def rm_and_recreate_log_file_if_exist(filename):
 def run_all(yaml_name, args):
     sys_args = args.copy()
     try:
-        opts, args = getopt.getopt(args, "l:v:c:rpqwamh")
+        opts, args = getopt.getopt(args, "l:t:v:c:rpqwamh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -49,7 +50,9 @@ def run_all(yaml_name, args):
     options.mode = Mode.yaml
     options.yaml_filename = yaml_name
     for (optc, optv) in opts:
-        if optc == '-v':
+        if optc == '-t':
+            options.python_include_path = optv
+        elif optc == '-v':
             options.verbosity = int(optv)
             if options.verbosity < 0 or options.verbosity > 5:
                 usage_and_exit()
