@@ -301,7 +301,7 @@ class FiniteIvyGenerator():
         cpp_file.close()
 
     def compile_finite_ivy_to_cpp():
-        ivy_args = ['ivy_to_cpp', 'target=repl', FiniteIvyGenerator.finite_ivy_name]
+        ivy_args = ['ivy_to_cpp', 'target=qrm', FiniteIvyGenerator.finite_ivy_name]
         ivy_cmd  = ' '.join(ivy_args)
         vprint(FiniteIvyGenerator.options, ivy_cmd)
         try:
