@@ -3,6 +3,10 @@ from finite_ivy_instantiate import FiniteIvyInstantiator
 from verbose import *
 from util import QrmOptions
 
+IVY_ACTION_COMPLETE   = 0
+IVY_ACTION_INCOMPLETE = 1   # nondeterministic behavior not yet exhausted
+IVY_ACTION_FAIL       = 2   # assumption failed
+
 class FiniteIvyExecutor():
     def __init__(self, options : QrmOptions, instantiator : FiniteIvyInstantiator):
         import ivy_exec
@@ -57,12 +61,10 @@ class FiniteIvyExecutor():
             ivy_state_values[i] = value
         self.ivy_exec.ivy_exec_set_state(ivy_state_values)
 
-    def execute_ivy_action(self, ivy_action : str) -> bool:
+    def execute_ivy_action(self, ivy_action : str) -> int:
         prev_result   = self.ivy_exec.ivy_exec_get_buffer()
         self.ivy_exec.ivy_exec_reset_buffer()
-        can_execute_action = self.ivy_exec.ivy_exec_run_action(ivy_action)
-        if not can_execute_action:
+        ivy_result    = self.ivy_exec.ivy_exec_run_action(ivy_action)
+        if ivy_result == IVY_ACTION_FAIL:
             self.ivy_exec.ivy_exec_set_buffer(prev_result)
-        result = self.ivy_exec.ivy_exec_get_buffer() 
-        has_change_state = (result != prev_result)
-        return has_change_state
+        return ivy_result 
