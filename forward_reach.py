@@ -27,7 +27,7 @@ class ForwardReachability():
         # dfs data structures
         self.dfs_global_state    = []
         self.dfs_explored_states = set()
-        self.repr2orbit_size     = {}
+        self.dfs_repr_states     = set()
 
     def _init_instantiator(self):
         self.instantiator = FiniteIvyInstantiator(self.tran_sys)
@@ -69,12 +69,11 @@ class ForwardReachability():
         return node 
 
     def _add_dfs_explored_state(self, node):
-        self.repr2orbit_size[node.dfs_state] = 0
+        self.dfs_repr_states.add(node.dfs_state)
         values = node.dfs_state.split(',')
         for nvalues in self.protocol.all_permutations(values):
             nstate = ','.join(nvalues)
             self.dfs_explored_states.add(nstate)
-            self.repr2orbit_size[node.dfs_state] += 1
         # use this line instead if disabling symmetry aware
         # self.dfs_explored_states.add(node.dfs_state) 
 
@@ -110,7 +109,7 @@ class ForwardReachability():
                 self._symmetry_aware_depth_first_search_recur_node(child_node, level+1)
 
     def _symmetry_aware_depth_first_search_reachability(self):
-        self.repr2orbit_size  = {}
+        self.dfs_repr_states  = set()
         self.ivy_executor     = FiniteIvyExecutor(self.options, self.instantiator) 
         self.dfs_global_state = self.ivy_executor.get_dfs_global_state()
         initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
@@ -119,7 +118,7 @@ class ForwardReachability():
 
     def _update_protocol_states(self):
         protocol_states = [] 
-        for dfs_state in self.dfs_explored_states:
+        for dfs_state in self.dfs_repr_states:
             protocol_state = ''.join(dfs_state.split(','))
             protocol_states.append(protocol_state)
         self.protocol.init_reachable_states(protocol_states)
@@ -129,8 +128,8 @@ class ForwardReachability():
             self.protocol.write_reachability()
         self.protocol.print_verbose()
         vprint(self.options, f'[FW NOTE]: number of total dfs explored states:     {len(self.dfs_explored_states)}', 2)
-        vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.repr2orbit_size)}', 2)
-        vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)- len(self.repr2orbit_size)}', 2)
+        vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
+        vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)- len(self.dfs_repr_states)}', 2)
 
     #------------------------------------------------------------
     # ForwardReachability: utils
