@@ -118,7 +118,7 @@ class ForwardReachability():
 
     def _update_protocol_states(self):
         protocol_states = [] 
-        for dfs_state in self.dfs_repr_states:
+        for dfs_state in self.dfs_explored_states:
             protocol_state = ''.join(dfs_state.split(','))
             protocol_states.append(protocol_state)
         self.protocol.init_reachable_states(protocol_states)
@@ -127,7 +127,7 @@ class ForwardReachability():
         if (self.options.writeReach):
             self.protocol.write_reachability()
         self.protocol.print_verbose()
-        vprint(self.options, f'[FW NOTE]: number of total dfs explored states:     {len(self.dfs_explored_states)}', 2)
+        vprint(self.options, f'[FW NOTE]: number of total reachable states:        {len(self.dfs_explored_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)- len(self.dfs_repr_states)}', 2)
 
