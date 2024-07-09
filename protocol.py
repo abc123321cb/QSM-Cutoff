@@ -242,7 +242,6 @@ class Protocol():
         vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
         vprint(self.options, '\n'.join(self.lines), 3)
         vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
-        vprint(self.options, f'[FW NOTE]: number of reachable states: {len(self.reachable_states)}', 2)
     
     def _get_renamed_arguments(self, permutation, sort_id, arguments) -> str:
         new_constant = []
