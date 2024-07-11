@@ -18,6 +18,13 @@ def make_key(values: List[str], protocol : Protocol) -> str:
     predicates.sort()
     return str(predicates)
 
+def get_cardinality(values: List[str]):
+    card = 0
+    for val in values:
+        if val == '1' or val == '0':
+            card += 1
+    return card
+
 class Prime():
     # static members
     count  : int = 0 
@@ -128,7 +135,7 @@ class PrimeOrbits():
         outF.write(str(self)+'\n')
         outF.close()
 
-    def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
+    def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
         key = make_key(values,protocol)
         if key in self._orbit_hash:
             self._sub_orbit_count += 1
@@ -138,14 +145,17 @@ class PrimeOrbits():
             self.orbits.append(orbit)
         orbit = self._orbit_hash[key]
         orbit.num_suborbits += 1
-        block_clauses = []
         is_sub_repr = True
         for nvalues in protocol.all_permutations(values):
-            clause = self._formula.block(nvalues) 
-            block_clauses.append(clause)
             prime  = Prime(nvalues, is_sub_repr)
             is_sub_repr = False
             orbit.add_prime(prime)
+
+    def _get_block_clauses(self, values: List[str], protocol: Protocol) -> List[List[int]]:
+        block_clauses = []
+        for nvalues in protocol.all_permutations(values):
+            clause = self._formula.block(nvalues) 
+            block_clauses.append(clause)
         return block_clauses
 
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
@@ -161,7 +171,8 @@ class PrimeOrbits():
                 while (result):
                     model  = sat_solver.get_model()
                     values = self._formula.single_rail(model)
-                    block_clauses  = self._make_orbit(values, protocol)
+                    self._make_orbit(values, protocol)
+                    block_clauses  = self._get_block_clauses(values, protocol)
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
         # output result
