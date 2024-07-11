@@ -25,6 +25,12 @@ class QrmOptions():
         self.ivy_to          = 120 
         self.qrm_to          = 3600 
         self.python_include_path = ''
+        self.disable_print   = False # FIXME
+
+    def set_files_name(self, ivy_name):
+        self.ivy_filename  = ivy_name
+        self.instance_name = ivy_name.split('.')[0]
+        self.vmt_filename  = self.instance_name + '.vmt'
 
     def open_log(self) -> None:
         assert(self.writeLog)

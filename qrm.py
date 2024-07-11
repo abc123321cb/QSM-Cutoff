@@ -67,7 +67,7 @@ def get_peak_memory_and_reset(options):
     vprint(options, f'[QRM NOTE]: Peak memory: {peak} bytes', 1)
     tracemalloc.reset_peak()    
 
-def qrm(args):
+def get_options(args):
     try:
         opts, args = getopt.getopt(args, "i:s:y:t:v:l:c:rpqwamhd")
     except getopt.GetoptError as err:
@@ -116,76 +116,88 @@ def qrm(args):
             options.all_solutions   = True
         elif optc == '-m':
             options.merge_suborbits = True
-        elif optc == '-d': # not for user
-            disable_print      = True
+        elif optc == '-d': # FIXME 
+            options.disable_print   = True
         else:
             usage_and_exit()
+    return options
 
+def get_instances(options: QrmOptions):
     instances = {} 
     if options.mode == Mode.ivy:
         instances[options.ivy_filename] = [options.size_str]
     else:
         instances = get_instances_from_yaml(options.yaml_filename)
+    return instances
 
+def instance_start(options, ivy_name):
+    vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
+    time_start = get_time(options)
+    options.set_files_name(ivy_name)
+    return time_start
+
+def step_start(options, verbose_string):
+    vprint_step_banner(options, verbose_string)
+    tracemalloc.start()
+
+def step_end(options, time_start, time_stamp):
+    time_stamp = get_time(options, time_start, time_stamp)
+    get_peak_memory_and_reset(options)
+    return time_stamp
+
+def instance_end(options, ivy_name, qrm_result):
+    vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
+    if qrm_result:
+        vprint(options, '[QRM RESULT]: PASS', 0, options.disable_print)
+    else:
+        vprint(options, '[QRM RESULT]: FAIL', 0, options.disable_print)
+
+def qrm(args):
+    options    = get_options(args)
+    instances  = get_instances(options)
     pass_count = 0
     for ivy_name, sizes in instances.items():
-        time_start = get_time(options)
-        vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, disable_print)
-        vprint_step_banner(options, '[CPL]: Compile Ivy')
-        options.ivy_filename  = ivy_name
-        options.instance_name = ivy_name.split('.')[0]
-        options.vmt_filename  = options.instance_name + '.vmt'
-        # step 0: compile ivy
-        compile_ivy2vmt(options, options.ivy_filename, options.vmt_filename)
         qrm_result = False
-        time_stamp = get_time(options, time_start, time_start)
+        time_start = instance_start(options, ivy_name)
+        # step 0: compile ivy
+        step_start(options, '[CPL]: Compile Ivy')
+        compile_ivy2vmt(options, options.ivy_filename, options.vmt_filename)
+        time_stamp = step_end(options, time_start, time_start)
         for size_str in sizes:
-            # step1: generate reachability
-            tracemalloc.start()
-            vprint_step_banner(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
+            # size initialization
             options.set_sizes(size_str)
+            # step1: generate reachability
+            step_start(options, f'[FW]: Forward Reachability on [{options.instance_name}: {size_str}]')
             tran_sys   = get_transition_system(options, options.vmt_filename)
             protocol   = get_protocol_forward_reachability(tran_sys, options) 
-            time_stamp = get_time(options, time_start, time_stamp)
-            get_peak_memory_and_reset(options)
+            time_stamp = step_end(options, time_start, time_stamp)
 
             # step2: generate prime orbits
-            tracemalloc.start()
-            vprint_step_banner(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {size_str}]')
+            step_start(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {size_str}]')
             prime_orbits = PrimeOrbits(options) 
             prime_orbits.symmetry_aware_enumerate(protocol)               
-            time_stamp = get_time(options, time_start, time_stamp)
-            get_peak_memory_and_reset(options)
+            time_stamp = step_end(options, time_start, time_stamp)
 
             # step3: quantifier inference
-            tracemalloc.start()
-            vprint_step_banner(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
+            step_start(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {size_str}]')
             prime_orbits.quantifier_inference(protocol.atoms_fmla, tran_sys)
-            time_stamp = get_time(options, time_start, time_stamp)
-            get_peak_memory_and_reset(options)             
+            time_stamp = step_end(options, time_start, time_stamp)
 
             # step4: minimization
-            tracemalloc.start()
-            vprint_step_banner(options, f'[MIN]: Minimization on [{options.instance_name}: {size_str}]')
+            step_start(options, f'[MIN]: Minimization on [{options.instance_name}: {size_str}]')
             minimizer  = Minimizer(prime_orbits.orbits, options)
             invariants = minimizer.get_minimal_invariants()
-            time_stamp = get_time(options, time_start, time_stamp)
-            get_peak_memory_and_reset(options)
+            time_stamp = step_end(options, time_start, time_stamp)
 
             # step5: ivy_check
-            tracemalloc.start()
-            vprint_step_banner(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {size_str}]')
+            step_start(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {size_str}]')
             ivy_result = run_ivy_check(invariants, options)
             qrm_result = ivy_result
-            time_stamp = get_time(options, time_start, time_stamp)
-            get_peak_memory_and_reset(options)
+            time_stamp = step_end(options, time_start, time_stamp)
 
-        vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, disable_print)
+        instance_end(options, ivy_name, qrm_result)
         if qrm_result:
-            vprint(options, '[QRM RESULT]: PASS', 0, disable_print)
             pass_count += 1
-        else:
-            vprint(options, '[QRM RESULT]: FAIL', 0, disable_print)
 
     if pass_count != len(instances):
         sys.exit(1)

@@ -8,10 +8,10 @@ from system  import *
 
 class FiniteIvyInstantiator():
     def __init__(self, tran_sys):
-        self.tran_sys           = tran_sys
-        self._global_vars        = [] # global non-defined + global-defined
-        self._non_global_vars    = [] # local non-defined + local-defined
-        self._indep_vars         = [] # local non-defined
+        self.tran_sys         = tran_sys
+        self._global_vars     = [] # global non-defined + global-defined
+        self._non_global_vars = [] # local non-defined + local-defined
+        self._indep_vars      = [] # local non-defined
         self._initialize()
 
         # instantiated

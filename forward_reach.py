@@ -130,12 +130,14 @@ class ForwardReachability():
         vprint(self.options, f'[FW NOTE]: number of total reachable states:        {len(self.dfs_explored_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)- len(self.dfs_repr_states)}', 2)
+        # TODO: order of symmetric group
 
     #------------------------------------------------------------
     # ForwardReachability: utils
     #------------------------------------------------------------
 
     def _clean(self):
+        self.ivy_executor.execute_ivy_action('QRM_STOP_PROTOCOL')
         FiniteIvyGenerator.clean()
 
     #------------------------------------------------------------
