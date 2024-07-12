@@ -63,7 +63,7 @@ class FiniteIvyInstantiator():
         if var_type.is_bool_type() or not to_equals:
             return [var]
         eq_symbols = []
-        for elem in self.sort2elems[var_type]:
+        for elem in self.tran_sys.sort2consts[var_type]:
             eq_symbols.append(EqualsOrIff(var, elem))
         return eq_symbols
 
