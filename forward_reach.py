@@ -28,6 +28,7 @@ class ForwardReachability():
         self.dfs_global_state    = []
         self.dfs_explored_states = set()
         self.dfs_repr_states     = set()
+        self.dfs_max_depth       = 0
 
     def _init_instantiator(self):
         self.instantiator = FiniteIvyInstantiator(self.tran_sys)
@@ -102,6 +103,7 @@ class ForwardReachability():
     def _symmetry_aware_depth_first_search_recur_node(self, node, level=0):
         # vprint_title(self.options, f'level {level}', 5)
         # vprint(self.options, node.dfs_state, 5)
+        self.dfs_max_depth = max(level, self.dfs_max_depth)
         for action in self.ivy_actions:
             self._restore_ivy_state(node) 
             pending_children = self._expand_nondeterministic_successors(action)
@@ -127,11 +129,10 @@ class ForwardReachability():
         if (self.options.writeReach):
             self.protocol.write_reachability()
         self.protocol.print_verbose()
+        vprint(self.options, f'[FW NOTE]: dfs max depth: {self.dfs_max_depth}', 2)
         vprint(self.options, f'[FW NOTE]: number of total reachable states:        {len(self.dfs_explored_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)- len(self.dfs_repr_states)}', 2)
-        # TODO: order of symmetric group
-
     #------------------------------------------------------------
     # ForwardReachability: utils
     #------------------------------------------------------------
