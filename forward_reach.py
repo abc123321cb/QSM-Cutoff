@@ -50,6 +50,7 @@ class ForwardReachability():
         FiniteIvyGenerator.set_path_and_file_names()
         FiniteIvyGenerator.set_state_var_to_access_action()
         FiniteIvyGenerator.set_state_variables(self.protocol.constant_Name2Id, self.instantiator.ivy_state_vars)
+        FiniteIvyGenerator.set_non_bool_state_variables(self.protocol.constant_Name2Id, self.instantiator.ivy_non_bool_state_vars)
         FiniteIvyGenerator.write_ivy()
         FiniteIvyGenerator.compile_finite_ivy_to_cpp()
         FiniteIvyGenerator.build_ivy_exec_python_module()

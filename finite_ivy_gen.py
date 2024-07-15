@@ -7,6 +7,23 @@ from transition import TransitionSystem
 from verbose import *
 import re
 
+def get_ivy_var_str(constant_Name2Id, atom):
+    var_name = ''
+    args     = []
+    match  = re.search(r'(\w+)\(([^)]+)\)',  atom)
+    if match: # case 3: predicate 
+        var_name = match.group(1)
+        args     = match.group(2).split(',')
+    else:
+        var_name = atom.strip('( )')
+    args = [str(constant_Name2Id[arg]) for arg in args]
+    ivy_var = ''
+    if len(args) > 0:
+        ivy_var = var_name + '[' + ']['.join(args) + ']'
+    else:
+        ivy_var = var_name
+    return ivy_var
+
 class FiniteIvyAccessAction():
     def __init__(self, symbol, param_types, return_type):
         self.symbol      = symbol
@@ -86,10 +103,10 @@ class FiniteIvyGenerator():
     # static datas
     tran_sys : TransitionSystem
     options  : QrmOptions
-    lines               = []
-    var2access_action   = {}
-    ivy_state_vars = []
-    cpp_state_vars = []
+    lines                   = []
+    var2access_action       = {}
+    cpp_state_vars          = []
+    cpp_non_bool_state_vars = {}
 
     path_name           = '' #path_name
     file_name_prefix    = '' #instance_name.size.finite
@@ -185,25 +202,17 @@ class FiniteIvyGenerator():
             access_action = FiniteIvyAccessAction(var, param_types, return_type)
             FiniteIvyGenerator.var2access_action[var] = access_action
 
-    def set_state_variables(element_Name2Id, ivy_state_vars):
-        FiniteIvyGenerator.ivy_state_vars = ivy_state_vars
+    def set_state_variables(constant_Name2Id, ivy_state_vars):
         FiniteIvyGenerator.cpp_state_vars = []
-        for atom in FiniteIvyGenerator.ivy_state_vars:
-            var_name = ''
-            args     = []
-            match  = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            if match: # case 3: predicate 
-                var_name = match.group(1)
-                args     = match.group(2).split(',')
-            else:
-                var_name = atom.strip('( )')
-            args = [str(element_Name2Id[arg]) for arg in args]
-            ivy_var = ''
-            if len(args) > 0:
-                ivy_var = var_name + '[' + ']['.join(args) + ']'
-            else:
-                ivy_var = var_name
+        for atom in ivy_state_vars:
+            ivy_var = get_ivy_var_str(constant_Name2Id, atom)
             FiniteIvyGenerator.cpp_state_vars.append(ivy_var)
+
+    def set_non_bool_state_variables(constant_Name2Id, ivy_non_bool_state_vars):
+        FiniteIvyGenerator.cpp_non_bool_state_vars = {}
+        for (atom, sort) in ivy_non_bool_state_vars.items():
+            ivy_var = get_ivy_var_str(constant_Name2Id, atom)
+            FiniteIvyGenerator.cpp_non_bool_state_vars[ivy_var] = sort
 
     def write_ivy():
         FiniteIvyGenerator._reset_lines()
@@ -216,7 +225,8 @@ class FiniteIvyGenerator():
     def _append_cpp():
         cpp_file = open(FiniteIvyGenerator.cpp_name, 'a')
         lines = []
-        protocol_class_name = FiniteIvyGenerator.file_name_prefix.replace('-', '_').replace('.', '__') + '_repl'
+        protocol_class_name      = FiniteIvyGenerator.file_name_prefix.replace('-', '_').replace('.', '__') 
+        protocol_repl_class_name = protocol_class_name + '_repl'
 
         lines.append('\n')
         lines.append('/***********************************************************/\n')
@@ -225,14 +235,14 @@ class FiniteIvyGenerator():
 
         lines.append('\n')
         lines.append('#include <vector>\n')
-        lines.append(protocol_class_name + ' * ivy_exec;\n') 
+        lines.append(protocol_repl_class_name + ' * ivy_exec;\n') 
         lines.append('cmd_reader* ivy_exec_cr;\n') 
         lines.append('std::ostringstream ivy_exec_stream;\n')
 
         lines.append('\n')
         lines.append('void ivy_exec_init(){\n') 
         lines.append('\t__ivy_out.basic_ios<char>::rdbuf(ivy_exec_stream.rdbuf());\n') 
-        lines.append('\tivy_exec = new ' + protocol_class_name + ';\n') 
+        lines.append('\tivy_exec = new ' + protocol_repl_class_name + ';\n') 
         lines.append('\tivy_exec -> __unlock();\n') 
         lines.append('\tivy_exec_cr = new cmd_reader(*ivy_exec);\n') 
         lines.append('}\n') 
@@ -255,7 +265,13 @@ class FiniteIvyGenerator():
         lines.append('\n')
         lines.append('void ivy_exec_set_state(std::vector<std::string> state_values){\n')
         for i, state_var in enumerate(FiniteIvyGenerator.cpp_state_vars):
-            lines.append('\t std::stringstream(state_values[' + str(i) + ']) >> ivy_exec -> ' + state_var + ';\n')
+            if state_var in FiniteIvyGenerator.cpp_non_bool_state_vars:
+                sort = FiniteIvyGenerator.cpp_non_bool_state_vars[state_var]
+                lines.append('\tivy_value arg; arg.pos = 0; arg.atom = state_values[' + str(i) + '];\n')
+                lines.append('\tstd::vector<ivy_value> args; args.push_back(arg);\n')
+                lines.append('\tivy_exec -> ' + state_var + f' = _arg<{protocol_class_name}::{sort}>(args, 0, 0)' + ';\n')
+            else:
+                lines.append('\tstd::stringstream(state_values[' + str(i) + ']) >> ivy_exec -> ' + state_var + ';\n')
         lines.append('}\n')  
 
         lines.append('\n')
