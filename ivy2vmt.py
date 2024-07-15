@@ -33,10 +33,11 @@ class VmtWriter():
         self.mod = mod
 
         # data
-        self.definitions  = [] 
-        self.sort2size    = {}
-        self.all_symbols  = set()
-        self.new_symbols  = set()
+        self.definitions   = [] 
+        self.sort2size     = {}
+        self.all_symbols   = set()
+        self.new_symbols   = set()
+        self.axiom_symbols = set()
 
         # transistions
         self.prev_symbols = set()
@@ -181,6 +182,8 @@ class VmtWriter():
 
     def _init_axioms(self):
         fmlas = [lf.formula for lf in self.mod.labeled_axioms]
+        for fmla in fmlas:
+            self.axiom_symbols.update(lut.used_symbols_ast(fmla))
         clauses = lut.Clauses(fmlas)
         fmla = self._get_formula(clauses)
         self._set_new_symbols_line(fmla)
@@ -292,7 +295,7 @@ class VmtWriter():
 
     def _init_global_symbols(self):
         for next_sym in self.next_symbols:
-            if next_sym not in self.updated_symbols:
+            if next_sym not in self.updated_symbols and next_sym in self.axiom_symbols:
                 self.global_symbols.add(next_sym)
         subs = {}
         for next_sym in self.global_symbols:
