@@ -53,10 +53,9 @@ If you don't have permission to `apt-get install` or `yum install`, try the foll
 ## Usage
 ```=python3
 ./configure.sh [PYTON INCLUDE PATH] (e.g. /usr/include/python3.12)
-python3 qrm.py -i [IVY FILE] -s [sort1=size1,sort2=size2 ...]
+python3 qrm.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 python3 run_all.py [YAML FILE]
 ```
-Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' as a work around.
 ### Usage for Options
 #### Verbosity
 - default: only prints `ivy_check` result for each size, and the final qrm result
@@ -74,8 +73,6 @@ Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' 
     - print debug info
 #### Experient Options
 ```
-python3 run_all.py [YAML] -v 1 -w       -l log # write .ptcl, .pis, .qpis, .ivy
-python3 run_all.py [YAML] -v 5 -w -a    -l log # find all solutions, don't merge suborbits
-python3 run_all.py [YAML] -v 5 -w -a -m -l log # find all solutions, merge suborbits
+python3 run_all.py [YAML] -v 5 -w -l log 
 ```
 

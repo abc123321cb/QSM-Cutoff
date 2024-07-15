@@ -20,11 +20,11 @@ class QrmOptions():
         self.writeLog        = False
         self.log_name        = ''
         self.log_fout        = None
-        self.all_solutions   = False
-        self.merge_suborbits = False
+        self.all_solutions   = True 
+        self.merge_suborbits = True 
         self.ivy_to          = 120 
         self.qrm_to          = 3600 
-        self.python_include_path = ''
+        self.python_include_path = '/usr/include/python3.12'
         self.disable_print   = False # FIXME
 
     def set_files_name(self, ivy_name):
