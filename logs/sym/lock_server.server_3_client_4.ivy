@@ -1,0 +1,41 @@
+#lang ivy1.7
+
+#clinet server example
+
+after init  {
+    semaphore(Y) := true ;
+    link(X, Y) := false;
+}
+
+type client
+
+type server
+
+relation link(X: client, Y: server)
+relation semaphore(X: server)
+
+
+action connect(c: client, s: server) = {
+    require semaphore(s);
+    link(c, s) := true;
+    semaphore(s) := false;
+}
+
+action disconnect(c: client, s: server) = {
+    require link(c, s);
+    link(c, s) := false;
+    semaphore(s) := true;
+}
+
+
+export connect
+
+export disconnect
+
+invariant [unique] forall C1, C2 : client, S: server. link(C1, S) & link(C2, S) -> C1 = C2
+
+#invariant [manual_1] link(C, S) -> ~semaphore(S)
+
+invariant [invar_0] (forall C0, S0 . (~link(C0, S0) | ~semaphore(S0))) # qcost: 4
+invariant [invar_1] (forall C0, C1, S0 . (~link(C1, S0) | (C0 = C1) | ~link(C0, S0))) # qcost: 6
+invariant [invar_2] (forall S0 . (semaphore(S0) | (exists C0 . link(C0, S0)))) # qcost: 4

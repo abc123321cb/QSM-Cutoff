@@ -1,0 +1,41 @@
+(declare-sort resource_manager 0)
+
+(define-fun .resource_manager ((S resource_manager)) resource_manager (! S :sort 0))
+
+(declare-fun __aborted (resource_manager) Bool)
+(declare-fun __committed (resource_manager) Bool)
+(declare-fun __prepared (resource_manager) Bool)
+(declare-fun __working (resource_manager) Bool)
+
+(declare-fun aborted (resource_manager) Bool)
+(declare-fun committed (resource_manager) Bool)
+(declare-fun prepared (resource_manager) Bool)
+(declare-fun working (resource_manager) Bool)
+
+(define-fun .aborted ((V0 resource_manager)) Bool (! (__aborted V0) :next aborted))
+(define-fun .committed ((V0 resource_manager)) Bool (! (__committed V0) :next committed))
+(define-fun .prepared ((V0 resource_manager)) Bool (! (__prepared V0) :next prepared))
+(define-fun .working ((V0 resource_manager)) Bool (! (__working V0) :next working))
+
+(define-fun .prop () Bool (! 
+ (let (($v (forall ((R1 resource_manager) (R2 resource_manager)) (not (and (__aborted R1) (__committed R2))))
+ ))
+ (and $v))
+ :invar-property 0))
+
+(define-fun .init () Bool (! 
+ (let (($v (and (forall ((V0 resource_manager)) (= (__working V0) true)) (forall ((V0 resource_manager)) (= (__prepared V0) false)) (forall ((V0 resource_manager)) (= (__committed V0) false)) (forall ((V0 resource_manager)) (= (__aborted V0) false)))
+ ))
+ (and $v))
+ :init true))
+
+(declare-fun decide_abort (resource_manager) Bool)
+(define-fun .decide_abort ((V0 resource_manager)) Bool (! (decide_abort V0) :action true))
+
+(declare-fun decide_commit (resource_manager) Bool)
+(define-fun .decide_commit ((V0 resource_manager)) Bool (! (decide_commit V0) :action true))
+
+(declare-fun prepare (resource_manager) Bool)
+(define-fun .prepare ((V0 resource_manager)) Bool (! (prepare V0) :action true))
+
+
