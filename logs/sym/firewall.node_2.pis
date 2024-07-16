@@ -16,10 +16,10 @@ qcost : 0
 === Orbit 1 =====================
 size : 2
 num_suborbits: 1
-2 (*) : -0-----1
-2     : ['allowed_in(node1)', '~sent(node0,node1)']
-3     : --0---1-
-3     : ['allowed_in(node0)', '~sent(node1,node0)']
+2 (*) : --0---1-
+2     : ['allowed_in(node0)', '~sent(node1,node0)']
+3     : -0-----1
+3     : ['allowed_in(node1)', '~sent(node0,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -30,10 +30,10 @@ qcost : 0
 === Orbit 2 =====================
 size : 2
 num_suborbits: 1
-4 (*) : -----1-1
-4     : ['allowed_in(node1)', 'internal(node1)']
-5     : ----1-1-
-5     : ['allowed_in(node0)', 'internal(node0)']
+4 (*) : -----01-
+4     : ['allowed_in(node0)', '~internal(node1)']
+5     : ----0--1
+5     : ['allowed_in(node1)', '~internal(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -44,10 +44,10 @@ qcost : 0
 === Orbit 3 =====================
 size : 2
 num_suborbits: 1
-6 (*) : ----0--1
-6     : ['allowed_in(node1)', '~internal(node0)']
-7     : -----01-
-7     : ['allowed_in(node0)', '~internal(node1)']
+6 (*) : ----1-1-
+6     : ['allowed_in(node0)', 'internal(node0)']
+7     : -----1-1
+7     : ['allowed_in(node1)', 'internal(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -70,14 +70,14 @@ qcost : 0
 === Orbit 5 =====================
 size : 4
 num_suborbits: 2
-9 (*) : -1---0-0
-9     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node1)']
-10     : --1-0-0-
-10     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node0)']
-19 (*) : -1--0-0-
-19     : ['sent(node0,node1)', '~allowed_in(node0)', '~internal(node0)']
-20     : --1--0-0
-20     : ['sent(node1,node0)', '~allowed_in(node1)', '~internal(node1)']
+9 (*) : -1---10-
+9     : ['internal(node1)', 'sent(node0,node1)', '~allowed_in(node0)']
+10     : --1-1--0
+10     : ['internal(node0)', 'sent(node1,node0)', '~allowed_in(node1)']
+19 (*) : -1--1--0
+19     : ['internal(node0)', 'sent(node0,node1)', '~allowed_in(node1)']
+20     : --1--10-
+20     : ['internal(node1)', 'sent(node1,node0)', '~allowed_in(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -88,10 +88,10 @@ qcost : 0
 === Orbit 6 =====================
 size : 2
 num_suborbits: 1
-11 (*) : -1--00--
-11     : ['sent(node0,node1)', '~internal(node0)', '~internal(node1)']
-12     : --1-00--
-12     : ['sent(node1,node0)', '~internal(node0)', '~internal(node1)']
+11 (*) : -1--11--
+11     : ['internal(node0)', 'internal(node1)', 'sent(node0,node1)']
+12     : --1-11--
+12     : ['internal(node0)', 'internal(node1)', 'sent(node1,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -102,10 +102,10 @@ qcost : 0
 === Orbit 7 =====================
 size : 2
 num_suborbits: 1
-13 (*) : -10----0
-13     : ['sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
-14     : -01---0-
-14     : ['sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
+13 (*) : -10--1--
+13     : ['internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)']
+14     : -01-1---
+14     : ['internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -130,14 +130,14 @@ qcost : 0
 === Orbit 9 =====================
 size : 4
 num_suborbits: 2
-17 (*) : -1--1--0
-17     : ['internal(node0)', 'sent(node0,node1)', '~allowed_in(node1)']
-18     : --1--10-
-18     : ['internal(node1)', 'sent(node1,node0)', '~allowed_in(node0)']
-21 (*) : -1---10-
-21     : ['internal(node1)', 'sent(node0,node1)', '~allowed_in(node0)']
-22     : --1-1--0
-22     : ['internal(node0)', 'sent(node1,node0)', '~allowed_in(node1)']
+17 (*) : -1---0-0
+17     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node1)']
+18     : --1-0-0-
+18     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node0)']
+23 (*) : -1--0-0-
+23     : ['sent(node0,node1)', '~allowed_in(node0)', '~internal(node0)']
+24     : --1--0-0
+24     : ['sent(node1,node0)', '~allowed_in(node1)', '~internal(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -148,10 +148,10 @@ qcost : 0
 === Orbit 10 =====================
 size : 2
 num_suborbits: 1
-23 (*) : -10--1--
-23     : ['internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)']
-24     : -01-1---
-24     : ['internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)']
+21 (*) : -10----0
+21     : ['sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
+22     : -01---0-
+22     : ['sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -176,10 +176,10 @@ qcost : 0
 === Orbit 12 =====================
 size : 2
 num_suborbits: 1
-27 (*) : -1--11--
-27     : ['internal(node0)', 'internal(node1)', 'sent(node0,node1)']
-28     : --1-11--
-28     : ['internal(node0)', 'internal(node1)', 'sent(node1,node0)']
+27 (*) : -1--00--
+27     : ['sent(node0,node1)', '~internal(node0)', '~internal(node1)']
+28     : --1-00--
+28     : ['sent(node1,node0)', '~internal(node0)', '~internal(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0

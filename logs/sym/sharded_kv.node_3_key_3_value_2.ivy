@@ -50,7 +50,7 @@ invariant [safety_keys_unique] table(N1, K, V1) & table(N2, K, V2) -> N1 = N2 & 
 
 
 invariant [invar_0] (forall V0, K0, N0 . (owner(N0, K0) | ~table(N0, K0, V0))) # qcost: 5
-invariant [invar_1] (forall K0, N0, N1, V0, V1 . (~table(N0, K0, V0) | ~table(N1, K0, V1) | ((N0 = N1) & (V0 = V1)))) # qcost: 9
-invariant [invar_4] (forall V0, K0, N0, N1 . (~owner(N0, K0) | ~transfer_msg(N1, K0, V0))) # qcost: 6
-invariant [invar_5] (forall K0, N0, N1, V0, V1 . (~transfer_msg(N0, K0, V0) | ~transfer_msg(N1, K0, V1) | ((N0 = N1) & (V0 = V1)))) # qcost: 9
+invariant [invar_2] (forall K0, N0, N1, V0, V1 . (~table(N0, K0, V0) | ~table(N1, K0, V1) | ((N0 = N1) & (V0 = V1)))) # qcost: 9
+invariant [invar_4] (forall K0, N0, N1, V0, V1 . (~transfer_msg(N0, K0, V0) | ~transfer_msg(N1, K0, V1) | ((N0 = N1) & (V0 = V1)))) # qcost: 9
+invariant [invar_5] (forall V0, K0, N0, N1 . (~owner(N0, K0) | ~transfer_msg(N1, K0, V0))) # qcost: 6
 invariant [invar_6] (forall K0, N0, N1 . (~owner(N1, K0) | ~owner(N0, K0) | (N0 = N1))) # qcost: 6

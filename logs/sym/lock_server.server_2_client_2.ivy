@@ -36,6 +36,6 @@ invariant [unique] forall C1, C2 : client, S: server. link(C1, S) & link(C2, S) 
 
 #invariant [manual_1] link(C, S) -> ~semaphore(S)
 
-invariant [invar_0] (forall S0, C0 . (~link(C0, S0) | ~semaphore(S0))) # qcost: 4
-invariant [invar_1] (forall S0 . (exists C0 . ~link(C0, S0))) # qcost: 3
+invariant [invar_0] (forall S0 . (exists C0 . ~link(C0, S0))) # qcost: 3
+invariant [invar_1] (forall S0, C0 . (~semaphore(S0) | ~link(C0, S0))) # qcost: 4
 invariant [invar_2] (forall S0 . (semaphore(S0) | (exists C0 . link(C0, S0)))) # qcost: 4

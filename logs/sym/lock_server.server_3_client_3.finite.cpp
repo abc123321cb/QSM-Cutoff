@@ -617,14 +617,14 @@ void lock_server__server_3_client_3__finite::__init(){
             semaphore[Y] = __tmp0[Y];
         }
         bool __tmp1[3][3];
-        for (int X = 0; X < 3; X++) {
-            for (int Y = 0; Y < 3; Y++) {
-                __tmp1[X][Y] = false;
+        for (int Y = 0; Y < 3; Y++) {
+            for (int X = 0; X < 3; X++) {
+                __tmp1[Y][X] = false;
             }
         }
-        for (int X = 0; X < 3; X++) {
-            for (int Y = 0; Y < 3; Y++) {
-                link[X][Y] = __tmp1[X][Y];
+        for (int Y = 0; Y < 3; Y++) {
+            for (int X = 0; X < 3; X++) {
+                link[X][Y] = __tmp1[Y][X];
             }
         }
 }

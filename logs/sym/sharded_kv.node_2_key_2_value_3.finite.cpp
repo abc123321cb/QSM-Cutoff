@@ -620,33 +620,33 @@ void sharded_kv__node_2_key_2_value_3__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 4;
     if (qrm_solution_count == 0){
-        bool __tmp0[2][3][2];
+        bool __tmp0[2][2][3];
         for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 3; V++) {
-                for (int K = 0; K < 2; K++) {
-                    __tmp0[N][V][K] = false;
+            for (int K = 0; K < 2; K++) {
+                for (int V = 0; V < 3; V++) {
+                    __tmp0[N][K][V] = false;
                 }
             }
         }
         for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 3; V++) {
-                for (int K = 0; K < 2; K++) {
-                    table[N][K][V] = __tmp0[N][V][K];
+            for (int K = 0; K < 2; K++) {
+                for (int V = 0; V < 3; V++) {
+                    table[N][K][V] = __tmp0[N][K][V];
                 }
             }
         }
-        bool __tmp1[2][3][2];
+        bool __tmp1[2][2][3];
         for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 3; V++) {
-                for (int K = 0; K < 2; K++) {
-                    __tmp1[N][V][K] = false;
+            for (int K = 0; K < 2; K++) {
+                for (int V = 0; V < 3; V++) {
+                    __tmp1[N][K][V] = false;
                 }
             }
         }
         for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 3; V++) {
-                for (int K = 0; K < 2; K++) {
-                    transfer_msg[N][K][V] = __tmp1[N][V][K];
+            for (int K = 0; K < 2; K++) {
+                for (int V = 0; V < 3; V++) {
+                    transfer_msg[N][K][V] = __tmp1[N][K][V];
                 }
             }
         }

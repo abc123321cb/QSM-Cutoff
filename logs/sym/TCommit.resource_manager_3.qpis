@@ -30,12 +30,12 @@ num_suborbits: 2
 7     : ['committed(resource_manager2)', 'working(resource_manager0)']
 8     : -------1---1
 8     : ['committed(resource_manager2)', 'working(resource_manager1)']
-12 (*) : -------1--1-
-12     : ['committed(resource_manager1)', 'working(resource_manager1)']
-13     : --------1--1
-13     : ['committed(resource_manager2)', 'working(resource_manager2)']
-14     : ------1--1--
-14     : ['committed(resource_manager0)', 'working(resource_manager0)']
+9 (*) : -------1--1-
+9     : ['committed(resource_manager1)', 'working(resource_manager1)']
+10     : --------1--1
+10     : ['committed(resource_manager2)', 'working(resource_manager2)']
+11     : ------1--1--
+11     : ['committed(resource_manager0)', 'working(resource_manager0)']
 num_forall :   2
 num_exists :   0
 num_literals : 2
@@ -46,12 +46,12 @@ qcost : 4
 === Orbit 2 =====================
 size : 3
 num_suborbits: 1
-9 (*) : -1-----1----
-9     : ['prepared(resource_manager1)', 'working(resource_manager1)']
-10     : --1-----1---
-10     : ['prepared(resource_manager2)', 'working(resource_manager2)']
-11     : 1-----1-----
-11     : ['prepared(resource_manager0)', 'working(resource_manager0)']
+12 (*) : -1-----1----
+12     : ['prepared(resource_manager1)', 'working(resource_manager1)']
+13     : --1-----1---
+13     : ['prepared(resource_manager2)', 'working(resource_manager2)']
+14     : 1-----1-----
+14     : ['prepared(resource_manager0)', 'working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
@@ -122,34 +122,56 @@ qcost : 3
 === Orbit 6 =====================
 size : 6
 num_suborbits: 1
-30 (*) : -0-------10-
-30     : ['committed(resource_manager0)', '~committed(resource_manager1)', '~prepared(resource_manager1)']
-31     : --0------1-0
-31     : ['committed(resource_manager0)', '~committed(resource_manager2)', '~prepared(resource_manager2)']
-32     : 0--------01-
-32     : ['committed(resource_manager1)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
-33     : --0-------10
-33     : ['committed(resource_manager1)', '~committed(resource_manager2)', '~prepared(resource_manager2)']
-34     : 0--------0-1
-34     : ['committed(resource_manager2)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
-35     : -0--------01
-35     : ['committed(resource_manager2)', '~committed(resource_manager1)', '~prepared(resource_manager1)']
+30 (*) : 0--------01-
+30     : ['committed(resource_manager1)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
+31     : 0--------0-1
+31     : ['committed(resource_manager2)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
+32     : -0-------10-
+32     : ['committed(resource_manager0)', '~committed(resource_manager1)', '~prepared(resource_manager1)']
+33     : -0--------01
+33     : ['committed(resource_manager2)', '~committed(resource_manager1)', '~prepared(resource_manager1)']
+34     : --0------1-0
+34     : ['committed(resource_manager0)', '~committed(resource_manager2)', '~prepared(resource_manager2)']
+35     : --0-------10
+35     : ['committed(resource_manager1)', '~committed(resource_manager2)', '~prepared(resource_manager2)']
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : (forall R0, R1 . ((R1 = R0) | ~committed(R1) | committed(R0) | prepared(R0)))
+quantified form : (forall R0, R1 . ((R1 = R0) | committed(R1) | ~committed(R0) | prepared(R1)))
 qcost : 6
 
 
 === Orbit 7 =====================
+size : 6
+num_suborbits: 1
+36 (*) : --0--0-10---
+36     : ['working(resource_manager1)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+37     : -0--0--01---
+37     : ['working(resource_manager2)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+38     : --0--01-0---
+38     : ['working(resource_manager0)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+39     : 0--0--0-1---
+39     : ['working(resource_manager2)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+40     : -0--0-10----
+40     : ['working(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+41     : 0--0--01----
+41     : ['working(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : (forall R0, R1 . (working(R0) | ~working(R1) | (R1 = R0) | aborted(R0) | prepared(R0)))
+qcost : 7
+
+
+=== Orbit 8 =====================
 size : 3
 num_suborbits: 1
-36 (*) : -0--0--0--0-
-36     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-37     : --0--0--0--0
-37     : ['~aborted(resource_manager2)', '~committed(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
-38     : 0--0--0--0--
-38     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+42 (*) : --0--0--0--0
+42     : ['~aborted(resource_manager2)', '~committed(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+43     : -0--0--0--0-
+43     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+44     : 0--0--0--0--
+44     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
@@ -157,69 +179,47 @@ quantified form : (forall R0 . (aborted(R0) | committed(R0) | prepared(R0) | wor
 qcost : 5
 
 
-=== Orbit 8 =====================
-size : 6
-num_suborbits: 1
-39 (*) : -0--0--01---
-39     : ['working(resource_manager2)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-40     : --0--0-10---
-40     : ['working(resource_manager1)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
-41     : 0--0--0-1---
-41     : ['working(resource_manager2)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
-42     : --0--01-0---
-42     : ['working(resource_manager0)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
-43     : 0--0--01----
-43     : ['working(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
-44     : -0--0-10----
-44     : ['working(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-num_forall :   2
-num_exists :   0
-num_literals : 5
-quantified form : (forall R0, R1 . (prepared(R1) | (R1 = R0) | aborted(R1) | working(R1) | ~working(R0)))
-qcost : 7
-
-
 === Orbit 9 =====================
 size : 6
 num_suborbits: 1
-45 (*) : 0--01-0-----
-45     : ['aborted(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
-46     : 0--0-10-----
-46     : ['aborted(resource_manager2)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
-47     : -0-10--0----
-47     : ['aborted(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-48     : -0--01-0----
-48     : ['aborted(resource_manager2)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-49     : --01-0--0---
-49     : ['aborted(resource_manager0)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
-50     : --0-10--0---
-50     : ['aborted(resource_manager1)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+45 (*) : -0--01-0----
+45     : ['aborted(resource_manager2)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+46     : --0-10--0---
+46     : ['aborted(resource_manager1)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+47     : 0--0-10-----
+47     : ['aborted(resource_manager2)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+48     : --01-0--0---
+48     : ['aborted(resource_manager0)', '~aborted(resource_manager2)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+49     : 0--01-0-----
+49     : ['aborted(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+50     : -0-10--0----
+50     : ['aborted(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : (forall R0, R1 . (prepared(R1) | ~aborted(R0) | (R1 = R0) | aborted(R1) | working(R1)))
+quantified form : (forall R0, R1 . (prepared(R1) | (R1 = R0) | ~aborted(R0) | aborted(R1) | working(R1)))
 qcost : 7
 
 
 === Orbit 10 =====================
 size : 6
 num_suborbits: 1
-51 (*) : -00-0--0---0
-51     : ['~aborted(resource_manager1)', '~committed(resource_manager2)', '~prepared(resource_manager1)', '~prepared(resource_manager2)', '~working(resource_manager1)']
-52     : -00--0--0-0-
-52     : ['~aborted(resource_manager2)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~prepared(resource_manager2)', '~working(resource_manager2)']
-53     : 0-00--0----0
-53     : ['~aborted(resource_manager0)', '~committed(resource_manager2)', '~prepared(resource_manager0)', '~prepared(resource_manager2)', '~working(resource_manager0)']
-54     : 0-0--0--00--
-54     : ['~aborted(resource_manager2)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~prepared(resource_manager2)', '~working(resource_manager2)']
-55     : 00-0--0---0-
-55     : ['~aborted(resource_manager0)', '~committed(resource_manager1)', '~prepared(resource_manager0)', '~prepared(resource_manager1)', '~working(resource_manager0)']
-56     : 00--0--0-0--
-56     : ['~aborted(resource_manager1)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+51 (*) : 0-00--0----0
+51     : ['~aborted(resource_manager0)', '~committed(resource_manager2)', '~prepared(resource_manager0)', '~prepared(resource_manager2)', '~working(resource_manager0)']
+52     : 00-0--0---0-
+52     : ['~aborted(resource_manager0)', '~committed(resource_manager1)', '~prepared(resource_manager0)', '~prepared(resource_manager1)', '~working(resource_manager0)']
+53     : -00-0--0---0
+53     : ['~aborted(resource_manager1)', '~committed(resource_manager2)', '~prepared(resource_manager1)', '~prepared(resource_manager2)', '~working(resource_manager1)']
+54     : 00--0--0-0--
+54     : ['~aborted(resource_manager1)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+55     : -00--0--0-0-
+55     : ['~aborted(resource_manager2)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~prepared(resource_manager2)', '~working(resource_manager2)']
+56     : 0-0--0--00--
+56     : ['~aborted(resource_manager2)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~prepared(resource_manager2)', '~working(resource_manager2)']
 num_forall :   2
 num_exists :   0
 num_literals : 6
-quantified form : (forall R0, R1 . ((R1 = R0) | aborted(R1) | working(R1) | committed(R0) | prepared(R1) | prepared(R0)))
+quantified form : (forall R0, R1 . ((R1 = R0) | aborted(R1) | working(R1) | committed(R0) | prepared(R0) | prepared(R1)))
 qcost : 8
 
 

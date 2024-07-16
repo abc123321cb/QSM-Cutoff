@@ -1,55 +1,101 @@
 
 === Orbit 0 =====================
+size : 30
+num_suborbits: 3
+0 (*) : ----------------1------1----
+0     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value1)']
+1     : ----------------1-------1---
+1     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value2)']
+2     : -----------------1----1-----
+2     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value0)']
+3     : -----------------1------1---
+3     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value2)']
+4     : ------------------1---1-----
+4     : ['transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)']
+5     : ------------------1----1----
+5     : ['transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value1)']
+6     : -------------------1------1-
+6     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node1,key1,value1)']
+7     : -------------------1-------1
+7     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node1,key1,value2)']
+8     : --------------------1----1--
+8     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key1,value0)']
+9     : --------------------1------1
+9     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key1,value2)']
+10     : ---------------------1---1--
+10     : ['transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key1,value0)']
+11     : ---------------------1----1-
+11     : ['transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key1,value1)']
+72 (*) : -----------------------11---
+72     : ['transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)']
+73     : ----------------------1-1---
+73     : ['transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value2)']
+74     : ----------------------11----
+74     : ['transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)']
+75     : -----------------11---------
+75     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)']
+76     : ----------------1-1---------
+76     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value2)']
+77     : ----------------11----------
+77     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)']
+78     : --------------------------11
+78     : ['transfer_msg(node1,key1,value1)', 'transfer_msg(node1,key1,value2)']
+79     : -------------------------1-1
+79     : ['transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value2)']
+80     : -------------------------11-
+80     : ['transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value1)']
+81     : --------------------11------
+81     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node0,key1,value2)']
+82     : -------------------1-1------
+82     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value2)']
+83     : -------------------11-------
+83     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value1)']
+120 (*) : -----------------1-----1----
+120     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value1)']
+121     : ------------------1-----1---
+121     : ['transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value2)']
+122     : ----------------1-----1-----
+122     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value0)']
+123     : --------------------1-----1-
+123     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key1,value1)']
+124     : ---------------------1-----1
+124     : ['transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key1,value2)']
+125     : -------------------1-----1--
+125     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node1,key1,value0)']
+num_forall :   5
+num_exists :   0
+num_literals : 4
+quantified form : (forall K0, N0, N1, V0, V1 . (~transfer_msg(N0, K0, V0) | ~transfer_msg(N1, K0, V1) | ((N0 = N1) & (V0 = V1))))
+qcost : 9
+
+
+=== Orbit 1 =====================
 size : 72
 num_suborbits: 4
-0 (*) : 1----------------------1----
-0     : ['table(node0,key0,value0)', 'transfer_msg(node1,key0,value1)']
-1     : 1-----------------------1---
-1     : ['table(node0,key0,value0)', 'transfer_msg(node1,key0,value2)']
-2     : -1--------------------1-----
-2     : ['table(node0,key0,value1)', 'transfer_msg(node1,key0,value0)']
-3     : -1----------------------1---
-3     : ['table(node0,key0,value1)', 'transfer_msg(node1,key0,value2)']
-4     : --1-------------------1-----
-4     : ['table(node0,key0,value2)', 'transfer_msg(node1,key0,value0)']
-5     : --1--------------------1----
-5     : ['table(node0,key0,value2)', 'transfer_msg(node1,key0,value1)']
-6     : ------1----------1----------
-6     : ['table(node1,key0,value0)', 'transfer_msg(node0,key0,value1)']
-7     : ------1-----------1---------
-7     : ['table(node1,key0,value0)', 'transfer_msg(node0,key0,value2)']
-8     : -------1--------1-----------
-8     : ['table(node1,key0,value1)', 'transfer_msg(node0,key0,value0)']
-9     : -------1----------1---------
-9     : ['table(node1,key0,value1)', 'transfer_msg(node0,key0,value2)']
-10     : --------1-------1-----------
-10     : ['table(node1,key0,value2)', 'transfer_msg(node0,key0,value0)']
-11     : --------1--------1----------
-11     : ['table(node1,key0,value2)', 'transfer_msg(node0,key0,value1)']
-12     : ---1----------------------1-
-12     : ['table(node0,key1,value0)', 'transfer_msg(node1,key1,value1)']
-13     : ---1-----------------------1
-13     : ['table(node0,key1,value0)', 'transfer_msg(node1,key1,value2)']
-14     : ----1--------------------1--
-14     : ['table(node0,key1,value1)', 'transfer_msg(node1,key1,value0)']
-15     : ----1----------------------1
-15     : ['table(node0,key1,value1)', 'transfer_msg(node1,key1,value2)']
-16     : -----1-------------------1--
-16     : ['table(node0,key1,value2)', 'transfer_msg(node1,key1,value0)']
-17     : -----1--------------------1-
-17     : ['table(node0,key1,value2)', 'transfer_msg(node1,key1,value1)']
-18     : ---------1----------1-------
-18     : ['table(node1,key1,value0)', 'transfer_msg(node0,key1,value1)']
-19     : ---------1-----------1------
-19     : ['table(node1,key1,value0)', 'transfer_msg(node0,key1,value2)']
-20     : ----------1--------1--------
-20     : ['table(node1,key1,value1)', 'transfer_msg(node0,key1,value0)']
-21     : ----------1----------1------
-21     : ['table(node1,key1,value1)', 'transfer_msg(node0,key1,value2)']
-22     : -----------1-------1--------
-22     : ['table(node1,key1,value2)', 'transfer_msg(node0,key1,value0)']
-23     : -----------1--------1-------
-23     : ['table(node1,key1,value2)', 'transfer_msg(node0,key1,value1)']
+12 (*) : -------1---------------1----
+12     : ['table(node1,key0,value1)', 'transfer_msg(node1,key0,value1)']
+13     : --------1---------------1---
+13     : ['table(node1,key0,value2)', 'transfer_msg(node1,key0,value2)']
+14     : ------1---------------1-----
+14     : ['table(node1,key0,value0)', 'transfer_msg(node1,key0,value0)']
+15     : -1---------------1----------
+15     : ['table(node0,key0,value1)', 'transfer_msg(node0,key0,value1)']
+16     : --1---------------1---------
+16     : ['table(node0,key0,value2)', 'transfer_msg(node0,key0,value2)']
+17     : 1---------------1-----------
+17     : ['table(node0,key0,value0)', 'transfer_msg(node0,key0,value0)']
+18     : ----------1---------------1-
+18     : ['table(node1,key1,value1)', 'transfer_msg(node1,key1,value1)']
+19     : -----------1---------------1
+19     : ['table(node1,key1,value2)', 'transfer_msg(node1,key1,value2)']
+20     : ---------1---------------1--
+20     : ['table(node1,key1,value0)', 'transfer_msg(node1,key1,value0)']
+21     : ----1---------------1-------
+21     : ['table(node0,key1,value1)', 'transfer_msg(node0,key1,value1)']
+22     : -----1---------------1------
+22     : ['table(node0,key1,value2)', 'transfer_msg(node0,key1,value2)']
+23     : ---1---------------1--------
+23     : ['table(node0,key1,value0)', 'transfer_msg(node0,key1,value0)']
 24 (*) : -1---------------------1----
 24     : ['table(node0,key0,value1)', 'transfer_msg(node1,key0,value1)']
 25     : --1---------------------1---
@@ -74,324 +120,298 @@ num_suborbits: 4
 34     : ['table(node1,key1,value2)', 'transfer_msg(node0,key1,value2)']
 35     : ---------1---------1--------
 35     : ['table(node1,key1,value0)', 'transfer_msg(node0,key1,value0)']
-72 (*) : ------1----------------1----
-72     : ['table(node1,key0,value0)', 'transfer_msg(node1,key0,value1)']
-73     : ------1-----------------1---
-73     : ['table(node1,key0,value0)', 'transfer_msg(node1,key0,value2)']
-74     : -------1--------------1-----
-74     : ['table(node1,key0,value1)', 'transfer_msg(node1,key0,value0)']
-75     : -------1----------------1---
-75     : ['table(node1,key0,value1)', 'transfer_msg(node1,key0,value2)']
-76     : --------1-------------1-----
-76     : ['table(node1,key0,value2)', 'transfer_msg(node1,key0,value0)']
-77     : --------1--------------1----
-77     : ['table(node1,key0,value2)', 'transfer_msg(node1,key0,value1)']
-78     : 1----------------1----------
-78     : ['table(node0,key0,value0)', 'transfer_msg(node0,key0,value1)']
-79     : 1-----------------1---------
-79     : ['table(node0,key0,value0)', 'transfer_msg(node0,key0,value2)']
-80     : -1--------------1-----------
-80     : ['table(node0,key0,value1)', 'transfer_msg(node0,key0,value0)']
-81     : -1----------------1---------
-81     : ['table(node0,key0,value1)', 'transfer_msg(node0,key0,value2)']
-82     : --1-------------1-----------
-82     : ['table(node0,key0,value2)', 'transfer_msg(node0,key0,value0)']
-83     : --1--------------1----------
-83     : ['table(node0,key0,value2)', 'transfer_msg(node0,key0,value1)']
-84     : ---------1----------------1-
-84     : ['table(node1,key1,value0)', 'transfer_msg(node1,key1,value1)']
-85     : ---------1-----------------1
-85     : ['table(node1,key1,value0)', 'transfer_msg(node1,key1,value2)']
-86     : ----------1--------------1--
-86     : ['table(node1,key1,value1)', 'transfer_msg(node1,key1,value0)']
-87     : ----------1----------------1
-87     : ['table(node1,key1,value1)', 'transfer_msg(node1,key1,value2)']
-88     : -----------1-------------1--
-88     : ['table(node1,key1,value2)', 'transfer_msg(node1,key1,value0)']
-89     : -----------1--------------1-
-89     : ['table(node1,key1,value2)', 'transfer_msg(node1,key1,value1)']
-90     : ---1----------------1-------
-90     : ['table(node0,key1,value0)', 'transfer_msg(node0,key1,value1)']
-91     : ---1-----------------1------
-91     : ['table(node0,key1,value0)', 'transfer_msg(node0,key1,value2)']
-92     : ----1--------------1--------
-92     : ['table(node0,key1,value1)', 'transfer_msg(node0,key1,value0)']
-93     : ----1----------------1------
-93     : ['table(node0,key1,value1)', 'transfer_msg(node0,key1,value2)']
-94     : -----1-------------1--------
-94     : ['table(node0,key1,value2)', 'transfer_msg(node0,key1,value0)']
-95     : -----1--------------1-------
-95     : ['table(node0,key1,value2)', 'transfer_msg(node0,key1,value1)']
-96 (*) : -------1---------------1----
-96     : ['table(node1,key0,value1)', 'transfer_msg(node1,key0,value1)']
-97     : --------1---------------1---
-97     : ['table(node1,key0,value2)', 'transfer_msg(node1,key0,value2)']
-98     : ------1---------------1-----
-98     : ['table(node1,key0,value0)', 'transfer_msg(node1,key0,value0)']
-99     : -1---------------1----------
-99     : ['table(node0,key0,value1)', 'transfer_msg(node0,key0,value1)']
-100     : --1---------------1---------
-100     : ['table(node0,key0,value2)', 'transfer_msg(node0,key0,value2)']
-101     : 1---------------1-----------
-101     : ['table(node0,key0,value0)', 'transfer_msg(node0,key0,value0)']
-102     : ----------1---------------1-
-102     : ['table(node1,key1,value1)', 'transfer_msg(node1,key1,value1)']
-103     : -----------1---------------1
-103     : ['table(node1,key1,value2)', 'transfer_msg(node1,key1,value2)']
-104     : ---------1---------------1--
-104     : ['table(node1,key1,value0)', 'transfer_msg(node1,key1,value0)']
-105     : ----1---------------1-------
-105     : ['table(node0,key1,value1)', 'transfer_msg(node0,key1,value1)']
-106     : -----1---------------1------
-106     : ['table(node0,key1,value2)', 'transfer_msg(node0,key1,value2)']
-107     : ---1---------------1--------
-107     : ['table(node0,key1,value0)', 'transfer_msg(node0,key1,value0)']
+36 (*) : 1----------------------1----
+36     : ['table(node0,key0,value0)', 'transfer_msg(node1,key0,value1)']
+37     : 1-----------------------1---
+37     : ['table(node0,key0,value0)', 'transfer_msg(node1,key0,value2)']
+38     : -1--------------------1-----
+38     : ['table(node0,key0,value1)', 'transfer_msg(node1,key0,value0)']
+39     : -1----------------------1---
+39     : ['table(node0,key0,value1)', 'transfer_msg(node1,key0,value2)']
+40     : --1-------------------1-----
+40     : ['table(node0,key0,value2)', 'transfer_msg(node1,key0,value0)']
+41     : --1--------------------1----
+41     : ['table(node0,key0,value2)', 'transfer_msg(node1,key0,value1)']
+42     : ------1----------1----------
+42     : ['table(node1,key0,value0)', 'transfer_msg(node0,key0,value1)']
+43     : ------1-----------1---------
+43     : ['table(node1,key0,value0)', 'transfer_msg(node0,key0,value2)']
+44     : -------1--------1-----------
+44     : ['table(node1,key0,value1)', 'transfer_msg(node0,key0,value0)']
+45     : -------1----------1---------
+45     : ['table(node1,key0,value1)', 'transfer_msg(node0,key0,value2)']
+46     : --------1-------1-----------
+46     : ['table(node1,key0,value2)', 'transfer_msg(node0,key0,value0)']
+47     : --------1--------1----------
+47     : ['table(node1,key0,value2)', 'transfer_msg(node0,key0,value1)']
+48     : ---1----------------------1-
+48     : ['table(node0,key1,value0)', 'transfer_msg(node1,key1,value1)']
+49     : ---1-----------------------1
+49     : ['table(node0,key1,value0)', 'transfer_msg(node1,key1,value2)']
+50     : ----1--------------------1--
+50     : ['table(node0,key1,value1)', 'transfer_msg(node1,key1,value0)']
+51     : ----1----------------------1
+51     : ['table(node0,key1,value1)', 'transfer_msg(node1,key1,value2)']
+52     : -----1-------------------1--
+52     : ['table(node0,key1,value2)', 'transfer_msg(node1,key1,value0)']
+53     : -----1--------------------1-
+53     : ['table(node0,key1,value2)', 'transfer_msg(node1,key1,value1)']
+54     : ---------1----------1-------
+54     : ['table(node1,key1,value0)', 'transfer_msg(node0,key1,value1)']
+55     : ---------1-----------1------
+55     : ['table(node1,key1,value0)', 'transfer_msg(node0,key1,value2)']
+56     : ----------1--------1--------
+56     : ['table(node1,key1,value1)', 'transfer_msg(node0,key1,value0)']
+57     : ----------1----------1------
+57     : ['table(node1,key1,value1)', 'transfer_msg(node0,key1,value2)']
+58     : -----------1-------1--------
+58     : ['table(node1,key1,value2)', 'transfer_msg(node0,key1,value0)']
+59     : -----------1--------1-------
+59     : ['table(node1,key1,value2)', 'transfer_msg(node0,key1,value1)']
+84 (*) : ------1----------------1----
+84     : ['table(node1,key0,value0)', 'transfer_msg(node1,key0,value1)']
+85     : ------1-----------------1---
+85     : ['table(node1,key0,value0)', 'transfer_msg(node1,key0,value2)']
+86     : -------1--------------1-----
+86     : ['table(node1,key0,value1)', 'transfer_msg(node1,key0,value0)']
+87     : -------1----------------1---
+87     : ['table(node1,key0,value1)', 'transfer_msg(node1,key0,value2)']
+88     : --------1-------------1-----
+88     : ['table(node1,key0,value2)', 'transfer_msg(node1,key0,value0)']
+89     : --------1--------------1----
+89     : ['table(node1,key0,value2)', 'transfer_msg(node1,key0,value1)']
+90     : 1----------------1----------
+90     : ['table(node0,key0,value0)', 'transfer_msg(node0,key0,value1)']
+91     : 1-----------------1---------
+91     : ['table(node0,key0,value0)', 'transfer_msg(node0,key0,value2)']
+92     : -1--------------1-----------
+92     : ['table(node0,key0,value1)', 'transfer_msg(node0,key0,value0)']
+93     : -1----------------1---------
+93     : ['table(node0,key0,value1)', 'transfer_msg(node0,key0,value2)']
+94     : --1-------------1-----------
+94     : ['table(node0,key0,value2)', 'transfer_msg(node0,key0,value0)']
+95     : --1--------------1----------
+95     : ['table(node0,key0,value2)', 'transfer_msg(node0,key0,value1)']
+96     : ---------1----------------1-
+96     : ['table(node1,key1,value0)', 'transfer_msg(node1,key1,value1)']
+97     : ---------1-----------------1
+97     : ['table(node1,key1,value0)', 'transfer_msg(node1,key1,value2)']
+98     : ----------1--------------1--
+98     : ['table(node1,key1,value1)', 'transfer_msg(node1,key1,value0)']
+99     : ----------1----------------1
+99     : ['table(node1,key1,value1)', 'transfer_msg(node1,key1,value2)']
+100     : -----------1-------------1--
+100     : ['table(node1,key1,value2)', 'transfer_msg(node1,key1,value0)']
+101     : -----------1--------------1-
+101     : ['table(node1,key1,value2)', 'transfer_msg(node1,key1,value1)']
+102     : ---1----------------1-------
+102     : ['table(node0,key1,value0)', 'transfer_msg(node0,key1,value1)']
+103     : ---1-----------------1------
+103     : ['table(node0,key1,value0)', 'transfer_msg(node0,key1,value2)']
+104     : ----1--------------1--------
+104     : ['table(node0,key1,value1)', 'transfer_msg(node0,key1,value0)']
+105     : ----1----------------1------
+105     : ['table(node0,key1,value1)', 'transfer_msg(node0,key1,value2)']
+106     : -----1-------------1--------
+106     : ['table(node0,key1,value2)', 'transfer_msg(node0,key1,value0)']
+107     : -----1--------------1-------
+107     : ['table(node0,key1,value2)', 'transfer_msg(node0,key1,value1)']
 num_forall :   5
 num_exists :   0
 num_literals : 2
-quantified form : (forall K0, N0, N1, V0, V1 . (~transfer_msg(N0, K0, V0) | ~table(N1, K0, V1)))
+quantified form : (forall K0, N0, N1, V0, V1 . (~table(N0, K0, V0) | ~transfer_msg(N1, K0, V1)))
 qcost : 7
 
 
-=== Orbit 1 =====================
+=== Orbit 2 =====================
 size : 24
 num_suborbits: 2
-36 (*) : ------------1----------1----
-36     : ['owner(node0,key0)', 'transfer_msg(node1,key0,value1)']
-37     : ------------1-----------1---
-37     : ['owner(node0,key0)', 'transfer_msg(node1,key0,value2)']
-38     : ------------1---------1-----
-38     : ['owner(node0,key0)', 'transfer_msg(node1,key0,value0)']
-39     : --------------1--1----------
-39     : ['owner(node1,key0)', 'transfer_msg(node0,key0,value1)']
-40     : --------------1---1---------
-40     : ['owner(node1,key0)', 'transfer_msg(node0,key0,value2)']
-41     : --------------1-1-----------
-41     : ['owner(node1,key0)', 'transfer_msg(node0,key0,value0)']
-42     : -------------1------------1-
-42     : ['owner(node0,key1)', 'transfer_msg(node1,key1,value1)']
-43     : -------------1-------------1
-43     : ['owner(node0,key1)', 'transfer_msg(node1,key1,value2)']
-44     : -------------1-----------1--
-44     : ['owner(node0,key1)', 'transfer_msg(node1,key1,value0)']
-45     : ---------------1----1-------
-45     : ['owner(node1,key1)', 'transfer_msg(node0,key1,value1)']
-46     : ---------------1-----1------
-46     : ['owner(node1,key1)', 'transfer_msg(node0,key1,value2)']
-47     : ---------------1---1--------
-47     : ['owner(node1,key1)', 'transfer_msg(node0,key1,value0)']
-48 (*) : --------------1--------1----
-48     : ['owner(node1,key0)', 'transfer_msg(node1,key0,value1)']
-49     : --------------1---------1---
-49     : ['owner(node1,key0)', 'transfer_msg(node1,key0,value2)']
-50     : --------------1-------1-----
-50     : ['owner(node1,key0)', 'transfer_msg(node1,key0,value0)']
-51     : ------------1----1----------
-51     : ['owner(node0,key0)', 'transfer_msg(node0,key0,value1)']
-52     : ------------1-----1---------
-52     : ['owner(node0,key0)', 'transfer_msg(node0,key0,value2)']
-53     : ------------1---1-----------
-53     : ['owner(node0,key0)', 'transfer_msg(node0,key0,value0)']
-54     : ---------------1----------1-
-54     : ['owner(node1,key1)', 'transfer_msg(node1,key1,value1)']
-55     : ---------------1-----------1
-55     : ['owner(node1,key1)', 'transfer_msg(node1,key1,value2)']
-56     : ---------------1---------1--
-56     : ['owner(node1,key1)', 'transfer_msg(node1,key1,value0)']
-57     : -------------1------1-------
-57     : ['owner(node0,key1)', 'transfer_msg(node0,key1,value1)']
-58     : -------------1-------1------
-58     : ['owner(node0,key1)', 'transfer_msg(node0,key1,value2)']
-59     : -------------1-----1--------
-59     : ['owner(node0,key1)', 'transfer_msg(node0,key1,value0)']
+60 (*) : ------------1----------1----
+60     : ['owner(node0,key0)', 'transfer_msg(node1,key0,value1)']
+61     : ------------1-----------1---
+61     : ['owner(node0,key0)', 'transfer_msg(node1,key0,value2)']
+62     : ------------1---------1-----
+62     : ['owner(node0,key0)', 'transfer_msg(node1,key0,value0)']
+63     : --------------1--1----------
+63     : ['owner(node1,key0)', 'transfer_msg(node0,key0,value1)']
+64     : --------------1---1---------
+64     : ['owner(node1,key0)', 'transfer_msg(node0,key0,value2)']
+65     : --------------1-1-----------
+65     : ['owner(node1,key0)', 'transfer_msg(node0,key0,value0)']
+66     : -------------1------------1-
+66     : ['owner(node0,key1)', 'transfer_msg(node1,key1,value1)']
+67     : -------------1-------------1
+67     : ['owner(node0,key1)', 'transfer_msg(node1,key1,value2)']
+68     : -------------1-----------1--
+68     : ['owner(node0,key1)', 'transfer_msg(node1,key1,value0)']
+69     : ---------------1----1-------
+69     : ['owner(node1,key1)', 'transfer_msg(node0,key1,value1)']
+70     : ---------------1-----1------
+70     : ['owner(node1,key1)', 'transfer_msg(node0,key1,value2)']
+71     : ---------------1---1--------
+71     : ['owner(node1,key1)', 'transfer_msg(node0,key1,value0)']
+108 (*) : --------------1--------1----
+108     : ['owner(node1,key0)', 'transfer_msg(node1,key0,value1)']
+109     : --------------1---------1---
+109     : ['owner(node1,key0)', 'transfer_msg(node1,key0,value2)']
+110     : --------------1-------1-----
+110     : ['owner(node1,key0)', 'transfer_msg(node1,key0,value0)']
+111     : ------------1----1----------
+111     : ['owner(node0,key0)', 'transfer_msg(node0,key0,value1)']
+112     : ------------1-----1---------
+112     : ['owner(node0,key0)', 'transfer_msg(node0,key0,value2)']
+113     : ------------1---1-----------
+113     : ['owner(node0,key0)', 'transfer_msg(node0,key0,value0)']
+114     : ---------------1----------1-
+114     : ['owner(node1,key1)', 'transfer_msg(node1,key1,value1)']
+115     : ---------------1-----------1
+115     : ['owner(node1,key1)', 'transfer_msg(node1,key1,value2)']
+116     : ---------------1---------1--
+116     : ['owner(node1,key1)', 'transfer_msg(node1,key1,value0)']
+117     : -------------1------1-------
+117     : ['owner(node0,key1)', 'transfer_msg(node0,key1,value1)']
+118     : -------------1-------1------
+118     : ['owner(node0,key1)', 'transfer_msg(node0,key1,value2)']
+119     : -------------1-----1--------
+119     : ['owner(node0,key1)', 'transfer_msg(node0,key1,value0)']
 num_forall :   4
 num_exists :   0
 num_literals : 2
-quantified form : (forall V0, N0, N1, K0 . (~owner(N0, K0) | ~transfer_msg(N1, K0, V0)))
+quantified form : (forall V0, N0, N1, K0 . (~transfer_msg(N0, K0, V0) | ~owner(N1, K0)))
 qcost : 6
 
 
-=== Orbit 2 =====================
-size : 30
-num_suborbits: 3
-60 (*) : -----------------------11---
-60     : ['transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)']
-61     : ----------------------1-1---
-61     : ['transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value2)']
-62     : ----------------------11----
-62     : ['transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)']
-63     : -----------------11---------
-63     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)']
-64     : ----------------1-1---------
-64     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value2)']
-65     : ----------------11----------
-65     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)']
-66     : --------------------------11
-66     : ['transfer_msg(node1,key1,value1)', 'transfer_msg(node1,key1,value2)']
-67     : -------------------------1-1
-67     : ['transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value2)']
-68     : -------------------------11-
-68     : ['transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value1)']
-69     : --------------------11------
-69     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node0,key1,value2)']
-70     : -------------------1-1------
-70     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value2)']
-71     : -------------------11-------
-71     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value1)']
-108 (*) : ----------------1------1----
-108     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value1)']
-109     : ----------------1-------1---
-109     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value2)']
-110     : -----------------1----1-----
-110     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value0)']
-111     : -----------------1------1---
-111     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value2)']
-112     : ------------------1---1-----
-112     : ['transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)']
-113     : ------------------1----1----
-113     : ['transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value1)']
-114     : -------------------1------1-
-114     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node1,key1,value1)']
-115     : -------------------1-------1
-115     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node1,key1,value2)']
-116     : --------------------1----1--
-116     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key1,value0)']
-117     : --------------------1------1
-117     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key1,value2)']
-118     : ---------------------1---1--
-118     : ['transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key1,value0)']
-119     : ---------------------1----1-
-119     : ['transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key1,value1)']
-120 (*) : -----------------1-----1----
-120     : ['transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value1)']
-121     : ------------------1-----1---
-121     : ['transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value2)']
-122     : ----------------1-----1-----
-122     : ['transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value0)']
-123     : --------------------1-----1-
-123     : ['transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key1,value1)']
-124     : ---------------------1-----1
-124     : ['transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key1,value2)']
-125     : -------------------1-----1--
-125     : ['transfer_msg(node0,key1,value0)', 'transfer_msg(node1,key1,value0)']
-num_forall :   5
-num_exists :   0
-num_literals : 4
-quantified form : (forall K0, N0, N1, V0, V1 . (~transfer_msg(N0, K0, V0) | ~transfer_msg(N1, K0, V1) | ((N0 = N1) & (V0 = V1))))
-qcost : 9
-
-
 === Orbit 3 =====================
-size : 2
+size : 12
 num_suborbits: 1
-126 (*) : -------------1-1------------
-126     : ['owner(node0,key1)', 'owner(node1,key1)']
-127     : ------------1-1-------------
-127     : ['owner(node0,key0)', 'owner(node1,key0)']
-num_forall :   1
-num_exists :   1
-num_literals : 1
-quantified form : (forall K0 . (exists N0 . ~owner(N0, K0)))
-qcost : 3
+126 (*) : ----------1----0------------
+126     : ['table(node1,key1,value1)', '~owner(node1,key1)']
+127     : -----------1---0------------
+127     : ['table(node1,key1,value2)', '~owner(node1,key1)']
+128     : ---------1-----0------------
+128     : ['table(node1,key1,value0)', '~owner(node1,key1)']
+129     : ----1--------0--------------
+129     : ['table(node0,key1,value1)', '~owner(node0,key1)']
+130     : -----1-------0--------------
+130     : ['table(node0,key1,value2)', '~owner(node0,key1)']
+131     : ---1---------0--------------
+131     : ['table(node0,key1,value0)', '~owner(node0,key1)']
+132     : -------1------0-------------
+132     : ['table(node1,key0,value1)', '~owner(node1,key0)']
+133     : --------1-----0-------------
+133     : ['table(node1,key0,value2)', '~owner(node1,key0)']
+134     : ------1-------0-------------
+134     : ['table(node1,key0,value0)', '~owner(node1,key0)']
+135     : -1----------0---------------
+135     : ['table(node0,key0,value1)', '~owner(node0,key0)']
+136     : --1---------0---------------
+136     : ['table(node0,key0,value2)', '~owner(node0,key0)']
+137     : 1-----------0---------------
+137     : ['table(node0,key0,value0)', '~owner(node0,key0)']
+num_forall :   3
+num_exists :   0
+num_literals : 2
+quantified form : (forall V0, N0, K0 . (owner(N0, K0) | ~table(N0, K0, V0)))
+qcost : 5
 
 
 === Orbit 4 =====================
 size : 12
 num_suborbits: 1
-128 (*) : -----1---------1------------
-128     : ['owner(node1,key1)', 'table(node0,key1,value2)']
-129     : ----1----------1------------
-129     : ['owner(node1,key1)', 'table(node0,key1,value1)']
-130     : ---1-----------1------------
-130     : ['owner(node1,key1)', 'table(node0,key1,value0)']
-131     : -----------1-1--------------
-131     : ['owner(node0,key1)', 'table(node1,key1,value2)']
-132     : ----------1--1--------------
-132     : ['owner(node0,key1)', 'table(node1,key1,value1)']
-133     : ---------1---1--------------
-133     : ['owner(node0,key1)', 'table(node1,key1,value0)']
-134     : --1-----------1-------------
-134     : ['owner(node1,key0)', 'table(node0,key0,value2)']
-135     : -1------------1-------------
-135     : ['owner(node1,key0)', 'table(node0,key0,value1)']
-136     : 1-------------1-------------
-136     : ['owner(node1,key0)', 'table(node0,key0,value0)']
-137     : --------1---1---------------
-137     : ['owner(node0,key0)', 'table(node1,key0,value2)']
-138     : -------1----1---------------
-138     : ['owner(node0,key0)', 'table(node1,key0,value1)']
-139     : ------1-----1---------------
-139     : ['owner(node0,key0)', 'table(node1,key0,value0)']
+138 (*) : ----------1--1--------------
+138     : ['owner(node0,key1)', 'table(node1,key1,value1)']
+139     : -----------1-1--------------
+139     : ['owner(node0,key1)', 'table(node1,key1,value2)']
+140     : ---------1---1--------------
+140     : ['owner(node0,key1)', 'table(node1,key1,value0)']
+141     : ----1----------1------------
+141     : ['owner(node1,key1)', 'table(node0,key1,value1)']
+142     : -----1---------1------------
+142     : ['owner(node1,key1)', 'table(node0,key1,value2)']
+143     : ---1-----------1------------
+143     : ['owner(node1,key1)', 'table(node0,key1,value0)']
+144     : -------1----1---------------
+144     : ['owner(node0,key0)', 'table(node1,key0,value1)']
+145     : --------1---1---------------
+145     : ['owner(node0,key0)', 'table(node1,key0,value2)']
+146     : ------1-----1---------------
+146     : ['owner(node0,key0)', 'table(node1,key0,value0)']
+147     : -1------------1-------------
+147     : ['owner(node1,key0)', 'table(node0,key0,value1)']
+148     : --1-----------1-------------
+148     : ['owner(node1,key0)', 'table(node0,key0,value2)']
+149     : 1-------------1-------------
+149     : ['owner(node1,key0)', 'table(node0,key0,value0)']
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : (forall V0, N0, N1, K0 . (~owner(N1, K0) | ~table(N0, K0, V0) | (N0 = N1)))
+quantified form : (forall V0, N0, N1, K0 . (~owner(N0, K0) | ~table(N1, K0, V0) | (N0 = N1)))
 qcost : 7
 
 
 === Orbit 5 =====================
 size : 30
 num_suborbits: 3
-140 (*) : ---------1-1----------------
-140     : ['table(node1,key1,value0)', 'table(node1,key1,value2)']
-141     : ---------11-----------------
-141     : ['table(node1,key1,value0)', 'table(node1,key1,value1)']
-142     : ----------11----------------
-142     : ['table(node1,key1,value1)', 'table(node1,key1,value2)']
-143     : ---1-1----------------------
-143     : ['table(node0,key1,value0)', 'table(node0,key1,value2)']
-144     : ---11-----------------------
-144     : ['table(node0,key1,value0)', 'table(node0,key1,value1)']
-145     : ----11----------------------
-145     : ['table(node0,key1,value1)', 'table(node0,key1,value2)']
-146     : ------1-1-------------------
-146     : ['table(node1,key0,value0)', 'table(node1,key0,value2)']
-147     : ------11--------------------
-147     : ['table(node1,key0,value0)', 'table(node1,key0,value1)']
-148     : -------11-------------------
-148     : ['table(node1,key0,value1)', 'table(node1,key0,value2)']
-149     : 1-1-------------------------
-149     : ['table(node0,key0,value0)', 'table(node0,key0,value2)']
-150     : 11--------------------------
-150     : ['table(node0,key0,value0)', 'table(node0,key0,value1)']
-151     : -11-------------------------
-151     : ['table(node0,key0,value1)', 'table(node0,key0,value2)']
-164 (*) : -----1-----1----------------
-164     : ['table(node0,key1,value2)', 'table(node1,key1,value2)']
-165     : ----1-----1-----------------
-165     : ['table(node0,key1,value1)', 'table(node1,key1,value1)']
-166     : ---1-----1------------------
-166     : ['table(node0,key1,value0)', 'table(node1,key1,value0)']
-167     : --1-----1-------------------
-167     : ['table(node0,key0,value2)', 'table(node1,key0,value2)']
-168     : -1-----1--------------------
-168     : ['table(node0,key0,value1)', 'table(node1,key0,value1)']
-169     : 1-----1---------------------
-169     : ['table(node0,key0,value0)', 'table(node1,key0,value0)']
-170 (*) : ----1------1----------------
-170     : ['table(node0,key1,value1)', 'table(node1,key1,value2)']
-171     : -----1----1-----------------
-171     : ['table(node0,key1,value2)', 'table(node1,key1,value1)']
-172     : ---1-------1----------------
-172     : ['table(node0,key1,value0)', 'table(node1,key1,value2)']
-173     : -----1---1------------------
-173     : ['table(node0,key1,value2)', 'table(node1,key1,value0)']
-174     : ---1------1-----------------
-174     : ['table(node0,key1,value0)', 'table(node1,key1,value1)']
-175     : ----1----1------------------
-175     : ['table(node0,key1,value1)', 'table(node1,key1,value0)']
-176     : -1------1-------------------
-176     : ['table(node0,key0,value1)', 'table(node1,key0,value2)']
-177     : --1----1--------------------
-177     : ['table(node0,key0,value2)', 'table(node1,key0,value1)']
-178     : 1-------1-------------------
-178     : ['table(node0,key0,value0)', 'table(node1,key0,value2)']
-179     : --1---1---------------------
-179     : ['table(node0,key0,value2)', 'table(node1,key0,value0)']
-180     : 1------1--------------------
-180     : ['table(node0,key0,value0)', 'table(node1,key0,value1)']
-181     : -1----1---------------------
-181     : ['table(node0,key0,value1)', 'table(node1,key0,value0)']
+150 (*) : ----1-----1-----------------
+150     : ['table(node0,key1,value1)', 'table(node1,key1,value1)']
+151     : -----1-----1----------------
+151     : ['table(node0,key1,value2)', 'table(node1,key1,value2)']
+152     : ---1-----1------------------
+152     : ['table(node0,key1,value0)', 'table(node1,key1,value0)']
+153     : -1-----1--------------------
+153     : ['table(node0,key0,value1)', 'table(node1,key0,value1)']
+154     : --1-----1-------------------
+154     : ['table(node0,key0,value2)', 'table(node1,key0,value2)']
+155     : 1-----1---------------------
+155     : ['table(node0,key0,value0)', 'table(node1,key0,value0)']
+156 (*) : ----------11----------------
+156     : ['table(node1,key1,value1)', 'table(node1,key1,value2)']
+157     : ---------1-1----------------
+157     : ['table(node1,key1,value0)', 'table(node1,key1,value2)']
+158     : ---------11-----------------
+158     : ['table(node1,key1,value0)', 'table(node1,key1,value1)']
+159     : ----11----------------------
+159     : ['table(node0,key1,value1)', 'table(node0,key1,value2)']
+160     : ---1-1----------------------
+160     : ['table(node0,key1,value0)', 'table(node0,key1,value2)']
+161     : ---11-----------------------
+161     : ['table(node0,key1,value0)', 'table(node0,key1,value1)']
+162     : -------11-------------------
+162     : ['table(node1,key0,value1)', 'table(node1,key0,value2)']
+163     : ------1-1-------------------
+163     : ['table(node1,key0,value0)', 'table(node1,key0,value2)']
+164     : ------11--------------------
+164     : ['table(node1,key0,value0)', 'table(node1,key0,value1)']
+165     : -11-------------------------
+165     : ['table(node0,key0,value1)', 'table(node0,key0,value2)']
+166     : 1-1-------------------------
+166     : ['table(node0,key0,value0)', 'table(node0,key0,value2)']
+167     : 11--------------------------
+167     : ['table(node0,key0,value0)', 'table(node0,key0,value1)']
+168 (*) : ---1------1-----------------
+168     : ['table(node0,key1,value0)', 'table(node1,key1,value1)']
+169     : ---1-------1----------------
+169     : ['table(node0,key1,value0)', 'table(node1,key1,value2)']
+170     : ----1----1------------------
+170     : ['table(node0,key1,value1)', 'table(node1,key1,value0)']
+171     : ----1------1----------------
+171     : ['table(node0,key1,value1)', 'table(node1,key1,value2)']
+172     : -----1---1------------------
+172     : ['table(node0,key1,value2)', 'table(node1,key1,value0)']
+173     : -----1----1-----------------
+173     : ['table(node0,key1,value2)', 'table(node1,key1,value1)']
+174     : 1------1--------------------
+174     : ['table(node0,key0,value0)', 'table(node1,key0,value1)']
+175     : 1-------1-------------------
+175     : ['table(node0,key0,value0)', 'table(node1,key0,value2)']
+176     : -1----1---------------------
+176     : ['table(node0,key0,value1)', 'table(node1,key0,value0)']
+177     : -1------1-------------------
+177     : ['table(node0,key0,value1)', 'table(node1,key0,value2)']
+178     : --1---1---------------------
+178     : ['table(node0,key0,value2)', 'table(node1,key0,value0)']
+179     : --1----1--------------------
+179     : ['table(node0,key0,value2)', 'table(node1,key0,value1)']
 num_forall :   5
 num_exists :   0
 num_literals : 4
@@ -400,36 +420,16 @@ qcost : 9
 
 
 === Orbit 6 =====================
-size : 12
+size : 2
 num_suborbits: 1
-152 (*) : -----------1---0------------
-152     : ['table(node1,key1,value2)', '~owner(node1,key1)']
-153     : ----------1----0------------
-153     : ['table(node1,key1,value1)', '~owner(node1,key1)']
-154     : ---------1-----0------------
-154     : ['table(node1,key1,value0)', '~owner(node1,key1)']
-155     : -----1-------0--------------
-155     : ['table(node0,key1,value2)', '~owner(node0,key1)']
-156     : ----1--------0--------------
-156     : ['table(node0,key1,value1)', '~owner(node0,key1)']
-157     : ---1---------0--------------
-157     : ['table(node0,key1,value0)', '~owner(node0,key1)']
-158     : --------1-----0-------------
-158     : ['table(node1,key0,value2)', '~owner(node1,key0)']
-159     : -------1------0-------------
-159     : ['table(node1,key0,value1)', '~owner(node1,key0)']
-160     : ------1-------0-------------
-160     : ['table(node1,key0,value0)', '~owner(node1,key0)']
-161     : --1---------0---------------
-161     : ['table(node0,key0,value2)', '~owner(node0,key0)']
-162     : -1----------0---------------
-162     : ['table(node0,key0,value1)', '~owner(node0,key0)']
-163     : 1-----------0---------------
-163     : ['table(node0,key0,value0)', '~owner(node0,key0)']
-num_forall :   3
-num_exists :   0
-num_literals : 2
-quantified form : (forall V0, N0, K0 . (owner(N0, K0) | ~table(N0, K0, V0)))
-qcost : 5
+180 (*) : -------------1-1------------
+180     : ['owner(node0,key1)', 'owner(node1,key1)']
+181     : ------------1-1-------------
+181     : ['owner(node0,key0)', 'owner(node1,key0)']
+num_forall :   1
+num_exists :   1
+num_literals : 1
+quantified form : (forall K0 . (exists N0 . ~owner(N0, K0)))
+qcost : 3
 
 

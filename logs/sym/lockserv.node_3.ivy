@@ -67,13 +67,13 @@ invariant [safety] holds_lock(N1) & holds_lock(N2) -> N1 = N2
 #invariant [manual_7] ~(holds_lock(N) & server_holds_lock)
 #invariant [manual_8] ~(unlock_msg(N) & server_holds_lock)
 
-invariant [invar_0] (forall N0 . (~server_holds_lock | ~grant_msg(N0))) # qcost: 3
-invariant [invar_1] (forall N0, N1 . (~holds_lock(N0) | ~grant_msg(N1))) # qcost: 4
-invariant [invar_2] (forall N0, N1 . (~unlock_msg(N0) | ~grant_msg(N1))) # qcost: 4
-invariant [invar_3] (forall N0, N1 . ((N0 = N1) | ~grant_msg(N0) | ~grant_msg(N1))) # qcost: 5
-invariant [invar_4] (forall N0 . (~holds_lock(N0) | ~server_holds_lock)) # qcost: 3
-invariant [invar_5] (forall N0, N1 . (~holds_lock(N0) | ~holds_lock(N1) | (N0 = N1))) # qcost: 5
-invariant [invar_6] (forall N0, N1 . (~holds_lock(N0) | ~unlock_msg(N1))) # qcost: 4
-invariant [invar_7] (forall N0 . (~unlock_msg(N0) | ~server_holds_lock)) # qcost: 3
-invariant [invar_8] (forall N0, N1 . ((N0 = N1) | ~unlock_msg(N0) | ~unlock_msg(N1))) # qcost: 5
+invariant [invar_0] (forall N0, N1 . (~grant_msg(N0) | ~holds_lock(N1))) # qcost: 4
+invariant [invar_1] (forall N0 . (~grant_msg(N0) | ~server_holds_lock)) # qcost: 3
+invariant [invar_2] (forall N0, N1 . (~grant_msg(N0) | ~unlock_msg(N1))) # qcost: 4
+invariant [invar_3] (forall N0, N1 . (~grant_msg(N0) | ~grant_msg(N1) | (N0 = N1))) # qcost: 5
+invariant [invar_4] (forall N0, N1 . (~unlock_msg(N0) | ~holds_lock(N1))) # qcost: 4
+invariant [invar_5] (forall N0 . (~server_holds_lock | ~unlock_msg(N0))) # qcost: 3
+invariant [invar_6] (forall N0 . (~server_holds_lock | ~holds_lock(N0))) # qcost: 3
+invariant [invar_7] (forall N0, N1 . (~holds_lock(N1) | (N0 = N1) | ~holds_lock(N0))) # qcost: 5
+invariant [invar_8] (forall N0, N1 . (~unlock_msg(N1) | (N0 = N1) | ~unlock_msg(N0))) # qcost: 5
 invariant [invar_9] (server_holds_lock | (exists N0 . (grant_msg(N0) | holds_lock(N0) | unlock_msg(N0)))) # qcost: 5

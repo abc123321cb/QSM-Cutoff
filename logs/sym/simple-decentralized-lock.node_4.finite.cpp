@@ -603,14 +603,14 @@ int simple_decentralized_lock__node_4__finite::___ivy_choose(int rng,const char 
 struct ivy_nondet_except {}; // lauren-yrluo added
 void simple_decentralized_lock__node_4__finite::__init(){
         bool __tmp0[4][4];
-        for (int Dst = 0; Dst < 4; Dst++) {
-            for (int Src = 0; Src < 4; Src++) {
-                __tmp0[Dst][Src] = false;
+        for (int Src = 0; Src < 4; Src++) {
+            for (int Dst = 0; Dst < 4; Dst++) {
+                __tmp0[Src][Dst] = false;
             }
         }
-        for (int Dst = 0; Dst < 4; Dst++) {
-            for (int Src = 0; Src < 4; Src++) {
-                message[Src][Dst] = __tmp0[Dst][Src];
+        for (int Src = 0; Src < 4; Src++) {
+            for (int Dst = 0; Dst < 4; Dst++) {
+                message[Src][Dst] = __tmp0[Src][Dst];
             }
         }
         bool __tmp1[4];

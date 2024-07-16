@@ -36,7 +36,7 @@ invariant [safety] sent(S,D) & internal(D) -> exists I. internal(I) & sent(I,S)
 #invariant [manual_1] allowed_in(D) -> exists I. internal(I) & sent(I,D)
 
 invariant [invar_0] (forall N0 . ~sent(N0, N0)) # qcost: 2
-invariant [invar_11] (forall N0 . (~allowed_in(N0) | (exists N1 . (~(N0 = N1) & sent(N1, N0))))) # qcost: 5
+invariant [invar_15] (forall N1 . (~allowed_in(N1) | (exists N0 . (~(N1 = N0) & sent(N0, N1))))) # qcost: 5
 invariant [invar_1] (forall N0 . (~internal(N0) | ~allowed_in(N0))) # qcost: 3
-invariant [invar_2] (forall N0, N1 . (internal(N1) | ~sent(N1, N0) | internal(N0) | (N0 = N1))) # qcost: 6
-invariant [invar_12] (forall N0, N1 . (allowed_in(N1) | (N0 = N1) | allowed_in(N0) | ~sent(N0, N1))) # qcost: 6
+invariant [invar_9] (forall N0, N1 . (internal(N0) | (N0 = N1) | internal(N1) | ~sent(N0, N1))) # qcost: 6
+invariant [invar_5] (forall N0, N1 . (allowed_in(N1) | (N0 = N1) | allowed_in(N0) | ~sent(N0, N1))) # qcost: 6

@@ -607,14 +607,14 @@ void firewall__node_4__finite::__init(){
     const int max_qrm_solution_count = 5;
     if (qrm_solution_count == 0){
         bool __tmp0[4][4];
-        for (int S = 0; S < 4; S++) {
-            for (int D = 0; D < 4; D++) {
-                __tmp0[S][D] = false;
+        for (int D = 0; D < 4; D++) {
+            for (int S = 0; S < 4; S++) {
+                __tmp0[D][S] = false;
             }
         }
-        for (int S = 0; S < 4; S++) {
-            for (int D = 0; D < 4; D++) {
-                sent[S][D] = __tmp0[S][D];
+        for (int D = 0; D < 4; D++) {
+            for (int S = 0; S < 4; S++) {
+                sent[S][D] = __tmp0[D][S];
             }
         }
         bool __tmp1[4];
