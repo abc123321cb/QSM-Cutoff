@@ -232,7 +232,7 @@ class Protocol():
         self._sorts_permutations = list(product(*all_sorts_permutations))
 
     def write_reachability(self) -> None:
-        filename = self.options.instance_name + '.' + self.options.instance_suffix + '.pctl'
+        filename = self.options.instance_name + '.' + self.options.instance_suffix + '.reach'
         outF = open(filename, "w")
         for line in self.lines:
             outF.write(line+'\n')
