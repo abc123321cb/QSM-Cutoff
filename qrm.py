@@ -27,10 +27,10 @@ def usage ():
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
-    print('-r           write reachable states to FILE.ptcl (default: off)')
+    print('-r           write reachable states to FILE.reach (default: off)')
     print('-p           write prime orbits to FILE.pis (default: off)')
     print('-q           write quantified prime orbits to FILE.qpis (default: off)')
-    print('-w           write .ptcl, .pis, .qpis, equivalent to options -r -p -q (default: off)')
+    print('-w           write .reach, .pis, .qpis, equivalent to options -r -p -q (default: off)')
     print('-h           usage')
 
 def usage_and_exit():
