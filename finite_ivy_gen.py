@@ -441,6 +441,7 @@ class FiniteIvyGenerator():
         FiniteIvyGenerator._link_library()
 
     def clean():
+        os.system('rm -f *.o *_wrap* *.pyc *.pyo _ivy_exec.so ivy_exec.py')
         mv_cmd = f'mv {FiniteIvyGenerator.file_name_prefix}* {FiniteIvyGenerator.path_name}'
         os.system(mv_cmd)
-        os.system('rm -f *.o *_wrap* *.pyc *.pyo _ivy_exec.so ivy_exec.py')
+        
