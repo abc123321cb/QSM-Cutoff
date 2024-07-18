@@ -1,10 +1,10 @@
 from typing import List
 from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
-from frontend.utils import *
 from transition import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
 from util import FormulaPrinter as printer
+from util import FormulaUtility as futil
 from verbose import *
 from more_itertools import set_partitions
 from itertools import product, permutations
@@ -37,7 +37,7 @@ def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
         var2qvar[var] = qvar
 
     qstate = state.simple_substitute(var2qvar)
-    qterms = flatten_cube(qstate)
+    qterms = futil.flatten_cube(qstate)
     return qterms
 
 def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):

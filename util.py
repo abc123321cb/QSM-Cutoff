@@ -137,7 +137,6 @@ class FormulaPrinter():
 
 from pysmt.shortcuts import Not
 class FormulaUtility():
-
     @staticmethod
     def flatten_or(cube):
         flat = set()
@@ -168,6 +167,20 @@ class FormulaUtility():
         else:
             flat.add(formula)
         return flat 
+
+    def flatten_cube(cube):
+        flat = set()
+        cube_flat = cube
+        if cube_flat.is_exists():
+            cube_flat = cube_flat.args()[0]
+
+        if (cube_flat.is_and()):
+            for arg in cube_flat.args():
+                for flat_arg in FormulaUtility.flatten_cube(arg):
+                    flat.add(flat_arg)
+        else:
+            flat.add(cube_flat)
+        return flat
 
 def get_instances_from_yaml(yaml_name):
     import yaml
