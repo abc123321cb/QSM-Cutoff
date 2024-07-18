@@ -285,9 +285,8 @@ class TransitionSystem(SmtLibParser):
                 self.pretty_set_subst[dep_set] = self.get_pretty_set(set_sort, set_id)
         return self.pretty_set_subst
 
-    def get_dependent_axioms(self):
+    def get_dependent_axioms_fmla(self):
         axioms = []
-        subst  = self.get_pretty_set_substitution_map()
         for set_sort in self.dep_types.keys():
             dep_relation = self.get_dependent_relation(set_sort)
             dep_sets     = self.get_dependent_sets(set_sort)
@@ -299,7 +298,14 @@ class TransitionSystem(SmtLibParser):
                     dep_symbol = Function(dep_relation, args)
                     if elem not in elems_in_set:
                         dep_symbol = Not(dep_symbol)
-                    axioms.append(printer.pretty_print_str(dep_symbol, subst))
+                    axioms.append(dep_symbol)
+        return axioms
+
+    def get_dependent_axioms(self):
+        subst  = self.get_pretty_set_substitution_map()
+        axioms = self.get_dependent_axioms_fmla() 
+        for i, axiom in enumerate(axioms):
+            axioms[i] = printer.pretty_print_str(axiom, subst)
         return axioms
 
 def get_transition_system(options, vmt_filename): 
