@@ -106,14 +106,6 @@ def get_options(ivy_name, args):
             usage_and_exit()
     return options
 
-def get_instances(options: QrmOptions):
-    instances = {} 
-    if options.mode == Mode.ivy:
-        instances[options.ivy_filename] = [options.size_str]
-    else:
-        instances = get_instances_from_yaml(options.yaml_filename)
-    return instances
-
 def instance_start(options, ivy_name):
     vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
     time_start = get_time(options)
@@ -156,7 +148,7 @@ def qrm(ivy_name, args):
     # step2: generate prime orbits
     step_start(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options) 
-    prime_orbits.symmetry_aware_enumerate(protocol)               
+    prime_orbits.symmetry_aware_enumerate(tran_sys, protocol)               
     time_stamp = step_end(options, time_start, time_stamp)
 
     # step3: quantifier inference
