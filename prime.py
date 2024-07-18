@@ -4,6 +4,8 @@ from pysat.solvers import Cadical153 as SatSolver
 from frontend.utils import count_quantifiers_and_literals
 from protocol import Protocol 
 from dualrail import DualRailNegation
+from transition import TransitionSystem
+from prime_check import PrimeChecker
 from util import QrmOptions
 from util import FormulaPrinter as printer
 from verbose import *
@@ -18,17 +20,10 @@ def make_key(values: List[str], protocol : Protocol) -> str:
     predicates.sort()
     return str(predicates)
 
-def get_cardinality(values: List[str]):
-    card = 0
-    for val in values:
-        if val == '1' or val == '0':
-            card += 1
-    return card
-
 class Prime():
     # static members
-    count  : int = 0 
-    _atoms : List[str]
+    count      : int = 0 
+    _atoms_str   = []
 
     def __init__(self, values: List[str], is_sub_repr = False) -> None:
         self.values   : List[str] = values
@@ -48,18 +43,19 @@ class Prime():
         literals = []
         for (atom_id, val) in enumerate(self.values):
             if val == '1':
-                literals.append(Prime._atoms[atom_id])
+                literals.append(Prime._atoms_str[atom_id])
             elif val == '0':
-                literals.append('~'+Prime._atoms[atom_id])
+                literals.append('~'+Prime._atoms_str[atom_id])
         literals.sort()
         return f'{str(literals)}'
 
     @staticmethod
-    def setup_atoms(protocol : Protocol) -> None:
-        Prime._atoms    = protocol.atoms
+    def set_atoms(atoms_str) -> None:
+        Prime._atoms_str  = atoms_str
 
     def reset() -> None:
         Prime.count = 0
+        Prime._atoms_str   = []
 
 class PrimeOrbit():
     # static members
@@ -136,6 +132,8 @@ class PrimeOrbits():
         outF.close()
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
+        if self.prime_checker.is_definition_prime(values):
+            return
         key = make_key(values,protocol)
         if key in self._orbit_hash:
             self._sub_orbit_count += 1
@@ -158,14 +156,13 @@ class PrimeOrbits():
             block_clauses.append(clause)
         return block_clauses
 
-    def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
-        # setup
-        Prime.setup_atoms(protocol)
-        atom_num = protocol.atom_num
+    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, protocol: Protocol) -> None:
+        Prime.set_atoms(atoms_str=protocol.atoms)
+        self.prime_checker = PrimeChecker(atoms_str=protocol.atoms, atoms_fmla=protocol.atoms_fmla, tran_sys=tran_sys)
         # emumerate prime orbits
         self._formula = DualRailNegation(protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
-            for ubound in range(0,atom_num+1):
+            for ubound in range(0,protocol.atom_num+1):
                 assumptions = self._formula.assume(ubound)
                 result = sat_solver.solve(assumptions)
                 while (result):
