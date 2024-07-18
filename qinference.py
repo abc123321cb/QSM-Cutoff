@@ -1,10 +1,10 @@
 from typing import List
 from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
-from frontend.utils import *
 from transition import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
 from util import FormulaPrinter as printer
+from util import FormulaUtility as futil
 from verbose import *
  
 
@@ -191,7 +191,7 @@ class QInference():
         if self.qstate.is_exists(): 
             self._instantiate_qstate()
         self.qstate = self.qstate.simple_substitute(self.var2qvar)
-        self.qterms = flatten_cube(self.qstate)
+        self.qterms = futil.flatten_cube(self.qstate)
         vprint_title(self.options, 'set_qstate', 5)
         vprint(self.options, f'qstate: {printer.pretty_print_str(self.qstate)}', 5)
         vprint(self.options, f'qterms: {printer.pretty_print_set(self.qterms)}', 5)
@@ -447,7 +447,7 @@ class QInference():
         subst = {}
         subst[self.norm_qvar] = first_qvar 
         renamed_state = norm_state.simple_substitute(subst)
-        return flatten_cube(renamed_state)
+        return futil.flatten_cube(renamed_state)
 
     def _replace_qvars_with_first_qvar(self, first_qvar):
         for terms in self.qvar2terms.values():
@@ -677,7 +677,7 @@ class QInference():
             for qvar in qvars:
                 self.qvars_set.add(qvar)
             qstate = qstate.args()[0]
-        self.qterms = flatten_and(qstate)
+        self.qterms = futil.flatten_and(qstate)
 
     def _is_propagatable2(self, eq_term):
         lhs, rhs = self._split_eq(eq_term)
