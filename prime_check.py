@@ -1,4 +1,5 @@
 import re
+import z3
 from itertools import product
 from pysmt.shortcuts import Or, And, Not, is_unsat
 from pysmt.logics import QF_UF
@@ -60,7 +61,7 @@ class PrimeChecker():
         pretty_subst = self._tran_sys.get_pretty_set_substitution_map()
         instantiated_def_map = {}
         for def_var, def_fmla in def_map.items():
-            if not def_var.startswith('__'):
+            if def_var.startswith('__'):
                 assert(def_fmla.is_forall())
                 def_prefix_vars = def_fmla.quantifier_vars()
                 def_matrix      = def_fmla.arg(0)
@@ -95,4 +96,8 @@ class PrimeChecker():
         literals = self.get_literals(values)
         fmlas    = self._axioms_fmla + literals
         check_prime_fmla = And(fmlas)
-        return is_unsat(check_prime_fmla, solver_name='z3', logic=QF_UF)
+        res = None
+        res = is_unsat(check_prime_fmla, solver_name='z3', logic=QF_UF)
+        if res != None:
+            return res
+        return False
