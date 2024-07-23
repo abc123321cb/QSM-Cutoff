@@ -15,16 +15,16 @@ class FiniteIvyExecutor():
         self.ivy_exec.ivy_exec_init()
 
         dfs_state_vars  = instantiator.dfs_state_vars
-        dfs_global_vars = instantiator.dfs_global_vars
+        dfs_axiom_vars  = instantiator.dfs_axiom_vars
         ivy_state_vars  = instantiator.ivy_state_vars
 
         self.get_dfs_state_vars  = self.ivy_exec.StrVector(len(dfs_state_vars)) 
         for i, state_var in enumerate(dfs_state_vars):
             self.get_dfs_state_vars[i] = 'get_bool_' + state_var 
         
-        self.get_dfs_global_vars = self.ivy_exec.StrVector(len(dfs_global_vars)) 
-        for i, global_var in enumerate(dfs_global_vars):
-            self.get_dfs_global_vars[i] = 'get_bool_' + global_var 
+        self.get_dfs_axiom_vars = self.ivy_exec.StrVector(len(dfs_axiom_vars)) 
+        for i, axiom_var in enumerate(dfs_axiom_vars):
+            self.get_dfs_axiom_vars[i] = 'get_bool_' + axiom_var 
 
         self.get_ivy_state_vars = self.ivy_exec.StrVector(len(ivy_state_vars)) 
         for i, state_var in enumerate(ivy_state_vars):
@@ -40,9 +40,9 @@ class FiniteIvyExecutor():
         result = self._decode_ivy_state(result)
         return result
 
-    def get_dfs_global_state(self)  -> str:
+    def get_dfs_axiom_state(self)  -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
-        self.ivy_exec.ivy_exec_run_actions(self.get_dfs_global_vars)
+        self.ivy_exec.ivy_exec_run_actions(self.get_dfs_axiom_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
         result = self._decode_ivy_state(result)
         return result

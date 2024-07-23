@@ -1,9 +1,9 @@
-from typing import List
-from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
-from transition import TransitionSystem
+from ivy import ivy_logic as il
+from ivy import ivy_logic_utils as ilu
+from ivy import logic_util as lu
+from transition_system import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
-from util import FormulaPrinter as printer
 from util import FormulaUtility as futil
 from verbose import *
  
@@ -20,8 +20,7 @@ class QInference():
         # original
         self.prime      = prime
         self.is_orbit_size_1 = is_orbit_size_1
-        self.repr_state = TRUE()
-        self.relations  = []
+        self.repr_state = il.And()
         self.vars       = []
         self.full_occur_depending_sort = set() 
         # mapping
@@ -32,7 +31,7 @@ class QInference():
         self.ivars_set  = set()
         # quantified
         self.qvars_set  = set()
-        self.qstate     = TRUE()
+        self.qstate     = il.And() 
         self.qterms     = set()
         self.neq_constraints    = dict()
         self.full_occur_sorts   = []
@@ -47,7 +46,7 @@ class QInference():
         self.num_mult_class   = 0 
         self.num_class        = 0 
         # inferred, change for each sort in full_occur_sorts
-        self.infr_state = TRUE() 
+        self.infr_state = il.And()
         self.infr_terms = set()
         self.infr_qvars_set = set()
         # eq propagation
@@ -57,41 +56,6 @@ class QInference():
         vprint_title(self.options, 'QInference', 5)
         vprint(self.options, f'prime: {str(self.prime)}', 5)
 
-    def _add_member_literals_for_dependent_sorts(self, atoms):
-        literals = []
-        args = set()
-        for atom in atoms:
-            atom_args = atom.args()
-            if atom.is_equals():
-                atom_args = [atom_args[1]]
-            for arg in atom_args:
-                args.add(arg)
-
-        for arg in args:
-            if arg.get_type() in QInference.tran_sys.dep_types:
-                set_sort = arg.get_type()
-                set_id   = int(str(arg)[-2])
-                member_func  = QInference.tran_sys.get_dependent_relation(set_sort)
-                elements     = QInference.tran_sys.get_dependent_elements(set_sort)
-                elems_in_set = QInference.tran_sys.get_dependent_elements_in_set(set_sort, set_id)
-                member_count = 0
-                for elem in elements:
-                    if elem in args:
-                        member_args = [elem, arg]
-                        member_symb = Function(member_func, member_args)
-                        if elem in elems_in_set:
-                            literals.append(member_symb)
-                            member_count += 1
-                        else:
-                            literals.append(Not(member_symb))
-                if member_count == len(elems_in_set):
-                    elem_sort = QInference.tran_sys.get_dependent_element_sort(set_sort)
-                    self.full_occur_depending_sort.add(elem_sort)
-        vprint_title(self.options, '_add_member_literals_for_dependent_sorts', 5)
-        vprint(self.options, f'member literals: {literals}', 5)
-        vprint(self.options, f'fully occuring dependent children sorts: {self.full_occur_depending_sort}', 5)
-        return literals
-
     def set_repr_state(self):
         values = self.prime.values
         literals = []
@@ -99,17 +63,16 @@ class QInference():
         for atom_id, atom in enumerate(QInference.atoms):
             val = values[atom_id]
             if val == '0':
-                literals.append(Not(atom))
+                literals.append(il.Not(atom))
                 atoms.append(atom)
             elif val == '1':
                 literals.append(atom)
                 atoms.append(atom)
             else:
                 assert(val == '-')
-        literals += self._add_member_literals_for_dependent_sorts(atoms)
-        self.repr_state =  And(literals) if len(literals) != 0 else TRUE()
+        self.repr_state =  il.And(*literals)
         vprint_title(self.options, 'set_repr_state', 5)
-        vprint(self.options, f'repr_state: {printer.pretty_print_str(self.repr_state)}', 5)
+        vprint(self.options, f'repr_state: {str(self.repr_state)}', 5)
 
     def _get_used_qvars(self, sort):
         if not sort in self.sort2qvars:         
@@ -118,8 +81,9 @@ class QInference():
         return qvars
 
     def _get_next_unused_qvar(self, sort, qvars):
-        qvar_id = len(qvars)
-        qvar    = QInference.tran_sys.sort2qvars[sort][qvar_id]
+        qvar_id   = len(qvars)
+        qvar_name = sort.name[0].upper() + str(qvar_id)
+        qvar      = il.Variable(qvar_name, sort) 
         return qvar
 
     def record_sort_occurrence_in_vars(self):
@@ -127,8 +91,8 @@ class QInference():
         # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
         vprint_title(self.options, 'record_sort_occurrence_in_vars' , 5)
         for var in sorted(self.vars, key=str):
-            sort = var.constant_type()
-            if not sort in QInference.tran_sys.sort2qvars:
+            sort = var.sort
+            if not sort in QInference.tran_sys.sort2consts:
                 continue
             qvars  = self._get_used_qvars(sort)
             qvar   = self._get_next_unused_qvar(sort, qvars) 
@@ -147,7 +111,7 @@ class QInference():
 
     def record_fully_occuring_sorts(self):
         for sort, qvars in self.sort2qvars.items():
-            sort_size = len(QInference.tran_sys.sort2qvars[sort])
+            sort_size = len(QInference.tran_sys.sort2consts[sort])
             if  (((len(qvars) >= min_size) and (len(qvars) == sort_size)) 
                 or sort in self.full_occur_depending_sort):
                 self.full_occur_sorts.append([sort, qvars])
@@ -160,9 +124,9 @@ class QInference():
             self.neq_constraints[sort] = []
             for i in range(len(qvars) - 1):
                 for j in range(i+1, len(qvars)):
-                    neq = Not(EqualsOrIff(qvars[i], qvars[j]))
+                    neq = il.Not(il.Equals(qvars[i], qvars[j]))
                     self.neq_constraints[sort].append(neq)
-                    vprint(self.options, printer.pretty_print_str(neq), 5)
+                    vprint(self.options, str(neq), 5)
 
     def _get_instantiated_vars(self, sort):
         if sort not in self.sort2ivars:
@@ -172,12 +136,12 @@ class QInference():
     def _create_inst_var(self, sort, ivars):
         ivar_id = len(ivars)
         name = str(sort) + ':i' + str(ivar_id)
-        return Symbol(name, sort)
+        return il.Symbol(name, sort)
 
     def _instantiate_qstate(self):
         for var in self.qstate.quantifier_vars():
             if var not in self.var2qvar:
-                sort = var.symbol_type()
+                sort = var.sort
                 ivars = self._get_instantiated_vars(sort)
                 ivar  = self._create_inst_var(sort, ivars)
                 ivars.append(ivar)
@@ -188,13 +152,13 @@ class QInference():
 
     def set_qstate(self):
         self.qstate = self.repr_state 
-        if self.qstate.is_exists(): 
+        if il.is_exists(self.qstate): 
             self._instantiate_qstate()
-        self.qstate = self.qstate.simple_substitute(self.var2qvar)
+        self.qstate = il.substitute(self.qstate, self.var2qvar)
         self.qterms = futil.flatten_cube(self.qstate)
         vprint_title(self.options, 'set_qstate', 5)
-        vprint(self.options, f'qstate: {printer.pretty_print_str(self.qstate)}', 5)
-        vprint(self.options, f'qterms: {printer.pretty_print_set(self.qterms)}', 5)
+        vprint(self.options, f'qstate: {str(self.qstate)}', 5)
+        vprint(self.options, f'qterms: {set(self.qterms)}', 5)
 
     def _split_eq(self, eq_term):
         lhs = eq_term.arg(0)
@@ -208,7 +172,7 @@ class QInference():
         if ( (rhs.is_symbol)     and 
              (rhs in self.qvars_set) and 
              (not lhs.is_function_application()) ):
-            rhst = rhs.symbol_type()
+            rhst = rhs.sort
             if rhst.is_enum_type() and rhs not in self.eqMap:
                 self.eqMap[rhs] = lhs
                 self.qvars_set.discard(rhs)
@@ -239,7 +203,7 @@ class QInference():
         while not fixed:
             fixed = True
             for lhs, rhs in self.eqMap.items():
-                new_rhs = rhs.simple_substitute(self.eqMap)
+                new_rhs = il.substitute(rhs, self.eqMap)
                 if new_rhs != rhs:
                     fixed = False
                 self.eqMap[lhs] = new_rhs
@@ -247,7 +211,7 @@ class QInference():
     def _substitute_non_propagatable(self, nprop_terms):
         new_qterms = set()
         for term in nprop_terms:
-            new_term = term.simple_substitute(self.eqMap)
+            new_term = il.substitute(term, self.eqMap)
             new_qterms.add(new_term)
         self.qterms = new_qterms
 
@@ -256,7 +220,7 @@ class QInference():
         for sort, neqs in self.neq_constraints.items():
             new_neqs = []
             for neq in neqs:
-                new_neq = neq.simple_substitute(self.eqMap)
+                new_neq = il.substitute(neq, self.eqMap)
                 new_neqs.append(new_neq)
             new_neq_constraints[sort] = new_neqs
         self.neq_constraints = new_neq_constraints
@@ -289,11 +253,11 @@ class QInference():
     def _get_state_from_terms(self, qterms):
         vprint_title(self.options, 'get_state_from_terms', 5)
         vprint(self.options, f'{qterms}', 5)
-        qstate = And(qterms)
-        vprint(self.options, f'qstate before exist: {printer.pretty_print_str(qstate)}', 5)
+        qstate = il.And(*qterms)
+        vprint(self.options, f'qstate before exist: {str(qstate)}', 5)
         if len(self.qvars_set) != 0: 
-            qstate = Exists(self.qvars_set, qstate)
-        vprint(self.options, f'qstate after exist: {printer.pretty_print_str(qstate)}', 5)
+            qstate = il.Exists(self.qvars_set, qstate)
+        vprint(self.options, f'qstate after exist: {str(qstate)}', 5)
         return qstate
 
     def conjunct_qstate_with_neq_constraints(self):
@@ -318,7 +282,7 @@ class QInference():
         qstate = self.conjunct_qstate_with_neq_constraints()
         self.results.append((qstate, 'forall'))
         vprint_title(self.options, 'infer_forall', 5)
-        vprint(self.options, printer.pretty_print_str(qstate), 5)
+        vprint(self.options, str(qstate), 5)
 
     def init_infer(self):
         vprint_title(self.options, 'init_infer', 5)
@@ -326,7 +290,7 @@ class QInference():
         self.infr_terms     = self.qterms.copy()
  
     def _create_normalized_qvar(self, sort):
-        return Symbol('V:' +str(sort), sort)
+        return il.Symbol('V:' +str(sort), sort)
 
     def _init_partition(self, qvars):
         self.norm_terms       = set()
@@ -338,14 +302,14 @@ class QInference():
             self.qvar2_norm_terms[qvar] = set()
 
     def _get_term_qvars(self, term, qvars_set):
-        term_fvars  = term.get_free_variables()
+        term_fvars  = lu.free_variables(term)
         term_qvars  = term_fvars.intersection(qvars_set)
         return term_qvars
 
     def _normalize_qvar_in_term(self, term, qvar, norm_qvar):
         subst = {}
         subst[qvar] = norm_qvar
-        return term.substitute(subst)
+        return il.substitute(term, subst)
 
     def _record_qvars_occurrence_in_terms(self, sort, qvars):
         # e.g. Qn0, Qn1, Qn2 ... -> Qn (norm_qvar)
@@ -364,7 +328,7 @@ class QInference():
 
     def _is_unique_qvar(self, qvar, norm_terms):
         return  ( len(norm_terms) == 0
-                  or qvar in QInference.tran_sys.finite_system.states
+                  or qvar in QInference.tran_sys.symbols
                 )
     
     def _add_key_qvar_to_partition(self, key, qvar):
@@ -373,13 +337,13 @@ class QInference():
         self.qvars_partition[key].add(qvar)
 
     def _add_qvar_to_uniq_class(self, qvar, uniq_id):
-        uniq_key =  (uniq_id, TRUE())
+        uniq_key =  (uniq_id, il.And())
         self._add_key_qvar_to_partition(uniq_key, qvar)
 
     def _get_norm_key(self, norm_terms):
         # qvars that occur identically result in identical key
         sorted_norm_terms = sorted(norm_terms, key=str)
-        norm_state = And(sorted_norm_terms)
+        norm_state = il.And(*sorted_norm_terms)
         return (0, norm_state)  
 
     def _add_qvar_to_norm_class(self, qvar, norm_terms):
@@ -440,13 +404,13 @@ class QInference():
             return qvars[0]
 
     def _add_first_qvar(self, first_qvar):
-        if first_qvar.is_symbol():
+        if il.is_variable(first_qvar):
             self.infr_qvars_set.add(first_qvar)
 
     def _get_renamed_norm_terms(self, norm_state, first_qvar):
         subst = {}
         subst[self.norm_qvar] = first_qvar 
-        renamed_state = norm_state.simple_substitute(subst)
+        renamed_state = il.substitute(norm_state, subst)
         return futil.flatten_cube(renamed_state)
 
     def _replace_qvars_with_first_qvar(self, first_qvar):
@@ -485,7 +449,7 @@ class QInference():
     def _get_sort_count(self, sort, func_names):
         sort_count = 0
         for (is_neg, func) in func_names.keys():
-            for arg_sort in func.symbol_type()._param_types:
+            for arg_sort in func.sort.dom:
                 # assert(arg_sort == sort)
                 if arg_sort == sort:
                     sort_count += 1
@@ -497,7 +461,7 @@ class QInference():
             new_qvars = []
             for i in range(len(qvars), sort_count):
                 name = 'Q:' + str(sort) + f'{i}'
-                new_qvars.append(Symbol(name, sort))
+                new_qvars.append(il.Symbol(name, sort))
             qvars += new_qvars
         else:
             qvars = qvars[:sort_count]
@@ -515,7 +479,7 @@ class QInference():
         sort_count = 0
         for (is_neg, func) in func_names.keys():
             args = []
-            for arg_id, arg_sort in enumerate(func.symbol_type()._param_types):
+            for arg_id, arg_sort in enumerate(func.sort.dom):
                 if arg_sort != sort:
                     term = func_names[(is_neg, func)][0]
                     qvar = term.arg(arg_id)
@@ -524,9 +488,9 @@ class QInference():
                     qvar = sort_qvars[sort_count]
                     sort_count += 1
                     args.append(qvar)
-            term = Function(func, args)
+            term = il.Apply(func, args)
             if is_neg:
-                term = Not(term)
+                term = il.Not(term)
             self.infr_terms.add(term)       
         self.qterms = self.infr_terms 
 
@@ -562,7 +526,7 @@ class QInference():
     def _get_neqs_without_multi_qvars(self, sort, multi_qvars):
         neqs = []
         for neq in self.neq_constraints[sort]:
-            neq_fvars   = neq.get_free_variables()
+            neq_fvars   = lu.free_variables(neq)
             common_vars = neq_fvars.intersection(multi_qvars)
             if len(common_vars) == 0:
                 neqs.append(neq)
@@ -578,13 +542,13 @@ class QInference():
     def _get_renamed_mult_term(self, term, first_mult_qvar):
         subst = {}
         subst[self.norm_qvar] = first_mult_qvar 
-        return term.simple_substitute(subst)
+        return il.substitute(term, subst)
 
     def _first_mult_equals_some_sing(self, first_mult_qvar, sing_qvars):
         eq_list = []
         for qvar in sing_qvars:
-            eq_list.append(EqualsOrIff(qvar, first_mult_qvar))
-        return Or(eq_list)
+            eq_list.append(il.Equals(qvar, first_mult_qvar))
+        return il.Or(*eq_list)
 
     def _replace_multi_qvars_with_first_multi_qvar(
             self, single_qvars, multi_qvars, first_mult_qvar):
@@ -596,7 +560,7 @@ class QInference():
         eq_sing =  self._first_mult_equals_some_sing(first_mult_qvar, single_qvars)
         for term in self.qvar2_norm_terms[first_mult_qvar]:
             mult_term = self._get_renamed_mult_term(term, first_mult_qvar)
-            eq_or_mult = Or(eq_sing, mult_term)
+            eq_or_mult = il.Or(*[eq_sing, mult_term])
             self.infr_terms.add(eq_or_mult)
         self.qterms = self.infr_terms
 
@@ -642,7 +606,7 @@ class QInference():
             post_terms = self.qterms 
         else:
             for term in self.qterms:
-                argvars = term.get_free_variables()
+                argvars = lu.free_variables(term)
                 argvars = argvars.intersection(self.infr_qvars_set)
                 if len(argvars) == 0:
                     pre_terms.add(term)
@@ -656,13 +620,13 @@ class QInference():
         # \exists qvars, pre_terms \forall infr_qvars post_terms
         # will be later negated to become  \forall qvars, pre_terms \exists infr_qvars post_terms
         pre_terms, post_terms = self._separate_infr_terms()
-        qstate  = And(post_terms)
+        qstate  = il.And(*post_terms)
         if len(self.infr_qvars_set) != 0:
-            qstate = ForAll(self.infr_qvars_set, qstate)
+            qstate = il.ForAll(self.infr_qvars_set, qstate)
         if len(pre_terms) != 0:
-            qstate = And(And(pre_terms), qstate)
+            qstate = il.And(*[il.And(*pre_terms), qstate])
         if len(self.qvars_set) != 0: 
-            qstate = Exists(self.qvars_set, qstate)
+            qstate = il.Exists(self.qvars_set, qstate)
         qtype = 'forall'
         if len(self.qvars_set) == 0 and len(self.infr_qvars_set) != 0:
             qtype = 'exists'
@@ -718,15 +682,14 @@ class QInference():
         vprint_title(self.options, 'negate_qstates_in_results', 5)
         for (i, result) in enumerate(self.results):
             qstate = result[0]
-            qstate = Not(qstate)
+            qstate = il.Not(qstate)
             self.results[i] = (qstate, result[1])
-            vprint(self.options, f'({printer.pretty_print_str(qstate)}, {result[1]})', 5)
+            vprint(self.options, f'({str(qstate)}, {result[1]})', 5)
 
     def infer_quantifier(self):
         # original
         self.set_repr_state()
-        self.vars      = self.repr_state.get_enum_constants() # sorts, quorums
-        self.relations = self.repr_state.get_free_variables() # relations
+        self.vars  = list(ilu.used_constants_ast(self.repr_state)) # sorts, quorums
         # mapping
         self.record_sort_occurrence_in_vars()
         self.record_fully_occuring_sorts()
@@ -750,6 +713,7 @@ class QInference():
         assert(len(self.results) == 1)
         result  = self.results[0]
         qclause = result[0]
+        qclause = futil.de_morgan(qclause)
         return qclause 
 
     @staticmethod

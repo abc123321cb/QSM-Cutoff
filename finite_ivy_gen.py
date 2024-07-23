@@ -1,9 +1,8 @@
 import os
 import subprocess
-from typing import List
+from ivy import ivy_logic as il
 from util import QrmOptions
-from util import FormulaPrinter as printer
-from transition import TransitionSystem
+from transition_system import TransitionSystem
 from verbose import *
 import re
 
@@ -33,10 +32,10 @@ class FiniteIvyAccessAction():
         self._symbol_name      = str(symbol)
         self._action_name      = f'get_{str(symbol)}'
         self._bool_action_name = f'get_bool_{str(symbol)}'
-        self._params_signature = [f'{str(ptype)[0]}{pid}: {str(ptype)}' for pid, ptype in enumerate(param_types)]
-        self._params_list      = [f'{str(ptype)[0]}{pid}' for pid, ptype in enumerate(param_types)]
-        self._return_type_str  = 'bool' if return_type.is_bool_type() else str(return_type)
-        self._return_signature = 'result: bool' if return_type.is_bool_type() else f'result: {str(return_type)}'
+        self._params_signature = [f'{ptype.name[0]}{pid}: {ptype.name}' for pid, ptype in enumerate(param_types)]
+        self._params_list      = [f'{ptype.name[0]}{pid}' for pid, ptype in enumerate(param_types)]
+        self._return_type_str  = 'bool' if il.is_boolean_sort(return_type) else return_type.name
+        self._return_signature = 'result: bool' if il.is_boolean_sort(return_type) else f'result: {return_type.name}'
 
     def _get_action_header(self):
         line  = f'action {self._action_name}'
@@ -124,7 +123,8 @@ class FiniteIvyGenerator():
         FiniteIvyGenerator.lines = []
 
     def _get_finite_sort_line(line, sort_name):
-        sort_elems = FiniteIvyGenerator.tran_sys.get_pretty_constants_of_sort(sort_name)
+        sort = FiniteIvyGenerator.tran_sys.get_finite_sort_from_sort_name(sort_name)
+        sort_elems = FiniteIvyGenerator.tran_sys.get_sort_constants_str(sort)
         line = line + ' = {' + ', '.join(sort_elems) + '}\n'
         return line
 
@@ -145,7 +145,7 @@ class FiniteIvyGenerator():
     def _add_dependent_sort_axiom_lines():
         FiniteIvyGenerator.lines.append('\n')
         FiniteIvyGenerator.lines.append('## Dependent relation axioms ##\n')
-        axioms = FiniteIvyGenerator.tran_sys.get_dependent_axioms()
+        axioms = FiniteIvyGenerator.tran_sys.get_dependent_axioms_str()
         for axiom in axioms:
             FiniteIvyGenerator.lines.append('axiom ' +axiom+'\n')
 
@@ -185,20 +185,20 @@ class FiniteIvyGenerator():
 
     def set_state_var_to_access_action():
         FiniteIvyGenerator.var2access_action = {}
-        state_vars = FiniteIvyGenerator.tran_sys.get_state_variables()
+        state_vars = FiniteIvyGenerator.tran_sys.symbols
         for var in state_vars:
             param_types = []
             return_type = None
-            var_type = var.symbol_type()
-            if not var_type.is_function_type():
+            var_type = var.sort
+            if not il.is_function_sort(var_type):
                 # case1: (start_node = n0)
                 # case2: bool type, no parameters
                 return_type = var_type 
             else: 
                 # case3: predicate
                 # case 4: function (predicate is a function with return type bool)
-                param_types = list(var_type._param_types)
-                return_type = var_type._return_type
+                param_types = list(var_type.dom)
+                return_type = var_type.rng
             access_action = FiniteIvyAccessAction(var, param_types, return_type)
             FiniteIvyGenerator.var2access_action[var] = access_action
 

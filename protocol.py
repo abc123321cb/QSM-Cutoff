@@ -1,7 +1,8 @@
 import re
 from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
-from transition import TransitionSystem
+from ivy import ivy_logic as il
+from transition_system import TransitionSystem
 from util import QrmOptions, SET_DELIM
 from verbose import *
 from math import factorial as fact
@@ -143,8 +144,8 @@ class Protocol():
     def init_sort(self, tran_sys : TransitionSystem) -> None:
         for (sort, sort_consts) in tran_sys.sort2consts.items():
             sort_name   = tran_sys.get_sort_name_from_finite_sort(sort)
-            sort_consts = tran_sys.get_pretty_constants_of_sort(sort_name)
-            line = '.s ' + sort_name + ' ' + ' '.join(sort_consts)
+            consts_str  = tran_sys.get_sort_constants_str(sort)
+            line = '.s ' + sort_name + ' ' + ' '.join(consts_str)
             self._read_sort(line) 
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
@@ -154,29 +155,29 @@ class Protocol():
             elem_sort = tran_sys.get_dependent_element_sort(set_sort)
             line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
             for set_id in range(len(dep_type.sets)):
-                line  += ' ' + tran_sys.get_pretty_set(set_sort, set_id) 
+                line  += ' ' + tran_sys.get_set_label(set_sort, set_id) 
             self._read_dependent_sort(line)
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line) 
 
     def init_predicate(self, tran_sys : TransitionSystem) -> None:
-        for var in tran_sys.get_state_variables():
+        for var in tran_sys.symbols:
             line  = '.p ' + str(var)
             eq_term    = ''
             param_list = []
-            var_sym = var.symbol_type()
-            if not var_sym.is_function_type():
-                if not var.is_literal(): # case1: (start_node = n0)
-                    param_list = [str(var_sym)]
+            var_type = var.sort
+            if not il.is_function_sort(var_type):
+                if not il.is_boolean_sort(var_type): # case1: (start_node = n0)
+                    param_list = [str(var_type)]
                     eq_term    = '='
                 # else case2: bool type, no parameters 
             else: # case3: predicate/case 4: function (predicate is a function with return type bool)
-                param_list =  [str(s) for s in var_sym._param_types]
+                param_list =  [tran_sys.get_sort_name_from_finite_sort(sort) for sort in list(var_type.dom)]
             # case 4: general function (dst(p0) = n0)
-            if (var_sym.is_function_type() and
-               not var_sym._return_type.is_bool_type()): 
+            if (il.is_function_sort(var_type) and
+               not il.is_boolean_sort(var_type.rng)): 
                eq_term = '='
-               param_list.append(str(var_sym._return_type))
+               param_list.append(str(var_type.rng))
             
             line += eq_term
             if len(param_list) > 0:

@@ -1,6 +1,6 @@
 from typing import Type
 from util import QrmOptions
-from transition import TransitionSystem
+from transition_system import TransitionSystem
 from protocol import Protocol
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from finite_ivy_gen import FiniteIvyGenerator
@@ -25,7 +25,7 @@ class ForwardReachability():
         self.protocol        = None
         self.ivy_executor    = None
         # dfs data structures
-        self.dfs_global_state    = []
+        self.dfs_axiom_state    = []
         self.dfs_explored_states = set()
         self.dfs_repr_states     = set()
         self.dfs_max_depth       = 0
@@ -114,7 +114,7 @@ class ForwardReachability():
     def _symmetry_aware_depth_first_search_reachability(self):
         self.dfs_repr_states  = set()
         self.ivy_executor     = FiniteIvyExecutor(self.options, self.instantiator) 
-        self.dfs_global_state = self.ivy_executor.get_dfs_global_state()
+        self.dfs_axiom_state = self.ivy_executor.get_dfs_axiom_state()
         initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
         for initial_node in initial_nodes:
             self._symmetry_aware_depth_first_search_recur_node(initial_node)

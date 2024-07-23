@@ -5,8 +5,7 @@ import datetime
 import tracemalloc
 import os
 
-from ivy2vmt import compile_ivy2vmt
-from transition import get_transition_system 
+from transition_system import get_transition_system
 from forward_reach import get_protocol_forward_reachability
 from prime import PrimeOrbits
 from minimize import Minimizer
@@ -135,15 +134,15 @@ def qrm(ivy_name, args):
     time_start = instance_start(options, ivy_name)
 
     # step 0: compile ivy
-    step_start(options, '[CPL]: Compile Ivy')
-    compile_ivy2vmt(options, options.ivy_filename, options.vmt_filename)
-    time_stamp = step_end(options, time_start, time_start)
+    # step_start(options, '[CPL]: Compile Ivy')
+    # compile_ivy2vmt(options, options.ivy_filename, options.vmt_filename)
+    # time_stamp = step_end(options, time_start, time_start)
 
     # step1: generate reachability
     step_start(options, f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
-    tran_sys   = get_transition_system(options, options.vmt_filename)
+    tran_sys   = get_transition_system(options, options.ivy_filename)
     protocol   = get_protocol_forward_reachability(tran_sys, options) 
-    time_stamp = step_end(options, time_start, time_stamp)
+    time_stamp = step_end(options, time_start, time_start)
 
     # step2: generate prime orbits
     step_start(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
@@ -159,7 +158,7 @@ def qrm(ivy_name, args):
     # step4: minimization
     step_start(options, f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
     minimizer  = Minimizer(prime_orbits.orbits, options)
-    invariants = minimizer.get_minimal_invariants()
+    invariants = minimizer.get_minimal_invariants(tran_sys)
     time_stamp = step_end(options, time_start, time_stamp)
 
     # step5: ivy_check

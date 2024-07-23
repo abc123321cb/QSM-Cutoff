@@ -3,48 +3,11 @@ from typing import Dict,List
 from pysat.solvers import Cadical153 as SatSolver 
 from protocol import Protocol 
 from dualrail import DualRailNegation
-from transition import TransitionSystem
+from transition_system import TransitionSystem
 from prime_check import PrimeChecker
 from util import QrmOptions
-from util import FormulaPrinter as printer
+from util import FormulaUtility as futil
 from verbose import *
-
-def count_quantifiers_and_literals(formula, pol=True, inF=0, inE=0, inL=0):
-    outF = inF
-    outE = inE
-    outL = inL
-    if formula.is_not():
-        outF, outE, outL = count_quantifiers_and_literals(formula.arg(0), not pol, outF, outE, outL)
-        # print("formula: %s %s %d %d %d" % (formula, pol, outF-inF, outE-inE, outL-inL))
-        return (outF, outE, outL)
-    if formula.is_implies():
-        outF, outE, outL = count_quantifiers_and_literals(formula.arg(0), not pol, outF, outE, outL)
-        outF, outE, outL = count_quantifiers_and_literals(formula.arg(1), pol, outF, outE, outL)
-        # print("formula: %s %s %d %d %d" % (formula, pol, outF-inF, outE-inE, outL-inL))
-        return (outF, outE, outL)
-    is_e = formula.is_exists()
-    is_a = formula.is_forall()
-    if (is_e and pol) or (is_a and not pol):
-        qvars = formula.quantifier_vars()
-        outE += len(qvars)
-        outF, outE, outL = count_quantifiers_and_literals(formula.arg(0), pol, outF, outE, outL)
-        # print("formula: %s %s %d %d %d" % (formula, pol, outF-inF, outE-inE, outL-inL))
-        return (outF, outE, outL)
-    if (is_e and not pol) or (is_a and pol):
-        qvars = formula.quantifier_vars()
-        outF += len(qvars)
-        outF, outE, outL = count_quantifiers_and_literals(formula.arg(0), pol, outF, outE, outL)
-        # print("formula: %s %s %d %d %d" % (formula, pol, outF-inF, outE-inE, outL-inL))
-        return (outF, outE, outL)
-    if formula.is_and() or formula.is_or():
-        for arg in formula.args():
-            outF, outE, outL = count_quantifiers_and_literals(arg, pol, outF, outE, outL)
-    elif formula.is_true() or formula.is_false():
-        pass
-    else:
-        outL += 1
-    # print("formula: %s %s %d %d %d" % (formula, pol, outF-inF, outE-inE, outL-inL))
-    return (outF, outE, outL)
 
 def make_key(values: List[str], protocol : Protocol) -> str:
     predicates = []
@@ -134,13 +97,13 @@ class PrimeOrbit():
             self.suborbit_repr_primes.append(prime)
 
     def set_quantifier_inference_result(self, qclause):
-        num_forall, num_exists, num_literals = count_quantifiers_and_literals(qclause)
+        num_forall, num_exists, num_literals = futil.count_quantifiers_and_literals(qclause)
         self.num_forall      = num_forall
         self.num_exists      = num_exists
         self.num_literals    = num_literals
         self.qcost           = num_forall + num_exists + num_literals
         self.qclause         = qclause
-        self.quantified_form = printer.pretty_print_str(qclause)
+        self.quantified_form = str(qclause)
 
     @staticmethod
     def reset() -> None:
@@ -170,6 +133,8 @@ class PrimeOrbits():
     def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
         if self.prime_checker.is_definition_prime(values):
             return
+        if self.prime_checker.requires_dependent_relation(values):
+            return
         key = make_key(values,protocol)
         if key in self._orbit_hash:
             self._sub_orbit_count += 1
@@ -194,7 +159,7 @@ class PrimeOrbits():
 
     def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, protocol: Protocol) -> None:
         Prime.set_atoms(atoms_str=protocol.atoms)
-        self.prime_checker = PrimeChecker(atoms_str=protocol.atoms, atoms_fmla=protocol.atoms_fmla, tran_sys=tran_sys)
+        self.prime_checker = PrimeChecker(self.options, tran_sys, atoms_str=protocol.atoms, atoms_fmla=protocol.atoms_fmla)
         # emumerate prime orbits
         self._formula = DualRailNegation(protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
