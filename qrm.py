@@ -152,18 +152,24 @@ def qrm(ivy_name, args):
     prime_orbits.symmetry_aware_enumerate(tran_sys, instantiator, protocol)               
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step3: quantifier inference
+    # step5: reduction 
+    step_start(options, f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
+    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
+    prime_orbits = minimizer.reduce_redundant_prime_orbits()
+    time_stamp   = step_end(options, time_start, time_stamp)
+
+    # step4: quantifier inference
     step_start(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
     prime_orbits.quantifier_inference(protocol.atoms_fmla, tran_sys)
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step4: minimization
+    # step5: minimization
     step_start(options, f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
-    minimizer  = Minimizer(prime_orbits.orbits, options)
+    minimizer  = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
     invariants = minimizer.get_minimal_invariants()
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step5: ivy_check
+    # step6: ivy_check
     step_start(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
     ivy_result = run_ivy_check(invariants, options)
     qrm_result = ivy_result
