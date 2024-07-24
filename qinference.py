@@ -1,6 +1,7 @@
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
 from ivy import logic_util as lu
+from ivy import logic as lg
 from transition_system import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
@@ -114,6 +115,18 @@ class QInference():
         vprint_title(self.options, 'set_repr_state', 5)
         vprint(self.options, f'repr_state: {str(self.repr_state)}', 5)
 
+    def get_free_variables(self):
+        terms = self.repr_state.args
+        free_vars = set() 
+        for term in terms:
+            if isinstance(term, il.Not):
+                term = term.args[0]
+            if isinstance(term, lg.Eq) and il.is_constant(term.args[0]):
+                term = term.args[1]
+            term_free_vars = ilu.used_constants_ast(term)
+            free_vars.update(term_free_vars)
+        return list(free_vars)
+
     def _get_used_qvars(self, sort):
         if not sort in self.sort2qvars:         
             self.sort2qvars[sort] = []
@@ -141,7 +154,7 @@ class QInference():
             self.qvars_set.add(qvar)
             
             vprint(self.options, f'var: {str(var)}', 5)
-            vprint(self.options, f'sort: {str(sort)}', 5)
+            vprint(self.options, f'sort: {sort.name}', 5)
             vprint(self.options, f'qvar: {str(qvar)}', 5)
             vprint(self.options, '', 5)
             
@@ -175,8 +188,8 @@ class QInference():
 
     def _create_inst_var(self, sort, ivars):
         ivar_id = len(ivars)
-        name = str(sort) + ':i' + str(ivar_id)
-        return il.Symbol(name, sort)
+        name = 'I:' + sort.name + str(ivar_id)
+        return il.Variable(name,sort)
 
     def _instantiate_qstate(self):
         for var in self.qstate.quantifier_vars():
@@ -330,7 +343,7 @@ class QInference():
         self.infr_terms     = self.qterms.copy()
  
     def _create_normalized_qvar(self, sort):
-        return il.Symbol('V:' +str(sort), sort)
+        return il.Variable('N:' + sort.name, sort)
 
     def _init_partition(self, qvars):
         self.norm_terms       = set()
@@ -729,7 +742,7 @@ class QInference():
     def infer_quantifier(self):
         # original
         self.set_repr_state()
-        self.vars  = list(ilu.used_constants_ast(self.repr_state)) # sorts, quorums
+        self.vars  = self.get_free_variables() # sorts, quorums
         # mapping
         self.record_sort_occurrence_in_vars()
         self.record_fully_occuring_sorts()
