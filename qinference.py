@@ -56,6 +56,45 @@ class QInference():
         vprint_title(self.options, 'QInference', 5)
         vprint(self.options, f'prime: {str(self.prime)}', 5)
 
+    def _add_member_literals_for_dependent_sorts(self, atoms):
+        literals = []
+        args = set()
+        for atom in atoms:
+            atom_args = atom.args
+            if il.is_equals(atom):
+                atom_args = [atom_args[1]]
+            for arg in atom_args:
+                args.add(arg)
+
+        for arg in args:
+            if arg.sort in QInference.tran_sys.dep_types:
+                set_sort = arg.sort
+                set_id   = 0
+                consts   = QInference.tran_sys.sort2consts[set_sort]
+                for i, const in enumerate(consts):
+                    if const == arg:
+                        set_id = i
+                member_func  = QInference.tran_sys.get_dependent_relation(set_sort)
+                elements     = QInference.tran_sys.get_dependent_elements(set_sort)
+                elems_in_set = QInference.tran_sys.get_dependent_elements_in_set(set_sort, set_id)
+                member_count = 0
+                for elem in elements:
+                    if elem in args:
+                        member_args = [elem, arg]
+                        member_symb = il.App(member_func, *member_args)
+                        if elem in elems_in_set:
+                            literals.append(member_symb)
+                            member_count += 1
+                        else:
+                            literals.append(il.Not(member_symb))
+                if member_count == len(elems_in_set):
+                    elem_sort = QInference.tran_sys.get_dependent_element_sort(set_sort)
+                    self.full_occur_depending_sort.add(elem_sort)
+        vprint_title(self.options, '_add_member_literals_for_dependent_sorts', 5)
+        vprint(self.options, f'member literals: {literals}', 5)
+        vprint(self.options, f'fully occuring dependent children sorts: {self.full_occur_depending_sort}', 5)
+        return literals 
+
     def set_repr_state(self):
         values = self.prime.values
         literals = []
@@ -70,6 +109,7 @@ class QInference():
                 atoms.append(atom)
             else:
                 assert(val == '-')
+        literals += self._add_member_literals_for_dependent_sorts(atoms)
         self.repr_state =  il.And(*literals)
         vprint_title(self.options, 'set_repr_state', 5)
         vprint(self.options, f'repr_state: {str(self.repr_state)}', 5)
@@ -188,7 +228,7 @@ class QInference():
         nprop_terms = set()
         for term in self.qterms:
             is_prop = False
-            if term.is_equals():
+            if il.is_equals(term):
                 is_prop = self._is_propagatable(term)
             if not is_prop: 
                 nprop_terms.add(term)
@@ -437,10 +477,10 @@ class QInference():
         for terms in self.qvar2terms.values():
             for term in terms:
                 is_neg = False
-                if term.is_not():
+                if isinstance(term, il.Not):
                     is_neg = True
-                    term = term.arg(0)
-                func_name = term.function_name()
+                    term = term.args[0]
+                func_name = term.func
                 if not (is_neg, func_name) in func_names:
                     func_names[(is_neg, func_name)] = []
                 func_names[(is_neg, func_name)].append(term)
@@ -456,7 +496,7 @@ class QInference():
         return sort_count
 
     def _add_sort_qvars(self, sort, sort_count):
-        qvars = QInference.tran_sys.sort2qvars[sort]
+        qvars = self.sort2qvars[sort]
         if (len(qvars) < sort_count):
             new_qvars = []
             for i in range(len(qvars), sort_count):
@@ -488,7 +528,7 @@ class QInference():
                     qvar = sort_qvars[sort_count]
                     sort_count += 1
                     args.append(qvar)
-            term = il.Apply(func, args)
+            term = il.App(func, *args)
             if is_neg:
                 term = il.Not(term)
             self.infr_terms.add(term)       
@@ -657,7 +697,7 @@ class QInference():
         nprop_terms = set()
         for term in self.qterms:
             is_prop = False
-            if term.is_equals():
+            if il.is_equals(term):
                 is_prop = self._is_propagatable2(term)
             if not is_prop: 
                 nprop_terms.add(term)

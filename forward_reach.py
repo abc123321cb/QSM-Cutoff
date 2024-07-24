@@ -16,11 +16,12 @@ class ForwardReachability():
     #------------------------------------------------------------
     # ForwardReachability: initializations
     #------------------------------------------------------------
-    def __init__(self,  tran_sys : TransitionSystem, options : QrmOptions):
-        self.tran_sys = tran_sys
-        self.options  = options
+    def __init__(self,  tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
+        self.tran_sys     = tran_sys
+        self.instantiator = instantiator 
+        self.options      = options
         # utils
-        self.instantiator    = None
+        self.instantiator    = instantiator
         self.ivy_actions     = []
         self.protocol        = None
         self.ivy_executor    = None
@@ -30,9 +31,6 @@ class ForwardReachability():
         self.dfs_repr_states     = set()
         self.dfs_max_depth       = 0
 
-    def _init_instantiator(self):
-        self.instantiator = FiniteIvyInstantiator(self.tran_sys)
-    
     def _init_ivy_actions(self):
         self.ivy_actions = self.instantiator.ivy_actions
 
@@ -46,17 +44,17 @@ class ForwardReachability():
 
     def _init_finite_ivy_generator(self):
         FiniteIvyGenerator.set_transition_system(self.tran_sys)
+        FiniteIvyGenerator.set_instantiator(self.instantiator)
         FiniteIvyGenerator.set_options(self.options)
         FiniteIvyGenerator.set_path_and_file_names()
         FiniteIvyGenerator.set_state_var_to_access_action()
-        FiniteIvyGenerator.set_state_variables(self.protocol.constant_Name2Id, self.instantiator.ivy_state_vars)
-        FiniteIvyGenerator.set_non_bool_state_variables(self.protocol.constant_Name2Id, self.instantiator.ivy_non_bool_state_vars)
+        FiniteIvyGenerator.set_state_variables(self.protocol.constant_Name2Id)
+        FiniteIvyGenerator.set_non_bool_state_variables(self.protocol.constant_Name2Id)
         FiniteIvyGenerator.write_ivy()
         FiniteIvyGenerator.compile_finite_ivy_to_cpp()
         FiniteIvyGenerator.build_ivy_exec_python_module()
 
     def _initialize(self):
-        self._init_instantiator()
         self._init_ivy_actions()
         self._init_protocol()
         self._init_finite_ivy_generator() 
@@ -153,8 +151,8 @@ class ForwardReachability():
         self._write_protocol()
         self._clean()
 
-def get_protocol_forward_reachability(tran_sys : TransitionSystem, options:QrmOptions) -> Type[Protocol]:
+def get_protocol_forward_reachability(tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options:QrmOptions) -> Type[Protocol]:
     # dfs
-    fr_solver = ForwardReachability(tran_sys, options)
+    fr_solver = ForwardReachability(tran_sys, instantiator, options)
     fr_solver.solve_reachability()
     return fr_solver.protocol

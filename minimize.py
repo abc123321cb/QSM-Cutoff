@@ -297,7 +297,7 @@ class Minimizer():
         self._backtrack()
         return 
 
-    def print_final_solutions(self, tran_sys : TransitionSystem) -> None:
+    def print_final_solutions(self) -> None:
         vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.instance_name}: {self.options.size_str}]', 3)
         for (sid, solution) in enumerate(self.optimal_solutions):
             vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})', 3)
@@ -305,12 +305,10 @@ class Minimizer():
             vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})', 3)
             for id in solution: 
                 vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
-            for def_symbol, def_ast in tran_sys.definitions.items():
-                vprint(self.options, f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition', 3)
             vprint(self.options, '\n', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 2)
         
-    def get_final_invariants(self, tran_sys : TransitionSystem) -> List[str]:
+    def get_final_invariants(self) -> List[str]:
         invariants = []
         assert(len(self.optimal_solutions) >=1 )
         solution = self.optimal_solutions[0]
@@ -319,17 +317,14 @@ class Minimizer():
             total_cost += self.orbits[id].qcost
             line = f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}'
             invariants.append(line)
-        for def_symbol, def_ast in tran_sys.definitions.items():
-            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
-            invariants.append(line)
         vprint(self.options, f'[MIN NOTE]: number of invariants in minimal solution: {len(solution)}', 2)
         vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
         return invariants
 
-    def get_minimal_invariants(self, tran_sys : TransitionSystem) -> List[str]:
+    def get_minimal_invariants(self) -> List[str]:
         if self.options.all_solutions:
             self._solve_all()
         else:
             self._solve_one()
-        self.print_final_solutions(tran_sys)
-        return self.get_final_invariants(tran_sys)
+        self.print_final_solutions()
+        return self.get_final_invariants()

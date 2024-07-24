@@ -4,6 +4,7 @@ from pysat.solvers import Cadical153 as SatSolver
 from protocol import Protocol 
 from dualrail import DualRailNegation
 from transition_system import TransitionSystem
+from finite_ivy_instantiate import FiniteIvyInstantiator
 from prime_check import PrimeChecker
 from util import QrmOptions
 from util import FormulaUtility as futil
@@ -131,10 +132,6 @@ class PrimeOrbits():
         outF.close()
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
-        if self.prime_checker.is_definition_prime(values):
-            return
-        if self.prime_checker.requires_dependent_relation(values):
-            return
         key = make_key(values,protocol)
         if key in self._orbit_hash:
             self._sub_orbit_count += 1
@@ -157,9 +154,8 @@ class PrimeOrbits():
             block_clauses.append(clause)
         return block_clauses
 
-    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, protocol: Protocol) -> None:
+    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, instantiator: FiniteIvyInstantiator, protocol: Protocol) -> None:
         Prime.set_atoms(atoms_str=protocol.atoms)
-        self.prime_checker = PrimeChecker(self.options, tran_sys, atoms_str=protocol.atoms, atoms_fmla=protocol.atoms_fmla)
         # emumerate prime orbits
         self._formula = DualRailNegation(protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:

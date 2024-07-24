@@ -95,8 +95,8 @@ class Protocol():
             predicate = '' 
             args = []
             match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            match_eq   = re.search(r'\((\w+)=([^)]+)\)', atom)
-            match_func_eq = re.search(r'\((\w+)\((\w+)\)=([^)]+)\)', atom)
+            match_eq   = re.search(r'(\w+)=([^)]+)', atom)
+            match_func_eq = re.search(r'(\w+)\((\w+)\)=([^)]+)', atom)
             if match_func_eq: # case 4: general function
                 predicate = match_func_eq.group(1) + '='
                 args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
@@ -168,7 +168,7 @@ class Protocol():
             var_type = var.sort
             if not il.is_function_sort(var_type):
                 if not il.is_boolean_sort(var_type): # case1: (start_node = n0)
-                    param_list = [str(var_type)]
+                    param_list = [tran_sys.get_sort_name_from_finite_sort(var_type)]
                     eq_term    = '='
                 # else case2: bool type, no parameters 
             else: # case3: predicate/case 4: function (predicate is a function with return type bool)
@@ -177,7 +177,7 @@ class Protocol():
             if (il.is_function_sort(var_type) and
                not il.is_boolean_sort(var_type.rng)): 
                eq_term = '='
-               param_list.append(str(var_type.rng))
+               param_list.append(tran_sys.get_finite_sort_from_sort_name(var_type.rng))
             
             line += eq_term
             if len(param_list) > 0:
@@ -193,8 +193,8 @@ class Protocol():
             predicate = '' 
             args     = []
             match_pred    = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            match_eq      = re.search(r'\((\w+)\s*=\s*(\w+)\)', atom)
-            match_func_eq = re.search(r'\((\w+)\((\w+)\)=(\w+)\)', atom)
+            match_eq      = re.search(r'(\w+)\s*=\s*(\w+)', atom)
+            match_func_eq = re.search(r'(\w+)\((\w+)\)=(\w+)', atom)
             if match_func_eq: # case 4: general function
                 predicate = match_func_eq.group(1) + '='
                 args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')

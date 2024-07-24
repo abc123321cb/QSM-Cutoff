@@ -40,6 +40,36 @@ def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
     qterms = futil.flatten_cube(qstate)
     return qterms
 
+def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
+    terms = []
+    args = set()
+    for atom in atoms:
+        atom_args = atom.args
+        if il.is_equals(atom):
+            atom_args = [atom_args[1]]
+        for arg in atom_args:
+            args.add(arg)
+    for arg in args:
+        if arg.sort in tran_sys.dep_types:
+            set_sort = arg.sort
+            set_id   = 0
+            consts   = Merger.tran_sys.sort2consts[set_sort]
+            for i, const in enumerate(consts):
+                if const == arg:
+                    set_id = i
+            member_func  = tran_sys.get_dependent_relation(set_sort)
+            elements     = tran_sys.get_dependent_elements(set_sort)
+            elems_in_set = tran_sys.get_dependent_elements_in_set(set_sort, set_id)
+            for elem in elements:
+                if elem in args:
+                    member_args = [elem, arg]
+                    member_symb = il.App(member_func, *member_args)
+                    if elem in elems_in_set:
+                        terms.append(member_symb)
+                    else:
+                        terms.append(il.Not(member_symb))
+    return terms 
+
 def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
     values = prime.values
     terms = []
@@ -54,6 +84,7 @@ def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
             atom_symbols.append(atom)
         else:
             assert(val == '-')
+    terms += add_member_terms_for_dependent_sorts(atom_symbols, tran_sys)
     qterms = replace_var_with_qvar(tran_sys, terms)
     return qterms 
 

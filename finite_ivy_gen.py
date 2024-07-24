@@ -3,6 +3,7 @@ import subprocess
 from ivy import ivy_logic as il
 from util import QrmOptions
 from transition_system import TransitionSystem
+from finite_ivy_instantiate import FiniteIvyInstantiator
 from verbose import *
 import re
 
@@ -101,6 +102,7 @@ class FiniteIvyAccessAction():
 class FiniteIvyGenerator():
     # static datas
     tran_sys : TransitionSystem
+    instantiator : FiniteIvyInstantiator
     options  : QrmOptions
     lines                   = []
     var2access_action       = {}
@@ -145,7 +147,7 @@ class FiniteIvyGenerator():
     def _add_dependent_sort_axiom_lines():
         FiniteIvyGenerator.lines.append('\n')
         FiniteIvyGenerator.lines.append('## Dependent relation axioms ##\n')
-        axioms = FiniteIvyGenerator.tran_sys.get_dependent_axioms_str()
+        axioms = FiniteIvyGenerator.instantiator.dep_axioms_str
         for axiom in axioms:
             FiniteIvyGenerator.lines.append('axiom ' +axiom+'\n')
 
@@ -180,6 +182,9 @@ class FiniteIvyGenerator():
     def set_transition_system(tran_sys : TransitionSystem):
         FiniteIvyGenerator.tran_sys = tran_sys
 
+    def set_instantiator(instantiator : FiniteIvyInstantiator):
+        FiniteIvyGenerator.instantiator = instantiator
+
     def set_options(options : QrmOptions):
         FiniteIvyGenerator.options  = options
 
@@ -202,13 +207,15 @@ class FiniteIvyGenerator():
             access_action = FiniteIvyAccessAction(var, param_types, return_type)
             FiniteIvyGenerator.var2access_action[var] = access_action
 
-    def set_state_variables(constant_Name2Id, ivy_state_vars):
+    def set_state_variables(constant_Name2Id):
+        ivy_state_vars =  FiniteIvyGenerator.instantiator.ivy_state_vars
         FiniteIvyGenerator.cpp_state_vars = []
         for atom in ivy_state_vars:
             ivy_var = get_ivy_var_str(constant_Name2Id, atom)
             FiniteIvyGenerator.cpp_state_vars.append(ivy_var)
 
-    def set_non_bool_state_variables(constant_Name2Id, ivy_non_bool_state_vars):
+    def set_non_bool_state_variables(constant_Name2Id):
+        ivy_non_bool_state_vars = FiniteIvyGenerator.instantiator.ivy_non_bool_state_vars
         FiniteIvyGenerator.cpp_non_bool_state_vars = {}
         for (atom, sort) in ivy_non_bool_state_vars.items():
             ivy_var = get_ivy_var_str(constant_Name2Id, atom)

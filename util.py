@@ -145,10 +145,10 @@ class FormulaUtility():
         g = FormulaUtility.de_morgan(f.args[0])
         if isinstance(g,il.And):
             if len(g.args) == 1: return FormulaUtility.de_morgan(ilu.negate(g.args[0]))
-            return il.Or(*[ilu.negate(x) for x in g.args])
+            return il.Or(*[FormulaUtility.de_morgan(ilu.negate(x)) for x in g.args])
         if isinstance(g,il.Or):
             if len(g.args) == 1: return FormulaUtility.de_morgan(ilu.negate(g.args[0]))
-            return il.And(*[ilu.negate(x) for x in g.args])
+            return il.And(*[FormulaUtility.de_morgan(ilu.negate(x)) for x in g.args])
         if il.is_quantifier(g):
             prefix = il.quantifier_vars(g)
             matrix = il.quantifier_body(g)
