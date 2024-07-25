@@ -282,7 +282,11 @@ class Minimizer():
         # output result
         if self.options.writeQI:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
-            self._write_primes(prime_filename)
+            outF = open(prime_filename, "w")
+            for id in inference_list:
+                orbit = self.orbits[id]
+                outF.write(str(orbit))
+            outF.close()
         vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
         for id in inference_list:
             orbit = self.orbits[id]
