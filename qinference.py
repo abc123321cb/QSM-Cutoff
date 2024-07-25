@@ -513,8 +513,8 @@ class QInference():
         if (len(qvars) < sort_count):
             new_qvars = []
             for i in range(len(qvars), sort_count):
-                name = 'Q:' + str(sort) + f'{i}'
-                new_qvars.append(il.Symbol(name, sort))
+                name = sort.name[0].upper() + str(i)
+                new_qvars.append(il.Variable(name, sort))
             qvars += new_qvars
         else:
             qvars = qvars[:sort_count]
