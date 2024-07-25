@@ -155,17 +155,16 @@ def qrm(ivy_name, args):
     # step5: reduction 
     step_start(options, f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
-    prime_orbits = minimizer.reduce_redundant_prime_orbits()
+    minimizer.reduce_redundant_prime_orbits()
     time_stamp   = step_end(options, time_start, time_stamp)
 
     # step4: quantifier inference
     step_start(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
-    prime_orbits.quantifier_inference(protocol.atoms_fmla, tran_sys)
+    minimizer.quantifier_inference(protocol.atoms_fmla)
     time_stamp = step_end(options, time_start, time_stamp)
 
     # step5: minimization
     step_start(options, f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
-    minimizer  = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
     invariants = minimizer.get_minimal_invariants()
     time_stamp = step_end(options, time_start, time_stamp)
 

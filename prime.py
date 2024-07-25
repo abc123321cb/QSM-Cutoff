@@ -179,28 +179,3 @@ class PrimeOrbits():
         vprint(self.options, f'[PRIME NOTE]: number of suborbits: {self._sub_orbit_count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
 
-    def quantifier_inference(self, atoms, tran_sys) -> None:
-        from qinference import QInference
-        from merge import Merger
-        Merger.setup(atoms, tran_sys)
-        QInference.setup(atoms, tran_sys)
-        vprint_title(self.options, 'quantifier_inference', 5)
-        for orbit in self.orbits:
-            vprint(self.options, str(orbit), 5)
-            repr_primes = orbit.suborbit_repr_primes
-            qclause = None
-            if len(repr_primes) == 1:
-                is_orbit_size_1 = (len(orbit.primes) == 1)
-                qInfr = QInference(repr_primes[0], self.options, is_orbit_size_1)
-                qclause = qInfr.infer_quantifier() 
-            else:
-                merger  = Merger(self.options, repr_primes)
-                qclause = merger.merge()
-            orbit.set_quantifier_inference_result(qclause)
-        # output result
-        if self.options.writeQI:
-            prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
-            self._write_primes(prime_filename)
-        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        vprint(self.options, str(self), 3)
-

@@ -32,13 +32,13 @@ class Minimizer():
     def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits: List[PrimeOrbit]) -> None: 
         self.tran_sys = tran_sys
         self.orbits   = orbits
-        self.cover    = CoverConstraints(tran_sys, instantiator, orbits, options.useMC)
-        self.prime_checker  = PrimeChecker(options, tran_sys, instantiator)
-        self.max_cost = 1 + sum([orbit.qcost for orbit in orbits])
-        self.ubound = self.max_cost
+        self.cover    = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC)
+        self.max_cost = 0 
+        self.ubound   = 0 
         self.decision_stack : List[StackLevel] = []
-        self.pending  : List[int] = list(range(len(orbits)))
-        self.solution : List[int] = []
+        self.pending    : List[int] = list(range(len(orbits)))
+        self.solution   : List[int] = []
+        self.def_orbits : Set[int]  = set()
         self.optimal_solutions : List[List[int]] = []
         self.options = options
 
@@ -246,6 +246,46 @@ class Minimizer():
         self.print_final_solutions()
         return self.get_final_invariants()
 
+    def _remove_definition_prime_orbits_from_pending(self) -> Set[int]:
+        for id in self.pending:
+            orbit = self.orbits[id]
+            is_definition = self.cover.is_definition_prime(orbit)
+            if (is_definition):
+                self.def_orbits.add(id)
+        remove_target_from_source(source=self.pending, target=self.def_orbits)
+
     def reduce_redundant_prime_orbits(self):
+        self._remove_definition_prime_orbits_from_pending()
         self._new_level()
-        self._reduce() 
+        self._reduce()
+
+    def quantifier_inference(self, atoms) -> None:
+        from qinference import QInference
+        from merge import Merger
+        Merger.setup(atoms, self.tran_sys)
+        QInference.setup(atoms, self.tran_sys)
+        vprint_title(self.options, 'quantifier_inference', 5)
+        inference_list = self.solution + self.pending
+        for id in inference_list:
+            orbit = self.orbits[id]
+            vprint(self.options, str(orbit), 5)
+            repr_primes = orbit.suborbit_repr_primes
+            qclause = None
+            if len(repr_primes) == 1:
+                is_orbit_size_1 = (len(orbit.primes) == 1)
+                qInfr = QInference(repr_primes[0], self.options, is_orbit_size_1)
+                qclause = qInfr.infer_quantifier() 
+            else:
+                merger  = Merger(self.options, repr_primes)
+                qclause = merger.merge()
+            orbit.set_quantifier_inference_result(qclause)
+        # output result
+        if self.options.writeQI:
+            prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
+            self._write_primes(prime_filename)
+        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        for id in inference_list:
+            orbit = self.orbits[id]
+            vprint(self.options, str(orbit), 3)
+        self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
+        self.ubound   = self.max_cost
