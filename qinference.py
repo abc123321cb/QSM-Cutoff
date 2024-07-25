@@ -62,7 +62,7 @@ class QInference():
         args = set()
         for atom in atoms:
             atom_args = atom.args
-            if il.is_equals(atom):
+            if il.is_eq(atom):
                 atom_args = [atom_args[1]]
             for arg in atom_args:
                 args.add(arg)
