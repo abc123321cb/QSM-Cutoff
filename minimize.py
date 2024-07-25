@@ -2,6 +2,7 @@ from typing import List,Set
 from transition_system import TransitionSystem
 from prime import *
 from cover_constraints import CoverConstraints
+from prime_check import PrimeChecker
 from util import QrmOptions
 from verbose import *
 
@@ -32,6 +33,7 @@ class Minimizer():
         self.tran_sys = tran_sys
         self.orbits   = orbits
         self.cover    = CoverConstraints(tran_sys, instantiator, orbits, options.useMC)
+        self.prime_checker  = PrimeChecker(options, tran_sys, instantiator)
         self.max_cost = 1 + sum([orbit.qcost for orbit in orbits])
         self.ubound = self.max_cost
         self.decision_stack : List[StackLevel] = []

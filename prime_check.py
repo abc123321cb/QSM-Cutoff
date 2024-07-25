@@ -9,10 +9,10 @@ from util import QrmOptions
 from verbose import *
 
 class PrimeChecker():
-    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, atoms_str, atoms_fmla):
+    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator):
         self.options      = options
-        self._atoms_str   = atoms_str
-        self._atoms_fmla  = atoms_fmla.copy()
+        self._atoms_str   = instantiator.protocol_atoms
+        self._atoms_fmla  = instantiator.protocol_atoms_fmls.copy()
         self._axioms_fmla = instantiator.dep_axioms_fmla
         self._tran_sys    = tran_sys
         self._instantiated_def_map = {} 
