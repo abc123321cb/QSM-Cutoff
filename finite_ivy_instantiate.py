@@ -239,7 +239,6 @@ class FiniteIvyInstantiator():
         for def_ast in def_map.values():
             def_lhs = def_ast.lhs()  # didNotVote(N)
             def_rhs = def_ast.rhs()  # forall V. ~vote(N,V)
-            assert(il.is_forall(def_rhs))
             def_lhs_free_vars = def_lhs.terms # N
             var_subst_maps = self._get_var_substitution(def_lhs_free_vars)
             def_rhs  = self._recursive_instantiate_quantifier(def_rhs)
