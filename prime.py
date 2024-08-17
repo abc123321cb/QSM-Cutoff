@@ -1,11 +1,13 @@
 import sys
 from typing import Dict,List
 from pysat.solvers import Cadical153 as SatSolver 
-from frontend.utils import count_quantifiers_and_literals
 from protocol import Protocol 
 from dualrail import DualRailNegation
+from transition_system import TransitionSystem
+from finite_ivy_instantiate import FiniteIvyInstantiator
+from prime_check import PrimeChecker
 from util import QrmOptions
-from util import FormulaPrinter as printer
+from util import FormulaUtility as futil
 from verbose import *
 
 def make_key(values: List[str], protocol : Protocol) -> str:
@@ -20,8 +22,8 @@ def make_key(values: List[str], protocol : Protocol) -> str:
 
 class Prime():
     # static members
-    count  : int = 0 
-    _atoms : List[str]
+    count      : int = 0 
+    _atoms_str   = []
 
     def __init__(self, values: List[str], is_sub_repr = False) -> None:
         self.values   : List[str] = values
@@ -41,18 +43,19 @@ class Prime():
         literals = []
         for (atom_id, val) in enumerate(self.values):
             if val == '1':
-                literals.append(Prime._atoms[atom_id])
+                literals.append(Prime._atoms_str[atom_id])
             elif val == '0':
-                literals.append('~'+Prime._atoms[atom_id])
+                literals.append('~'+Prime._atoms_str[atom_id])
         literals.sort()
         return f'{str(literals)}'
 
     @staticmethod
-    def setup_atoms(protocol : Protocol) -> None:
-        Prime._atoms    = protocol.atoms
+    def set_atoms(atoms_str) -> None:
+        Prime._atoms_str  = atoms_str
 
     def reset() -> None:
         Prime.count = 0
+        Prime._atoms_str   = []
 
 class PrimeOrbit():
     # static members
@@ -95,13 +98,13 @@ class PrimeOrbit():
             self.suborbit_repr_primes.append(prime)
 
     def set_quantifier_inference_result(self, qclause):
-        num_forall, num_exists, num_literals = count_quantifiers_and_literals(qclause)
+        num_forall, num_exists, num_literals = futil.count_quantifiers_and_literals(qclause)
         self.num_forall      = num_forall
         self.num_exists      = num_exists
         self.num_literals    = num_literals
         self.qcost           = num_forall + num_exists + num_literals
         self.qclause         = qclause
-        self.quantified_form = printer.pretty_print_str(qclause)
+        self.quantified_form = str(qclause)
 
     @staticmethod
     def reset() -> None:
@@ -128,7 +131,7 @@ class PrimeOrbits():
         outF.write(str(self)+'\n')
         outF.close()
 
-    def _make_orbit(self, values: List[str], protocol : Protocol) -> List[List[int]]:
+    def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
         key = make_key(values,protocol)
         if key in self._orbit_hash:
             self._sub_orbit_count += 1
@@ -138,30 +141,32 @@ class PrimeOrbits():
             self.orbits.append(orbit)
         orbit = self._orbit_hash[key]
         orbit.num_suborbits += 1
-        block_clauses = []
         is_sub_repr = True
         for nvalues in protocol.all_permutations(values):
-            clause = self._formula.block(nvalues) 
-            block_clauses.append(clause)
             prime  = Prime(nvalues, is_sub_repr)
             is_sub_repr = False
             orbit.add_prime(prime)
+
+    def _get_block_clauses(self, values: List[str], protocol: Protocol) -> List[List[int]]:
+        block_clauses = []
+        for nvalues in protocol.all_permutations(values):
+            clause = self._formula.block(nvalues) 
+            block_clauses.append(clause)
         return block_clauses
 
-    def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
-        # setup
-        Prime.setup_atoms(protocol)
-        atom_num = protocol.atom_num
+    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, instantiator: FiniteIvyInstantiator, protocol: Protocol) -> None:
+        Prime.set_atoms(atoms_str=protocol.atoms)
         # emumerate prime orbits
         self._formula = DualRailNegation(protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
-            for ubound in range(0,atom_num+1):
+            for ubound in range(0,protocol.atom_num+1):
                 assumptions = self._formula.assume(ubound)
                 result = sat_solver.solve(assumptions)
                 while (result):
                     model  = sat_solver.get_model()
                     values = self._formula.single_rail(model)
-                    block_clauses  = self._make_orbit(values, protocol)
+                    self._make_orbit(values, protocol)
+                    block_clauses  = self._get_block_clauses(values, protocol)
                     sat_solver.append_formula(block_clauses) 
                     result = sat_solver.solve(assumptions)
         # output result
@@ -173,29 +178,4 @@ class PrimeOrbits():
         vprint(self.options, f'[PRIME NOTE]: number of orbits: {PrimeOrbit.count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of suborbits: {self._sub_orbit_count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
-
-    def quantifier_inference(self, atoms, tran_sys) -> None:
-        from qinference import QInference
-        from merge import Merger
-        Merger.setup(atoms, tran_sys)
-        QInference.setup(atoms, tran_sys)
-        vprint_title(self.options, 'quantifier_inference', 5)
-        for orbit in self.orbits:
-            vprint(self.options, str(orbit), 5)
-            repr_primes = orbit.suborbit_repr_primes
-            qclause = None
-            if len(repr_primes) == 1:
-                is_orbit_size_1 = (len(orbit.primes) == 1)
-                qInfr = QInference(repr_primes[0], self.options, is_orbit_size_1)
-                qclause = qInfr.infer_quantifier() 
-            else:
-                merger  = Merger(self.options, repr_primes)
-                qclause = merger.merge()
-            orbit.set_quantifier_inference_result(qclause)
-        # output result
-        if self.options.writeQI:
-            prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
-            self._write_primes(prime_filename)
-        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        vprint(self.options, str(self), 3)
 

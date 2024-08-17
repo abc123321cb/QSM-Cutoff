@@ -1,10 +1,9 @@
-from typing import List
-from pysmt.shortcuts import Symbol, And, Or, EqualsOrIff, Not, ForAll, Exists, Function, TRUE
-from frontend.utils import *
-from vmt_parser import TransitionSystem
+from ivy import ivy_logic as il
+from ivy import ivy_logic_utils as ilu
+from transition_system import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
-from util import FormulaPrinter as printer
+from util import FormulaUtility as futil
 from verbose import *
 from more_itertools import set_partitions
 from itertools import product, permutations
@@ -17,53 +16,58 @@ def get_used_qvars(sort2qvars, sort):
 
 def get_next_unused_qvar(tran_sys : TransitionSystem, sort, qvars):
     qvar_id = len(qvars)
-    qvar    = tran_sys.sort2qvars[sort][qvar_id]
+    qvar_name = sort.name[0].upper() + str(qvar_id)
+    qvar      = il.Variable(qvar_name, sort) 
     return qvar
 
 def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
     # relabel each var into qvar with index being order of occurrence
     # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
-    state =  And(terms) if len(terms) != 0 else TRUE()
-    vars = state.get_enum_constants()
+    state =  il.And(*terms) if len(terms) != 0 else il.And()
+    variables  = ilu.used_constants_ast(state)
     var2qvar   = {}
     sort2qvars = {}
-    for var in sorted(vars, key=str):
-        sort = var.constant_type()
-        if not sort in tran_sys.sort2qvars:
+    for var in sorted(variables, key=str):
+        sort = var.sort
+        if not sort in tran_sys.sort2consts:
             continue
         qvars  = get_used_qvars(sort2qvars, sort)
         qvar   = get_next_unused_qvar(tran_sys, sort, qvars) 
         qvars.append(qvar)
         var2qvar[var] = qvar
 
-    qstate = state.simple_substitute(var2qvar)
-    qterms = flatten_cube(qstate)
+    qstate = il.substitute(state, var2qvar)
+    qterms = futil.flatten_cube(qstate)
     return qterms
 
 def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
     terms = []
     args = set()
     for atom in atoms:
-        atom_args = atom.args()
-        if atom.is_equals():
+        atom_args = atom.args
+        if il.is_equals(atom):
             atom_args = [atom_args[1]]
         for arg in atom_args:
             args.add(arg)
     for arg in args:
-        if arg.get_type() in tran_sys.dep_types:
-            set_sort = arg.get_type()
-            set_id   = int(str(arg)[-2])
+        if arg.sort in tran_sys.dep_types:
+            set_sort = arg.sort
+            set_id   = 0
+            consts   = Merger.tran_sys.sort2consts[set_sort]
+            for i, const in enumerate(consts):
+                if const == arg:
+                    set_id = i
             member_func  = tran_sys.get_dependent_relation(set_sort)
             elements     = tran_sys.get_dependent_elements(set_sort)
             elems_in_set = tran_sys.get_dependent_elements_in_set(set_sort, set_id)
             for elem in elements:
                 if elem in args:
                     member_args = [elem, arg]
-                    member_symb = Function(member_func, member_args)
+                    member_symb = il.App(member_func, *member_args)
                     if elem in elems_in_set:
                         terms.append(member_symb)
                     else:
-                        terms.append(Not(member_symb))
+                        terms.append(il.Not(member_symb))
     return terms 
 
 def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
@@ -73,7 +77,7 @@ def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
     for atom_id, atom in enumerate(atoms):
         val = values[atom_id]
         if val == '0':
-            terms.append(Not(atom))
+            terms.append(il.Not(atom))
             atom_symbols.append(atom)
         elif val == '1':
             terms.append(atom)
@@ -85,8 +89,8 @@ def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
     return qterms 
 
 def split_term(term):
-    if term.is_not():
-        return ('1', term.arg(0))
+    if isinstance(term, il.Not):
+        return ('1', term.args[0])
     else:
         return ('0', term)
 
@@ -124,22 +128,22 @@ class QPrime():
         terms = get_qterms(QPrime.tran_sys, QPrime.atoms, self.qprime)
         for term in terms:
             (sign, atom)  = split_term(term)
-            if atom.is_function_application():
-                fsymbol = atom.function_name()
+            if il.is_app(atom):
+                fsymbol = atom.func
                 fname = get_signed_func_name(sign, str(fsymbol))
-                self.add_fname_args(fname, atom.args())
-            elif atom.is_equals():
-                lhs = atom.arg(0)
+                self.add_fname_args(fname, atom.args)
+            elif il.is_equals(atom):
+                lhs = atom.args[0]
                 # func_name2symbol
                 fsymbol = None
-                if lhs.is_function_application():
-                    fsymbol = lhs.function_name()
+                if il.is_app(lhs):
+                    fsymbol = lhs.func
                 else:
                     fsymbol = lhs
                 args = []
-                if lhs.is_function_application():
-                    args += fsymbol.symbol_type()._param_types
-                args.append(atom.arg(1))
+                if il.is_app(lhs):
+                    args += fsymbol.sort.dom
+                args.append(atom.args[1])
                 fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
                 self.add_fname_args(fname, tuple(args))
 
@@ -148,8 +152,8 @@ class QPrime():
         vprint(self.options, f'func_name2args: {self.func_name2args}', 5)
 
     def _get_arg_signature(self, signed_fname, func_id, arg_id, qvar):
-        sort = qvar.symbol_type() 
-        signatr = f'{sort}.{signed_fname}.{func_id}.{arg_id}'
+        sort = qvar.sort
+        signatr = f'{sort.name}.{signed_fname}.{func_id}.{arg_id}'
         return signatr
 
     def _add_qvar_signature(self, qvar, signatr):
@@ -169,7 +173,7 @@ class QPrime():
         vprint(self.options, f'signatr2qvar: {self.signatr2qvar}', 5)
 
     def _add_sort_part_signatures(self, qvar, part_signatr):
-        sort = qvar.symbol_type()
+        sort = qvar.sort
         if not sort in self.sort2part_signatrs:
             self.sort2part_signatrs[sort] = []
         self.sort2part_signatrs[sort].append(part_signatr)
@@ -240,27 +244,27 @@ class Merger():
             (sign, atom)  = split_term(term)
             # atoms
             self.atoms.append(atom)
-            if atom.is_function_application():
+            if il.is_app(atom):
                 # func_name2symbol
-                fsymbol = atom.function_name()
+                fsymbol = atom.func
                 self.func_name2symbol[str(fsymbol)] = fsymbol
                 # func_name2args
-                args    = fsymbol.symbol_type()._param_types
+                args    = fsymbol.sort.dom
                 fname   = get_signed_func_name(sign, str(fsymbol)) 
                 self._add_fname_args(fname, args)
-            elif atom.is_equals():
-                lhs = atom.arg(0)
+            elif il.is_equals(atom):
+                lhs = atom.args[0]
                 # func_name2symbol
                 fsymbol = None
-                if lhs.is_function_application():
-                    fsymbol = lhs.function_name()
+                if il.is_app(lhs):
+                    fsymbol = lhs.func
                 else:
                     fsymbol = lhs
                 self.func_name2symbol[str(fsymbol)+'='] = fsymbol
                 # func_name2args
                 args = []
-                if lhs.is_function_application():
-                    args += fsymbol.symbol_type()._param_types
+                if il.is_app(lhs):
+                    args += fsymbol.sort.dom
                 args.append(atom.arg(1))
                 fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
                 self._add_fname_args(fname, tuple(args))
@@ -287,7 +291,7 @@ class Merger():
         return '.'.join(qvars)
 
     def _get_arg_signature(self, sort, fname, func_id, arg_id):
-        return f'{sort}.{fname}.{func_id}.{arg_id}'
+        return f'{sort.name}.{fname}.{func_id}.{arg_id}'
 
     def _add_sort_signature(self, sort, arg_signature):
         if not sort in self.sort2signatr_classes:
@@ -322,7 +326,7 @@ class Merger():
         return True
     
     def _need_enumerate_partitions(self, sort):
-        sort_size    = len(Merger.tran_sys.sort2elems[sort])
+        sort_size    = len(Merger.tran_sys.sort2consts[sort])
         num_signatrs = len(self.sort2signatrs[sort])
         vprint_title(self.options, 'need_enumerate_partitions', 5)
         vprint(self.options, f'sort size: {sort_size}', 5)
@@ -379,16 +383,15 @@ class Merger():
     def _set_sort2qvars(self):
         self._set_sort_count()
         for sort, count in self.sort_count.items():
-            qvars = Merger.tran_sys.sort2qvars[sort]
-            new_qvars = []
-            for i in range(len(qvars), count):
-                name = 'Q:' + str(sort) + f'{i}'
-                new_qvars.append(Symbol(name, sort))
-            self.sort2qvars[sort] = (qvars + new_qvars)[:count]
+            qvars = [] 
+            for qvar_id in range(len(qvars), count):
+                qvar_name = sort.name[0].upper() + str(qvar_id)
+                qvars.append(il.Variable(qvar_name, sort))
+            self.sort2qvars[sort] = qvars
 
     def _remove_infeasible_partition(self):
         for sort, partitions in self.sort2partitions.items():
-            sort_size = len(Merger.tran_sys.sort2elems[sort])
+            sort_size = len(Merger.tran_sys.sort2consts[sort])
             remove = set()
             for pid, partition in enumerate(partitions):
                 if len(partition) > sort_size:
@@ -487,15 +490,15 @@ class Merger():
         if fname.endswith('='):
             lhs = None
             if len(args) > 1:
-                lhs = Function(fsymbol, args[:-1])
+                lhs = il.App(fsymbol, *args[:-1])
             else: 
                 lhs = fsymbol
             rhs = args[-1]
-            merged_term = EqualsOrIff(lhs,rhs)
+            merged_term = il.Equals(lhs,rhs)
         else:
-            merged_term = Function(fsymbol, args)
+            merged_term = il.App(fsymbol, *args)
         if sign == '1':
-            merged_term = Not(merged_term)
+            merged_term = il.Not(merged_term)
         return merged_term
 
     def _get_merged_terms(self):
@@ -511,12 +514,12 @@ class Merger():
         merged_terms = self._get_merged_terms() 
         qvars = self._get_all_qvars()
 
-        qstate = And(merged_terms)
+        qstate = il.And(*merged_terms)
         if len(qvars) != 0: 
-            qstate = Exists(qvars, qstate)
-        qclause = Not(qstate)
+            qstate = il.Exists(qvars, qstate)
+        qclause = il.Not(qstate)
         vprint_title(self.options, 'Merger: _get_unconstrained_qclause', 5)
-        vprint(self.options, f'qclause: {printer.pretty_print_str(qclause)}', 5) 
+        vprint(self.options, f'qclause: {str(qclause)}', 5) 
         return qclause
 
     def _get_all_qvars(self):
@@ -599,7 +602,7 @@ class Merger():
             for j in range(i+1, len(qvars)):
                 if str(qvars[i]) != str(qvars[j]):
                     neq_qvars = [qvars[i], qvars[j]]
-                    neq = Not(EqualsOrIff(neq_qvars[0], neq_qvars[1]))
+                    neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
                     neq_terms.add(neq)
         return list(neq_terms)
 
@@ -669,24 +672,24 @@ class Merger():
             # constraint = [neq1, neq2,...]
             # neq_constraint = neq1 | neq2
             if len(constraint):
-                neq_constraint = Or(constraint)
+                neq_constraint = il.Or(*constraint)
                 neq_constraint_list.append(neq_constraint)
         # neq_constraint = (neq1 | neq2) & (neq3 | neq4)
         if len(neq_constraint_list):
-            neq_constraint = And(neq_constraint_list)
+            neq_constraint = il.And(*neq_constraint_list)
             if self.use_absent:
                 merged_terms.append(neq_constraint)
             else:
-                merged_terms.append(Not(neq_constraint))
+                merged_terms.append(il.Not(neq_constraint))
 
         # qstate: exist Q (merge_terms & ((neq1 | neq2) & (neq3 | neq4)) )
-        qstate = And(merged_terms)
+        qstate = il.And(*merged_terms)
         if len(qvars) != 0: 
-            qstate = Exists(qvars, qstate)
+            qstate = il.Exists(qvars, qstate)
         # qstate: forall Q ( ~merge_terms | (eq1 & eq2) | (eq3 & eq4) )
-        qclause = Not(qstate)
+        qclause = il.Not(qstate)
         vprint_title(self.options, 'Merger: _get_constrained_qclause', 5)
-        vprint(self.options, f'qclause: {printer.pretty_print_str(qclause)}', 5)
+        vprint(self.options, f'qclause: {str(qclause)}', 5)
         return qclause 
 
     def merge(self):
@@ -694,11 +697,15 @@ class Merger():
         self.set_qprime_partitions() 
         self.set_partitions()
         if self.can_infer_unconstrained():
-            return self.get_unconstrained_qclause() 
+            qclause = self.get_unconstrained_qclause()
+            qclause = futil.de_morgan(qclause)
+            return qclause 
         else:
             self.set_func_name_permutations()
             self.set_absent_present_partitions()
-            return self.get_constrained_qclause()
+            qclause = self.get_constrained_qclause()
+            qclause = futil.de_morgan(qclause)
+            return qclause 
 
     @staticmethod
     def setup(atoms, tran_sys) -> None:

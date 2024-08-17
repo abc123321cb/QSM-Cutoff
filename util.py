@@ -20,10 +20,17 @@ class QrmOptions():
         self.writeLog        = False
         self.log_name        = ''
         self.log_fout        = None
-        self.all_solutions   = False
-        self.merge_suborbits = False
+        self.all_solutions   = True 
+        self.merge_suborbits = True 
         self.ivy_to          = 120 
         self.qrm_to          = 3600 
+        self.python_include_path = '/usr/include/python3.12'
+        self.disable_print   = False # FIXME
+
+    def set_files_name(self, ivy_name):
+        self.ivy_filename  = ivy_name
+        self.instance_name = ivy_name.split('.')[0]
+        self.vmt_filename  = self.instance_name + '.vmt'
 
     def open_log(self) -> None:
         assert(self.writeLog)
@@ -52,115 +59,105 @@ class QrmOptions():
             self.sizes[sort] = int(size)
 
 
-SORT_SUFFIX = ':e'
 SET_DELIM   = '_'
-from pysmt.pretty_printer import pretty_serialize
-class FormulaPrinter():
-    # static data
-    name_set   = set()
-    sort_count = {}
-    qvar_count = 0
-
-    @staticmethod
-    def reset():
-        FormulaPrinter.name_set   = set()
-        FormulaPrinter.sort_count = {}
-        FormulaPrinter.qvar_count = 0
-
-    def pretty_print_enum_constant(enum):
-        assert(enum.is_enum_constant())
-        name = enum.constant_value()
-        prefix = name.rstrip('1234567890')
-        suffix = name[len(prefix):]
-        prefix = prefix.rstrip(':1234567890')
-        assert(prefix.endswith(SORT_SUFFIX))
-        prefix = prefix[:-2]
-        return prefix+suffix
-
-    def pretty_print_quantified_var(qvar):
-        name   = str(qvar)
-        suffix = name.rstrip('1234567890')
-        name   = name[len(suffix):]
-        assert(len(name) != 0)
-        var_type = qvar.symbol_type()
-        sort_name = str(var_type)[0].upper()
-        if sort_name not in FormulaPrinter.sort_count:
-            FormulaPrinter.sort_count[sort_name] = 0
-        name = sort_name + str(FormulaPrinter.sort_count[sort_name])
-        FormulaPrinter.sort_count[sort_name] += 1
-        if name in FormulaPrinter.name_set:
-            name = name + '_' + str(FormulaPrinter.qvar_count)
-            FormulaPrinter.qvar_count += 1
-        FormulaPrinter.name_set.add(name)
-        return name
-    
-    def pretty_print_free_var(fvar):
-        name = str(fvar)
-        name = name.lstrip('_')
-        suffix = name.rstrip('1234567890')
-        if len(suffix) != 0:
-            tmp_name = name[:len(suffix)]
-            if tmp_name.endswith(SORT_SUFFIX):
-                name = tmp_name[:-2]
-        return name
-
-    def pretty_print_str(fmla, subs={}, mode=0, reset=True):
-        FormulaPrinter.reset()
-        qvars   = fmla.get_quantifier_variables()
-        for qvar in qvars:
-            name = FormulaPrinter.pretty_print_quantified_var(qvar)
-            subs[qvar] = name
-        fvars = fmla.get_free_variables()
-        for fvar in fvars:
-            name = FormulaPrinter.pretty_print_free_var(fvar)
-            subs[fvar] = name
-        enums = fmla.get_enum_constants()
-        for enum in enums:
-            if enum not in subs:
-                name = FormulaPrinter.pretty_print_enum_constant(enum)
-                subs[enum] = name
-        if reset:
-            mode = 0
-        return pretty_serialize(fmla, mode=mode, subs=subs)
-
-    def pretty_print_set(set_to_print, mode=1):
-        list_to_print = [pretty_serialize(elem) for elem in set_to_print]
-        res = '[ ' + ', '.join(list_to_print) + ' ]'
-        return res
-
-from pysmt.shortcuts import Not
+from ivy import ivy_logic as il
+from ivy import ivy_logic_utils as ilu
 class FormulaUtility():
-
     @staticmethod
-    def flatten_or(cube):
+    def flatten_or(formula):
         flat = set()
-        cube_flat = cube
-
-        if (cube_flat.is_or()):
-            for arg in cube_flat.args():
+        if isinstance(formula, il.Or):
+            for arg in formula.args:
                 for flat_arg in FormulaUtility.flatten_or(arg):
                     flat.add(flat_arg)
         else:
-            flat.add(cube_flat)
+            flat.add(formula)
         return flat
 
     def flatten_and(formula):
         flat = set()
-        if (formula.is_and()):
-            for arg in formula.args():
+        if isinstance(formula, il.And):
+            for arg in formula.args:
                 for flat_arg in FormulaUtility.flatten_and(arg):
                     flat.add(flat_arg)
         elif (formula.is_not()):
-            formulaNeg = formula.arg(0)
-            if formulaNeg.is_or():
-                for arg in formulaNeg.args():
+            formulaNeg = formula.arg[0]
+            if isinstance(formulaNeg, il.Or):
+                for arg in formulaNeg.args:
                     for flat_arg in FormulaUtility.flatten_or(arg):
-                        flat.add(Not(flat_arg))
+                        flat.add(il.Not(flat_arg))
             else:
                 flat.add(formula)
         else:
             flat.add(formula)
         return flat 
+
+    def flatten_cube(cube):
+        flat = set()
+        if isinstance(cube, il.Exists):
+            cube = cube.args[0]
+
+        if isinstance(cube, il.And):
+            for arg in cube.args:
+                for flat_arg in FormulaUtility.flatten_cube(arg):
+                    flat.add(flat_arg)
+        else:
+            flat.add(cube)
+        return flat
+
+    def count_quantifiers_and_literals(formula, pol=True, inF=0, inE=0, inL=0):
+        outF = inF
+        outE = inE
+        outL = inL
+        if isinstance(formula, il.Not):
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[0], not pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if isinstance(formula, il.Implies):
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[0], not pol, outF, outE, outL)
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[1], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        is_e = isinstance(formula, il.Exists)
+        is_a = isinstance(formula, il.ForAll)
+        if (is_e and pol) or (is_a and not pol):
+            qvars = il.quantifier_vars(formula)
+            outE += len(qvars)
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[0], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if (is_e and not pol) or (is_a and pol):
+            qvars = il.quantifier_vars(formula)
+            outF += len(qvars)
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[0], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if isinstance(formula, il.And) or isinstance(formula, il.Or):
+            for arg in formula.args:
+                outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(arg, pol, outF, outE, outL)
+        elif ilu.is_true(formula) or ilu.is_false(formula):
+            pass
+        else:
+            outL += 1
+        return (outF, outE, outL) 
+
+    def de_morgan(f):
+        """ remove negations from formula by applying de Morgans' laws """
+        f = ilu.expand_abbrevs(f)
+        if not isinstance(f,il.Not):
+            return f
+        g = FormulaUtility.de_morgan(f.args[0])
+        if isinstance(g,il.And):
+            if len(g.args) == 1: return FormulaUtility.de_morgan(ilu.negate(g.args[0]))
+            return il.Or(*[FormulaUtility.de_morgan(ilu.negate(x)) for x in g.args])
+        if isinstance(g,il.Or):
+            if len(g.args) == 1: return FormulaUtility.de_morgan(ilu.negate(g.args[0]))
+            return il.And(*[FormulaUtility.de_morgan(ilu.negate(x)) for x in g.args])
+        if il.is_quantifier(g):
+            prefix = il.quantifier_vars(g)
+            matrix = il.quantifier_body(g)
+            negate_matrix = FormulaUtility.de_morgan(ilu.negate(matrix))
+            if isinstance(g, il.ForAll):
+                return il.Exists(prefix, negate_matrix)
+            if isinstance(g, il.Exists):
+                return il.ForAll(prefix, negate_matrix)
+        return il.Not(g)
 
 def get_instances_from_yaml(yaml_name):
     import yaml

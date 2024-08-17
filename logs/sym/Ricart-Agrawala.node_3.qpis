@@ -1,0 +1,109 @@
+
+=== Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : ------------1--------
+0     : ['requested(node0,node0)']
+1     : ----------------1----
+1     : ['requested(node1,node1)']
+2     : --------------------1
+2     : ['requested(node2,node2)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : (forall N0 . ~requested(N0, N0))
+qcost : 2
+
+
+=== Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : 1--------------------
+3     : ['replied(node0,node0)']
+4     : ----1----------------
+4     : ['replied(node1,node1)']
+5     : --------1------------
+5     : ['replied(node2,node2)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : (forall N0 . ~replied(N0, N0))
+qcost : 2
+
+
+=== Orbit 2 =====================
+size : 6
+num_suborbits: 1
+6 (*) : ---1-----1-----------
+6     : ['holds(node0)', 'replied(node1,node0)']
+7     : ------1--1-----------
+7     : ['holds(node0)', 'replied(node2,node0)']
+8     : -1--------1----------
+8     : ['holds(node1)', 'replied(node0,node1)']
+9     : -------1--1----------
+9     : ['holds(node1)', 'replied(node2,node1)']
+10     : --1--------1---------
+10     : ['holds(node2)', 'replied(node0,node2)']
+11     : -----1-----1---------
+11     : ['holds(node2)', 'replied(node1,node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : (forall N0, N1 . (~holds(N0) | ~replied(N1, N0) | (N0 = N1)))
+qcost : 5
+
+
+=== Orbit 3 =====================
+size : 6
+num_suborbits: 1
+12 (*) : --0------1-----------
+12     : ['holds(node0)', '~replied(node0,node2)']
+13     : -0-------1-----------
+13     : ['holds(node0)', '~replied(node0,node1)']
+14     : -----0----1----------
+14     : ['holds(node1)', '~replied(node1,node2)']
+15     : ---0------1----------
+15     : ['holds(node1)', '~replied(node1,node0)']
+16     : -------0---1---------
+16     : ['holds(node2)', '~replied(node2,node1)']
+17     : ------0----1---------
+17     : ['holds(node2)', '~replied(node2,node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : (forall N0, N1 . (replied(N0, N1) | ~holds(N0) | (N0 = N1)))
+qcost : 5
+
+
+=== Orbit 4 =====================
+size : 3
+num_suborbits: 1
+18 (*) : ---------11----------
+18     : ['holds(node0)', 'holds(node1)']
+19     : ---------1-1---------
+19     : ['holds(node0)', 'holds(node2)']
+20     : ----------11---------
+20     : ['holds(node1)', 'holds(node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : (forall N0, N1 . (~holds(N0) | ~holds(N1) | (N0 = N1)))
+qcost : 5
+
+
+=== Orbit 5 =====================
+size : 3
+num_suborbits: 1
+21 (*) : -----1-1-------------
+21     : ['replied(node1,node2)', 'replied(node2,node1)']
+22     : --1---1--------------
+22     : ['replied(node0,node2)', 'replied(node2,node0)']
+23     : -1-1-----------------
+23     : ['replied(node0,node1)', 'replied(node1,node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : (forall N0, N1 . (~replied(N0, N1) | ~replied(N1, N0) | (N0 = N1)))
+qcost : 5
+
+

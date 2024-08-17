@@ -1,0 +1,34 @@
+(declare-sort client 0)
+(declare-sort server 0)
+
+(define-fun .client ((S client)) client (! S :sort 0))
+(define-fun .server ((S server)) server (! S :sort 0))
+
+(declare-fun __link (client server) Bool)
+(declare-fun __semaphore (server) Bool)
+
+(declare-fun link (client server) Bool)
+(declare-fun semaphore (server) Bool)
+
+(define-fun .link ((V0 client) (V1 server)) Bool (! (__link V0 V1) :next link))
+(define-fun .semaphore ((V0 server)) Bool (! (__semaphore V0) :next semaphore))
+
+(define-fun .prop () Bool (! 
+ (let (($v (forall ((C1 client) (C2 client) (S server)) (=> (and (__link C1 S) (__link C2 S)) (= C1 C2)))
+ ))
+ (and $v))
+ :invar-property 0))
+
+(define-fun .init () Bool (! 
+ (let (($v (and (forall ((V0 server)) (= (__semaphore V0) true)) (forall ((V0 client) (V1 server)) (= (__link V0 V1) false)))
+ ))
+ (and $v))
+ :init true))
+
+(declare-fun connect (client server) Bool)
+(define-fun .connect ((V0 client) (V1 server)) Bool (! (connect V0 V1) :action true))
+
+(declare-fun disconnect (client server) Bool)
+(define-fun .disconnect ((V0 client) (V1 server)) Bool (! (disconnect V0 V1) :action true))
+
+

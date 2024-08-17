@@ -1,9 +1,9 @@
-from typing import Dict,List,Set
-from pysat.solvers import Glucose4 as SatCounter 
-from pysat.solvers import Cadical153 as SatSolver
-from pysat.allies.approxmc import Counter
+from typing import List,Set
+from transition_system import TransitionSystem
 from prime import *
-from util import QrmOptions, UseMC
+from cover_constraints import CoverConstraints
+from prime_check import PrimeChecker
+from util import QrmOptions
 from verbose import *
 
 def remove_target_from_source(source : list, target : set) -> list:
@@ -28,104 +28,17 @@ class StackLevel():
     def _switch_branch(self) -> None:
         self.include_orbit = not self.include_orbit
 
-class CoverConstraints():
-    def __init__(self, orbits : List[PrimeOrbit], useMC : UseMC) -> None:
-        self.sat_solver     = SatSolver() 
-        self.sat_counter    = SatCounter()
-        self.approx_counter = None 
-        self.useMC         = useMC
-        self.atom_vars : List[int] = []
-        self.orbit_vars: List[int] = []
-        self.coverage  : List[int] = [-1]*len(orbits) 
-        self.clauses       = []
-        
-        self._init_vars(orbits)
-        self._init_solver(orbits)
-
-    def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
-        literals = []
-        for (id, val) in enumerate(prime.values):
-            lit = self.atom_vars[id]
-            if (val == '1' and negate) or (val == '0' and not negate):
-                literals.append(-1*lit) 
-            elif (val == '1' and not negate) or (val == '0' and negate):
-                literals.append(lit)
-        return literals
-
-    def _init_vars(self, orbits : List[PrimeOrbit]) -> None:
-        atom_num = len(orbits[0].repr_prime.values)
-        for atom_id in range(atom_num):
-            self.atom_vars.append(atom_id+1)
-        for orbit_id in range(len(orbits)):
-            self.orbit_vars.append(atom_num + 1 + orbit_id)
-
-    def _init_solver(self, orbits : List[PrimeOrbit]) -> None:
-        for (orbit_id, orbit) in enumerate(orbits):
-            orbit_var = self.orbit_vars[orbit_id]
-            for prime in orbit.primes:
-                clause = self.get_prime_literals(prime, negate=True) 
-                clause.append(-1*orbit_var)
-                self.sat_solver.add_clause(clause)
-                self.clauses.append(clause)
-                self.sat_counter.add_clause(clause)
-
-    def _count_atom_var(self, assigned) -> int:
-        count = 0
-        for lit in assigned:
-            var = abs(lit)
-            if var <= len(self.atom_vars):
-                count +=1
-        return count
-
-    def reset_coverage(self) -> None:
-        for (i, _) in enumerate(self.coverage):
-            self.coverage[i] = -1
-
-    def is_essential(self, orbit : PrimeOrbit, pending, solution) -> bool:
-        result = False
-        for repr_prime in orbit.suborbit_repr_primes:
-            assumptions = self.get_prime_literals(repr_prime)
-            assumptions += [self.orbit_vars[i] for i in pending  if i != orbit.id]
-            assumptions += [self.orbit_vars[i] for i in solution if i != orbit.id]
-            result = self.sat_solver.solve(assumptions)
-            if result:
-                break
-        return result
-
-    def get_coverage(self, orbit : PrimeOrbit, solution) -> int:
-        for repr_prime in orbit.suborbit_repr_primes:
-            assumptions = self.get_prime_literals(repr_prime)
-            assumptions += [self.orbit_vars[i] for i in solution]
-            result = self.sat_counter.solve(assumptions)
-            self.coverage[orbit.id] = 0
-            if result:
-                result, assigned = self.sat_counter.propagate(assumptions)
-                atom_count = self._count_atom_var(assigned)
-                len_assigned = len(self.atom_vars) +1 - atom_count
-
-                if self.useMC == UseMC.sat:
-                    self.coverage[orbit.id] += len_assigned 
-                else:
-                    cnf  = self.clauses                                                                    
-                    cnf += [[a] for a in assumptions]
-                    self.approx_counter = Counter(formula=cnf, epsilon=0.50, delta=0.50)
-                    result = self.approx_counter.count()
-                    self.coverage[orbit.id] += max(len_assigned, result)
-                    self.approx_counter.delete()
-                    self.approx_counter = None
-            else:
-                self.coverage[orbit.id] += 0 # covered by existing solution 
-        return self.coverage[orbit.id] 
-
 class Minimizer():
-    def __init__(self, orbits: List[PrimeOrbit], options : QrmOptions) -> None: 
-        self.orbits = orbits
-        self.cover  = CoverConstraints(orbits, options.useMC)
-        self.max_cost = 1 + sum([orbit.qcost for orbit in orbits])
-        self.ubound = self.max_cost
+    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits: List[PrimeOrbit]) -> None: 
+        self.tran_sys = tran_sys
+        self.orbits   = orbits
+        self.cover    = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC)
+        self.max_cost = 0 
+        self.ubound   = 0 
         self.decision_stack : List[StackLevel] = []
-        self.pending  : List[int] = list(range(len(orbits)))
-        self.solution : List[int] = []
+        self.pending    : List[int] = list(range(len(orbits)))
+        self.solution   : List[int] = []
+        self.def_orbits : Set[int]  = set()
         self.optimal_solutions : List[List[int]] = []
         self.options = options
 
@@ -304,6 +217,8 @@ class Minimizer():
             vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})', 3)
             for id in solution: 
                 vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
+            for def_symbol, def_ast in self.tran_sys.definitions.items():
+                vprint(self.options, f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition', 3)
             vprint(self.options, '\n', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 2)
         
@@ -316,6 +231,9 @@ class Minimizer():
             total_cost += self.orbits[id].qcost
             line = f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}'
             invariants.append(line)
+        for def_symbol, def_ast in self.tran_sys.definitions.items():
+            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
+            invariants.append(line)
         vprint(self.options, f'[MIN NOTE]: number of invariants in minimal solution: {len(solution)}', 2)
         vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
         return invariants
@@ -327,3 +245,51 @@ class Minimizer():
             self._solve_one()
         self.print_final_solutions()
         return self.get_final_invariants()
+
+    def _remove_definition_prime_orbits_from_pending(self) -> Set[int]:
+        for id in self.pending:
+            orbit = self.orbits[id]
+            is_definition = self.cover.is_definition_prime(orbit)
+            if (is_definition):
+                self.def_orbits.add(id)
+        remove_target_from_source(source=self.pending, target=self.def_orbits)
+
+    def reduce_redundant_prime_orbits(self):
+        self._remove_definition_prime_orbits_from_pending()
+        self._new_level()
+        self._reduce()
+
+    def quantifier_inference(self, atoms) -> None:
+        from qinference import QInference
+        from merge import Merger
+        Merger.setup(atoms, self.tran_sys)
+        QInference.setup(atoms, self.tran_sys)
+        vprint_title(self.options, 'quantifier_inference', 5)
+        inference_list = self.solution + self.pending
+        for id in inference_list:
+            orbit = self.orbits[id]
+            vprint(self.options, str(orbit), 5)
+            repr_primes = orbit.suborbit_repr_primes
+            qclause = None
+            if len(repr_primes) == 1:
+                is_orbit_size_1 = (len(orbit.primes) == 1)
+                qInfr = QInference(repr_primes[0], self.options, is_orbit_size_1)
+                qclause = qInfr.infer_quantifier() 
+            else:
+                merger  = Merger(self.options, repr_primes)
+                qclause = merger.merge()
+            orbit.set_quantifier_inference_result(qclause)
+        # output result
+        if self.options.writeQI:
+            prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
+            outF = open(prime_filename, "w")
+            for id in inference_list:
+                orbit = self.orbits[id]
+                outF.write(str(orbit))
+            outF.close()
+        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        for id in inference_list:
+            orbit = self.orbits[id]
+            vprint(self.options, str(orbit), 3)
+        self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
+        self.ubound   = self.max_cost

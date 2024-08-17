@@ -30,30 +30,16 @@ cd swig-4.2.1
 make
 make install
 ```
-3. Install repycudd
-```
-cd repycudd
-cd cudd-2.4.2
-make
-make libso
-cd..
-```
 
-change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X and add the compilation flag `-I[PATH TO Python.h]`
-```
-make
-export PYTHONPATH=$PYTHONPATH:[path to repycudd.py]
-```
-
-4. Install ivy
+3. Install ivy
 ```
 apt-get install cmake
 cd ivy
 python3 build_submodules.py
-python3 setup.py develop
+python3 setup.py install
 ```
 
-5. Install pysmt
+4. Install pysmt
 ```
 python3 setup.py install
 ```
@@ -66,10 +52,10 @@ If you don't have permission to `apt-get install` or `yum install`, try the foll
 
 ## Usage
 ```=python3
-python3 qrm.py -i [IVY FILE] -s [sort1=size1,sort2=size2 ...]
+./configure.sh [PYTON INCLUDE PATH] (e.g. /usr/include/python3.12)
+python3 qrm.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 python3 run_all.py [YAML FILE]
 ```
-Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' as a work around.
 ### Usage for Options
 #### Verbosity
 - default: only prints `ivy_check` result for each size, and the final qrm result
@@ -87,8 +73,6 @@ Note that 'qrm.py -y [YAML FILE]' option is buggy, use 'run_all.py [YAML FILE]' 
     - print debug info
 #### Experient Options
 ```
-python3 run_all.py [YAML] -v 1 -w       -l log    # write .ptcl, .pis, .qpis, .ivy
-python3 run_all.py [YAML] -v 4 -w -a    -l log    # find all solutions, don't merge suborbits
-python3 run_all.py [YAML] -v 4 -w -a -m -l log    # find all solutions, merge suborbits
+python3 run_all.py [YAML] -v 5 -w -l log 
 ```
 
