@@ -177,7 +177,7 @@ class Protocol():
             if (il.is_function_sort(var_type) and
                not il.is_boolean_sort(var_type.rng)): 
                eq_term = '='
-               param_list.append(tran_sys.get_finite_sort_from_sort_name(var_type.rng))
+               param_list.append(tran_sys.get_sort_name_from_finite_sort(var_type.rng))
             
             line += eq_term
             if len(param_list) > 0:
