@@ -152,7 +152,7 @@ def qrm(ivy_name, args):
     prime_orbits.symmetry_aware_enumerate(tran_sys, instantiator, protocol)               
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step5: reduction 
+    # step3: reduction
     step_start(options, f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
     minimizer.reduce_redundant_prime_orbits()
