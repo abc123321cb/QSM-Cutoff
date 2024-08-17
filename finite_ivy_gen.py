@@ -274,9 +274,11 @@ class FiniteIvyGenerator():
         for i, state_var in enumerate(FiniteIvyGenerator.cpp_state_vars):
             if state_var in FiniteIvyGenerator.cpp_non_bool_state_vars:
                 sort = FiniteIvyGenerator.cpp_non_bool_state_vars[state_var]
-                lines.append('\tivy_value arg; arg.pos = 0; arg.atom = state_values[' + str(i) + '];\n')
-                lines.append('\tstd::vector<ivy_value> args; args.push_back(arg);\n')
-                lines.append('\tivy_exec -> ' + state_var + f' = _arg<{protocol_class_name}::{sort}>(args, 0, 0)' + ';\n')
+                lines.append('\t{\n')
+                lines.append('\t\tivy_value arg; arg.pos = 0; arg.atom = state_values[' + str(i) + '];\n')
+                lines.append('\t\tstd::vector<ivy_value> args; args.push_back(arg);\n')
+                lines.append('\t\tivy_exec -> ' + state_var + f' = _arg<{protocol_class_name}::{sort}>(args, 0, 0)' + ';\n')
+                lines.append('\t}\n')
             else:
                 lines.append('\tstd::stringstream(state_values[' + str(i) + ']) >> ivy_exec -> ' + state_var + ';\n')
         lines.append('}\n')  
