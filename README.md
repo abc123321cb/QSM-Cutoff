@@ -39,10 +39,6 @@ python3 build_submodules.py
 python3 setup.py install
 ```
 
-4. Install pysmt
-```
-python3 setup.py install
-```
 ### Issues with Installation
 If you don't have permission to `apt-get install` or `yum install`, try the following steps:
 - Download the source
