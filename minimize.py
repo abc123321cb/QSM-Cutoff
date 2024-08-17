@@ -215,10 +215,10 @@ class Minimizer():
             vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})', 3)
             costs = [self.orbits[i].qcost for i in solution]
             vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})', 3)
-            for id in solution: 
-                vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
             for def_symbol, def_ast in self.tran_sys.definitions.items():
                 vprint(self.options, f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition', 3)
+            for id in solution:
+                vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
             vprint(self.options, '\n', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 2)
         
@@ -227,12 +227,12 @@ class Minimizer():
         assert(len(self.optimal_solutions) >=1 )
         solution = self.optimal_solutions[0]
         total_cost = 0
+        for def_symbol, def_ast in self.tran_sys.definitions.items():
+            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
+            invariants.append(line)
         for id in solution:
             total_cost += self.orbits[id].qcost
             line = f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}'
-            invariants.append(line)
-        for def_symbol, def_ast in self.tran_sys.definitions.items():
-            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
             invariants.append(line)
         vprint(self.options, f'[MIN NOTE]: number of invariants in minimal solution: {len(solution)}', 2)
         vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
