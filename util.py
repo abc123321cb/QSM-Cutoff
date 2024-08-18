@@ -59,7 +59,8 @@ class QrmOptions():
             self.sizes[sort] = int(size)
 
 
-SET_DELIM   = '_'
+SET_DELIM      = '__'
+SET_ELEM_DELIM = '_'
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
 class FormulaUtility():

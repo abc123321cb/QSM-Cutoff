@@ -5,7 +5,7 @@ from ivy import ivy_logic as il
 from ivy import ivy_utils as iu
 from ivy import ivy_logic_utils as ilu
 from ivy import ivy_actions as ia
-from util import QrmOptions, SET_DELIM
+from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
 from verbose import *
 
 #*************************************************************************
@@ -54,8 +54,7 @@ class DependentType():
             for elem in elems_in_set:
                 labels.append(str(elem))
             labels.sort()
-            labels = [label_header] + labels
-            set_label = set_delim.join(labels)
+            set_label = label_header + SET_DELIM +  SET_ELEM_DELIM.join(labels) 
             self.sets.append((set_label, elems_in_set))
 
     def set_dep_relation(self, dep_relation):

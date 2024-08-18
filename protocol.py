@@ -3,7 +3,7 @@ from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
 from ivy import ivy_logic as il
 from transition_system import TransitionSystem
-from util import QrmOptions, SET_DELIM
+from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
 from verbose import *
 from math import factorial as fact
 
@@ -29,7 +29,7 @@ def split_head_tail(line: str, head : int, delim=None) -> Tuple [str, List[str]]
 def parse_set_constant(set_const: str) -> Tuple [str, List[str]]:
     lst = set_const.split(SET_DELIM)
     set_name   = lst[0]
-    elems      = lst[1].strip(SET_LBRACE).strip(SET_RBRACE).split(SET_ELEM_DELIM)
+    elems      = lst[1].split(SET_ELEM_DELIM)
     return (set_name, elems)
 
 def new_insert(obj, obj_set: Set[str]) -> bool:
@@ -265,7 +265,7 @@ class Protocol():
             new_constant_id = permutation[sort_id][old_constant_id]
             new_constant.append(self.sort_constants[sort_id][new_constant_id])
         new_constant.sort()
-        return SET_DELIM.join(new_constant)
+        return SET_ELEM_DELIM.join(new_constant)
 
     def _get_renamed_atom(self, permutation, atom_id) -> str:
         signature = self.atom_sig[atom_id]
@@ -277,7 +277,7 @@ class Protocol():
         for (arg_id, arg) in enumerate(args):
             narg = ''
             if arg in self.set_name2elem_sort_id:
-                (prefix, elements) = split_head_tail(arg, head=0, delim=SET_DELIM)
+                (prefix, elements) = parse_set_constant(arg) 
                 sort_id = self.set_name2elem_sort_id[arg]
                 narg = (prefix + SET_DELIM)
                 narg += self._get_renamed_arguments(permutation, sort_id, elements)
