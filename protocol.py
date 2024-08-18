@@ -8,7 +8,6 @@ from verbose import *
 from math import factorial as fact
 
 # utils
-set_delim = SET_DELIM
 def format_relational_atom(function: str, args: List[str]) -> str:
     return function + '(' + ','.join(args) + ')'
 
@@ -26,6 +25,12 @@ def format_equal_atom(function: str, args: List[str]) -> str:
 def split_head_tail(line: str, head : int, delim=None) -> Tuple [str, List[str]]:
     lst = line.split(delim)
     return (lst[head], lst[head+1:])
+
+def parse_set_constant(set_const: str) -> Tuple [str, List[str]]:
+    lst = set_const.split(SET_DELIM)
+    set_name   = lst[0]
+    elems      = lst[1].strip(SET_LBRACE).strip(SET_RBRACE).split(SET_ELEM_DELIM)
+    return (set_name, elems)
 
 def new_insert(obj, obj_set: Set[str]) -> bool:
     key = str(obj)
@@ -223,12 +228,16 @@ class Protocol():
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(state)
 
-    def init_sorts_permutations(self) -> None:
+    def init_sorts_permutations(self, tran_sys : TransitionSystem) -> None:
         all_sorts_permutations = []
-        for constants in self.sort_constants:
-            const_id_list = list(range(len(constants)))
-            sort_permutations = permutations(const_id_list)
-            all_sorts_permutations.append(sort_permutations)
+        for sort_id, constants in enumerate(self.sort_constants):
+            sort_name     = self.sorts[sort_id]
+            const_id_list = tuple(range(len(constants)))
+            if tran_sys.get_finite_sort_from_sort_name(sort_name) in tran_sys.dep_types:
+                all_sorts_permutations.append([const_id_list])
+            else:
+                sort_permutations = permutations(const_id_list)
+                all_sorts_permutations.append(sort_permutations)
         # cartesian product
         self._sorts_permutations = list(product(*all_sorts_permutations))
 
@@ -256,7 +265,7 @@ class Protocol():
             new_constant_id = permutation[sort_id][old_constant_id]
             new_constant.append(self.sort_constants[sort_id][new_constant_id])
         new_constant.sort()
-        return set_delim.join(new_constant)
+        return SET_DELIM.join(new_constant)
 
     def _get_renamed_atom(self, permutation, atom_id) -> str:
         signature = self.atom_sig[atom_id]
@@ -268,9 +277,9 @@ class Protocol():
         for (arg_id, arg) in enumerate(args):
             narg = ''
             if arg in self.set_name2elem_sort_id:
-                (prefix, elements) = split_head_tail(arg, head=0, delim=set_delim) 
+                (prefix, elements) = split_head_tail(arg, head=0, delim=SET_DELIM)
                 sort_id = self.set_name2elem_sort_id[arg]
-                narg = (prefix + set_delim)
+                narg = (prefix + SET_DELIM)
                 narg += self._get_renamed_arguments(permutation, sort_id, elements)
             else:
                 sort    = argsorts[arg_id]

@@ -40,7 +40,7 @@ class ForwardReachability():
         self.protocol.init_dependent_sort(self.tran_sys)
         self.protocol.init_predicate(self.tran_sys)
         self.protocol.init_atoms(self.instantiator.protocol_atoms, self.instantiator.protocol_atoms_fmls)
-        self.protocol.init_sorts_permutations()
+        self.protocol.init_sorts_permutations(self.tran_sys)
 
     def _init_finite_ivy_generator(self):
         FiniteIvyGenerator.set_transition_system(self.tran_sys)
