@@ -43,6 +43,9 @@ class CoverConstraints():
         else:
             if isinstance(symbol, il.Not):
                 return -1*self.tseitin_encode(symbol.args[0])
+            if len(symbol.args) == 1:
+                assert( isinstance(symbol, il.And) or isinstance(symbol, il.Or) )
+                return self.tseitin_encode(symbol.args[0])
             assert(len(symbol.args) > 1)
             symbol_var = self.new_var()
             args = [self.tseitin_encode(arg) for arg in symbol.args]
