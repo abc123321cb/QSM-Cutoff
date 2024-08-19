@@ -127,28 +127,38 @@ class QPrime():
             self.func_name2args[fname] = [] 
         self.func_name2args [fname].append(args)
 
+    def _get_func_symbol(self, atom):
+        symbol    = None
+        if isinstance(atom, il.App):
+            symbol = atom.func
+        elif il.is_eq(atom):
+            lhs = atom.args[0]
+            symbol = None
+            if isinstance(lhs, il.App):
+                symbol = lhs.func
+            else:
+                symbol = lhs
+        return symbol 
+    
     def set_function_name_to_arguments(self):
         terms = get_qterms(QPrime.tran_sys, QPrime.atoms, self.qprime)
         for term in terms:
             (sign, atom)  = split_term(term)
+            fsymbol = self._get_func_symbol(atom)
+            fname   = None
+            args    = None
             if isinstance(atom, il.App):
-                fsymbol = atom.func
+                args = atom.args
                 fname = get_signed_func_name(sign, str(fsymbol))
-                self.add_fname_args(fname, atom.args)
             elif il.is_eq(atom):
                 lhs = atom.args[0]
-                # func_name2symbol
-                fsymbol = None
-                if isinstance(lhs, il.App):
-                    fsymbol = lhs.func
-                else:
-                    fsymbol = lhs
                 args = []
                 if isinstance(lhs, il.App):
-                    args += fsymbol.sort.dom
+                    args += list(lhs.args)
                 args.append(atom.args[1])
+                args = tuple(args)
                 fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
-                self.add_fname_args(fname, tuple(args))
+            self.add_fname_args(fname, args)
 
         vprint_title(self.options, 'QPrime: set_function_name_to_arguments', 5)
         vprint(self.options, f'terms: {terms}', 5)
@@ -265,11 +275,12 @@ class Merger():
             func_name   = get_signed_func_name(sign, str(func_symbol)) 
         elif il.is_eq(atom):
             lhs = atom.args[0]
+            rhs = atom.args[1]
             args = []
             if isinstance(lhs, il.App):
+                # lhs is func_symbol
                 args += func_symbol.sort.dom
-            else:
-                args.append(atom.args[1].sort)
+            args.append(rhs.sort)
             args  = tuple(args)
             func_name = get_signed_func_name(sign, str(func_symbol), is_equals=True) 
         self._add_fname_args(func_name, args)
