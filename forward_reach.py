@@ -127,7 +127,7 @@ class ForwardReachability():
     def _write_protocol(self):
         if (self.options.writeReach):
             self.protocol.write_reachability()
-        self.protocol.print_verbose()
+        self.protocol.print_verbose(self.tran_sys)
         vprint(self.options, f'[FW NOTE]: dfs max depth: {self.dfs_max_depth}', 2)
         vprint(self.options, f'[FW NOTE]: number of total reachable states:        {len(self.dfs_explored_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)

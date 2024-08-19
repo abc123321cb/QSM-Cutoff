@@ -249,10 +249,12 @@ class Protocol():
         outF.write('.e\n')
         outF.close()
 
-    def print_verbose(self) -> None:
+    def print_verbose(self, tran_sys) -> None:
         sym_group_order = 1
-        for constants in self.sort_constants:
-            sym_group_order *= fact(len(constants))
+        for sort_id, constants in enumerate(self.sort_constants):
+            sort_name     = self.sorts[sort_id]
+            if not tran_sys.get_finite_sort_from_sort_name(sort_name) in tran_sys.dep_types:
+                sym_group_order *= fact(len(constants))
         vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
         vprint(self.options, '\n'.join(self.lines), 3)
         vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
