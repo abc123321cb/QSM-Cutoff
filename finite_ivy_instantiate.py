@@ -73,7 +73,10 @@ class FiniteIvyInstantiator():
     def _get_all_params_of_param_types(self, param_types):
         elems = []
         for ptype in param_types:
-            elems.append(self._tran_sys.sort2consts[ptype])
+            if il.is_boolean_sort(ptype):
+                elems.append([il.And(), il.Or()])
+            else:
+                elems.append(self._tran_sys.sort2consts[ptype])
         all_params = list(product(*elems))
         all_params = [list(params) for params in all_params]
         return all_params
