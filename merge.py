@@ -24,17 +24,20 @@ def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
     # relabel each var into qvar with index being order of occurrence
     # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
     state =  il.And(*terms) if len(terms) != 0 else il.And()
-    variables  = ilu.used_constants_ast(state)
     var2qvar   = {}
     sort2qvars = {}
-    for var in sorted(variables, key=str):
-        sort = var.sort
-        if not sort in tran_sys.sort2consts:
-            continue
-        qvars  = get_used_qvars(sort2qvars, sort)
-        qvar   = get_next_unused_qvar(tran_sys, sort, qvars) 
-        qvars.append(qvar)
-        var2qvar[var] = qvar
+    for term in terms:
+        if il.is_eq(term):
+            term = term.args[1] 
+        variables  = ilu.used_constants_ast(term)
+        for var in sorted(variables, key=str):
+            sort = var.sort
+            if not sort in tran_sys.sort2consts:
+                continue
+            qvars  = get_used_qvars(sort2qvars, sort)
+            qvar   = get_next_unused_qvar(tran_sys, sort, qvars) 
+            qvars.append(qvar)
+            var2qvar[var] = qvar
 
     qstate = il.substitute(state, var2qvar)
     qterms = futil.flatten_cube(qstate)
@@ -45,7 +48,7 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
     args = set()
     for atom in atoms:
         atom_args = atom.args
-        if il.is_equals(atom):
+        if il.is_eq(atom):
             atom_args = [atom_args[1]]
         for arg in atom_args:
             args.add(arg)
@@ -128,20 +131,20 @@ class QPrime():
         terms = get_qterms(QPrime.tran_sys, QPrime.atoms, self.qprime)
         for term in terms:
             (sign, atom)  = split_term(term)
-            if il.is_app(atom):
+            if isinstance(atom, il.App):
                 fsymbol = atom.func
                 fname = get_signed_func_name(sign, str(fsymbol))
                 self.add_fname_args(fname, atom.args)
-            elif il.is_equals(atom):
+            elif il.is_eq(atom):
                 lhs = atom.args[0]
                 # func_name2symbol
                 fsymbol = None
-                if il.is_app(lhs):
+                if isinstance(lhs, il.App):
                     fsymbol = lhs.func
                 else:
                     fsymbol = lhs
                 args = []
-                if il.is_app(lhs):
+                if isinstance(lhs, il.App):
                     args += fsymbol.sort.dom
                 args.append(atom.args[1])
                 fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
@@ -237,6 +240,40 @@ class Merger():
             self.func_name2args[fname] = [] 
         self.func_name2args[fname].append(args)
 
+    def _init_func_name_to_symbol(self, atom):
+        func_name = None
+        symbol    = None
+        if isinstance(atom, il.App):
+            symbol = atom.func
+            func_name = str(symbol)
+        elif il.is_eq(atom):
+            lhs = atom.args[0]
+            symbol = None
+            if isinstance(lhs, il.App):
+                symbol = lhs.func
+            else:
+                symbol = lhs
+            func_name = str(symbol)+'=' 
+        self.func_name2symbol[func_name] = symbol
+        return symbol
+    
+    def _init_func_name_to_args(self, sign, atom, func_symbol):
+        func_name = None
+        args      = None
+        if isinstance(atom, il.App):
+            args    = func_symbol.sort.dom
+            func_name   = get_signed_func_name(sign, str(func_symbol)) 
+        elif il.is_eq(atom):
+            lhs = atom.args[0]
+            args = []
+            if isinstance(lhs, il.App):
+                args += func_symbol.sort.dom
+            else:
+                args.append(atom.args[1].sort)
+            args  = tuple(args)
+            func_name = get_signed_func_name(sign, str(func_symbol), is_equals=True) 
+        self._add_fname_args(func_name, args)
+
     def initialize(self):
         # set: (1) self.atoms, (2) self.func_name2symbol, (3) self.func2name_args
         terms = get_qterms(Merger.tran_sys, Merger.atoms, self.sub_repr_primes[0])
@@ -244,35 +281,14 @@ class Merger():
             (sign, atom)  = split_term(term)
             # atoms
             self.atoms.append(atom)
-            if il.is_app(atom):
-                # func_name2symbol
-                fsymbol = atom.func
-                self.func_name2symbol[str(fsymbol)] = fsymbol
-                # func_name2args
-                args    = fsymbol.sort.dom
-                fname   = get_signed_func_name(sign, str(fsymbol)) 
-                self._add_fname_args(fname, args)
-            elif il.is_equals(atom):
-                lhs = atom.args[0]
-                # func_name2symbol
-                fsymbol = None
-                if il.is_app(lhs):
-                    fsymbol = lhs.func
-                else:
-                    fsymbol = lhs
-                self.func_name2symbol[str(fsymbol)+'='] = fsymbol
-                # func_name2args
-                args = []
-                if il.is_app(lhs):
-                    args += fsymbol.sort.dom
-                args.append(atom.arg(1))
-                fname = get_signed_func_name(sign, str(fsymbol), is_equals=True) 
-                self._add_fname_args(fname, tuple(args))
+            func_symbol = self._init_func_name_to_symbol(atom)
+            self._init_func_name_to_args(sign, atom, func_symbol)
 
         vprint_title(self.options, 'Merger: _set_atom_list', 5)
         vprint(self.options, f'terms:  {terms      }', 5)
         vprint(self.options, f'atoms:  {self.atoms }', 5)
-        vprint(self.options, f'names:  {self.func_name2args}', 5)
+        vprint(self.options, f'func_name2symbol:  {self.func_name2symbol}', 5)
+        vprint(self.options, f'func_name2args:  {self.func_name2args}', 5)
 
     def set_qprime_partitions(self):
         for prime in self.sub_repr_primes: 
@@ -447,7 +463,11 @@ class Merger():
         vprint(self.options, f'sort2qvars: {self.sort2qvars}', 5)
 
     def can_infer_unconstrained(self):
-        can_infer =  ( len(self.partition_signatrs) == len(self.qprimes) ) 
+        qprime_signatrs = set()
+        for qprime in self.qprimes: 
+            signatr = qprime.partition_signatr
+            qprime_signatrs.add(signatr)
+        can_infer =  ( len(self.partition_signatrs) == len(qprime_signatrs) ) 
         vprint_title(self.options, 'can_infer_unconstrained', 5)
         vprint(self.options, can_infer, 5)
         return can_infer
