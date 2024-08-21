@@ -134,11 +134,6 @@ def qrm(ivy_name, args):
     qrm_result = False
     time_start = instance_start(options, ivy_name)
 
-    # step 0: compile ivy
-    # step_start(options, '[CPL]: Compile Ivy')
-    # compile_ivy2vmt(options, options.ivy_filename, options.vmt_filename)
-    # time_stamp = step_end(options, time_start, time_start)
-
     # step1: generate reachability
     step_start(options, f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
     tran_sys     = get_transition_system(options, options.ivy_filename)
