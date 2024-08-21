@@ -16,7 +16,7 @@ def get_used_qvars(sort2qvars, sort):
 
 def get_next_unused_qvar(tran_sys : TransitionSystem, sort, qvars):
     qvar_id = len(qvars)
-    qvar_name = sort.name[0].upper() + str(qvar_id)
+    qvar_name = sort.name.upper() + str(qvar_id)
     qvar      = il.Variable(qvar_name, sort) 
     return qvar
 
@@ -412,7 +412,7 @@ class Merger():
         for sort, count in self.sort_count.items():
             qvars = [] 
             for qvar_id in range(len(qvars), count):
-                qvar_name = sort.name[0].upper() + str(qvar_id)
+                qvar_name = sort.name.upper() + str(qvar_id)
                 qvars.append(il.Variable(qvar_name, sort))
             self.sort2qvars[sort] = qvars
 

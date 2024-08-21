@@ -135,7 +135,7 @@ class QInference():
 
     def _get_next_unused_qvar(self, sort, qvars):
         qvar_id   = len(qvars)
-        qvar_name = sort.name[0].upper() + str(qvar_id)
+        qvar_name = sort.name.upper() + str(qvar_id)
         qvar      = il.Variable(qvar_name, sort) 
         return qvar
 
@@ -513,7 +513,7 @@ class QInference():
         if (len(qvars) < sort_count):
             new_qvars = []
             for i in range(len(qvars), sort_count):
-                name = sort.name[0].upper() + str(i)
+                name = sort.name.upper() + str(i)
                 new_qvars.append(il.Variable(name, sort))
             qvars += new_qvars
         else:
