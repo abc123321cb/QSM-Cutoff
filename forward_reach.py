@@ -58,6 +58,7 @@ class ForwardReachability():
         self._init_ivy_actions()
         self._init_protocol()
         self._init_finite_ivy_generator() 
+        self.ivy_executor = FiniteIvyExecutor(self.options, self.instantiator) 
 
     #------------------------------------------------------------
     # ForwardReachability: core depth first search algorthm
@@ -110,8 +111,7 @@ class ForwardReachability():
                 self._symmetry_aware_depth_first_search_recur_node(child_node, level+1)
 
     def _symmetry_aware_depth_first_search_reachability(self):
-        self.dfs_repr_states  = set()
-        self.ivy_executor     = FiniteIvyExecutor(self.options, self.instantiator) 
+        self.dfs_repr_states  = set() 
         self.dfs_axiom_state = self.ivy_executor.get_dfs_axiom_state()
         initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
         for initial_node in initial_nodes:
