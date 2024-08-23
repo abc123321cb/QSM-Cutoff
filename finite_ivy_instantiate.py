@@ -145,7 +145,7 @@ class FiniteIvyInstantiator():
             args        = []
             match_predicate = re.search(r'(\w+)\(([^)]+)\)',         var)
             match_eq        = re.search(r'(\w+)\s*=\s*(\w+)',    var)
-            match_func_eq   = re.search(r'(\w+)\((\w+)\)=(\w+)', var)
+            match_func_eq   = re.search(r'(\w+)\((\w+)\) = (\w+)', var)
             if match_func_eq: # case 4: general function
                 symbol_name = match_func_eq.group(1)
                 args        = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
