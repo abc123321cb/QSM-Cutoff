@@ -22,7 +22,6 @@ class CoverConstraints():
         self.top_var        = 0
         self.symbol2var_num = {}
         self.atom_vars : List[int] = []
-        self.axiom_vars: List[int] = []
         self.orbit_vars: List[int] = []
         self.root_assume_clauses   = [] # axiom, definition
         self.root_tseitin_clauses  = []
@@ -92,8 +91,8 @@ class CoverConstraints():
 
     def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
         literals = []
-        for (id, val) in enumerate(prime.values):
-            lit = self.atom_vars[id]
+        for (var_id, val) in enumerate(prime.values):
+            lit = self.atom_vars[var_id]
             if (val == '1' and negate) or (val == '0' and not negate):
                 literals.append(-1*lit) 
             elif (val == '1' and not negate) or (val == '0' and negate):
@@ -105,10 +104,6 @@ class CoverConstraints():
             atom_var = self.new_var()
             self.atom_vars.append(atom_var)
             self.symbol2var_num[atom] = atom_var 
-        for axiom in self.instantiator.protocol_axioms:
-            axiom_var = self.new_var()
-            self.axiom_vars.append(axiom_var)
-            self.symbol2var_num[axiom] = axiom_var 
         for orbit_id in range(len(orbits)):
             orbit_var = self.new_var()
             self.orbit_vars.append(orbit_var)
