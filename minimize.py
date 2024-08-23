@@ -252,6 +252,7 @@ class Minimizer():
             is_definition = self.cover.is_definition_prime(orbit)
             if (is_definition):
                 self.def_orbits.add(id)
+        vprint(self.options, f'definition primes: {self.def_orbits}', 5)
         remove_target_from_source(source=self.pending, target=self.def_orbits)
 
     def reduce_redundant_prime_orbits(self):

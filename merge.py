@@ -161,7 +161,7 @@ class QPrime():
             self.add_fname_args(fname, args)
 
         vprint_title(self.options, 'QPrime: set_function_name_to_arguments', 5)
-        vprint(self.options, f'terms: {terms}', 5)
+        vprint(self.options, f'terms: {[str(term) for term in terms]}', 5)
         vprint(self.options, f'func_name2args: {self.func_name2args}', 5)
 
     def _get_arg_signature(self, signed_fname, func_id, arg_id, qvar):
@@ -296,8 +296,8 @@ class Merger():
             self._init_func_name_to_args(sign, atom, func_symbol)
 
         vprint_title(self.options, 'Merger: _set_atom_list', 5)
-        vprint(self.options, f'terms:  {terms      }', 5)
-        vprint(self.options, f'atoms:  {self.atoms }', 5)
+        vprint(self.options, f'terms:  {[str(term) for term in terms]}', 5)
+        vprint(self.options, f'atoms:  {[str(atom) for atom in self.atoms]}', 5)
         vprint(self.options, f'func_name2symbol:  {self.func_name2symbol}', 5)
         vprint(self.options, f'func_name2args:  {self.func_name2args}', 5)
 
