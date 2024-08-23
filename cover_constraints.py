@@ -87,6 +87,7 @@ class CoverConstraints():
             for clause in clauses:
                 vprint(self.options, f'clause: {clause}', 6)
                 self.root_tseitin_clauses.append(clause)
+            self.symbol2var_num[str(symbol)] = symbol_var
             return symbol_var
 
     def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
