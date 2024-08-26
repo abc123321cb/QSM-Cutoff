@@ -56,7 +56,7 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
         if arg.sort in tran_sys.dep_types:
             set_sort = arg.sort
             set_id   = 0
-            consts   = Merger.tran_sys.sort2consts[set_sort]
+            consts   = tran_sys.sort2consts[set_sort]
             for i, const in enumerate(consts):
                 if const == arg:
                     set_id = i
