@@ -3,6 +3,7 @@ from itertools import product
 import re
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
+from ivy import logic as lg
 from verbose import *
 from transition_system import TransitionSystem
 
@@ -50,6 +51,8 @@ class FiniteIvyInstantiator():
         self.dep_axioms_str              = []
         # definitions
         self.instantiated_def_map    = {}
+        # axioms
+        self.axiom_fmla = None
 
         self._set_pretty_instantiations()
 
@@ -236,6 +239,18 @@ class FiniteIvyInstantiator():
                 for i, arg in enumerate(formula.args):
                     instantiated_arg = self._recursive_instantiate_quantifier(arg)
                     formula._content.args[i] = instantiated_arg
+        else:
+            args = [self._recursive_instantiate_quantifier(arg) for arg in formula.args]
+            if isinstance(formula, il.Not):
+                formula = il.Not(args[0])
+            elif isinstance(formula, il.Or):
+                formula = il.Or(*args)
+            elif isinstance(formula, il.And):
+                formula = il.And(*args)
+            elif isinstance(formula, il.Implies):
+                formula = il.Implies(args[0], args[1])
+            elif isinstance(formula, lg.Eq):
+                formula = il.Equals(args[0], args[1])
         return formula
 
     def _set_definitions(self):
@@ -251,6 +266,14 @@ class FiniteIvyInstantiator():
                 instantiated_rhs = il.substitute(def_rhs, subst_map)
                 self.instantiated_def_map[instantiated_lhs] = instantiated_rhs
 
+    def _set_axioms(self):
+        axiom_fmla = self._tran_sys.axiom_fmla
+        if axiom_fmla != il.And():
+            free_vars  = ilu.free_variables(axiom_fmla)
+            if not il.is_forall(axiom_fmla) and len(free_vars) > 0:
+                axiom_fmla = il.ForAll(free_vars, axiom_fmla)
+            self.axiom_fmla = self._recursive_instantiate_quantifier(axiom_fmla)
+            
     def _set_pretty_instantiations(self):
         self._set_dfs_variables()
         self._set_protocol_atoms()
@@ -258,4 +281,5 @@ class FiniteIvyInstantiator():
         self._set_ivy_actions()
         self._set_dependent_axioms()
         self._set_definitions()
+        self._set_axioms()
  

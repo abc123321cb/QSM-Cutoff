@@ -109,13 +109,17 @@ class CoverConstraints():
             self.orbit_vars.append(orbit_var)
 
     def _init_axioms_formula(self) -> None:
-        axioms_str = set(self.instantiator.dep_axioms_str)
-        for axiom_str in self.instantiator.protocol_axioms:
-            axiom_var = self.symbol2var_num[axiom_str]
-            if axiom_str in axioms_str:  # member(n,q) in axioms_str
-                self.root_assume_clauses.append([axiom_var])
-            else:                        # ~member(n,q) not in axioms_str
-                self.root_assume_clauses.append([-1*axiom_var])
+        dep_axioms = set(self.instantiator.dep_axioms_str)
+        if len(dep_axioms) > 0:
+            for axiom_str in self.instantiator.protocol_axioms:
+                axiom_var = self.symbol2var_num[axiom_str]
+                if axiom_str in dep_axioms:  # member(n,q) in axioms_str
+                    self.root_assume_clauses.append([axiom_var])
+                elif '~'+axiom_str in dep_axioms: # ~member(n,q) not in axioms_str
+                    self.root_assume_clauses.append([-1*axiom_var])
+        if self.instantiator.axiom_fmla != None:
+            axiom_fmla_var = self.tseitin_encode(self.instantiator.axiom_fmla)
+            self.root_assume_clauses.append([axiom_fmla_var])
 
     def _init_definitions_formula(self) -> None:
         for def_lhs, def_rhs in self.instantiator.instantiated_def_map.items():
