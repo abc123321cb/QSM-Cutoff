@@ -22,7 +22,6 @@ class CoverConstraints():
         self.top_var        = 0
         self.symbol2var_num = {}
         self.atom_vars : List[int] = []
-        self.axiom_vars: List[int] = []
         self.orbit_vars: List[int] = []
         self.root_assume_clauses   = [] # axiom, definition
         self.root_tseitin_clauses  = []
@@ -92,8 +91,8 @@ class CoverConstraints():
 
     def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
         literals = []
-        for (id, val) in enumerate(prime.values):
-            lit = self.atom_vars[id]
+        for (var_id, val) in enumerate(prime.values):
+            lit = self.atom_vars[var_id]
             if (val == '1' and negate) or (val == '0' and not negate):
                 literals.append(-1*lit) 
             elif (val == '1' and not negate) or (val == '0' and negate):
@@ -105,22 +104,22 @@ class CoverConstraints():
             atom_var = self.new_var()
             self.atom_vars.append(atom_var)
             self.symbol2var_num[atom] = atom_var 
-        for axiom in self.instantiator.protocol_axioms:
-            axiom_var = self.new_var()
-            self.axiom_vars.append(axiom_var)
-            self.symbol2var_num[axiom] = axiom_var 
         for orbit_id in range(len(orbits)):
             orbit_var = self.new_var()
             self.orbit_vars.append(orbit_var)
 
     def _init_axioms_formula(self) -> None:
-        axioms_str = set(self.instantiator.dep_axioms_str)
-        for axiom_str in self.instantiator.protocol_axioms:
-            axiom_var = self.symbol2var_num[axiom_str]
-            if axiom_str in axioms_str:  # member(n,q) in axioms_str
-                self.root_assume_clauses.append([axiom_var])
-            else:                        # ~member(n,q) not in axioms_str
-                self.root_assume_clauses.append([-1*axiom_var])
+        dep_axioms = set(self.instantiator.dep_axioms_str)
+        if len(dep_axioms) > 0:
+            for axiom_str in self.instantiator.protocol_axioms:
+                axiom_var = self.symbol2var_num[axiom_str]
+                if axiom_str in dep_axioms:  # member(n,q) in axioms_str
+                    self.root_assume_clauses.append([axiom_var])
+                elif '~'+axiom_str in dep_axioms: # ~member(n,q) not in axioms_str
+                    self.root_assume_clauses.append([-1*axiom_var])
+        if self.instantiator.axiom_fmla != None:
+            axiom_fmla_var = self.tseitin_encode(self.instantiator.axiom_fmla)
+            self.root_assume_clauses.append([axiom_fmla_var])
 
     def _init_definitions_formula(self) -> None:
         for def_lhs, def_rhs in self.instantiator.instantiated_def_map.items():

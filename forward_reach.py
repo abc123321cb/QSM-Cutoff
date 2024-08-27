@@ -26,7 +26,6 @@ class ForwardReachability():
         self.protocol        = None
         self.ivy_executor    = None
         # dfs data structures
-        self.dfs_axiom_state    = []
         self.dfs_explored_states = set()
         self.dfs_repr_states     = set()
         self.dfs_max_depth       = 0
@@ -39,7 +38,7 @@ class ForwardReachability():
         self.protocol.init_sort(self.tran_sys)
         self.protocol.init_dependent_sort(self.tran_sys)
         self.protocol.init_predicate(self.tran_sys)
-        self.protocol.init_atoms(self.instantiator.protocol_atoms, self.instantiator.protocol_atoms_fmls)
+        self.protocol.init_atoms(self.instantiator.protocol_atoms, self.instantiator.protocol_atoms_fmlas)
         self.protocol.init_sorts_permutations(self.tran_sys)
 
     def _init_finite_ivy_generator(self):
@@ -112,7 +111,6 @@ class ForwardReachability():
 
     def _symmetry_aware_depth_first_search_reachability(self):
         self.dfs_repr_states  = set() 
-        self.dfs_axiom_state = self.ivy_executor.get_dfs_axiom_state()
         initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
         for initial_node in initial_nodes:
             self._symmetry_aware_depth_first_search_recur_node(initial_node)

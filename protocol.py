@@ -99,9 +99,9 @@ class Protocol():
         for (id,atom) in enumerate(atoms):
             predicate = '' 
             args = []
-            match_pred = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            match_eq   = re.search(r'(\w+)=([^)]+)', atom)
-            match_func_eq = re.search(r'(\w+)\((\w+)\)=([^)]+)', atom)
+            match_pred    = re.search(r'([\w.]+)\(([^)]+)\)',  atom)
+            match_eq      = re.search(r'([\w.]+)=([^)]+)', atom)
+            match_func_eq = re.search(r'([\w.]+)\((\w+)\)=([^)]+)', atom)
             if match_func_eq: # case 4: general function
                 predicate = match_func_eq.group(1) + '='
                 args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
@@ -197,9 +197,9 @@ class Protocol():
         for atom in atoms:
             predicate = '' 
             args     = []
-            match_pred    = re.search(r'(\w+)\(([^)]+)\)',  atom)
-            match_eq      = re.search(r'(\w+)\s*=\s*(\w+)', atom)
-            match_func_eq = re.search(r'(\w+)\((\w+)\) = (\w+)', atom)
+            match_pred    = re.search(r'([\w.]+)\(([^)]+)\)',  atom)
+            match_eq      = re.search(r'([\w.]+)\s*=\s*(\w+)', atom)
+            match_func_eq = re.search(r'([\w.]+)\((\w+)\) = (\w+)', atom)
             if match_func_eq: # case 4: general function
                 predicate = match_func_eq.group(1) + '='
                 args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
