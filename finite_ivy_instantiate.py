@@ -141,7 +141,7 @@ class FiniteIvyInstantiator():
     def _get_dfs_variables_from_instantiated_equals(self, instantiated_equals):
         pretty_equals   = []
         for equal in instantiated_equals:
-            pretty_equals.append(str(equal))
+            pretty_equals.append(str(equal).replace('.', '__'))
 
         pretty_dfs_vars = []
         for var in pretty_equals:
@@ -183,9 +183,9 @@ class FiniteIvyInstantiator():
         ivy_vars      = self._instantiated_indep_vars
         ivy_non_bools = self._instantiated_indep_non_bools
         for var in ivy_vars:
-            self.ivy_state_vars.append(str(var))
+            self.ivy_state_vars.append(str(var).replace('.', '__'))
         for non_bool in ivy_non_bools:
-            var = str(non_bool[0])
+            var = str(non_bool[0]).replace('.', '__')
             var_type = self._tran_sys.get_sort_name_from_finite_sort(non_bool[1])
             self.ivy_non_bool_state_vars[var] = var_type
 
