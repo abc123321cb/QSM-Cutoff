@@ -21,7 +21,6 @@ class ForwardReachability():
         self.instantiator = instantiator 
         self.options      = options
         # utils
-        self.instantiator    = instantiator
         self.ivy_actions     = []
         self.protocol        = None
         self.ivy_executor    = None
