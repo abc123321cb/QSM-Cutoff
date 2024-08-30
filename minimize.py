@@ -2,7 +2,7 @@ from typing import List,Set
 from transition_system import TransitionSystem
 from prime import *
 from cover_constraints import CoverConstraints
-from prime_check import PrimeChecker
+from finite_ivy_instantiate import FiniteIvyInstantiator
 from util import QrmOptions
 from verbose import *
 
@@ -218,7 +218,7 @@ class Minimizer():
             for def_symbol, def_ast in self.tran_sys.definitions.items():
                 vprint(self.options, f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition', 3)
             for id in solution:
-                vprint(self.options, f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}', 3)
+                vprint(self.options, f'invariant [invar_{id}] {str(self.orbits[id].quantified_form)} # qcost: {self.orbits[id].qcost}', 3)
             vprint(self.options, '\n', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 2)
         
@@ -232,7 +232,7 @@ class Minimizer():
             invariants.append(line)
         for id in solution:
             total_cost += self.orbits[id].qcost
-            line = f'invariant [invar_{id}] {self.orbits[id].quantified_form} # qcost: {self.orbits[id].qcost}'
+            line = f'invariant [invar_{id}] {str(self.orbits[id].quantified_form)} # qcost: {self.orbits[id].qcost}'
             invariants.append(line)
         vprint(self.options, f'[MIN NOTE]: number of invariants in minimal solution: {len(solution)}', 2)
         vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
@@ -260,6 +260,41 @@ class Minimizer():
         self._new_level()
         self._reduce()
 
+    def _add_sanity_check_clauses(self, instantiator : FiniteIvyInstantiator):
+        instantiated_solution = []
+        for orbit_id in self.optimal_solutions[0]:
+            quantified_orbit   = self.orbits[orbit_id].quantified_form
+            instantiated_orbit = instantiator.instantiate_quantifier(quantified_orbit)
+            instantiated_solution.append(instantiated_orbit)
+        self.cover.add_sanity_clauses(instantiated_solution)
+
+    def sanity_check(self, instantiator : FiniteIvyInstantiator, protocol : Protocol):
+        self._add_sanity_check_clauses(instantiator)
+        (result, values) = self.cover.get_sanity_minterm()
+        while result:
+            repr_int = int(''.join(values), 2)
+            if result:
+                for nvalues in protocol.all_permutations(values):
+                    repr_int = min(int(''.join(nvalues), 2), repr_int)
+                    self.cover.block_sanity_minterm(nvalues)
+            if not repr_int in protocol.repr_states:
+                bit_str = '{0:b}'.format(repr_int)
+                vprint(self.options, 'Found a state not in reachability')
+                vprint(self.options, f'decimal: {repr_int}')
+                vprint(self.options, f'binary: {bit_str}')
+                vprint(self.options, f'[SANITY RESULT]: FAIL')
+                return False
+            protocol.repr_states.remove(repr_int)
+            (result, values) = self.cover.get_sanity_minterm()
+
+        if not len(protocol.repr_states) == 0:
+            vprint(self.options, 'Found states not included in solution')
+            vprint(self.options, f'{protocol.repr_states}')
+            vprint(self.options, f'[SANITY RESULT]: FAIL')
+            return False
+        vprint(self.options, f'[SANITY RESULT]: PASS')
+        return True
+            
     def quantifier_inference(self, atoms) -> None:
         from qinference import QInference
         from merge import Merger

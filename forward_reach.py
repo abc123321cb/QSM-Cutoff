@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Set, List
 from util import QrmOptions
 from transition_system import TransitionSystem
 from protocol import Protocol
@@ -9,8 +9,8 @@ from verbose import *
 
 class DfsNode():
     def __init__(self, dfs_state, ivy_state):
-        self.dfs_state = dfs_state
-        self.ivy_state = ivy_state
+        self.dfs_state = dfs_state   # bit string with delim ',':   b0,b1,b2,...
+        self.ivy_state = ivy_state   # value string with delim ',': v0,v1,v2,...
 
 class ForwardReachability():
     #------------------------------------------------------------
@@ -25,8 +25,8 @@ class ForwardReachability():
         self.protocol        = None
         self.ivy_executor    = None
         # dfs data structures
-        self.dfs_explored_states = set()
-        self.dfs_repr_states     = set()
+        self.dfs_explored_states : Set[str]  = set()  # state is represented as bit string
+        self.dfs_repr_states     : List[int] = []     # representative state is the smallest decimal representation of all bit strings in orbit
         self.dfs_max_depth       = 0
 
     def _init_ivy_actions(self):
@@ -68,11 +68,13 @@ class ForwardReachability():
         return node 
 
     def _add_dfs_explored_state(self, node):
-        self.dfs_repr_states.add(node.dfs_state)
-        values = node.dfs_state.split(',')
+        values   = node.dfs_state.split(',')
+        repr_int = int(''.join(values), 2)
         for nvalues in self.protocol.all_permutations(values):
-            nstate = ','.join(nvalues)
+            nstate   = ','.join(nvalues)
+            repr_int = min(int(''.join(nvalues), 2), repr_int)
             self.dfs_explored_states.add(nstate)
+        self.dfs_repr_states.append(repr_int)
         # use this line instead if disabling symmetry aware
         # self.dfs_explored_states.add(node.dfs_state) 
 
@@ -109,7 +111,6 @@ class ForwardReachability():
                 self._symmetry_aware_depth_first_search_recur_node(child_node, level+1)
 
     def _symmetry_aware_depth_first_search_reachability(self):
-        self.dfs_repr_states  = set() 
         initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
         for initial_node in initial_nodes:
             self._symmetry_aware_depth_first_search_recur_node(initial_node)
@@ -120,6 +121,8 @@ class ForwardReachability():
             protocol_state = ''.join(dfs_state.split(','))
             protocol_states.append(protocol_state)
         self.protocol.init_reachable_states(protocol_states)
+        for repr_int in self.dfs_repr_states:
+            self.protocol.repr_states.append(repr_int)
 
     def _write_protocol(self):
         if (self.options.writeReach):
@@ -128,11 +131,11 @@ class ForwardReachability():
         vprint(self.options, f'[FW NOTE]: dfs max depth: {self.dfs_max_depth}', 2)
         vprint(self.options, f'[FW NOTE]: number of total reachable states:        {len(self.dfs_explored_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
-        vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)- len(self.dfs_repr_states)}', 2)
+        vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)-len(self.dfs_repr_states)}', 2)
+        
     #------------------------------------------------------------
     # ForwardReachability: utils
     #------------------------------------------------------------
-
     def _clean(self):
         self.ivy_executor.execute_ivy_action('QRM_STOP_PROTOCOL')
         FiniteIvyGenerator.clean()
@@ -140,7 +143,6 @@ class ForwardReachability():
     #------------------------------------------------------------
     # ForwardReachability: public methods
     #------------------------------------------------------------
-
     def solve_reachability(self):
         self._initialize()
         self._symmetry_aware_depth_first_search_reachability()

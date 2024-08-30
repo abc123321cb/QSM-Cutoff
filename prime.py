@@ -5,7 +5,6 @@ from protocol import Protocol
 from dualrail import DualRailNegation
 from transition_system import TransitionSystem
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from prime_check import PrimeChecker
 from util import QrmOptions
 from util import FormulaUtility as futil
 from verbose import *
@@ -73,7 +72,7 @@ class PrimeOrbit():
         self.num_exists   = 0 
         self.num_literals = 0 
         self.qcost        = 0
-        self.quantified_form  : str = ''
+        self.quantified_form  = None # first-order formula
         PrimeOrbit.count += 1
 
     def __str__(self) -> str:
@@ -104,7 +103,7 @@ class PrimeOrbit():
         self.num_literals    = num_literals
         self.qcost           = num_forall + num_exists + num_literals
         self.qclause         = qclause
-        self.quantified_form = str(qclause)
+        self.quantified_form = qclause
 
     @staticmethod
     def reset() -> None:
