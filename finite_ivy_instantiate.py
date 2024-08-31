@@ -253,6 +253,53 @@ class FiniteIvyInstantiator():
                 formula = il.Equals(args[0], args[1])
         return formula
 
+    def _recursive_simplify(self, formula):
+        assert(not il.is_quantifier(formula))
+        args = [self._recursive_simplify(arg) for arg in formula.args]
+        if isinstance(formula, il.Not):
+            if il.is_true(args[0]):
+                 return il.Or()
+            elif il.is_false(args[0]):
+                return il.And()
+            formula = il.Not(args[0])
+        elif isinstance(formula, il.Or):
+            reduced_args = [] 
+            for arg in args:
+                if il.is_true(arg):
+                    return il.And()
+                elif il.is_false(arg):
+                    continue
+                reduced_args.append(arg)
+            formula = il.Or(*reduced_args)
+        elif isinstance(formula, il.And):
+            reduced_args = []
+            for arg in args:
+                if il.is_false(arg):
+                    return il.Or()
+                elif il.is_true(arg):
+                    continue
+                reduced_args.append(arg)
+            formula = il.And(*reduced_args)
+        elif isinstance(formula, il.Implies):
+            if il.is_true(args[0]):
+                return args[1]
+            elif il.is_false(args[0]):
+                return il.And()
+            formula = il.Implies(args[0], args[1])
+        elif isinstance(formula, lg.Eq):
+            if il.is_individual(args[0]) and il.is_individual(args[1]):
+                if args[0] == args[1]:
+                    return il.And()
+                else:
+                    return il.Or()
+            formula = il.Equals(args[0], args[1])
+        return formula
+
+    def instantiate_quantifier(self, formula):
+        formula = self._recursive_instantiate_quantifier(formula)
+        formula = self._recursive_simplify(formula)
+        return formula
+
     def _set_definitions(self):
         def_map = self._tran_sys.definitions
         for def_ast in def_map.values():
@@ -260,7 +307,7 @@ class FiniteIvyInstantiator():
             def_rhs = def_ast.rhs()  # forall V. ~vote(N,V)
             def_lhs_free_vars = def_lhs.terms # N
             var_subst_maps = self._get_var_substitution(def_lhs_free_vars)
-            def_rhs  = self._recursive_instantiate_quantifier(def_rhs)
+            def_rhs  = self.instantiate_quantifier(def_rhs)
             for subst_map in var_subst_maps:
                 instantiated_lhs = il.substitute(def_lhs, subst_map)
                 instantiated_rhs = il.substitute(def_rhs, subst_map)
@@ -272,7 +319,7 @@ class FiniteIvyInstantiator():
             free_vars  = ilu.free_variables(axiom_fmla)
             if not il.is_forall(axiom_fmla) and len(free_vars) > 0:
                 axiom_fmla = il.ForAll(free_vars, axiom_fmla)
-            self.axiom_fmla = self._recursive_instantiate_quantifier(axiom_fmla)
+            self.axiom_fmla = self.instantiate_quantifier(axiom_fmla)
             
     def _set_pretty_instantiations(self):
         self._set_dfs_variables()

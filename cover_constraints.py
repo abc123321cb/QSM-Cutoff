@@ -17,6 +17,7 @@ class CoverConstraints():
         self.sat_solver        = SatSolver() 
         self.sat_counter       = SatCounter()
         self.def_prime_checker = SatSolver()
+        self.sanity_checker    = SatSolver()
         self.approx_counter = None 
         self.useMC          = useMC
         self.top_var        = 0
@@ -30,7 +31,7 @@ class CoverConstraints():
 
         
         self._init_vars(orbits)
-        self._init_solver(orbits)
+        self._init_solvers(orbits)
 
     def new_var(self) -> int:
         self.top_var += 1
@@ -127,6 +128,24 @@ class CoverConstraints():
             def_equal_var    = self.tseitin_encode(def_equal_symbol) 
             self.root_assume_clauses.append([def_equal_var])
 
+    def _init_equal_atoms_constraints(self) -> None:
+        lhs_set = {} 
+        for atom_id, atom in enumerate(self.instantiator.protocol_atoms_fmlas):
+            if il.is_eq(atom):
+                lhs = atom.args[0]
+                if str(lhs) not in lhs_set:
+                    lhs_set[str(lhs)] = []
+                lhs_set[str(lhs)].append(atom_id)
+        for eq_ids in lhs_set.values():
+            at_least_one = [self.atom_vars[i] for i in eq_ids]
+            self.root_assume_clauses.append(at_least_one)
+            for id0 in range(len(eq_ids)-1):
+                for id1 in range(id0+1, len(eq_ids)):
+                    var0 = self.atom_vars[eq_ids[id0]]
+                    var1 = self.atom_vars[eq_ids[id1]]
+                    at_most_one = [-1*var0, -1*var1]
+                    self.root_assume_clauses.append(at_most_one)
+
     def _init_orbit_selection_formula(self, orbits : List[PrimeOrbit]) -> None:
         # Eq (10) in FMCAD paper
         for (orbit_id, orbit) in enumerate(orbits):
@@ -149,9 +168,10 @@ class CoverConstraints():
             self.sat_solver.add_clause(clause)
             self.sat_counter.add_clause(clause)
 
-    def _init_solver(self, orbits : List[PrimeOrbit]) -> None:
+    def _init_solvers(self, orbits : List[PrimeOrbit]) -> None:
         self._init_axioms_formula()
         self._init_definitions_formula()
+        self._init_equal_atoms_constraints()
         self._init_orbit_selection_formula(orbits)
         self._push_clauses_into_solvers()
 
@@ -207,3 +227,29 @@ class CoverConstraints():
         assumptions = self.get_prime_literals(orbit.repr_prime)
         result      = self.def_prime_checker.solve(assumptions)
         return False if result else True
+
+    def add_sanity_clauses(self, instantiated_solutions):
+        for orbit_fmla in instantiated_solutions: 
+            orbit_fmla_var = self.tseitin_encode(orbit_fmla)
+            self.root_assume_clauses.append([orbit_fmla_var])
+        for clause in self.root_assume_clauses:
+            self.sanity_checker.add_clause(clause)
+        for clause in self.root_tseitin_clauses:
+            self.sanity_checker.add_clause(clause)
+
+    def get_sanity_minterm(self):
+        result  = self.sanity_checker.solve()
+        minterm = None 
+        if result:
+            model   = self.sanity_checker.get_model()
+            minterm = ['1' if model[atom_id] == atom_var else '0' for atom_id, atom_var in enumerate(self.atom_vars)] 
+        return (result, minterm)
+
+    def block_sanity_minterm(self, values):
+        block_clause = []
+        for atom_id, atom_var in enumerate(self.atom_vars):
+            if values[atom_id] == '1':
+                block_clause.append(-1*atom_var)
+            elif values[atom_id] == '0':
+                block_clause.append(atom_var)
+        self.sanity_checker.add_clause(block_clause)
