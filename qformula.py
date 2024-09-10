@@ -237,6 +237,9 @@ class QFormula():
             return il.And(*neq_terms)    
         return None
 
+    #------------------------------------------------
+    # public methods
+    #------------------------------------------------
     def set_merge_constraints(self, partitions : List[PartitionSignature], cmode : ConstraintMode) -> None:
         # constraints:[ [neq1, neq2, ...], [neq3, neq4, .... ]]
         # partitions:   (class_sig 1)      (class_sig 2)
@@ -253,13 +256,15 @@ class QFormula():
 
     def set_no_merge_constraints(self) -> None:
         neq_terms = set()
-        qvars = list(self.forall_qvars)
-        for i in range(len(qvars)-1):
-            for j in range(i+1, len(qvars)):
-                assert(str(qvars[i]) != str(qvars[j]))
-                neq_qvars = [qvars[i], qvars[j]]
-                neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
-                neq_terms.add(neq)
+        for sort, qvars in self.sort2qvars.items():
+            qvars = set(qvars)
+            qvars = list(qvars.intersection(self.forall_qvars))
+            for i in range(len(qvars)-1):
+                for j in range(i+1, len(qvars)):
+                    assert(str(qvars[i]) != str(qvars[j]))
+                    neq_qvars = [qvars[i], qvars[j]]
+                    neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
+                    neq_terms.add(neq)
         neq_terms = list(neq_terms)
         if len(neq_terms):
             self.qterms.append(il.And(*neq_terms))  # neq1 & neq2 & neq3
