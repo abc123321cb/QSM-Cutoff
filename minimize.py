@@ -296,24 +296,16 @@ class Minimizer():
         return True
             
     def quantifier_inference(self, atoms) -> None:
-        from qinference import QInference
-        from merge import Merger
-        Merger.setup(atoms, self.tran_sys)
+        from qinfer import QInference, QPrime
         QInference.setup(atoms, self.tran_sys)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
         for id in inference_list:
             orbit = self.orbits[id]
             vprint(self.options, str(orbit), 5)
-            repr_primes = orbit.suborbit_repr_primes
-            qclause = None
-            if len(repr_primes) == 1:
-                is_orbit_size_1 = (len(orbit.primes) == 1)
-                qInfr = QInference(repr_primes[0], self.options, is_orbit_size_1)
-                qclause = qInfr.infer_quantifier() 
-            else:
-                merger  = Merger(self.options, repr_primes)
-                qclause = merger.merge()
+            qprimes = [QPrime(prime, self.options) for prime in orbit.suborbit_repr_primes]
+            qinf    = QInference(qprimes, self.options)
+            qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
         # output result
         if self.options.writeQI:
