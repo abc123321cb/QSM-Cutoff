@@ -296,7 +296,7 @@ class Minimizer():
         return True
             
     def quantifier_inference(self, atoms) -> None:
-        from qinfer import QInference, QPrime
+        from qinference import QInference, QPrime
         QInference.setup(atoms, self.tran_sys)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
