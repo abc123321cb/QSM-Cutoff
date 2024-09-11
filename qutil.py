@@ -106,7 +106,7 @@ def split_signed_func_name(signed_func_name):
     return (is_neg, fname)
 
 def get_func_symbol(atom):
-    symbol    = None
+    symbol = None
     if isinstance(atom, il.App):
         symbol = atom.func
     elif il.is_eq(atom):
@@ -116,11 +116,14 @@ def get_func_symbol(atom):
             symbol = lhs.func
         else:
             symbol = lhs
+    else:
+        assert(il.is_boolean(atom))
+        symbol = atom
     return symbol 
 
 def get_signed_func_name(sign, atom, func_symbol):
     fname = None
-    if isinstance(atom, il.App):
+    if isinstance(atom, il.App) or il.is_boolean(atom):
         fname = sign + SIGNATR_DELIM + str(func_symbol)
     elif il.is_eq(atom):
         fname = sign + SIGNATR_DELIM + str(func_symbol) + '='
@@ -128,7 +131,7 @@ def get_signed_func_name(sign, atom, func_symbol):
 
 def get_unsigned_func_name(atom, func_symbol):
     fname = None
-    if isinstance(atom, il.App):
+    if isinstance(atom, il.App) or il.is_boolean(atom):
         fname = str(func_symbol)
     elif il.is_eq(atom):
         fname = str(func_symbol)+'=' 
@@ -136,7 +139,7 @@ def get_unsigned_func_name(atom, func_symbol):
 
 def get_func_args(atom):
     args = None
-    if isinstance(atom, il.App):
+    if isinstance(atom, il.App) or il.is_boolean(atom):
         args = atom.args
     elif il.is_eq(atom):
         lhs = atom.args[0]
@@ -149,7 +152,7 @@ def get_func_args(atom):
 
 def get_func_args_sort(atom, func_symbol):
     args_sort = None
-    if isinstance(atom, il.App):
+    if isinstance(atom, il.App) or il.is_boolean(atom):
         args_sort = func_symbol.sort.dom
     elif il.is_eq(atom):
         lhs = atom.args[0]

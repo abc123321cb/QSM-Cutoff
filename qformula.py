@@ -145,8 +145,10 @@ class QFormula():
                         lhs = fsymbol
                     rhs = args[-1]
                     qterm = il.Equals(lhs,rhs)
-                else:
+                elif len(args) >= 1:
                     qterm = il.App(fsymbol, *args)
+                else:
+                    qterm = fsymbol
                 if sign == '1':
                     qterm = il.Not(qterm)
                 self.qterms.append(qterm)
