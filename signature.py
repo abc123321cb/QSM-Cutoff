@@ -71,8 +71,8 @@ class SortPartitionSignature_(SortPartitionSignature):
         self.reduced_class        : Dict[str, List[ClassSignature]] = {} # group self.class_sigs into classes according to their reduced_class_sig
         self.reduced_single_class : Set[str] = set() # contains key of reduced_classes whose cardinality = 1
         self.reduced_multi_class  : Set[str] = set() # contains key reduced_classes whose cardinality > 1
-        self.reduced_single_class_sigs : List[ClassSignature]    = []  
-        self.reduced_multi_class_sigs  : List[class_signatures]  = []
+        self.reduced_single_class_sigs : List[ClassSignature]  = []  
+        self.reduced_multi_class_sigs  : List[ClassSignature]  = []
         self._set_reduced_class_signatures()
 
     def _set_reduced_class_signatures(self):

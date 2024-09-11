@@ -124,6 +124,32 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
+    def _can_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
+        num_class = len(part_sig.reduced_class)
+        if num_class == 1: # all variables of this sort appear exactly the same:
+            sfname2num_args = {}
+            for class_sig in part_sig.reduced_multi_class_sigs:
+                for arg_sig in class_sig.arg_signatures:
+                    sfname    = arg_sig.signed_fname
+                    if not sfname in sfname2num_args:
+                        sfname2num_args[sfname] = 1
+                    else:
+                        sfname2num_args[sfname] += 1
+            num_exists = 0
+            for sfname, num_args in sfname2num_args.items():
+                num_exists += pow(sort.card, num_args)
+            if num_exists == len(self.terms):
+                return True
+        return False
+
+    def _can_infer_forall_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
+        num_single_class  = len(part_sig.reduced_single_class)
+        num_multi_class   = len(part_sig.reduced_multi_class)
+        num_class         = len(part_sig.reduced_class)
+        if num_multi_class == 1 and (num_class == num_multi_class + num_single_class) and num_class > 1:
+            return True
+        return False
+
     def _get_sort_quantifier_mode(self, sort, part_sig : SortPartitionSignature_) -> QuantifierMode:
         # currently merging qprime only considers forall
         if len(self.qprimes) > 1:
@@ -131,13 +157,9 @@ class QInference():
         if len(part_sig.class_signatures) < sort.card:
             return QuantifierMode.forall
         assert(len(part_sig.class_signatures) == sort.card)
-        num_reduced_single = len(part_sig.reduced_single_class)
-        num_reduced_multi  = len(part_sig.reduced_multi_class)
-        num_reduced        = len(part_sig.reduced_class)
-        # all variables of this sort appear exactly the same:
-        if num_reduced == 1:
+        if self._can_infer_exists(sort, part_sig):
             return QuantifierMode.exists
-        elif num_reduced_multi == 1 and (num_reduced == num_reduced_multi + num_reduced_single):
+        elif self._can_infer_forall_exists(sort, part_sig):
             return QuantifierMode.forall_exists
         return QuantifierMode.forall
 
