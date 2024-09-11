@@ -165,6 +165,24 @@ def get_func_args_sort(atom, func_symbol):
         args_sort  = tuple(args_sort)
     return args_sort
 
+def get_signed_func_name_to_divided_args(sort, terms):
+    sfname2div_args = {} 
+    for term in terms:
+        sort_args  = []
+        other_args = []
+        (sign, atom)  = split_term(term)
+        fsymbol = get_func_symbol(atom)
+        sfname  = get_signed_func_name(sign, atom, fsymbol) 
+        args    = get_func_args(atom) 
+        sort_args  = list(filter(lambda arg: arg.sort == sort, args))
+        other_args = list(filter(lambda arg: arg.sort != sort, args))
+        if not sfname in sfname2div_args:
+            sfname2div_args[sfname] = {} 
+        if not str(other_args) in sfname2div_args[sfname]:
+            sfname2div_args[sfname][str(other_args)] = set()
+        sfname2div_args[sfname][str(other_args)].add(str(sort_args))
+    return sfname2div_args 
+
 from enum import Enum
 QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
 ConstraintMode  = Enum('ConstraintMode', ['merge_absent', 'merge_present', 'no_merge'])
@@ -178,3 +196,4 @@ ConstraintMode  = Enum('ConstraintMode', ['merge_absent', 'merge_present', 'no_m
                 we add final constraint describing partitions of "class_signature" 
                 that is present in self.arg_partitions
 '''
+
