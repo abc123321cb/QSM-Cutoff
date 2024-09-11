@@ -135,11 +135,10 @@ class QInference():
                         sfname2num_args[sfname] = 1
                     else:
                         sfname2num_args[sfname] += 1
-            num_exists = 0
             for sfname, num_args in sfname2num_args.items():
-                num_exists += pow(sort.card, num_args)
-            if num_exists == len(self.terms):
-                return True
+                if pow(sort.card, num_args) != self.sig_gen.sign_func_name2count[sfname]:
+                    return False
+            return True
         return False
 
     def _can_infer_forall_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
