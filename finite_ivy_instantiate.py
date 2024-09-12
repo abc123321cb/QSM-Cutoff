@@ -287,7 +287,8 @@ class FiniteIvyInstantiator():
                 return il.And()
             formula = il.Implies(args[0], args[1])
         elif isinstance(formula, lg.Eq):
-            if il.is_enumerated(args[0]) and il.is_enumerated(args[1]):
+            if (il.is_enumerated(args[0]) and il.is_enumerated(args[1])
+                and str(formula.args[0]) in set(formula.args[0].sort.extension)):  # lhs is one of constant
                 if args[0] == args[1]:
                     return il.And()
                 else:
