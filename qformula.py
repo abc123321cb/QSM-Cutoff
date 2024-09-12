@@ -261,11 +261,11 @@ class QFormula():
         neq_terms = set()
         for sort, qvars in self.sort2qvars.items():
             qvars = set(qvars)
-            qvars = list(qvars.intersection(self.forall_qvars))
-            for i in range(len(qvars)-1):
-                for j in range(i+1, len(qvars)):
-                    assert(str(qvars[i]) != str(qvars[j]))
-                    neq_qvars = [qvars[i], qvars[j]]
+            forall_qvars = list(qvars.intersection(self.forall_qvars))
+            for i in range(len(forall_qvars)-1):
+                for j in range(i+1, len(forall_qvars)):
+                    assert(str(forall_qvars[i]) != str(forall_qvars[j]))
+                    neq_qvars = [forall_qvars[i], forall_qvars[j]]
                     neq_qvars.sort(key=lambda x: str(x))
                     neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
                     neq_terms.add(neq)
@@ -273,11 +273,30 @@ class QFormula():
         if len(neq_terms):
             self.qterms.append(il.And(*neq_terms))  # neq1 & neq2 & neq3
 
+    def _get_forall_exists_constraints_term(self):
+        eq_terms = set()
+        for sort, qvars in self.sort2qvars.items():
+            qvars = set(qvars)
+            forall_qvars = list(qvars.intersection(self.forall_qvars))
+            exists_qvars = list(qvars.intersection(self.exists_qvars))
+            for fvar in forall_qvars:
+                for evar in exists_qvars:
+                    assert(str(fvar) != str(evar))
+                    eq_qvars = [fvar, evar]
+                    eq_qvars.sort(key=lambda x: str(x))
+                    eq = il.Equals(eq_qvars[0], eq_qvars[1])
+                    eq_terms.add(eq)
+        eq_terms = list(eq_terms)
+        return il.And(*eq_terms) if len(eq_terms) > 0 else None
+
     def get_qclause(self): 
         qstate = il.And(*self.qterms)
-        if len(self.exists_qvars) != 0:
+        if len(self.exists_qvars) > 0:
+            if len(self.forall_qvars) > 0:
+                eq_term = self._get_forall_exists_constraints_term()
+                qstate = il.Or(qstate, eq_term) if eq_term != None else qstate
             qstate = il.ForAll(self.exists_qvars, qstate)
-        if len(self.forall_qvars) != 0: 
+        if len(self.forall_qvars) > 0: 
             qstate = il.Exists(self.forall_qvars, qstate)
         qclause = il.Not(qstate)
         qclause = futil.de_morgan(qclause)

@@ -123,38 +123,36 @@ def get_func_symbol(atom):
 
 def get_signed_func_name(sign, atom, func_symbol):
     fname = None
-    if isinstance(atom, il.App) or il.is_boolean(atom):
-        fname = sign + SIGNATR_DELIM + str(func_symbol)
-    elif il.is_eq(atom):
+    if il.is_eq(atom):
         fname = sign + SIGNATR_DELIM + str(func_symbol) + '='
+    elif isinstance(atom, il.App) or il.is_boolean(atom):
+        fname = sign + SIGNATR_DELIM + str(func_symbol)
     return fname
 
 def get_unsigned_func_name(atom, func_symbol):
     fname = None
-    if isinstance(atom, il.App) or il.is_boolean(atom):
-        fname = str(func_symbol)
-    elif il.is_eq(atom):
+    if il.is_eq(atom):
         fname = str(func_symbol)+'=' 
+    elif isinstance(atom, il.App) or il.is_boolean(atom):
+        fname = str(func_symbol)
     return fname 
 
 def get_func_args(atom):
     args = None
-    if isinstance(atom, il.App) or il.is_boolean(atom):
-        args = atom.args
-    elif il.is_eq(atom):
+    if il.is_eq(atom):
         lhs = atom.args[0]
         args = []
         if isinstance(lhs, il.App):
             args += list(lhs.args)
         args.append(atom.args[1])
         args = tuple(args)
+    elif isinstance(atom, il.App) or il.is_boolean(atom):
+        args = atom.args
     return args
 
 def get_func_args_sort(atom, func_symbol):
     args_sort = None
-    if isinstance(atom, il.App) or il.is_boolean(atom):
-        args_sort = func_symbol.sort.dom
-    elif il.is_eq(atom):
+    if il.is_eq(atom):
         lhs = atom.args[0]
         rhs = atom.args[1]
         args_sort = []
@@ -163,6 +161,8 @@ def get_func_args_sort(atom, func_symbol):
             args_sort += func_symbol.sort.dom
         args_sort.append(rhs.sort)
         args_sort  = tuple(args_sort)
+    elif isinstance(atom, il.App) or il.is_boolean(atom):
+        args_sort = func_symbol.sort.dom
     return args_sort
 
 def get_signed_func_name_to_divided_args(sort, terms):
