@@ -167,6 +167,7 @@ class QFormula():
             for j in range(i+1, len(qvars)):
                 assert(str(qvars[i]) != str(qvars[j]))
                 neq_qvars = [qvars[i], qvars[j]]
+                neq_qvars.sort(key=lambda x: str(x))
                 neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
                 neq_terms.add(neq)
         vprint_title(self.options, 'QFormula: _get_class_constraint', 5)
@@ -265,6 +266,7 @@ class QFormula():
                 for j in range(i+1, len(qvars)):
                     assert(str(qvars[i]) != str(qvars[j]))
                     neq_qvars = [qvars[i], qvars[j]]
+                    neq_qvars.sort(key=lambda x: str(x))
                     neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
                     neq_terms.add(neq)
         neq_terms = list(neq_terms)

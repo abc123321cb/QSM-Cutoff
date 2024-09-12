@@ -126,7 +126,7 @@ class QInference():
 
     def _can_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
         num_class = len(part_sig.reduced_class)
-        if num_class == 1: # all variables of this sort appear exactly same positions:
+        if num_class == 1: # all variables of this sort appear in exactly same positions:
             sfname2num_args = {}
             for class_sig in part_sig.reduced_multi_class_sigs:
                 for arg_sig in class_sig.arg_signatures:
@@ -135,12 +135,13 @@ class QInference():
                         sfname2num_args[sfname] = 1
                     else:
                         sfname2num_args[sfname] += 1
+            # given a combination of variables of other sorts, see if all variables of this sort appear
             sfname2div_args = get_signed_func_name_to_divided_args(sort, self.terms)
             vprint_title(self.options, 'QInference: _can_infer_exists', 5)
             vprint(self.options, f'sfname2num_args: {sfname2num_args}', 5)
             vprint(self.options, f'sfname2div_args: {sfname2div_args}', 5)
             for sfname, num_args in sfname2num_args.items():
-                for other_args, sort_args_combinations in sfname2div_args[sfname].items():
+                for other_sort_args, sort_args_combinations in sfname2div_args[sfname].items():
                     if pow(sort.card, num_args) != len(sort_args_combinations):
                         return False
             return True
