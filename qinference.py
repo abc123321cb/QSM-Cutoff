@@ -7,7 +7,7 @@ from verbose import *
 from qutil import *
 from itertools import product, permutations
 from signature import *
-from qformula import QFormula
+from qformula import QFormula, ConstraintMode, QuantifierMode
 
 class QPrime():
     # static members

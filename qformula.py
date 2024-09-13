@@ -6,6 +6,19 @@ from qutil import *
 from util import FormulaUtility as futil 
 from signature import *
 
+from enum import Enum
+QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
+ConstraintMode  = Enum('ConstraintMode', ['merge_absent', 'merge_present', 'no_merge'])
+'''
+    'merge_absent': enumerate all partitions of "class_signature" in self.product_arg_partition
+                    for each arg_partition of qprime, 
+                    it is also a partition of "class_signature" in self.product_arg_partition
+                    we add final constraint describing partitions of "class_signature" in self.product_arg_partition 
+                    that is absent among self.arg_partitions
+    'merge_present':  does not enumerate all partitions of "class_signature" in self.product_arg_partition
+                      we add final constraint describing partitions of "class_signature" 
+                      that is present in self.arg_partitions
+'''
 class QFormula():
     def __init__(self, pap : ProductArgPartition, sort2qmode : Dict[il.EnumeratedSort, QuantifierMode], options : QrmOptions):
         self.options = options
@@ -36,6 +49,11 @@ class QFormula():
         # qterms
         self.qterms = []
         self._set_qterms()
+
+        # constraint
+        self.forall_constraint = None
+        self.forall_exists_constraint = None
+        self.sub_exists_vars : Set[il.Variable] = set()
 
     def _set_sort_to_class_signatures(self) -> None:
         for sort, part_sig in self.pap.sort2part_sig.items():
@@ -253,11 +271,11 @@ class QFormula():
         cterm = self._get_constraint_term(constraints)  # (neq1 | neq2) & (neq3 | neq4)
         if cterm != None:
             if cmode == ConstraintMode.merge_absent:      
-                self.qterms.append(cterm)               # (neq1 | neq2) & (neq3 | neq4)
+                self.forall_constraint = cterm          # (neq1 | neq2) & (neq3 | neq4)
             else:
-                self.qterms.append(il.Not(cterm))       # (eq1 & neq2) | (eq3 & eq4)
+                self.forall_constraint = il.Not(cterm)  # (eq1 & neq2) | (eq3 & eq4)
 
-    def set_no_merge_constraints(self) -> None:
+    def _set_forall_constraint(self):
         neq_terms = set()
         for sort, qvars in self.sort2qvars.items():
             qvars = set(qvars)
@@ -271,9 +289,9 @@ class QFormula():
                     neq_terms.add(neq)
         neq_terms = list(neq_terms)
         if len(neq_terms):
-            self.qterms.append(il.And(*neq_terms))  # neq1 & neq2 & neq3
+            self.forall_constraint = il.And(*neq_terms) # neq1 & neq2 & neq3
 
-    def _get_forall_exists_constraints_term(self):
+    def _set_forall_exists_constraint(self):
         eq_terms = set()
         for sort, qvars in self.sort2qvars.items():
             qvars = set(qvars)
@@ -286,15 +304,40 @@ class QFormula():
                     eq_qvars.sort(key=lambda x: str(x))
                     eq = il.Equals(eq_qvars[0], eq_qvars[1])
                     eq_terms.add(eq)
+                    self.sub_exists_vars.add(evar)
         eq_terms = list(eq_terms)
-        return il.And(*eq_terms) if len(eq_terms) > 0 else None
+        if len(eq_terms):
+            self.forall_exists_constraint = il.And(*eq_terms) 
+
+    def _set_exists_sub_term(self):
+        qterms     = []
+        sub_qterms = []
+        for term in self.qterms:
+            (_, atom) = split_term(term)
+            args = get_func_args(atom)
+            is_sub_qterm = False
+            for arg in args:
+                if arg in self.sub_exists_vars:
+                    is_sub_qterm = True
+            if is_sub_qterm:
+                sub_qterms.append(term)
+            else:
+                qterms.append(term)
+        sub_qterms.append(self.forall_exists_constraint)
+        qterms.append(il.ForAll(self.sub_exists_vars, il.Or(*sub_qterms)))
+        for evar in self.sub_exists_vars:
+            self.exists_qvars.remove(evar)
+        self.qterms = qterms
+
+    def set_no_merge_constraints(self) -> None:
+        self._set_forall_constraint()
+        self._set_forall_exists_constraint()
+        if self.forall_exists_constraint != None:
+            self._set_exists_sub_term()
 
     def get_qclause(self): 
         qstate = il.And(*self.qterms)
         if len(self.exists_qvars) > 0:
-            if len(self.forall_qvars) > 0:
-                eq_term = self._get_forall_exists_constraints_term()
-                qstate = il.Or(qstate, eq_term) if eq_term != None else qstate
             qstate = il.ForAll(self.exists_qvars, qstate)
         if len(self.forall_qvars) > 0: 
             qstate = il.Exists(self.forall_qvars, qstate)
