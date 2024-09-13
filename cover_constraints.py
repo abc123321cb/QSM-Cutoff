@@ -17,18 +17,22 @@ class CoverConstraints():
         self.sat_solver        = SatSolver() 
         self.sat_counter       = SatCounter()
         self.def_prime_checker = SatSolver()
-        self.sanity_checker    = SatSolver()
+        self.min_checker       = SatSolver()   
         self.approx_counter = None 
         self.useMC          = useMC
         self.top_var        = 0
         self.symbol2var_num = {}
         self.atom_vars : List[int] = []
         self.orbit_vars: List[int] = []
-        self.root_assume_clauses   = [] # axiom, definition
-        self.root_tseitin_clauses  = []
+        
+        # axiom, definition
+        self.root_assume_clauses   = [] 
+        self.root_tseitin_clauses  = [] # axiom, definition
+        # min_check or qinfer_check
+        self.instantiated_orbit_assume_clauses    = [] 
+        self.instantiated_orbit_tseitin_clauses   = [] 
         self.clauses               = []
         self.coverage  : List[int] = [-1]*len(orbits) 
-
         
         self._init_vars(orbits)
         self._init_solvers(orbits)
@@ -37,7 +41,7 @@ class CoverConstraints():
         self.top_var += 1
         return self.top_var
 
-    def tseitin_encode(self, symbol) -> int:
+    def tseitin_encode(self, symbol, is_root=True) -> int:
         if str(symbol) in self.symbol2var_num:
             return self.symbol2var_num[str(symbol)]
         else:
@@ -86,8 +90,10 @@ class CoverConstraints():
             vprint(self.options, f'{symbol} : {args}', 6)
             for clause in clauses:
                 vprint(self.options, f'clause: {clause}', 6)
-                self.root_tseitin_clauses.append(clause)
-            self.symbol2var_num[str(symbol)] = symbol_var
+                if is_root:
+                    self.root_tseitin_clauses.append(clause)
+                else:
+                    self.instantiated_orbit_tseitin_clauses.append(clause)
             return symbol_var
 
     def get_prime_literals(self, prime : Prime, negate=False) -> List[int]:
@@ -228,28 +234,73 @@ class CoverConstraints():
         result      = self.def_prime_checker.solve(assumptions)
         return False if result else True
 
-    def add_sanity_clauses(self, instantiated_solutions):
-        for orbit_fmla in instantiated_solutions: 
-            orbit_fmla_var = self.tseitin_encode(orbit_fmla)
-            self.root_assume_clauses.append([orbit_fmla_var])
+    def init_minimization_check_solver(self, quantified_orbits):
+        self.instantiated_orbit_assume_clauses  = []
+        self.instantiated_orbit_tseitin_clauses = []
+        for qorbit in quantified_orbits: 
+            inst_orbit = self.instantiator.instantiate_quantifier(qorbit)
+            orbit_fmla_var = self.tseitin_encode(inst_orbit, is_root=False)
+            self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
         for clause in self.root_assume_clauses:
-            self.sanity_checker.add_clause(clause)
+            self.min_checker.add_clause(clause)
         for clause in self.root_tseitin_clauses:
-            self.sanity_checker.add_clause(clause)
+            self.min_checker.add_clause(clause)
+        for clause in self.instantiated_orbit_assume_clauses:
+            self.min_checker.add_clause(clause)
+        for clause in self.instantiated_orbit_tseitin_clauses:
+            self.min_checker.add_clause(clause)
 
-    def get_sanity_minterm(self):
-        result  = self.sanity_checker.solve()
+    def get_minimization_check_minterm(self):
+        result  = self.min_checker.solve()
         minterm = None 
         if result:
-            model   = self.sanity_checker.get_model()
+            model   = self.min_checker.get_model()
             minterm = ['1' if model[atom_id] == atom_var else '0' for atom_id, atom_var in enumerate(self.atom_vars)] 
         return (result, minterm)
 
-    def block_sanity_minterm(self, values):
+    def block_minimization_check_minterm(self, values):
         block_clause = []
         for atom_id, atom_var in enumerate(self.atom_vars):
             if values[atom_id] == '1':
                 block_clause.append(-1*atom_var)
             elif values[atom_id] == '0':
                 block_clause.append(atom_var)
-        self.sanity_checker.add_clause(block_clause)
+        self.min_checker.add_clause(block_clause)
+
+    def _get_prime_clause(self, prime : Prime) -> List[int]:
+        literals = []
+        for (var_id, val) in enumerate(prime.values):
+            lit  = self.instantiator.protocol_atoms_fmlas[var_id]
+            if val == '1':
+                literals.append(lit) 
+            elif val == '0':
+                literals.append(il.Not(lit))
+        return il.Not(il.And(*literals))
+
+    def init_quantifier_inference_check_solver(self, primes : List[Prime], quantified_orbit):
+        self.qinfer_checker = SatSolver()
+        self.instantiated_orbit_assume_clauses  = []
+        self.instantiated_orbit_tseitin_clauses = []
+        
+        primes_clauses = [self._get_prime_clause(prime) for prime in primes]
+        inst_orbit     = self.instantiator.instantiate_quantifier(quantified_orbit)
+        eq_term        = il.Equals(il.And(*primes_clauses), inst_orbit)
+        eq_var         = self.tseitin_encode(eq_term, is_root=False)
+        # assume neq
+        self.instantiated_orbit_assume_clauses.append([-1*eq_var])
+
+        for clause in self.root_assume_clauses:
+            self.qinfer_checker.add_clause(clause)
+        for clause in self.root_tseitin_clauses:
+            self.qinfer_checker.add_clause(clause)
+        for clause in self.instantiated_orbit_assume_clauses:
+            self.qinfer_checker.add_clause(clause)
+        for clause in self.instantiated_orbit_tseitin_clauses:
+            self.qinfer_checker.add_clause(clause)
+            
+    def quantifier_inference_check(self):
+        result  = self.qinfer_checker.solve()
+        return not result
+
+
+

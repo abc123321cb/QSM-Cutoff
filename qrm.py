@@ -163,9 +163,9 @@ def qrm(ivy_name, args):
     invariants = minimizer.get_minimal_invariants()
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step6: sanity_check
-    step_start(options, f'[SANITY] Sanity Check on [{options.instance_name}: {options.size_str}]')
-    sanity_result = minimizer.sanity_check(instantiator, protocol)
+    # step6: minimization sanity check
+    step_start(options, f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
+    sanity_result = minimizer.minimization_check(protocol)
     time_stamp    = step_end(options, time_start, time_stamp)
 
     # step7: ivy_check

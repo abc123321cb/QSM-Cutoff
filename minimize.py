@@ -30,11 +30,11 @@ class StackLevel():
 
 class Minimizer():
     def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits: List[PrimeOrbit]) -> None: 
-        self.tran_sys = tran_sys
-        self.orbits   = orbits
-        self.cover    = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC)
-        self.max_cost = 0 
-        self.ubound   = 0 
+        self.tran_sys     = tran_sys
+        self.orbits       = orbits
+        self.cover        = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC)
+        self.max_cost     = 0 
+        self.ubound       = 0 
         self.decision_stack : List[StackLevel] = []
         self.pending    : List[int] = list(range(len(orbits)))
         self.solution   : List[int] = []
@@ -260,53 +260,53 @@ class Minimizer():
         self._new_level()
         self._reduce()
 
-    def _add_sanity_check_clauses(self, instantiator : FiniteIvyInstantiator):
-        instantiated_solution = []
-        for orbit_id in self.optimal_solutions[0]:
-            quantified_orbit   = self.orbits[orbit_id].quantified_form
-            instantiated_orbit = instantiator.instantiate_quantifier(quantified_orbit)
-            instantiated_solution.append(instantiated_orbit)
-        self.cover.add_sanity_clauses(instantiated_solution)
-
-    def sanity_check(self, instantiator : FiniteIvyInstantiator, protocol : Protocol):
-        self._add_sanity_check_clauses(instantiator)
-        (result, values) = self.cover.get_sanity_minterm()
+    def minimization_check(self, protocol : Protocol):
+        quantified_orbits = [self.orbits[orbit_id].quantified_form for orbit_id in self.optimal_solutions[0]]
+        self.cover.init_minimization_check_solver(quantified_orbits)
+        (result, values)  = self.cover.get_minimization_check_minterm()
         while result:
             repr_int = int(''.join(values), 2)
             if result:
                 for nvalues in protocol.all_permutations(values):
                     repr_int = min(int(''.join(nvalues), 2), repr_int)
-                    self.cover.block_sanity_minterm(nvalues)
+                    self.cover.block_minimization_check_minterm(nvalues)
             if not repr_int in protocol.repr_states:
                 bit_str = '{0:b}'.format(repr_int)
                 vprint(self.options, 'Found a state not in reachability')
                 vprint(self.options, f'decimal: {repr_int}')
                 vprint(self.options, f'binary: {bit_str}')
-                vprint(self.options, f'[SANITY RESULT]: FAIL')
+                vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
                 return False
             protocol.repr_states.remove(repr_int)
-            (result, values) = self.cover.get_sanity_minterm()
+            (result, values) = self.cover.get_minimization_check_minterm()
 
         if not len(protocol.repr_states) == 0:
             vprint(self.options, 'Found states not included in solution')
             vprint(self.options, f'{protocol.repr_states}')
-            vprint(self.options, f'[SANITY RESULT]: FAIL')
+            vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
             return False
-        vprint(self.options, f'[SANITY RESULT]: PASS')
+        vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
         return True
-            
+
     def quantifier_inference(self, atoms) -> None:
         from qinference import QInference, QPrime
         QInference.setup(atoms, self.tran_sys)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
-        for id in inference_list:
-            orbit = self.orbits[id]
+        for orbit_id in inference_list:
+            orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
             qprimes = [QPrime(prime, self.options) for prime in orbit.suborbit_repr_primes]
             qinf    = QInference(qprimes, self.options)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
+            self.cover.init_quantifier_inference_check_solver(orbit.primes, qclause)
+            vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
+            if self.cover.quantifier_inference_check():
+                vprint(self.options, f'[QI_CHECK RESULT]: PASS')
+            else:
+                vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
+
         # output result
         if self.options.writeQI:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
