@@ -330,10 +330,12 @@ class QFormula():
         self.qterms = qterms
 
     def set_no_merge_constraints(self) -> None:
-        self._set_forall_constraint()
         self._set_forall_exists_constraint()
         if self.forall_exists_constraint != None:
             self._set_exists_sub_term()
+        self._set_forall_constraint()
+        if self.forall_constraint != None:
+            self.qterms.append(self.forall_constraint)
 
     def get_qclause(self): 
         qstate = il.And(*self.qterms)
