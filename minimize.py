@@ -300,12 +300,13 @@ class Minimizer():
             qinf    = QInference(qprimes, self.options)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
-            self.cover.init_quantifier_inference_check_solver(orbit.primes, qclause)
-            vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
-            if self.cover.quantifier_inference_check():
-                vprint(self.options, f'[QI_CHECK RESULT]: PASS')
-            else:
-                vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
+            if self.options.check_qi:
+                self.cover.init_quantifier_inference_check_solver(orbit.primes, qclause)
+                vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
+                if self.cover.quantifier_inference_check():
+                    vprint(self.options, f'[QI_CHECK RESULT]: PASS')
+                else:
+                    vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
 
         # output result
         if self.options.writeQI:

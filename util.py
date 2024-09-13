@@ -14,6 +14,7 @@ class QrmOptions():
         self.instance_suffix = ''
         self.mode  = Mode.ivy
         self.useMC = UseMC.sat
+        self.check_qi        = True
         self.writeReach      = False
         self.writePrime      = False
         self.writeQI         = False

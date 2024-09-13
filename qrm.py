@@ -24,6 +24,7 @@ def usage ():
     print('Options:')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
+    print('-k           disable checking quantifier inference (default: on)')
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
@@ -61,7 +62,7 @@ def get_peak_memory_and_reset(options):
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:amc:v:l:rpqwhd")
+        opts, args = getopt.getopt(args, "s:amkc:v:l:rpqwhd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -77,6 +78,8 @@ def get_options(ivy_name, args):
             options.all_solutions   = False 
         elif optc == '-m':
             options.merge_suborbits = False 
+        elif optc == '-k':
+            options.check_qi        = False
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
                 options.useMC = optv
