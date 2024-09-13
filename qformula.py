@@ -271,9 +271,9 @@ class QFormula():
         cterm = self._get_constraint_term(constraints)  # (neq1 | neq2) & (neq3 | neq4)
         if cterm != None:
             if cmode == ConstraintMode.merge_absent:      
-                self.forall_constraint = cterm          # (neq1 | neq2) & (neq3 | neq4)
+                self.qterms.append(cterm)          # (neq1 | neq2) & (neq3 | neq4)
             else:
-                self.forall_constraint = il.Not(cterm)  # (eq1 & neq2) | (eq3 & eq4)
+                self.qterms.append(il.Not(cterm))  # (eq1 & neq2) | (eq3 & eq4)
 
     def _set_forall_constraint(self):
         neq_terms = set()
