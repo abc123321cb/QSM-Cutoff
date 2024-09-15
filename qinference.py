@@ -124,6 +124,27 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
+    def _get_signed_func_name_to_divided_args(self, sort, red_mult_class):
+        sfname2div_args = {} 
+        for term in self.terms:
+            sort_args  = []
+            other_args = []
+            (sign, atom)  = split_term(term)
+            fsymbol = get_func_symbol(atom)
+            sfname  = get_signed_func_name(sign, atom, fsymbol) 
+            args    = get_func_args(atom) 
+            for arg_id, arg in enumerate(args):
+                if arg.sort == sort and ArgumentSignature(sort, sfname, 0, arg_id).get_reduced_signature() in red_mult_class:
+                    sort_args.append(arg)
+                else:
+                    other_args.append(arg)
+            if not sfname in sfname2div_args:
+                sfname2div_args[sfname] = {} 
+            if not str(other_args) in sfname2div_args[sfname]:
+                sfname2div_args[sfname][str(other_args)] = set()
+            sfname2div_args[sfname][str(other_args)].add(str(sort_args))
+        return sfname2div_args 
+
     def _multi_class_appears_with_same_other_args(self, sort, part_sig : SortPartitionSignature_) -> bool:
         sfname2num_args = {}
         for class_sig in part_sig.reduced_multi_class_sigs:
@@ -134,9 +155,9 @@ class QInference():
                 else:
                     sfname2num_args[sfname] += 1
         # given a combination of variables of other sorts, see if all variables of this sort appear
-        sfname2div_args = get_signed_func_name_to_divided_args(sort, self.terms)
+        sfname2div_args = self._get_signed_func_name_to_divided_args(sort, part_sig.reduced_multi_class)
         num_exists_vars = sort.card - len(part_sig.reduced_single_class_sigs)
-        vprint_title(self.options, 'QInference: _can_infer_exists', 5)
+        vprint_title(self.options, 'QInference: _multi_class_appears_with_same_other_args', 5)
         vprint(self.options, f'sfname2num_args: {sfname2num_args}', 5)
         vprint(self.options, f'sfname2div_args: {sfname2div_args}', 5)
         vprint(self.options, f'num_exists_vars: {num_exists_vars}', 5)

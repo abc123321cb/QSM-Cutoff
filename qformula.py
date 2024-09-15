@@ -287,7 +287,7 @@ class QFormula():
                     self.sub_exists_vars.add(evar)
         eq_terms = list(eq_terms)
         if len(eq_terms):
-            self.forall_exists_constraint = il.And(*eq_terms) 
+            self.forall_exists_constraint = il.Or(*eq_terms) 
 
     def _set_exists_sub_term(self):
         qterms     = []
