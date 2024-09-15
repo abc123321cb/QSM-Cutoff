@@ -193,6 +193,25 @@ class QFormula():
         vprint(self.options, f'neq_terms: {[str(t) for t in neq_terms]}')
         return list(neq_terms)
 
+    def _get_diff_class_constraint(self, class_sigs : List[ClassSignature]):
+        qvars = set()
+        for class_sig in class_sigs:
+            qvar = self.arg_sig2qvar[str(class_sig.arg_signatures[0])]
+            qvars.add(qvar)
+        qvars = list(qvars)
+        eq_terms = set()
+        for i in range(len(qvars)-1):
+            for j in range(i+1, len(qvars)):
+                assert(str(qvars[i]) != str(qvars[j]))
+                eq_qvars = [qvars[i], qvars[j]]
+                eq_qvars.sort(key=lambda x: str(x))
+                eq = il.Equals(eq_qvars[0], eq_qvars[1])
+                eq_terms.add(eq)
+        vprint_title(self.options, 'QFormula: _get_diff_class_constraint', 5)
+        vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
+        vprint(self.options, f'eq_terms: {[str(t) for t in eq_terms]}')
+        return list(eq_terms)
+
     def _get_partition_constraint(self, partition : PartitionSignature):
         vprint_title(self.options, 'QFormula: _get_partition_constraint', 5)
         vprint(self.options, f'partition: {partition}', 5)
@@ -202,59 +221,25 @@ class QFormula():
             for class_sig in sort_sig.class_signatures:
                 vprint(self.options, f'class signature: {class_sig}', 5)
                 constraint  += self._get_class_constraint(class_sig)
+            constraint += self._get_diff_class_constraint(sort_sig.class_signatures)
         vprint(self.options, f'constraint: {[str(c) for c in constraint]}', 5)
         return constraint
 
-    def _remove_redundant_constraints(self, constraints):
-        vprint_title(self.options, 'QFormula: remove_redundant_constraints', 5)
-        vprint(self.options, f'before remove constraints: {[[str(c) for c in constraint] for constraint in constraints]}', 5)
-
-        constraints_str = []
-        for constraint in constraints:
-            constraints_str.append(set([str(term) for term in constraint]))
-      
-        fixed_point = False
-        while len(constraints) >= 2 and not fixed_point:
-            fixed_point = True
-            remove = set() 
-            for i  in range(1, len(constraints)):
-                if constraints_str[0].issubset(constraints_str[i]):
-                    remove.add(i)
-                    fixed_point = False
-            reduced_constraints     = [constraints[0]]
-            reduced_constraints_str = [constraints_str[0]]
-            for i in range(1, len(constraints)):
-                if not i in remove:
-                    reduced_constraints.append(constraints[i])
-                    reduced_constraints_str.append(constraints_str[i])
-            constraints     = reduced_constraints
-            constraints_str = reduced_constraints_str
-
-        vprint(self.options, f'after remove constraints: {[[str(c) for c in constraint] for constraint in constraints]}', 5)
-        return constraints
-
     def _get_constraints(self, partitions : List[PartitionSignature]):
-        # constraints:[ [neq1, neq2, ...], [neq3, neq4, .... ]]
-        # partitions:   (class_sig 1)      (class_sig 2)
         constraints = [] 
         for partition in partitions: 
-            # constraint: [neq1, neq2, ...]
             constraint = self._get_partition_constraint(partition)
             constraints.append(constraint)
         constraints.sort(key=lambda constraint: len(constraint))
         return constraints
 
     def _get_constraint_term(self, constraints):
-        # constraints:[[neq1, neq2, ...], [neq3, neq4, .... ]]
         neq_terms = []
         for constraint in constraints:
-            # constraint = [neq1, neq2,...]
-            # neq_constraint = neq1 | neq2
             if len(constraint):
                 neq_term = il.Or(*constraint)
                 neq_terms.append(neq_term)
         if len(neq_terms):
-            # neq_constraint = (neq1 | neq2) & (neq3 | neq4)
             return il.And(*neq_terms)    
         return None
 
@@ -262,18 +247,13 @@ class QFormula():
     # public methods
     #------------------------------------------------
     def set_merge_constraints(self, partitions : List[PartitionSignature], cmode : ConstraintMode) -> None:
-        # constraints:[ [neq1, neq2, ...], [neq3, neq4, .... ]]
-        # partitions:   (class_sig 1)      (class_sig 2)
         constraints = self._get_constraints(partitions)
-        if cmode == ConstraintMode.merge_absent:
-            constraints = self._remove_redundant_constraints(constraints)
-
-        cterm = self._get_constraint_term(constraints)  # (neq1 | neq2) & (neq3 | neq4)
+        cterm = self._get_constraint_term(constraints)  
         if cterm != None:
             if cmode == ConstraintMode.merge_absent:      
-                self.qterms.append(cterm)          # (neq1 | neq2) & (neq3 | neq4)
+                self.qterms.append(cterm)          
             else:
-                self.qterms.append(il.Not(cterm))  # (eq1 & neq2) | (eq3 & eq4)
+                self.qterms.append(il.Not(cterm)) 
 
     def _set_forall_constraint(self):
         neq_terms = set()
