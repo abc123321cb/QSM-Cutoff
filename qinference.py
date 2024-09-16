@@ -124,7 +124,8 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
-    def _get_signed_func_name_to_divided_args(self, sort, red_mult_class):
+    def _get_signed_func_name_to_divided_args(self, sort, red_mult_class_sigs : List[ClassSignature]):
+        red_mult_class_sigs = set([sig.get_reduced_signature() for sig in red_mult_class_sigs])
         sfname2div_args = {} 
         for term in self.terms:
             sort_args  = []
@@ -134,7 +135,7 @@ class QInference():
             sfname  = get_signed_func_name(sign, atom, fsymbol) 
             args    = get_func_args(atom) 
             for arg_id, arg in enumerate(args):
-                if arg.sort == sort and ArgumentSignature(sort, sfname, 0, arg_id).get_reduced_signature() in red_mult_class:
+                if arg.sort == sort and ArgumentSignature(sort, sfname, 0, arg_id).get_reduced_signature() in red_mult_class_sigs:
                     sort_args.append(arg)
                 else:
                     other_args.append(arg)
@@ -155,7 +156,7 @@ class QInference():
                 else:
                     sfname2num_args[sfname] += 1
         # given a combination of variables of other sorts, see if all variables of this sort appear
-        sfname2div_args = self._get_signed_func_name_to_divided_args(sort, part_sig.reduced_multi_class)
+        sfname2div_args = self._get_signed_func_name_to_divided_args(sort, part_sig.reduced_multi_class_sigs)
         num_exists_vars = sort.card - len(part_sig.reduced_single_class_sigs)
         vprint_title(self.options, 'QInference: _multi_class_appears_with_same_other_args', 5)
         vprint(self.options, f'sfname2num_args: {sfname2num_args}', 5)
