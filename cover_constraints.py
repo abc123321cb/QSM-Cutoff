@@ -41,7 +41,39 @@ class CoverConstraints():
         self.top_var += 1
         return self.top_var
 
+    def _get_canonical_equal_term(self, symbol):
+        if str(symbol) in self.symbol2var_num:
+            return symbol
+        symbol1 = il.Equals(symbol.args[1], symbol.args[0])
+        if str(symbol1) in self.symbol2var_num:
+            return symbol1
+        a = symbol.args[0]
+        b = symbol.args[1]
+        a_eqs = {} 
+        b_eqs = {}
+        for atom in self.instantiator.protocol_atoms_fmlas:
+            if il.is_eq(atom):
+                if a == atom.args[0]:
+                    a_eqs[str(atom.args[1])] = atom
+                elif a == atom.args[1]:
+                    a_eqs[str(atom.args[0])] = atom
+                elif b == atom.args[0]:
+                    b_eqs[str(atom.args[1])] = atom
+                elif b == atom.args[1]:
+                    b_eqs[str(atom.args[0])] = atom
+        assert(len(a_eqs) == len(b_eqs))
+        eq_terms = []
+        for other_arg, a_eq in a_eqs.items():
+            assert(other_arg in b_eqs)
+            b_eq = b_eqs[other_arg]
+            eq_terms.append(il.And(*[a_eq, b_eq]))
+        return il.Or(*eq_terms)
+
     def tseitin_encode(self, symbol, is_root=True) -> int:
+        # e.g. a = b
+        if isinstance(symbol, lg.Eq) and il.is_enumerated(symbol.args[0]) and il.is_enumerated(symbol.args[1]):
+            symbol = self._get_canonical_equal_term(symbol)
+
         if str(symbol) in self.symbol2var_num:
             return self.symbol2var_num[str(symbol)]
         else:
@@ -50,7 +82,7 @@ class CoverConstraints():
             if len(symbol.args) == 1:
                 assert( isinstance(symbol, il.And) or isinstance(symbol, il.Or) )
                 return self.tseitin_encode(symbol.args[0])
-            assert(len(symbol.args) > 1)
+            assert(len(symbol.args) > 1) 
             symbol_var = self.new_var()
             args = [self.tseitin_encode(arg) for arg in symbol.args]
             clauses = []
