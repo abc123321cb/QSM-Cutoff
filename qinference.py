@@ -124,27 +124,31 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
-    def _get_signed_func_name_to_divided_args(self, sort, red_mult_class_sigs : List[ClassSignature]):
+    def _get_signed_func_name_to_other_args(self, sort, red_mult_class_sigs : List[ClassSignature]):
         red_mult_class_sigs = set([sig.get_reduced_signature() for sig in red_mult_class_sigs])
-        sfname2div_args = {} 
+        sfname2other_args = {} 
+        sfname2count    = {}
         for term in self.terms:
             sort_args  = []
             other_args = []
             (sign, atom)  = split_term(term)
-            fsymbol = get_func_symbol(atom)
-            sfname  = get_signed_func_name(sign, atom, fsymbol) 
+            fsymbol       = get_func_symbol(atom)
+            sfname        = get_signed_func_name(sign, atom, fsymbol) 
             args    = get_func_args(atom) 
+            if not sfname in sfname2count:
+                sfname2count[sfname] = 0
+            func_id = sfname2count[sfname]
+            sfname2count[sfname] = func_id + 1 
             for arg_id, arg in enumerate(args):
-                if arg.sort == sort and ArgumentSignature(sort, sfname, 0, arg_id).get_reduced_signature() in red_mult_class_sigs:
-                    sort_args.append(arg)
-                else:
+                arg_sig = ArgumentSignature(sort, sfname, func_id, arg_id)
+                if arg.sort != sort or not arg_sig.get_reduced_signature() in red_mult_class_sigs:
                     other_args.append(arg)
-            if not sfname in sfname2div_args:
-                sfname2div_args[sfname] = {} 
-            if not str(other_args) in sfname2div_args[sfname]:
-                sfname2div_args[sfname][str(other_args)] = set()
-            sfname2div_args[sfname][str(other_args)].add(str(sort_args))
-        return sfname2div_args 
+            if not sfname in sfname2other_args:
+                sfname2other_args[sfname] = {} 
+            if not str(other_args) in sfname2other_args[sfname]:
+                sfname2other_args[sfname][str(other_args)] = [] 
+            sfname2other_args[sfname][str(other_args)].append(func_id)
+        return sfname2other_args 
 
     def _multi_class_appears_with_same_other_args(self, sort, part_sig : SortPartitionSignature_) -> bool:
         sfname2num_args = {}
@@ -156,16 +160,24 @@ class QInference():
                 else:
                     sfname2num_args[sfname] += 1
         # given a combination of variables of other sorts, see if all variables of this sort appear
-        sfname2div_args = self._get_signed_func_name_to_divided_args(sort, part_sig.reduced_multi_class_sigs)
+        sfname2other_args = self._get_signed_func_name_to_other_args(sort, part_sig.reduced_multi_class_sigs)
         num_exists_vars = sort.card - len(part_sig.reduced_single_class_sigs)
         vprint_title(self.options, 'QInference: _multi_class_appears_with_same_other_args', 5)
         vprint(self.options, f'sfname2num_args: {sfname2num_args}', 5)
-        vprint(self.options, f'sfname2div_args: {sfname2div_args}', 5)
+        vprint(self.options, f'sfname2other_args: {sfname2other_args}', 5)
         vprint(self.options, f'num_exists_vars: {num_exists_vars}', 5)
         for sfname, num_args in sfname2num_args.items():
-            for other_sort_args, sort_args_combinations in sfname2div_args[sfname].items():
-                if pow(num_exists_vars, num_args) != len(sort_args_combinations):
+            for other_args, func_ids in sfname2other_args[sfname].items():
+                if pow(num_exists_vars, num_args) != len(func_ids):
                     return False
+        red_class_sigs : List[ClassSignature] = []
+        for class_sig in part_sig.reduced_multi_class_sigs:
+            for arg_sig in class_sig.arg_signatures:
+                sfname        = arg_sig.signed_fname
+                for other_args, func_ids in sfname2other_args[sfname].items():
+                    red_class_sigs.append(ClassSignature([ArgumentSignature(sort, sfname, func_ids[0], arg_sig.arg_id)]))
+        part_sig.reduced_multi_class_sigs = red_class_sigs
+        vprint(self.options, f'updated reduced multi class sigs: {part_sig.reduced_multi_class_sigs}', 5)
         return True
 
     def _can_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:

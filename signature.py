@@ -87,11 +87,13 @@ class SortPartitionSignature_(SortPartitionSignature):
                 self.reduced_single_class_sigs += class_sigs
             else:
                 self.reduced_multi_class.add(reduced_sig)
-                red_class_sigs = [] 
+                red_class_sigs     = [] 
+                red_class_sigs_str = set()
                 for class_sig in class_sigs:
                     for arg_sig in class_sig.arg_signatures:
-                        if arg_sig.func_id == 0: # modulo func_id
+                        if not arg_sig.get_reduced_signature() in red_class_sigs_str: # modulo func_id
                             red_class_sigs.append(ClassSignature([arg_sig]))
+                            red_class_sigs_str.add(arg_sig.get_reduced_signature())
                 self.reduced_multi_class_sigs += red_class_sigs
         assert(len(self.reduced_single_class) + len(self.reduced_multi_class) == len(self.reduced_class))
 

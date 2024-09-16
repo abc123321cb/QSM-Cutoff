@@ -303,7 +303,7 @@ class QFormula():
                 sub_qterms.append(term)
             else:
                 qterms.append(term)
-        sub_qterms.append(self.forall_exists_constraint)
+        sub_qterms = [il.And(*sub_qterms), self.forall_exists_constraint]
         qterms.append(il.ForAll(self.sub_exists_vars, il.Or(*sub_qterms)))
         for evar in self.sub_exists_vars:
             self.exists_qvars.remove(evar)
