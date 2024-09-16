@@ -107,6 +107,7 @@ class PartitionSignature():
     def __init__(self, sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature]): 
         sort_sigs     = []
         red_sort_sigs = []
+        sort2sig = dict(sorted(sort2sig.items()))
         for sort, sig in sort2sig.items():
             sort_sigs.append([str(sig)])
             red_sort_sigs.append([sig.get_reduced_signature()])
