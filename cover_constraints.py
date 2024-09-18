@@ -271,6 +271,7 @@ class CoverConstraints():
         fout = open('cnf', 'a')
         for a in assumptions:
             fout.write(f'{a} 0'+'\n')
+        fout.close()
         sharp_sat_cmd  = './sharpSAT/build/Profiling/sharpSAT cnf > out'
         vprint(self.options, sharp_sat_cmd)
         os.system(sharp_sat_cmd)
