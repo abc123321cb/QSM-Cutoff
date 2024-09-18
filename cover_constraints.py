@@ -1,3 +1,4 @@
+import os
 from typing import List
 from pysat.solvers import Glucose4 as SatCounter 
 from pysat.solvers import Cadical153 as SatSolver
@@ -213,12 +214,26 @@ class CoverConstraints():
             self.sat_solver.add_clause(clause)
             self.sat_counter.add_clause(clause)
 
+    def _write_model_count_cnf(self):
+        fout = open('cnf', 'w')
+        var_num    = self.top_var
+        clause_num = len(self.root_assume_clauses) + len(self.root_tseitin_clauses) + len(self.clauses) 
+        fout.write(f'p cnf {var_num} {clause_num}'+'\n')
+        for clause in self.root_assume_clauses:
+            fout.write(f'{' '.join([str(lit) for lit in clause])} 0' + '\n')
+        for clause in self.root_tseitin_clauses:
+            fout.write(f'{' '.join([str(lit) for lit in clause])} 0' + '\n')
+        for clause in self.clauses:
+            fout.write(f'{' '.join([str(lit) for lit in clause])} 0' + '\n')
+        fout.close()
+
     def _init_solvers(self, orbits : List[PrimeOrbit]) -> None:
         self._init_axioms_formula()
         self._init_definitions_formula()
         self._init_equal_atoms_constraints()
         self._init_orbit_selection_formula(orbits)
         self._push_clauses_into_solvers()
+        self._write_model_count_cnf()
 
     def _count_atom_var(self, assigned) -> int:
         count = 0
@@ -247,6 +262,30 @@ class CoverConstraints():
                 break
         return result
 
+    def _get_sharp_sat_count(self, assumptions) -> int:
+        var_num    = self.top_var
+        clause_num = len(self.root_assume_clauses) + len(self.root_tseitin_clauses) + len(self.clauses) + len(assumptions) 
+        sed_cmd    = f'sed -i \'1c\p cnf {var_num} {clause_num}\' cnf'
+        vprint(self.options, sed_cmd)
+        os.system(sed_cmd)
+        fout = open('cnf', 'a')
+        for a in assumptions:
+            fout.write(f'{a} 0'+'\n')
+        sharp_sat_cmd  = './sharpSAT/build/Profiling/sharpSAT cnf > out'
+        vprint(self.options, sharp_sat_cmd)
+        os.system(sharp_sat_cmd)
+        tail_cmd = f'tail -5 out > out1'
+        os.system(tail_cmd)
+        head_cmd = f'head -1 out1 > out2'
+        os.system(head_cmd)
+        fin  = open('out2', 'r')
+        line = next(fin)
+        result  = int(line.split()[0])
+        vprint(self.options, f'[SharpSAT RESULT]: {result}')
+        head_cmd = f'head -n -{len(assumptions)} cnf > temp && mv temp cnf'
+        os.system(head_cmd)
+        return result
+
     def get_coverage(self, orbit : PrimeOrbit, solution) -> int:
         self.coverage[orbit.id] = 0
         block_sub_vars = []
@@ -255,7 +294,9 @@ class CoverConstraints():
             for i in solution:
                 assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
             assumptions += [sub_orbit_var for sub_orbit_var in block_sub_vars]
-            result = self.sat_counter.solve(assumptions)
+            # result = self.sat_counter.solve(assumptions)
+            # sharpSAT
+            result = self._get_sharp_sat_count(assumptions)
             if result:
                 result, assigned = self.sat_counter.propagate(assumptions)
                 atom_count = self._count_atom_var(assigned)
