@@ -23,7 +23,7 @@ class CoverConstraints():
         self.top_var        = 0
         self.symbol2var_num = {}
         self.atom_vars : List[int] = []
-        self.orbit_vars: List[int] = []
+        self.orbit_vars: List[List[int]] = [] # orbit_id : [suborbit_var1, suborbit_var2, ...]
         
         # axiom, definition
         self.root_assume_clauses   = [] 
@@ -143,9 +143,12 @@ class CoverConstraints():
             atom_var = self.new_var()
             self.atom_vars.append(atom_var)
             self.symbol2var_num[atom] = atom_var 
-        for orbit_id in range(len(orbits)):
-            orbit_var = self.new_var()
-            self.orbit_vars.append(orbit_var)
+        for orbit in orbits:
+            sub_orbit_vars = []
+            for i in range(orbit.num_suborbits):
+                sub_orbit_var = self.new_var()
+                sub_orbit_vars.append(sub_orbit_var)
+            self.orbit_vars.append(sub_orbit_vars)
 
     def _init_axioms_formula(self) -> None:
         dep_axioms = set(self.instantiator.dep_axioms_str)
@@ -187,10 +190,14 @@ class CoverConstraints():
     def _init_orbit_selection_formula(self, orbits : List[PrimeOrbit]) -> None:
         # Eq (10) in FMCAD paper
         for (orbit_id, orbit) in enumerate(orbits):
-            orbit_var = self.orbit_vars[orbit_id]
+            sub_orbit_vars = self.orbit_vars[orbit_id]
+            sub_orbit_id   = -1
             for prime in orbit.primes:
+                if prime.is_sub_repr:
+                    sub_orbit_id += 1
+                sub_orbit_var = sub_orbit_vars[sub_orbit_id]
                 clause = self.get_prime_literals(prime, negate=True) 
-                clause.append(-1*orbit_var)
+                clause.append(-1*sub_orbit_var)
                 self.clauses.append(clause)
 
     def _push_clauses_into_solvers(self) -> None:
@@ -229,36 +236,34 @@ class CoverConstraints():
         result = False
         for repr_prime in orbit.suborbit_repr_primes:
             assumptions = self.get_prime_literals(repr_prime)
-            assumptions += [self.orbit_vars[i] for i in pending  if i != orbit.id]
-            assumptions += [self.orbit_vars[i] for i in solution if i != orbit.id]
+            for i in pending:
+                if i != orbit.id:
+                    assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
+            for i in solution:
+                if i != orbit.id:
+                    assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
             result = self.sat_solver.solve(assumptions)
             if result:
                 break
         return result
 
     def get_coverage(self, orbit : PrimeOrbit, solution) -> int:
-        for repr_prime in orbit.suborbit_repr_primes:
+        self.coverage[orbit.id] = 0
+        block_sub_vars = []
+        for sub_orbit_id, repr_prime in enumerate(orbit.suborbit_repr_primes):
             assumptions = self.get_prime_literals(repr_prime)
-            assumptions += [self.orbit_vars[i] for i in solution]
+            for i in solution:
+                assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
+            assumptions += [sub_orbit_var for sub_orbit_var in block_sub_vars]
             result = self.sat_counter.solve(assumptions)
-            self.coverage[orbit.id] = 0
             if result:
                 result, assigned = self.sat_counter.propagate(assumptions)
                 atom_count = self._count_atom_var(assigned)
-                len_assigned = len(self.atom_vars) +1 - atom_count
-
-                if self.useMC == UseMC.sat:
-                    self.coverage[orbit.id] += len_assigned 
-                else:
-                    cnf  = self.clauses                                                                    
-                    cnf += [[a] for a in assumptions]
-                    self.approx_counter = Counter(formula=cnf, epsilon=0.50, delta=0.50)
-                    result = self.approx_counter.count()
-                    self.coverage[orbit.id] += max(len_assigned, result)
-                    self.approx_counter.delete()
-                    self.approx_counter = None
+                len_assigned = len(self.atom_vars) - atom_count
+                self.coverage[orbit.id] += (1 << len_assigned)
             else:
                 self.coverage[orbit.id] += 0 # covered by existing solution 
+            block_sub_vars.append(self.orbit_vars[orbit.id][sub_orbit_id])
         return self.coverage[orbit.id] 
 
     def is_definition_prime(self, orbit : PrimeOrbit) -> bool:
