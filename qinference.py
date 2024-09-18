@@ -124,24 +124,29 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
-    def _get_red_arg_signature_to_other_args(self, red_mult_class_sigs : List[ClassSignature]):
+    def _get_red_arg_signature_to_other_args(self, red_mult_class_sigs : List[ClassSignature], multi_class_arg_sigs : Set[str]):
+        # red_sig -> other_args s.t. {arg, other_args}=term.args & arg.red_sig=red_sig & arg.sig in multi_class_arg_sigs -> func_ids of all such terms
         red_sig2other_args = {}
         for class_sig in red_mult_class_sigs:
             assert(len(class_sig.arg_signatures) == 1)
-            arg_sig = class_sig.arg_signatures[0]
-            red_sig = arg_sig.get_reduced_signature()
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig = repr_arg_sig.get_reduced_signature()
             func_id = 0
             red_sig2other_args[red_sig] = {} 
             for term in self.terms:
                 (sign, atom)  = split_term(term)
                 fsymbol       = get_func_symbol(atom)
                 sfname        = get_signed_func_name(sign, atom, fsymbol) 
-                if sfname != arg_sig.signed_fname:
+                if sfname != repr_arg_sig.signed_fname:
+                    continue 
+                term_arg_sig = ArgumentSignature(repr_arg_sig.sort, sfname, func_id, repr_arg_sig.arg_id) 
+                if not str(term_arg_sig) in multi_class_arg_sigs:
+                    func_id += 1
                     continue
                 args       = get_func_args(atom) 
                 other_args = []
                 for arg_id, arg in enumerate(args):
-                    if arg_id != arg_sig.arg_id:
+                    if arg_id != repr_arg_sig.arg_id:
                         other_args.append(arg)
                 if not str(other_args) in red_sig2other_args[red_sig]:
                     red_sig2other_args[red_sig][str(other_args)] = []
@@ -149,32 +154,34 @@ class QInference():
                 func_id += 1
         return red_sig2other_args 
 
-    def _get_red_arg_signature_to_red_other_args(self, red_mult_class_sigs : List[ClassSignature]):
-        red_mult_class_sigs_str  = set([str(sig.get_reduced_signature()) for sig in red_mult_class_sigs])
-        red_mult_class_sigs_str2 = set()
+    def _get_red_arg_signature_to_red_other_args(self, red_mult_class_sigs : List[ClassSignature], multi_class_arg_sigs : Set[str]):
+        used_other_arg_red_sigs = set()
         red_sig2red_other_args   = {}
         for class_sig in red_mult_class_sigs:
             assert(len(class_sig.arg_signatures) == 1)
-            arg_sig = class_sig.arg_signatures[0]
-            red_sig = arg_sig.get_reduced_signature()
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig = repr_arg_sig.get_reduced_signature()
             func_id = 0
             red_sig2red_other_args[red_sig] = {} 
             for term in self.terms:
                 (sign, atom)  = split_term(term)
                 fsymbol       = get_func_symbol(atom)
                 sfname        = get_signed_func_name(sign, atom, fsymbol) 
-                if sfname != arg_sig.signed_fname:
+                if sfname != repr_arg_sig.signed_fname:
+                    continue
+                term_arg_sig = ArgumentSignature(repr_arg_sig.sort, sfname, func_id, repr_arg_sig.arg_id) 
+                if not str(term_arg_sig) in multi_class_arg_sigs:
+                    func_id += 1
                     continue
                 args       = get_func_args(atom) 
                 other_args = []
                 add_other_args = True
                 for arg_id, arg in enumerate(args):
-                    if arg_id != arg_sig.arg_id:
-                        other_arg_sig     = ArgumentSignature(arg_sig.sort, sfname, func_id, arg_id)
-                        red_other_arg_sig = other_arg_sig.get_reduced_signature()
-                        if red_other_arg_sig in red_mult_class_sigs_str:
-                            if not red_other_arg_sig in red_mult_class_sigs_str2:
-                                red_mult_class_sigs_str2.add(red_other_arg_sig)
+                    if arg_id != repr_arg_sig.arg_id:
+                        other_arg_sig = ArgumentSignature(arg.sort, sfname, func_id, arg_id)
+                        if str(other_arg_sig) in multi_class_arg_sigs:
+                            if not other_arg_sig.get_reduced_signature() in used_other_arg_red_sigs:
+                                used_other_arg_red_sigs.add(other_arg_sig.get_reduced_signature())
                             else:
                                 add_other_args = False
                                 break
@@ -187,29 +194,29 @@ class QInference():
         return red_sig2red_other_args 
 
     def _multi_class_appears_with_same_other_args(self, sort, part_sig : SortPartitionSignature_) -> bool:
-        # given a combination of variables of other sorts, see if all variables of this sort appear
-        red_sig2other_args     = self._get_red_arg_signature_to_other_args(part_sig.reduced_multi_class_sigs)
-        red_sig2red_other_args = self._get_red_arg_signature_to_red_other_args(part_sig.reduced_multi_class_sigs)
-        num_exists_vars = sort.card - len(part_sig.reduced_single_class_sigs)
+        # check if exists vars appear with the same combinations of other args
+        red_sig2other_args     = self._get_red_arg_signature_to_other_args(part_sig.reduced_multi_class_sigs, part_sig.multi_class_arg_sigs)
+        num_exists_vars        = sort.card - len(part_sig.reduced_single_class_sigs)
         vprint_title(self.options, 'QInference: _multi_class_appears_with_same_other_args', 5)
         vprint(self.options, f'red_sig2other_args: {red_sig2other_args}', 5)
-        vprint(self.options, f'red_sig2red_other_args: {red_sig2red_other_args}', 5)
         vprint(self.options, f'num_exists_vars: {num_exists_vars}', 5)
         for class_sig in part_sig.reduced_multi_class_sigs:
             assert(len(class_sig.arg_signatures) == 1)
-            arg_sig = class_sig.arg_signatures[0]
-            red_sig = arg_sig.get_reduced_signature()
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig      = repr_arg_sig.get_reduced_signature()
             for func_ids in red_sig2other_args[red_sig].values():
                 if num_exists_vars != len(func_ids):
                     return False
-
+        # update red_multi_class_sigs to be sigs of exists vars 
+        red_sig2red_other_args = self._get_red_arg_signature_to_red_other_args(part_sig.reduced_multi_class_sigs, part_sig.multi_class_arg_sigs)
+        vprint(self.options, f'red_sig2red_other_args: {red_sig2red_other_args}', 5)
         red_class_sigs : List[ClassSignature] = []
         for class_sig in part_sig.reduced_multi_class_sigs:
             assert(len(class_sig.arg_signatures) == 1)
-            arg_sig = class_sig.arg_signatures[0]
-            red_sig = arg_sig.get_reduced_signature()
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig = repr_arg_sig.get_reduced_signature()
             for func_ids in red_sig2red_other_args[red_sig].values():
-                red_class_sigs.append(ClassSignature([ArgumentSignature(sort, arg_sig.signed_fname, func_ids[0], arg_sig.arg_id)]))
+                red_class_sigs.append(ClassSignature([ArgumentSignature(sort, repr_arg_sig.signed_fname, func_ids[0], repr_arg_sig.arg_id)]))
         part_sig.reduced_multi_class_sigs = red_class_sigs
         vprint(self.options, f'updated reduced multi class sigs: {part_sig.reduced_multi_class_sigs}', 5)
         return True

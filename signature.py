@@ -74,6 +74,8 @@ class SortPartitionSignature_(SortPartitionSignature):
         self.reduced_single_class_sigs : List[ClassSignature]  = []  
         self.reduced_multi_class_sigs  : List[ClassSignature]  = []
         self._set_reduced_class_signatures()
+        self.multi_class_arg_sigs      : Set[str]  = set()
+        self._set_multi_class_argument_signatures()
 
     def _set_reduced_class_signatures(self):
         for sig in self.class_signatures:
@@ -87,15 +89,22 @@ class SortPartitionSignature_(SortPartitionSignature):
                 self.reduced_single_class_sigs += class_sigs
             else:
                 self.reduced_multi_class.add(reduced_sig)
-                red_class_sigs     = [] 
-                red_class_sigs_str = set()
-                for class_sig in class_sigs:
-                    for arg_sig in class_sig.arg_signatures:
-                        if not arg_sig.get_reduced_signature() in red_class_sigs_str: # modulo func_id
-                            red_class_sigs.append(ClassSignature([arg_sig]))
-                            red_class_sigs_str.add(arg_sig.get_reduced_signature())
+                red_class_sigs      = [] 
+                used_red_class_sigs = set()
+                class_sig = class_sigs[0]
+                for arg_sig in class_sig.arg_signatures:
+                    if not arg_sig.get_reduced_signature() in used_red_class_sigs: # modulo func_id
+                        red_class_sigs.append(ClassSignature([arg_sig]))
+                        used_red_class_sigs.add(arg_sig.get_reduced_signature())
                 self.reduced_multi_class_sigs += red_class_sigs
         assert(len(self.reduced_single_class) + len(self.reduced_multi_class) == len(self.reduced_class))
+
+    def _set_multi_class_argument_signatures(self):
+        for class_sigs in self.reduced_class.values():
+            if len(class_sigs) > 1:
+                for class_sig in class_sigs: 
+                    for arg_sig in class_sig.arg_signatures:
+                        self.multi_class_arg_sigs.add(str(arg_sig))
 
     def __str__(self):
         return SortPartitionSignature.__str__(self)
@@ -305,6 +314,7 @@ class ProductArgPartition():
             vprint(options, f'\treduced_multi_class: {part_sig.reduced_multi_class}', 5)
             vprint(options, f'\treduced_single_class_sigs: {part_sig.reduced_single_class_sigs}', 5)
             vprint(options, f'\treduced_multi_class_sigs: {part_sig.reduced_multi_class_sigs}', 5)
+            vprint(options, f'\tmulti_class_arg_sigs: {part_sig.multi_class_arg_sigs}', 5)
 
     def _get_qvar_product(self, signature : ArgumentSignature):
         qvars = []
