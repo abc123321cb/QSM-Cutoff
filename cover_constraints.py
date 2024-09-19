@@ -79,13 +79,13 @@ class CoverConstraints():
             return self.symbol2var_num[str(symbol)]
         else:
             if isinstance(symbol, il.Not):
-                return -1*self.tseitin_encode(symbol.args[0])
+                return -1*self.tseitin_encode(symbol.args[0], is_root)
             if len(symbol.args) == 1:
                 assert( isinstance(symbol, il.And) or isinstance(symbol, il.Or) )
-                return self.tseitin_encode(symbol.args[0])
+                return self.tseitin_encode(symbol.args[0], is_root)
             assert(len(symbol.args) > 1) 
             symbol_var = self.new_var()
-            args = [self.tseitin_encode(arg) for arg in symbol.args]
+            args = [self.tseitin_encode(arg, is_root) for arg in symbol.args]
             clauses = []
             if isinstance(symbol, il.And):
                 # y = arg1 & arg2
