@@ -13,7 +13,7 @@ def usage ():
     print('Options:')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
-    print('-k           disable checking quantifier inference (default: on)')
+    print('-k           enalbe quantifier inference (default: off)')
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')

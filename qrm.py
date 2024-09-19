@@ -24,7 +24,7 @@ def usage ():
     print('Options:')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
-    print('-k           disable checking quantifier inference (default: on)')
+    print('-k           enable checking quantifier inference (default: off)')
     print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
@@ -79,7 +79,7 @@ def get_options(ivy_name, args):
         elif optc == '-m':
             options.merge_suborbits = False 
         elif optc == '-k':
-            options.check_qi        = False
+            options.check_qi        = True 
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
                 options.useMC = optv

@@ -16,15 +16,15 @@ class CoverConstraints():
         self.tran_sys          = tran_sys
         self.instantiator      = instantiator
         self.sat_solver        = SatSolver() 
-        self.sat_counter       = SatCounter()
+        if useMC == UseMC.sat:
+            self.sat_counter   = SatCounter()
         self.def_prime_checker = SatSolver()
         self.min_checker       = SatSolver()   
-        self.approx_counter = None 
-        self.useMC          = useMC
-        self.top_var        = 0
-        self.symbol2var_num = {}
+        self.useMC             = useMC
+        self.top_var           = 0
+        self.symbol2var_num    = {}
         self.atom_vars : List[int] = []
-        self.orbit_vars: List[List[int]] = [] # orbit_id : [suborbit_var1, suborbit_var2, ...]
+        self.orbit_vars: List[List[int]] = [] # orbit_id -> [suborbit_var1, suborbit_var2, ...]
         
         # axiom, definition
         self.root_assume_clauses   = [] 
@@ -205,14 +205,17 @@ class CoverConstraints():
         for clause in self.root_assume_clauses:
             self.def_prime_checker.add_clause(clause)
             self.sat_solver.add_clause(clause)
-            self.sat_counter.add_clause(clause)
+            if self.useMC == UseMC.sat:
+                self.sat_counter.add_clause(clause)
         for clause in self.root_tseitin_clauses:
             self.def_prime_checker.add_clause(clause)
             self.sat_solver.add_clause(clause)
-            self.sat_counter.add_clause(clause)
+            if self.useMC == UseMC.sat:
+                self.sat_counter.add_clause(clause)
         for clause in self.clauses:
             self.sat_solver.add_clause(clause)
-            self.sat_counter.add_clause(clause)
+            if self.useMC == UseMC.sat:
+                self.sat_counter.add_clause(clause)
 
     def _write_model_count_cnf(self):
         fout = open('cnf', 'w')
@@ -263,6 +266,7 @@ class CoverConstraints():
         return result
 
     def _get_sharp_sat_count(self, assumptions) -> int:
+        # update cnf
         var_num    = self.top_var
         clause_num = len(self.root_assume_clauses) + len(self.root_tseitin_clauses) + len(self.clauses) + len(assumptions) 
         sed_cmd    = f'sed -i \'1c\p cnf {var_num} {clause_num}\' cnf'
@@ -272,9 +276,11 @@ class CoverConstraints():
         for a in assumptions:
             fout.write(f'{a} 0'+'\n')
         fout.close()
+        # sharpSAT
         sharp_sat_cmd  = './sharpSAT/build/Profiling/sharpSAT cnf > out'
         vprint(self.options, sharp_sat_cmd)
         os.system(sharp_sat_cmd)
+        # grep result
         tail_cmd = f'tail -5 out > out1'
         os.system(tail_cmd)
         head_cmd = f'head -1 out1 > out2'
@@ -283,9 +289,20 @@ class CoverConstraints():
         line = next(fin)
         result  = int(line.split()[0])
         vprint(self.options, f'[SharpSAT RESULT]: {result}')
+        # remove trailing assumptions in cnf
         head_cmd = f'head -n -{len(assumptions)} cnf > temp && mv temp cnf'
         os.system(head_cmd)
         return result
+
+    def _get_sat_count(self, assumptions) -> int:
+        result = self.sat_counter.solve(assumptions)
+        if result:
+            result, assigned = self.sat_counter.propagate(assumptions)
+            atom_count = self._count_atom_var(assigned)
+            len_assigned = len(self.atom_vars) - atom_count
+            return (1 << len_assigned)
+        else:
+            return 0 # covered by existing solution
 
     def get_coverage(self, orbit : PrimeOrbit, solution) -> int:
         self.coverage[orbit.id] = 0
@@ -295,16 +312,10 @@ class CoverConstraints():
             for i in solution:
                 assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
             assumptions += [sub_orbit_var for sub_orbit_var in block_sub_vars]
-            # result = self.sat_counter.solve(assumptions)
-            # sharpSAT
-            result = self._get_sharp_sat_count(assumptions)
-            if result:
-                result, assigned = self.sat_counter.propagate(assumptions)
-                atom_count = self._count_atom_var(assigned)
-                len_assigned = len(self.atom_vars) - atom_count
-                self.coverage[orbit.id] += (1 << len_assigned)
+            if self.useMC == UseMC.sat:
+                self.coverage[orbit.id]  +=  self._get_sat_count(assumptions)
             else:
-                self.coverage[orbit.id] += 0 # covered by existing solution 
+                self.coverage[orbit.id]  += self._get_sharp_sat_count(assumptions)
             block_sub_vars.append(self.orbit_vars[orbit.id][sub_orbit_id])
         return self.coverage[orbit.id] 
 

@@ -1,6 +1,6 @@
 from enum import Enum
 Mode  = Enum('Mode', ['ivy', 'yaml'])
-UseMC = Enum('UseMC', ['sat', 'appMC'])
+UseMC = Enum('UseMC', ['sat', 'mc'])
 
 class QrmOptions():
     def __init__(self) -> None:
@@ -14,7 +14,7 @@ class QrmOptions():
         self.instance_suffix = ''
         self.mode  = Mode.ivy
         self.useMC = UseMC.sat
-        self.check_qi        = True
+        self.check_qi        = False
         self.writeReach      = False
         self.writePrime      = False
         self.writeQI         = False
