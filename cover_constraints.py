@@ -22,6 +22,7 @@ class CoverConstraints():
         self.min_checker       = SatSolver()   
         self.useMC             = useMC
         self.top_var           = 0
+        self.root_top_var      = 0
         self.symbol2var_num    = {}
         self.atom_vars : List[int] = []
         self.orbit_vars: List[List[int]] = [] # orbit_id -> [suborbit_var1, suborbit_var2, ...]
@@ -219,9 +220,9 @@ class CoverConstraints():
 
     def _write_model_count_cnf(self):
         fout = open('cnf', 'w')
-        var_num    = self.top_var
+        self.root_top_var = self.top_var
         clause_num = len(self.root_assume_clauses) + len(self.root_tseitin_clauses) + len(self.clauses) 
-        fout.write(f'p cnf {var_num} {clause_num}'+'\n')
+        fout.write(f'p cnf {self.root_top_var} {clause_num}'+'\n')
         for clause in self.root_assume_clauses:
             fout.write(f'{' '.join([str(lit) for lit in clause])} 0' + '\n')
         for clause in self.root_tseitin_clauses:
@@ -267,9 +268,8 @@ class CoverConstraints():
 
     def _get_sharp_sat_count(self, assumptions) -> int:
         # update cnf
-        var_num    = self.top_var
         clause_num = len(self.root_assume_clauses) + len(self.root_tseitin_clauses) + len(self.clauses) + len(assumptions) 
-        sed_cmd    = f'sed -i \'1c\p cnf {var_num} {clause_num}\' cnf'
+        sed_cmd    = f'sed -i \'1c\p cnf {self.root_top_var} {clause_num}\' cnf'
         vprint(self.options, sed_cmd)
         os.system(sed_cmd)
         fout = open('cnf', 'a')
