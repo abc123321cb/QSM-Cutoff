@@ -256,7 +256,17 @@ class TransitionSystem():
         for atom, complements in atom2complements.items():
             for cmpl in complements:
                 constraints.append(il.Equals(atom, il.Not(cmpl)))
-        self.atom_equivalence_constraints = constraints
+        closed_constraints = []
+        for constraint in constraints:
+            consts    = ilu.used_constants_ast(constraint)
+            const2var = {}
+            for const in consts: 
+                const2var[const] = il.Variable(const.name.upper(), const.sort)
+            constraint = ilu.substitute_constants_ast(constraint, const2var)
+            constraint = il.close_formula(constraint)
+            closed_constraints.append(constraint)
+        self.atom_equivalence_constraints        = constraints
+        self.closed_atom_equivalence_constraints = closed_constraints
 
 def get_transition_system(options, ivy_filename): 
     module   = parse_ivy(options, ivy_filename)

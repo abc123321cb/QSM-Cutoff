@@ -219,7 +219,7 @@ class Minimizer():
             vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})', 3)
             for def_symbol, def_ast in self.tran_sys.definitions.items():
                 vprint(self.options, f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition', 3)
-            for i, atom_equiv in enumerate(self.tran_sys.atom_equivalence_constraints):
+            for i, atom_equiv in enumerate(self.tran_sys.closed_atom_equivalence_constraints):
                 vprint(self.options, f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation', 3)
             for id in solution:
                 vprint(self.options, f'invariant [invar_{id}] {str(self.orbits[id].quantified_form)} # qcost: {self.orbits[id].qcost}', 3)
@@ -234,7 +234,7 @@ class Minimizer():
         for def_symbol, def_ast in self.tran_sys.definitions.items():
             line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
             invariants.append(line)
-        for i, atom_equiv in enumerate(self.tran_sys.atom_equivalence_constraints):
+        for i, atom_equiv in enumerate(self.tran_sys.closed_atom_equivalence_constraints):
             line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation'
             invariants.append(line)
         for id in solution:
