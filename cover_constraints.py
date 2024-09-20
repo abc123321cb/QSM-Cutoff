@@ -331,6 +331,9 @@ class CoverConstraints():
             inst_orbit = self.instantiator.instantiate_quantifier(qorbit)
             orbit_fmla_var = self.tseitin_encode(inst_orbit, is_root=False)
             self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
+        for atom_eq in self.tran_sys.atom_equivalence_constraints:
+            atom_eq_var = self.tseitin_encode(atom_eq, is_root=False)
+            self.instantiated_orbit_assume_clauses.append([atom_eq_var])
         for clause in self.root_assume_clauses:
             self.min_checker.add_clause(clause)
         for clause in self.root_tseitin_clauses:

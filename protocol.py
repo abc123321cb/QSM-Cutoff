@@ -58,6 +58,7 @@ class Protocol():
         self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self.repr_states      : List[int] = []
+        self.quotient_reachable_states : List[str] = []
         self._sorts_permutations  = []              
         self.options = options
 
@@ -317,3 +318,20 @@ class Protocol():
             if nvalues and new_insert(nvalues, values_hash):
                 values_list.append(nvalues)
         return values_list 
+
+    def set_quotient_reachabiliy(self, remove_atom_ids : Set[int]):
+        if len(remove_atom_ids) == 0:
+            self.quotient_reachable_states = self.reachable_states
+        else:
+            self.quotient_reachable_states = ['']*len(self.reachable_states)
+            for state_id, state in enumerate(self.reachable_states): 
+                for atom_id in range(self.atom_num):
+                    if atom_id in remove_atom_ids:
+                        self.quotient_reachable_states[state_id] += '-'
+                    else:
+                        self.quotient_reachable_states[state_id] += state[atom_id]
+            if self.options.writeReach or self.options.verbosity > 3:
+                self.lines.append('')
+                self.lines.append('------ quotient reachability -------')
+                self.lines.append('')
+                self.lines += self.quotient_reachable_state

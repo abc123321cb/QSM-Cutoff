@@ -245,6 +245,19 @@ class TransitionSystem():
         consts_str = [str(const) for const in consts]
         return consts_str
 
+    #------------------------------------------------------------
+    # TransitionSystem: update methods
+    #------------------------------------------------------------
+    def set_atom_equivalence_constraints(self, atom2equivs, atom2complements):
+        constraints = []
+        for atom, equivs in atom2equivs.items():
+            for equiv in equivs:
+                constraints.append(il.Equals(atom, equiv))
+        for atom, complements in atom2complements.items():
+            for cmpl in complements:
+                constraints.append(il.Equals(atom, il.Not(cmpl)))
+        self.atom_equivalence_constraints = constraints
+
 def get_transition_system(options, ivy_filename): 
     module   = parse_ivy(options, ivy_filename)
     tran_sys = TransitionSystem(options, module)
