@@ -179,7 +179,7 @@ def get_instances_from_yaml(yaml_name):
             if 'superset' in interval.keys():
                 dep_type = interval['superset']
                 dep_from = data['size'][dep_type]['from']
-                dep_to   = data["size"][dep_type]['to'] +2
+                dep_to   = data["size"][dep_type]['to'] +1 
                 for dep_size in range(dep_from, dep_to):
                     quorum_size = comb(dep_size, int(dep_size/2)+1)
                     dep2quorum_size[dep_size] = quorum_size
