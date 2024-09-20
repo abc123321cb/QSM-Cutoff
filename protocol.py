@@ -334,4 +334,4 @@ class Protocol():
                 self.lines.append('')
                 self.lines.append('------ quotient reachability -------')
                 self.lines.append('')
-                self.lines += self.quotient_reachable_state
+                self.lines += self.quotient_reachable_states
