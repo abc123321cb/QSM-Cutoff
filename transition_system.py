@@ -261,7 +261,8 @@ class TransitionSystem():
             consts    = ilu.used_constants_ast(constraint)
             const2var = {}
             for const in consts: 
-                const2var[const] = il.Variable(const.name.upper(), const.sort)
+                if il.is_enumerated(const):
+                    const2var[const] = il.Variable(const.name.upper(), const.sort)
             constraint = ilu.substitute_constants_ast(constraint, const2var)
             constraint = il.close_formula(constraint)
             closed_constraints.append(constraint)
