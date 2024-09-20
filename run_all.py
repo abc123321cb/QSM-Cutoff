@@ -17,10 +17,10 @@ def usage ():
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
-    print('-r           write reachable states to FILE.reach (default: off)')
-    print('-p           write prime orbits to FILE.pis (default: off)')
-    print('-q           write quantified prime orbits to FILE.qpis (default: off)')
-    print('-w           write .reach, .pis, .qpis, equivalent to options -r -p -q (default: off)')
+    print('-w           write .reach, .pis, .qpis (default: off)')
+    print('             write reachable states to FILE.reach')
+    print('             write prime orbits to FILE.pis')
+    print('             write quantified prime orbits to FILE.qpis')
     print('-h           usage')
 
 def usage_and_exit():
@@ -41,7 +41,7 @@ def rm_and_recreate_log_file_if_exist(filename):
 def run_all(yaml_name, args):
     sys_args = args.copy()
     try:
-        opts, args = getopt.getopt(args, "amkc:v:l:rpqwh")
+        opts, args = getopt.getopt(args, "amkc:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
