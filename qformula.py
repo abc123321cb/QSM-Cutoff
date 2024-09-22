@@ -182,11 +182,12 @@ class QFormula():
 
         neq_terms = set()
         for i in range(len(qvars)-1):
-            assert(str(qvars[i]) != str(qvars[i+1]))
-            neq_qvars = [qvars[i], qvars[i+1]]
-            neq_qvars.sort(key=lambda x: str(x))
-            neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
-            neq_terms.add(neq)
+            for j in range(i+1, len(qvars)):
+                assert(str(qvars[i]) != str(qvars[j]))
+                neq_qvars = [qvars[i], qvars[j]]
+                neq_qvars.sort(key=lambda x: str(x))
+                neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
+                neq_terms.add(neq)
         vprint_title(self.options, 'QFormula: _get_class_constraint', 5)
         vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
         vprint(self.options, f'neq_terms: {[str(t) for t in neq_terms]}')
@@ -242,20 +243,33 @@ class QFormula():
             return il.And(*neq_terms)    
         return None
 
+    #------------------------------------------------
+    # public methods
+    #------------------------------------------------
+    def set_merge_constraints(self, partitions : List[PartitionSignature], cmode : ConstraintMode) -> None:
+        constraints = self._get_constraints(partitions)
+        cterm = self._get_constraint_term(constraints)  
+        if cterm != None:
+            if cmode == ConstraintMode.merge_absent:      
+                self.qterms.append(cterm)          
+            else:
+                self.qterms.append(il.Not(cterm)) 
+
     def _set_forall_constraint(self):
         neq_terms = set()
         for sort, qvars in self.sort2qvars.items():
             qvars = set(qvars)
             forall_qvars = list(qvars.intersection(self.forall_qvars))
             for i in range(len(forall_qvars)-1):
-                assert(str(forall_qvars[i]) != str(forall_qvars[i+1]))
-                neq_qvars = [forall_qvars[i], forall_qvars[i+1]]
-                neq_qvars.sort(key=lambda x: str(x))
-                neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
-                neq_terms.add(neq)
+                for j in range(i+1, len(forall_qvars)):
+                    assert(str(forall_qvars[i]) != str(forall_qvars[j]))
+                    neq_qvars = [forall_qvars[i], forall_qvars[j]]
+                    neq_qvars.sort(key=lambda x: str(x))
+                    neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
+                    neq_terms.add(neq)
         neq_terms = list(neq_terms)
         if len(neq_terms):
-            self.forall_constraint = il.And(*neq_terms)
+            self.forall_constraint = il.And(*neq_terms) # neq1 & neq2 & neq3
 
     def _set_forall_exists_constraint(self):
         eq_terms = set()
@@ -294,18 +308,6 @@ class QFormula():
         for evar in self.sub_exists_vars:
             self.exists_qvars.remove(evar)
         self.qterms = qterms
-
-    #------------------------------------------------
-    # public methods
-    #------------------------------------------------
-    def set_merge_constraints(self, partitions : List[PartitionSignature], cmode : ConstraintMode) -> None:
-        constraints = self._get_constraints(partitions)
-        cterm = self._get_constraint_term(constraints)  
-        if cterm != None:
-            if cmode == ConstraintMode.merge_absent:      
-                self.qterms.append(cterm)          
-            else:
-                self.qterms.append(il.Not(cterm)) 
 
     def set_no_merge_constraints(self) -> None:
         self._set_forall_exists_constraint()
