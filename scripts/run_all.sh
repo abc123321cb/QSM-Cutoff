@@ -61,24 +61,24 @@ done
 python3 run_all.py ${yaml_path}quorum-leader-election-wo-maj.yaml -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
 
 # running <= cut-off
-timeout ${timeout} python3 qrm.py ${sym_path}Consensus.ivy                 -s node=4                       -v 5 -w -l ${sym_path}Consensus.log
-timeout ${timeout} python3 qrm.py ${sym_path}TCommit.ivy                   -s resource_manager=3           -v 5 -w -l ${sym_path}TCommit.log 
-timeout ${timeout} python3 qrm.py ${sym_path}Ricart-Agrawala.ivy           -s node=3                       -v 5 -w -l ${sym_path}Ricart-Agrawala.log 
-timeout ${timeout} python3 qrm.py ${sym_path}lock_server.ivy               -s server=2,client=4            -v 5 -w -l ${sym_path}lock_server.log 
-timeout ${timeout} python3 qrm.py ${sym_path}sharded_kv.ivy                -s node=4,key=3,value=3         -v 5 -w -l ${sym_path}sharded_kv.log 
-timeout ${timeout} python3 qrm.py ${sym_path}sharded_kv_no_lost_keys.ivy   -s node=4,key=3,value=3         -v 5 -w -l ${sym_path}sharded_kv_no_lost_keys.log 
-timeout ${timeout} python3 qrm.py ${sym_path}simple-decentralized-lock.ivy -s node=4                       -v 5 -w -l ${sym_path}simple-decentralized-lock.log 
-timeout ${timeout} python3 qrm.py ${sym_path}firewall.ivy                  -s node=4                       -v 5 -w -l ${sym_path}firewall.log 
-timeout ${timeout} python3 qrm.py ${sym_path}lockserv.ivy                  -s node=4                       -v 5 -w -l ${sym_path}lockserv.log 
-timeout ${timeout} python3 qrm.py ${sym_path}lockserv_automaton.ivy        -s node=4                       -v 5 -w -l ${sym_path}lockserv_automaton.log 
-timeout ${timeout} python3 qrm.py ${sym_path}client_server_ae.ivy          -s node=2,request=2,response=2  -v 5 -w -l ${sym_path}client_server_ae.log 
-timeout ${timeout} python3 qrm.py ${sym_path}TwoPhase.ivy                  -s node=3                       -v 5 -w -l ${sym_path}TwoPhase.log
+timeout ${Timeout} python3 qrm.py ${sym_path}Consensus.ivy                 -s value=4                      -v 5 -w -l ${sym_path}Consensus.log
+timeout ${Timeout} python3 qrm.py ${sym_path}TCommit.ivy                   -s resource_manager=3           -v 5 -w -l ${sym_path}TCommit.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}Ricart-Agrawala.ivy           -s node=3                       -v 5 -w -l ${sym_path}Ricart-Agrawala.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}lock_server.ivy               -s server=2,client=4            -v 5 -w -l ${sym_path}lock_server.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}sharded_kv.ivy                -s node=4,key=3,value=3         -v 5 -w -l ${sym_path}sharded_kv.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}sharded_kv_no_lost_keys.ivy   -s node=4,key=3,value=3         -v 5 -w -l ${sym_path}sharded_kv_no_lost_keys.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}simple-decentralized-lock.ivy -s node=4                       -v 5 -w -l ${sym_path}simple-decentralized-lock.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}firewall.ivy                  -s node=4                       -v 5 -w -l ${sym_path}firewall.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}lockserv.ivy                  -s node=4                       -v 5 -w -l ${sym_path}lockserv.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}lockserv_automaton.ivy        -s node=4                       -v 5 -w -l ${sym_path}lockserv_automaton.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}client_server_ae.ivy          -s node=2,request=2,response=2  -v 5 -w -l ${sym_path}client_server_ae.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}TwoPhase.ivy                  -s resource_manager=3           -v 5 -w -l ${sym_path}TwoPhase.log
 
 # running one-size > cut-off
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}toy_consensus.ivy                 -s node=4,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensu.log
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_epr.ivy             -s node=4,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.log 
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}naive_consensus.ivy               -s node=4,value=4        -v 5 -w -l ${sym_quorum_path}naive_consensus.log 
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}simple-election.ivy               -s acceptor=4,proposer=4 -v 5 -w -l ${sym_quorum_path}simple-election.log 
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}consensus_epr.ivy                 -s node=4,value=3        -v 5 -w -l ${sym_quorum_path}consensus_epr.log 
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=6,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.log 
-timeout ${timeout} python3 qrm.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=6                -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus.ivy                 -s node=4,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus.log
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_epr.ivy             -s node=4,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}naive_consensus.ivy               -s node=4,value=4        -v 5 -w -l ${sym_quorum_path}naive_consensus.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}simple-election.ivy               -s acceptor=4,proposer=4 -v 5 -w -l ${sym_quorum_path}simple-election.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}consensus_epr.ivy                 -s node=4,value=3        -v 5 -w -l ${sym_quorum_path}consensus_epr.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=6,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=6                -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
