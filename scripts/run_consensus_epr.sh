@@ -48,4 +48,3 @@ declare -a hard_sym_ring_instances=(
 )
 
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}consensus_epr.ivy                 -s node=4,value=3        -v 5 -w -l ${sym_quorum_path}consensus_epr.log 
-timeout ${Timeout} python3 qrm.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=6                -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
