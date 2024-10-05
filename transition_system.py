@@ -252,10 +252,16 @@ class TransitionSystem():
         constraints = []
         for atom, equivs in atom2equivs.items():
             for equiv in equivs:
-                constraints.append(il.Equals(atom, equiv))
+                if il.is_eq(atom) and il.is_eq(equiv) and atom.args[1] == equiv.args[1]:
+                    constraints.append(il.Equals(atom.args[0], equiv.args[0]))
+                else:
+                    constraints.append(il.Equals(atom, equiv))
         for atom, complements in atom2complements.items():
             for cmpl in complements:
-                constraints.append(il.Equals(atom, il.Not(cmpl)))
+                if il.is_eq(atom) and il.is_eq(equiv) and atom.args[1] == equiv.args[1]:
+                    constraints.append(il.Not(il.Equals(atom.args[0], equiv.args[0])))
+                else:
+                    constraints.append(il.Equals(atom, il.Not(cmpl)))
         closed_constraints = []
         for constraint in constraints:
             consts    = ilu.used_constants_ast(constraint)
