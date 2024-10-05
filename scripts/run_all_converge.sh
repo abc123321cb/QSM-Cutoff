@@ -47,4 +47,14 @@ declare -a hard_sym_ring_instances=(
     "chord_ring_maintenance"
 )
 
-timeout ${Timeout} python3 qrm.py ${sym_quorum_path}consensus_epr.ivy                 -s node=4,value=3        -v 5 -w -l ${sym_quorum_path}consensus_epr.log 
+for instance in ${sym_instances[@]}; do
+    log=${sym_path}${instance}.log
+    yaml=${yaml_path}${instance}.converge.yaml
+    python3 run_all.py $yaml -v 5 -w -l $log
+done
+for instance in ${sym_quorum_instances[@]}; do
+    log=${sym_quorum_path}${instance}.log
+    yaml=${yaml_path}${instance}.converge.yaml
+    python3 run_all.py $yaml -v 5 -w -l $log
+done
+python3 run_all.py ${yaml_path}quorum-leader-election-wo-maj.yaml -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
