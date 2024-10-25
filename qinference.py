@@ -1,775 +1,319 @@
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
-from ivy import logic_util as lu
-from ivy import logic as lg
 from transition_system import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
-from util import FormulaUtility as futil
 from verbose import *
- 
+from qutil import *
+from itertools import product, permutations
+from signature import *
+from qformula import QFormula, ConstraintMode, QuantifierMode
 
-min_size = 2
+class QPrime():
+    # static members
+    atoms = []
+    tran_sys : TransitionSystem
+
+    def __init__(self, prime : Prime, options : QrmOptions):
+        self.options        = options
+        self.prime          = prime
+        self.terms          = get_qterms(QPrime.tran_sys, QPrime.atoms, self.prime)
+        vprint_title(self.options, 'QPrime', 5)
+        self.binding        = VarArgBinding(self.terms, self.options)
+        self.arg_partition  = ArgPartition(self.binding, self.options)
+
+    @staticmethod
+    def setup(atoms, tran_sys) -> None:
+        QPrime.atoms    = atoms
+        QPrime.tran_sys = tran_sys
+
+class AbsentConstraint():
+    def __init__(self, pap : ProductArgPartition, ap_list: List[ArgPartition], options : QrmOptions):
+        self.options : QrmOptions         = options
+        self.pap : ProductArgPartition    = pap
+        self.ap_list : List[ArgPartition] = ap_list
+        # sort2partitions
+        self.sort2partitions : Dict[il.EnumeratedSort, List[SortPartitionSignature]] = {}
+        self._set_sort_to_partitions()
+
+        # partitions
+        self.partitions : List[PartitionSignature] = []
+        self._set_partitions()  
+
+    def _set_sort_to_partitions(self) -> None:
+        for sort, part_sig in self.pap.sort2part_sig.items():
+            partitions : List[SortPartitionSignature] = enumerate_sort_partitions(sort, part_sig.class_signatures)
+            self.sort2partitions[sort] = partitions
+        vprint_title(self.options, 'ConstraintMerger: _set_sort_to_partitions', 5)
+        vprint(self.options, f'sort2partitions: {self.sort2partitions}', 5)
+
+    def _set_partitions(self) -> None:
+        self.partitions = get_partitions_from_sort_partititions(self.sort2partitions)
+        vprint_title(self.options, f'ConstraintMerger: _set_partitions', 5)
+        vprint(self.options, f'partitions: {self.partitions}', 5)
+        vprint(self.options, f'number of partitions: {len(self.partitions)}', 5)
+
+    def _set_func_permutations(self) -> None:
+        all_func_permutations = []
+        fname_id = 0
+        self.sign_func_name2id : Dict[str, int]= {}
+        for sfname, count in self.pap.sig_gen.sign_func_name2count.items():
+            self.sign_func_name2id[sfname] = fname_id
+            fname_id += 1
+            func_ids  = list(range(count))
+            func_permutations = permutations(func_ids)
+            all_func_permutations.append(func_permutations)
+        # cartesian product
+        self.func_permutations = list(product(*all_func_permutations))
+        vprint(self.options, f'sign_func_name2id: {self.sign_func_name2id}', 5)
+        vprint(self.options, f'func permutations: {self.func_permutations}', 5)
+
+    def _set_absent_partitions(self) -> None:
+        for sig in self.partitions:
+            self.absent_signatures[str(sig)] = sig
+        for arg_partition in self.ap_list: 
+            part_sig = arg_partition.part_sig
+            for func_perm in self.func_permutations:
+                permuted_sig = get_permuted_signature(part_sig, self.sign_func_name2id, func_perm)
+                if str(permuted_sig) in self.absent_signatures:
+                    del self.absent_signatures[str(permuted_sig)]
+        
+        vprint_title(self.options, 'QInference: _set_absent_partitions', 5)
+        vprint(self.options, 'absent partitions:', 5)
+        for sig in self.absent_signatures:
+            vprint(self.options, f'{sig}', 5)
+
+    #------------------------------------------------
+    # public methods
+    #------------------------------------------------
+    def get_absent_partition_signatures(self) -> List[PartitionSignature]:
+        # func_permutations 
+        self.sign_func_name2id : Dict[str, int]= {}
+        self.func_permutations = None
+        self._set_func_permutations()
+
+        # absent_signatures
+        self.absent_signatures : Dict[str, PartitionSignature] = {}
+        self._set_absent_partitions()
+        return list(self.absent_signatures.values())
 
 class QInference():
     # static members
     atoms = []
     tran_sys : TransitionSystem
 
-    def __init__(self, prime: Prime, options : QrmOptions, is_orbit_size_1 : bool) -> None:
+    def __init__(self, qprimes: List[QPrime], options : QrmOptions):
         self.options = options
-        # original
-        self.prime      = prime
-        self.is_orbit_size_1 = is_orbit_size_1
-        self.repr_state = il.And()
-        self.vars       = []
-        self.full_occur_depending_sort = set() 
-        # mapping
-        self.var2qvar   = dict()
-        self.sort2qvars = dict()
-        # instantiated
-        self.sort2ivars = dict()
-        self.ivars_set  = set()
-        # quantified
-        self.qvars_set  = set()
-        self.qstate     = il.And() 
-        self.qterms     = set()
-        self.neq_constraints    = dict()
-        self.full_occur_sorts   = []
-        # partition, change for each sort in full_occur_sorts
-        self.norm_terms       = set()
-        self.qvar2terms       = {}
-        self.qvar2_norm_terms = {}
-        self.qvars_partition  = {}
-        self.single_class     = []
-        self.multi_class      = []
-        self.num_sing_class   = 0 
-        self.num_mult_class   = 0 
-        self.num_class        = 0 
-        # inferred, change for each sort in full_occur_sorts
-        self.infr_state = il.And()
-        self.infr_terms = set()
-        self.infr_qvars_set = set()
-        # eq propagation
-        self.eqMap  = dict()
-        # result
-        self.results = list()
-        vprint_title(self.options, 'QInference', 5)
-        vprint(self.options, f'prime: {str(self.prime)}', 5)
+        self.qprimes = qprimes
+        self.terms   = get_qterms(QInference.tran_sys, QInference.atoms, self.qprimes[0].prime)
+        self.sig_gen = SigGenerator(self.terms, self.options)
+        self.bindings       : List[VarArgBinding]  = [qprime.binding for qprime in self.qprimes] 
+        self.arg_partitions : List[ArgPartition]   = [qprime.arg_partition for qprime in self.qprimes]
+        self.prod_arg_partition  = ProductArgPartition(self.sig_gen, self.bindings, self.options)
 
-    def _add_member_literals_for_dependent_sorts(self, atoms):
-        literals = []
-        args = set()
-        for atom in atoms:
-            atom_args = atom.args
-            if il.is_eq(atom):
-                atom_args = [atom_args[1]]
-            for arg in atom_args:
-                args.add(arg)
+        # sort2infer_mode
+        self.sort2qmode : Dict[il.EnumeratedSort, QuantifierMode] = {}
+        self._set_sort_to_quantifier_mode()
+        self.cmode : ConstraintMode 
+        self._set_constraint_mode()
 
-        for arg in args:
-            if arg.sort in QInference.tran_sys.dep_types:
-                set_sort = arg.sort
-                set_id   = 0
-                consts   = QInference.tran_sys.sort2consts[set_sort]
-                for i, const in enumerate(consts):
-                    if const == arg:
-                        set_id = i
-                member_func  = QInference.tran_sys.get_dependent_relation(set_sort)
-                elements     = QInference.tran_sys.get_dependent_elements(set_sort)
-                elems_in_set = QInference.tran_sys.get_dependent_elements_in_set(set_sort, set_id)
-                member_count = 0
-                for elem in elements:
-                    if elem in args:
-                        member_args = [elem, arg]
-                        member_symb = il.App(member_func, *member_args)
-                        if elem in elems_in_set:
-                            literals.append(member_symb)
-                            member_count += 1
-                        else:
-                            literals.append(il.Not(member_symb))
-                if member_count == len(elems_in_set):
-                    elem_sort = QInference.tran_sys.get_dependent_element_sort(set_sort)
-                    self.full_occur_depending_sort.add(elem_sort)
-        vprint_title(self.options, '_add_member_literals_for_dependent_sorts', 5)
-        vprint(self.options, f'member literals: {literals}', 5)
-        vprint(self.options, f'fully occuring dependent children sorts: {self.full_occur_depending_sort}', 5)
-        return literals 
+        # qformula
+        self.qformula = QFormula(self.prod_arg_partition, self.sort2qmode, self.options)
 
-    def set_repr_state(self):
-        values = self.prime.values
-        literals = []
-        atoms    = []
-        for atom_id, atom in enumerate(QInference.atoms):
-            val = values[atom_id]
-            if val == '0':
-                literals.append(il.Not(atom))
-                atoms.append(atom)
-            elif val == '1':
-                literals.append(atom)
-                atoms.append(atom)
-            else:
-                assert(val == '-')
-        literals += self._add_member_literals_for_dependent_sorts(atoms)
-        self.repr_state =  il.And(*literals)
-        vprint_title(self.options, 'set_repr_state', 5)
-        vprint(self.options, f'repr_state: {str(self.repr_state)}', 5)
+        # quantifier inference
+        self.qclause = None
+        self._set_qclause()
 
-    def get_free_variables(self):
-        terms = self.repr_state.args
-        free_vars = set() 
-        for term in terms:
-            if isinstance(term, il.Not):
-                term = term.args[0]
-            if isinstance(term, lg.Eq) and il.is_constant(term.args[0]):
-                term = term.args[1]
-            term_free_vars = ilu.used_constants_ast(term)
-            free_vars.update(term_free_vars)
-        return list(free_vars)
+    def _get_red_arg_signature_to_other_args(self, red_mult_class_sigs : List[ClassSignature], multi_class_arg_sigs : Set[str]):
+        # red_sig -> other_args s.t. {arg, other_args}=term.args & arg.red_sig=red_sig & arg.sig in multi_class_arg_sigs -> func_ids of all such terms
+        red_sig2other_args = {}
+        for class_sig in red_mult_class_sigs:
+            assert(len(class_sig.arg_signatures) == 1)
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig = repr_arg_sig.get_reduced_signature()
+            func_id = 0
+            red_sig2other_args[red_sig] = {} 
+            for term in self.terms:
+                (sign, atom)  = split_term(term)
+                fsymbol       = get_func_symbol(atom)
+                sfname        = get_signed_func_name(sign, atom, fsymbol) 
+                if sfname != repr_arg_sig.signed_fname:
+                    continue 
+                term_arg_sig = ArgumentSignature(repr_arg_sig.sort, sfname, func_id, repr_arg_sig.arg_id) 
+                if not str(term_arg_sig) in multi_class_arg_sigs:
+                    func_id += 1
+                    continue
+                args       = get_func_args(atom) 
+                other_args = []
+                for arg_id, arg in enumerate(args):
+                    if arg_id != repr_arg_sig.arg_id:
+                        other_args.append(arg)
+                if not str(other_args) in red_sig2other_args[red_sig]:
+                    red_sig2other_args[red_sig][str(other_args)] = []
+                red_sig2other_args[red_sig][str(other_args)].append(func_id)
+                func_id += 1
+        return red_sig2other_args 
 
-    def _get_used_qvars(self, sort):
-        if not sort in self.sort2qvars:         
-            self.sort2qvars[sort] = []
-        qvars = self.sort2qvars[sort]
-        return qvars
+    def _get_red_arg_signature_to_red_other_args(self, red_mult_class_sigs : List[ClassSignature], multi_class_arg_sigs : Set[str]):
+        used_other_arg_red_sigs = set()
+        red_sig2red_other_args   = {}
+        for class_sig in red_mult_class_sigs:
+            assert(len(class_sig.arg_signatures) == 1)
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig = repr_arg_sig.get_reduced_signature()
+            func_id = 0
+            red_sig2red_other_args[red_sig] = {} 
+            for term in self.terms:
+                (sign, atom)  = split_term(term)
+                fsymbol       = get_func_symbol(atom)
+                sfname        = get_signed_func_name(sign, atom, fsymbol) 
+                if sfname != repr_arg_sig.signed_fname:
+                    continue
+                term_arg_sig = ArgumentSignature(repr_arg_sig.sort, sfname, func_id, repr_arg_sig.arg_id) 
+                if not str(term_arg_sig) in multi_class_arg_sigs:
+                    func_id += 1
+                    continue
+                args       = get_func_args(atom) 
+                other_args = []
+                add_other_args = True
+                for arg_id, arg in enumerate(args):
+                    if arg_id != repr_arg_sig.arg_id:
+                        other_arg_sig = ArgumentSignature(arg.sort, sfname, func_id, arg_id)
+                        if str(other_arg_sig) in multi_class_arg_sigs:
+                            if not other_arg_sig.get_reduced_signature() in used_other_arg_red_sigs:
+                                used_other_arg_red_sigs.add(other_arg_sig.get_reduced_signature())
+                            else:
+                                add_other_args = False
+                                break
+                        other_args.append(arg)
+                if add_other_args:
+                    if not str(other_args) in red_sig2red_other_args[red_sig]:
+                        red_sig2red_other_args[red_sig][str(other_args)] = []
+                    red_sig2red_other_args[red_sig][str(other_args)].append(func_id)
+                func_id += 1
+        return red_sig2red_other_args 
 
-    def _get_next_unused_qvar(self, sort, qvars):
-        qvar_id   = len(qvars)
-        qvar_name = sort.name.upper() + str(qvar_id)
-        qvar      = il.Variable(qvar_name, sort) 
-        return qvar
-
-    def record_sort_occurrence_in_vars(self):
-        # relabel each var into qvar with index being order of occurrence
-        # e.g. n2 n0 n1 m ---> Qn0 Qn1 Qn2 Qm0
-        vprint_title(self.options, 'record_sort_occurrence_in_vars' , 5)
-        for var in sorted(self.vars, key=str):
-            sort = var.sort
-            if not sort in QInference.tran_sys.sort2consts:
-                continue
-            qvars  = self._get_used_qvars(sort)
-            qvar   = self._get_next_unused_qvar(sort, qvars) 
-            qvars.append(qvar)
-            self.var2qvar[var] = qvar
-            self.qvars_set.add(qvar)
-            
-            vprint(self.options, f'var: {str(var)}', 5)
-            vprint(self.options, f'sort: {sort.name}', 5)
-            vprint(self.options, f'qvar: {str(qvar)}', 5)
-            vprint(self.options, '', 5)
-            
-        vprint(self.options, f'qvars_set: {str(self.qvars_set)}', 5) 
-        vprint(self.options, f'sort2qvars: {str(self.sort2qvars)}', 5)
-        vprint(self.options, f'var2qvar: {str(self.var2qvar)}', 5)
-
-    def record_fully_occuring_sorts(self):
-        for sort, qvars in self.sort2qvars.items():
-            sort_size = len(QInference.tran_sys.sort2consts[sort])
-            if  (((len(qvars) >= min_size) and (len(qvars) == sort_size)) 
-                or sort in self.full_occur_depending_sort):
-                self.full_occur_sorts.append([sort, qvars])
-        vprint_title(self.options, 'record_fully_occuring_sorts', 5)
-        vprint(self.options, f'full_occur_sorts: {str(self.full_occur_sorts)}' , 5)
-
-    def set_qvar_pairwise_neq_constraints(self):
-        vprint_title(self.options, 'set_qvar_pairwise_neq_constraints', 5)
-        for sort, qvars in self.sort2qvars.items():
-            self.neq_constraints[sort] = []
-            for i in range(len(qvars) - 1):
-                for j in range(i+1, len(qvars)):
-                    neq = il.Not(il.Equals(qvars[i], qvars[j]))
-                    self.neq_constraints[sort].append(neq)
-                    vprint(self.options, str(neq), 5)
-
-    def _get_instantiated_vars(self, sort):
-        if sort not in self.sort2ivars:
-            self.sort2ivars[sort] = list()
-        return self.sort2ivars[sort]
-
-    def _create_inst_var(self, sort, ivars):
-        ivar_id = len(ivars)
-        name = 'I:' + sort.name + str(ivar_id)
-        return il.Variable(name,sort)
-
-    def _instantiate_qstate(self):
-        for var in self.qstate.quantifier_vars():
-            if var not in self.var2qvar:
-                sort = var.sort
-                ivars = self._get_instantiated_vars(sort)
-                ivar  = self._create_inst_var(sort, ivars)
-                ivars.append(ivar)
-                self.ivars_set.add(ivar)
-                self.var2qvar[var] = ivar 
-                self.qvars_set.add(ivar)
-        self.qstate = self.qstate.args()[0]
-
-    def set_qstate(self):
-        self.qstate = self.repr_state 
-        if il.is_exists(self.qstate): 
-            self._instantiate_qstate()
-        self.qstate = il.substitute(self.qstate, self.var2qvar)
-        self.qterms = futil.flatten_cube(self.qstate)
-        vprint_title(self.options, 'set_qstate', 5)
-        vprint(self.options, f'qstate: {str(self.qstate)}', 5)
-        vprint(self.options, f'qterms: {set(self.qterms)}', 5)
-
-    def _split_eq(self, eq_term):
-        lhs = eq_term.arg(0)
-        rhs = eq_term.arg(1)
-        if (not rhs.is_symbol()) or (lhs in self.qvars_set):
-            lhs, rhs = rhs, lhs
-        return (lhs, rhs)
-
-    def _is_propagatable(self, eq_term):
-        lhs, rhs = self._split_eq(eq_term)
-        if ( (rhs.is_symbol)     and 
-             (rhs in self.qvars_set) and 
-             (not lhs.is_function_application()) ):
-            rhst = rhs.sort
-            if rhst.is_enum_type() and rhs not in self.eqMap:
-                self.eqMap[rhs] = lhs
-                self.qvars_set.discard(rhs)
-                return True 
-            elif rhs in self.ivars_set and rhs not in self.eqMap:
-                self.eqMap[rhs] = lhs
-                self.qvars_set.discard(rhs)
-                return True 
-        return False
-
-    def _get_non_propagatable_terms(self):
-        self.eqMap  = dict() # reset
-        nprop_terms = set()
-        for term in self.qterms:
-            is_prop = False
-            if il.is_equals(term):
-                is_prop = self._is_propagatable(term)
-            if not is_prop: 
-                nprop_terms.add(term)
-        return nprop_terms
-
-    def _has_propagatable_terms(self):
-        return len(self.eqMap) > 0
-
-    def _propagate_until_fixpoint(self):
-        assert(len(self.eqMap))
-        fixed = False 
-        while not fixed:
-            fixed = True
-            for lhs, rhs in self.eqMap.items():
-                new_rhs = il.substitute(rhs, self.eqMap)
-                if new_rhs != rhs:
-                    fixed = False
-                self.eqMap[lhs] = new_rhs
-
-    def _substitute_non_propagatable(self, nprop_terms):
-        new_qterms = set()
-        for term in nprop_terms:
-            new_term = il.substitute(term, self.eqMap)
-            new_qterms.add(new_term)
-        self.qterms = new_qterms
-
-    def _substitute_neq_constraints(self):
-        new_neq_constraints = dict()
-        for sort, neqs in self.neq_constraints.items():
-            new_neqs = []
-            for neq in neqs:
-                new_neq = il.substitute(neq, self.eqMap)
-                new_neqs.append(new_neq)
-            new_neq_constraints[sort] = new_neqs
-        self.neq_constraints = new_neq_constraints
-
-    def _substitute_fully_occuring_sorts(self):
-        new_full_occur_sorts = []
-        for fs in self.full_occur_sorts:
-            sort  = fs[0]
-            qvars = fs[1]
-            new_qvars = []
-            for qvar in qvars:
-                if qvar in self.eqMap:
-                    qvar = self.eqMap[qvar]
-                new_qvars.append(qvar)
-            new_full_occur_sorts.append([sort,new_qvars])
-        self.full_occur_sorts = new_full_occur_sorts
-
-    def propagate_eq_constraints(self):
-        vprint_title(self.options, 'propagate_eq_constraints', 5)
-        vprint(self.options, f'qterms: {self.qterms}', 5)
-        vprint(self.options, f'qterms before propagate: {self.qterms}', 5)
-        nprop_terms = self._get_non_propagatable_terms() 
-        if self._has_propagatable_terms():
-            self._propagate_until_fixpoint()
-            self._substitute_non_propagatable(nprop_terms)
-            self._substitute_neq_constraints()
-            self._substitute_fully_occuring_sorts()
-        vprint(self.options, f'qterms after propagate: {self.qterms}', 5)
-
-    def _get_state_from_terms(self, qterms):
-        vprint_title(self.options, 'get_state_from_terms', 5)
-        vprint(self.options, f'{qterms}', 5)
-        qstate = il.And(*qterms)
-        vprint(self.options, f'qstate before exist: {str(qstate)}', 5)
-        if len(self.qvars_set) != 0: 
-            qstate = il.Exists(self.qvars_set, qstate)
-        vprint(self.options, f'qstate after exist: {str(qstate)}', 5)
-        return qstate
-
-    def conjunct_qstate_with_neq_constraints(self):
-        # append all pairwise neq constraints
-        vprint_title(self.options, 'conjunct_qstate_with_neq_constraints', 5)
-        constrained_qterms = self.qterms.copy()
-        vprint(self.options, f'qterms: {self.qterms}', 5)
-        vprint(self.options, f'constrained_qterms: {constrained_qterms}', 5)
-        for neqs in self.neq_constraints.values():
-            for neq in neqs:
-                constrained_qterms.add(neq)
-        constrained_qstate = self._get_state_from_terms(constrained_qterms)
-        return constrained_qstate
-
-    def can_infer_forall(self):
-        can_infer  =  ( (len(self.full_occur_sorts) == 0) or (len(self.qterms) < min_size) )
-        vprint_title(self.options, 'can_infer_forall', 5)
-        vprint(self.options, str(can_infer), 5)
-        return can_infer
-
-    def infer_forall(self):
-        qstate = self.conjunct_qstate_with_neq_constraints()
-        self.results.append((qstate, 'forall'))
-        vprint_title(self.options, 'infer_forall', 5)
-        vprint(self.options, str(qstate), 5)
-
-    def init_infer(self):
-        vprint_title(self.options, 'init_infer', 5)
-        self.infr_qvars_set = set()
-        self.infr_terms     = self.qterms.copy()
- 
-    def _create_normalized_qvar(self, sort):
-        return il.Variable('N:' + sort.name, sort)
-
-    def _init_partition(self, qvars):
-        self.norm_terms       = set()
-        self.qvar2terms       = {}
-        self.qvar2_norm_terms = {}
-        self.qvars_partition  = {}
-        for qvar in qvars:
-            self.qvar2terms[qvar]       = set()
-            self.qvar2_norm_terms[qvar] = set()
-
-    def _get_term_qvars(self, term, qvars_set):
-        term_fvars  = lu.free_variables(term)
-        term_qvars  = term_fvars.intersection(qvars_set)
-        return term_qvars
-
-    def _normalize_qvar_in_term(self, term, qvar, norm_qvar):
-        subst = {}
-        subst[qvar] = norm_qvar
-        return il.substitute(term, subst)
-
-    def _record_qvars_occurrence_in_terms(self, sort, qvars):
-        # e.g. Qn0, Qn1, Qn2 ... -> Qn (norm_qvar)
-        # terms: p(Qn0) q(Qn1) q(Qn2) q(Qn0)
-        # qvar2term: Qn0 -> p(Qn0), q(Qn0); Qn1 -> q(Qn1); Qn2 -> q(Qn2)
-        # qvar2_norm_terms: Qn0 -> p(Qn),q(Qn); Qn1 -> q(Qn); Qn2 -> q(Qn)
-        self.norm_qvar  = self._create_normalized_qvar(sort)
-        qvars_set = set(qvars)
-        for term in self.qterms:
-            term_qvars = self._get_term_qvars(term, qvars_set)
-            for qvar in term_qvars:
-                norm_term = self._normalize_qvar_in_term(term, qvar, self.norm_qvar)
-                self.norm_terms.add(norm_term)
-                self.qvar2terms[qvar].add(term)
-                self.qvar2_norm_terms[qvar].add(norm_term)
-
-    def _is_unique_qvar(self, qvar, norm_terms):
-        return  ( len(norm_terms) == 0
-                  or qvar in QInference.tran_sys.symbols
-                )
-    
-    def _add_key_qvar_to_partition(self, key, qvar):
-        if key not in self.qvars_partition:
-            self.qvars_partition[key] = set()
-        self.qvars_partition[key].add(qvar)
-
-    def _add_qvar_to_uniq_class(self, qvar, uniq_id):
-        uniq_key =  (uniq_id, il.And())
-        self._add_key_qvar_to_partition(uniq_key, qvar)
-
-    def _get_norm_key(self, norm_terms):
-        # qvars that occur identically result in identical key
-        sorted_norm_terms = sorted(norm_terms, key=str)
-        norm_state = il.And(*sorted_norm_terms)
-        return (0, norm_state)  
-
-    def _add_qvar_to_norm_class(self, qvar, norm_terms):
-        norm_key = self._get_norm_key(norm_terms)
-        self._add_key_qvar_to_partition(norm_key,qvar)
-
-    def _finalize_partition(self):
-        uniq_id = 1
-        for qvar, norm_terms in self.qvar2_norm_terms.items():
-            if self._is_unique_qvar(qvar, norm_terms):
-                self._add_qvar_to_uniq_class(qvar, uniq_id)
-                uniq_id += 1
-            else:
-                self._add_qvar_to_norm_class(qvar, norm_terms)
-        
-    def _partition_qvars_in_terms(self, sort, qvars):
-        self._init_partition(qvars)
-        self._record_qvars_occurrence_in_terms(sort, qvars) 
-        self._finalize_partition() 
-        vprint_title(self.options, 'partition_qvars_in_terms', 5)
-        vprint(self.options, f'qvars_partition: {self.qvars_partition.values()}', 5)
-
-    def _collect_singles_multiples_in_partition(self):
-        self.single_class = []
-        self.multi_class  = []
-        for key, qvars in self.qvars_partition.items():
-            if len(qvars) == 1:
-                self.single_class.append(key)
-            elif len(qvars) >= min_size:
-                self.multi_class.append(key)
-        self.num_sing_class  = len(self.single_class)
-        self.num_mult_class  = len(self.multi_class)
-        self.num_class       = len(self.qvars_partition)
-        vprint_title(self.options, 'collect_singles_multiples_in_partition', 5)
-        vprint(self.options, f'single class: {self.single_class}', 5)
-        vprint(self.options, f'number single class: {self.num_sing_class}', 5)
-        vprint(self.options, f'multi class: {self.multi_class}', 5)
-        vprint(self.options, f'number multi class: {self.num_mult_class}', 5)
-
-    def _check_single_partition(self, all_qvars):
-        for qvars_class in self.qvars_partition.values():
-            if len(qvars_class) != len(all_qvars):
-                print("found single part with incomplete instances")
-                return False 
+    def _multi_class_appears_with_same_other_args(self, sort, part_sig : SortPartitionSignature_) -> bool:
+        # check if exists vars appear with the same combinations of other args
+        red_sig2other_args     = self._get_red_arg_signature_to_other_args(part_sig.reduced_multi_class_sigs, part_sig.multi_class_arg_sigs)
+        num_exists_vars        = sort.card - len(part_sig.reduced_single_class_sigs)
+        vprint_title(self.options, 'QInference: _multi_class_appears_with_same_other_args', 5)
+        vprint(self.options, f'red_sig2other_args: {red_sig2other_args}', 5)
+        vprint(self.options, f'num_exists_vars: {num_exists_vars}', 5)
+        for class_sig in part_sig.reduced_multi_class_sigs:
+            assert(len(class_sig.arg_signatures) == 1)
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig      = repr_arg_sig.get_reduced_signature()
+            for func_ids in red_sig2other_args[red_sig].values():
+                if num_exists_vars != len(func_ids):
+                    return False
+        # update red_multi_class_sigs to be sigs of exists vars 
+        red_sig2red_other_args = self._get_red_arg_signature_to_red_other_args(part_sig.reduced_multi_class_sigs, part_sig.multi_class_arg_sigs)
+        vprint(self.options, f'red_sig2red_other_args: {red_sig2red_other_args}', 5)
+        red_class_sigs : List[ClassSignature] = []
+        for class_sig in part_sig.reduced_multi_class_sigs:
+            assert(len(class_sig.arg_signatures) == 1)
+            repr_arg_sig = class_sig.arg_signatures[0]
+            red_sig = repr_arg_sig.get_reduced_signature()
+            for func_ids in red_sig2red_other_args[red_sig].values():
+                red_class_sigs.append(ClassSignature([ArgumentSignature(sort, repr_arg_sig.signed_fname, func_ids[0], repr_arg_sig.arg_id)]))
+        part_sig.reduced_multi_class_sigs = red_class_sigs
+        vprint(self.options, f'updated reduced multi class sigs: {part_sig.reduced_multi_class_sigs}', 5)
         return True
 
-    def _remove_qvars(self, qvars):
-        for qvar in qvars:
-            self.qvars_set.discard(qvar)
+    def _can_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
+        num_class = len(part_sig.reduced_class)
+        if num_class == 1: # all variables of this sort appear in exactly same positions:
+            # appearing in same positions is not enough, they have to appear with the same combinations of other args
+            return self._multi_class_appears_with_same_other_args(sort, part_sig)
+        return False
 
-    def _remove_qvars_neq_constraints(self, sort):
-        self.neq_constraints.pop(sort, None)
+    def _can_infer_forall_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
+        num_single_class  = len(part_sig.reduced_single_class)
+        num_multi_class   = len(part_sig.reduced_multi_class)
+        num_class         = len(part_sig.reduced_class)
+        if num_multi_class == 1 and (num_class == num_multi_class + num_single_class) and num_class > 1:
+            # appearing in same positions is not enough, they have to appear with the same combinations of other args
+            return self._multi_class_appears_with_same_other_args(sort, part_sig)
+        return False
 
-    def _get_first_qvar(self, qvars, sort=False):
-        if sort:
-            return sorted(qvars, key=str)[0]
-        else:
-            return qvars[0]
+    def _get_sort_quantifier_mode(self, sort, part_sig : SortPartitionSignature_) -> QuantifierMode:
+        # currently merging qprime only considers forall
+        if len(self.qprimes) > 1:
+            return QuantifierMode.forall
+        if len(part_sig.class_signatures) < sort.card:
+            return QuantifierMode.forall
+        assert(len(part_sig.class_signatures) == sort.card)
+        if self._can_infer_exists(sort, part_sig):
+            return QuantifierMode.exists
+        elif self._can_infer_forall_exists(sort, part_sig):
+            return QuantifierMode.forall_exists
+        return QuantifierMode.forall
 
-    def _add_first_qvar(self, first_qvar):
-        if il.is_variable(first_qvar):
-            self.infr_qvars_set.add(first_qvar)
+    def _set_sort_to_quantifier_mode(self) -> None:
+        vprint_title(self.options, 'QInference: _set_sort_to_quantifier_mode', 5)
+        for sort, part_sig in self.prod_arg_partition.sort2part_sig.items():
+            qmode : QuantifierMode = self._get_sort_quantifier_mode(sort, part_sig)
+            vprint(self.options, f'quantifier mode: {sort.name}: {qmode}', 5)
+            self.sort2qmode[sort] = qmode
 
-    def _get_renamed_norm_terms(self, norm_state, first_qvar):
-        subst = {}
-        subst[self.norm_qvar] = first_qvar 
-        renamed_state = il.substitute(norm_state, subst)
-        return futil.flatten_cube(renamed_state)
-
-    def _replace_qvars_with_first_qvar(self, first_qvar):
-        for terms in self.qvar2terms.values():
-            for term in terms:
-                self.infr_terms.discard(term)
-        for _, norm_state in self.qvars_partition.keys():
-            renamed_terms = self._get_renamed_norm_terms(norm_state, first_qvar)
-            for term in renamed_terms:
-                self.infr_terms.add(term)       
-        self.qterms = self.infr_terms 
-
-    def _infer_exists(self, sort, qvars):
-        assert(self._check_single_partition(qvars))
-        # {v0,v1,v2}---> \exists v0
-        self._remove_qvars(qvars)
-        self._remove_qvars_neq_constraints(sort)
-        first_qvar = self._get_first_qvar(qvars)
-        self._add_first_qvar(first_qvar)
-        self._replace_qvars_with_first_qvar(first_qvar)
-
-    def _get_term_func_names_with_sort(self):
-        func_names = {} 
-        for terms in self.qvar2terms.values():
-            for term in terms:
-                is_neg = False
-                if isinstance(term, il.Not):
-                    is_neg = True
-                    term = term.args[0]
-                func_name = term.func
-                if not (is_neg, func_name) in func_names:
-                    func_names[(is_neg, func_name)] = []
-                func_names[(is_neg, func_name)].append(term)
-        return func_names
-
-    def _get_sort_count(self, sort, func_names):
-        sort_count = 0
-        for (is_neg, func) in func_names.keys():
-            for arg_sort in func.sort.dom:
-                # assert(arg_sort == sort)
-                if arg_sort == sort:
-                    sort_count += 1
-        return sort_count
-
-    def _add_sort_qvars(self, sort, sort_count):
-        qvars = self.sort2qvars[sort]
-        if (len(qvars) < sort_count):
-            new_qvars = []
-            for i in range(len(qvars), sort_count):
-                name = sort.name.upper() + str(i)
-                new_qvars.append(il.Variable(name, sort))
-            qvars += new_qvars
-        else:
-            qvars = qvars[:sort_count]
-        for qvar in qvars:
-            self.infr_qvars_set.add(qvar)
-        return qvars
-
-    def _replace_qvars_with_multi_qvars(self, sort, func_names):
-        for terms in self.qvar2terms.values():
-            for term in terms:
-                self.infr_terms.discard(term)
-
-        sort_count = self._get_sort_count(sort, func_names)
-        sort_qvars = self._add_sort_qvars(sort, sort_count) 
-        sort_count = 0
-        for (is_neg, func) in func_names.keys():
-            args = []
-            for arg_id, arg_sort in enumerate(func.sort.dom):
-                if arg_sort != sort:
-                    term = func_names[(is_neg, func)][0]
-                    qvar = term.arg(arg_id)
-                    args.append(qvar)
-                else:
-                    qvar = sort_qvars[sort_count]
-                    sort_count += 1
-                    args.append(qvar)
-            term = il.App(func, *args)
-            if is_neg:
-                term = il.Not(term)
-            self.infr_terms.add(term)       
-        self.qterms = self.infr_terms 
-
-    def _infer_multi_exists(self, sort, qvars):
-        self._remove_qvars(qvars)
-        self._remove_qvars_neq_constraints(sort)
-        func_names = self._get_term_func_names_with_sort()
-        self._replace_qvars_with_multi_qvars(sort, func_names)
-
-    def _get_single_qvars_list(self):
-        single_qvars = []
-        for key in self.single_class:
-            assert(key in self.qvars_partition)
-            qclass = self.qvars_partition[key]
-            assert(len(qclass) == 1)
-            for qvar in qclass:
-                single_qvars.append(qvar)
-        return single_qvars
-
-    def _get_multi_qvars_set(self, qvars, single_qvars):
-        multi_qvars  = None
-        for key in self.multi_class:
-            assert(key in self.qvars_partition)
-            qclass = self.qvars_partition[key]
-            assert(len(qclass) >= min_size)
-            if len(qclass) == (len(qvars) - len(single_qvars)):
-                multi_qvars = qclass 
-        return multi_qvars
-
-    def _can_infer_forall_exists(self, single_qvars_list, multi_qvars_set):
-        return len(single_qvars_list) != 0 and multi_qvars_set != None
-
-    def _get_neqs_without_multi_qvars(self, sort, multi_qvars):
-        neqs = []
-        for neq in self.neq_constraints[sort]:
-            neq_fvars   = lu.free_variables(neq)
-            common_vars = neq_fvars.intersection(multi_qvars)
-            if len(common_vars) == 0:
-                neqs.append(neq)
-        return neqs 
-
-    def _update_qvars_neq_constraints(self, sort, multi_qvars):
-        if sort in self.neq_constraints:
-            neqs = self._get_neqs_without_multi_qvars(sort, multi_qvars)
-            self.neq_constraints.pop(sort, None)
-            if len(neqs) != 0:
-                self.neq_constraints[sort] = neqs 
-
-    def _get_renamed_mult_term(self, term, first_mult_qvar):
-        subst = {}
-        subst[self.norm_qvar] = first_mult_qvar 
-        return il.substitute(term, subst)
-
-    def _first_mult_equals_some_sing(self, first_mult_qvar, sing_qvars):
-        eq_list = []
-        for qvar in sing_qvars:
-            eq_list.append(il.Equals(qvar, first_mult_qvar))
-        return il.Or(*eq_list)
-
-    def _replace_multi_qvars_with_first_multi_qvar(
-            self, single_qvars, multi_qvars, first_mult_qvar):
-        for qvar in multi_qvars:
-            for term in self.qvar2terms[qvar]:
-                self.infr_terms.discard(term)
-        # {v1, v2}, {v3, v4} ----> \forall v1, v2 \exists v3
-        # (v1 <-> v3) + (v2 <-> v3) + mult_term(v3)
-        eq_sing =  self._first_mult_equals_some_sing(first_mult_qvar, single_qvars)
-        for term in self.qvar2_norm_terms[first_mult_qvar]:
-            mult_term = self._get_renamed_mult_term(term, first_mult_qvar)
-            eq_or_mult = il.Or(*[eq_sing, mult_term])
-            self.infr_terms.add(eq_or_mult)
-        self.qterms = self.infr_terms
-
-    def _infer_forall_exists(self, sort, qvars):
-        # {v1, v2}, {v3, v4} ----> \forall v1,v2, \exists v3
-        single_qvars = self._get_single_qvars_list() 
-        multi_qvars  = self._get_multi_qvars_set(qvars, single_qvars)
-        if self._can_infer_forall_exists(single_qvars, multi_qvars):
-            self._remove_qvars(multi_qvars)
-            self._update_qvars_neq_constraints(sort, multi_qvars)
-            first_mult_qvar = self._get_first_qvar(multi_qvars, sort=True)
-            self._add_first_qvar(first_mult_qvar)
-            self._replace_multi_qvars_with_first_multi_qvar(
-                single_qvars, multi_qvars, first_mult_qvar)
-
-    def infer_fully_occur_sort(self, sort, qvars):
-        self._partition_qvars_in_terms(sort, qvars) # pi(\psi, qvars)
-        self._collect_singles_multiples_in_partition()
-        vprint_title(self.options, 'infer_fully_occur_sort', 5)
-        if self.num_class == 1:  # single class partition 
-            vprint(self.options, 'infer exists', 5)
-            self._infer_exists(sort, qvars)
-        elif self.num_mult_class == 0 and self.is_orbit_size_1 and len(self.qterms) > len(self.qvars_set) : # some relation has multiple parameter with type sort  # FIXME: dirty!!!!!
-            vprint(self.options, 'infer multiple exists (for many-arity)', 5)
-            self._infer_multi_exists(sort, qvars)
-        elif ( self.num_class == (self.num_sing_class + self.num_mult_class)
-               and self.num_mult_class == 1
-               # and self.num_sing_class == 1 # FIXME ??????
-             ): 
-            vprint(self.options, 'infer forall exists', 5)
-            self._infer_forall_exists(sort, qvars)
-        vprint(self.options, f'number of multi-class: {self.num_mult_class}', 5)
-
-    def add_required_neq_constraints(self):
-        for neqs in self.neq_constraints.values():
-            for neq in neqs:
-                self.qterms.add(neq)
-
-    def _separate_infr_terms(self):
-        pre_terms  = set()
-        post_terms = set()
-        if len(self.infr_qvars_set) == 0:
-            post_terms = self.qterms 
-        else:
-            for term in self.qterms:
-                argvars = lu.free_variables(term)
-                argvars = argvars.intersection(self.infr_qvars_set)
-                if len(argvars) == 0:
-                    pre_terms.add(term)
-                else:
-                    post_terms.add(term)
-        post_terms = sorted(post_terms, key=str)
-        pre_terms  = sorted(pre_terms,  key=str)
-        return pre_terms, post_terms
-
-    def finalize_infer(self):
-        # \exists qvars, pre_terms \forall infr_qvars post_terms
-        # will be later negated to become  \forall qvars, pre_terms \exists infr_qvars post_terms
-        pre_terms, post_terms = self._separate_infr_terms()
-        qstate  = il.And(*post_terms)
-        if len(self.infr_qvars_set) != 0:
-            qstate = il.ForAll(self.infr_qvars_set, qstate)
-        if len(pre_terms) != 0:
-            qstate = il.And(*[il.And(*pre_terms), qstate])
-        if len(self.qvars_set) != 0: 
-            qstate = il.Exists(self.qvars_set, qstate)
-        qtype = 'forall'
-        if len(self.qvars_set) == 0 and len(self.infr_qvars_set) != 0:
-            qtype = 'exists'
-        if len(self.qvars_set) != 0 and len(self.infr_qvars_set) != 0:
-            qtype = 'forall_exists'
-        self.results.append((qstate, qtype))
-
-    def _update_qvars_qterms(self, qstate):
-        self.qvars_set = set()
-        if qstate.is_exists():
-            qvars = qstate.quantifier_vars()
-            for qvar in qvars:
-                self.qvars_set.add(qvar)
-            qstate = qstate.args()[0]
-        self.qterms = futil.flatten_and(qstate)
-
-    def _is_propagatable2(self, eq_term):
-        lhs, rhs = self._split_eq(eq_term)
-        if rhs.is_symbol and rhs in self.qvars_set:
-            if rhs not in self.eqMap:
-                self.eqMap[rhs] = lhs
-                self.qvars_set.discard(rhs)
+    def _has_sort_with_too_many_classes(self) -> bool:
+        for sort, part_sig in self.prod_arg_partition.sort2part_sig.items():
+            if len(part_sig.class_signatures) >= 6:
                 return True 
         return False
 
-    def _get_non_propagatable_terms2(self):
-        self.eqMap = dict()
-        nprop_terms = set()
-        for term in self.qterms:
-            is_prop = False
-            if il.is_equals(term):
-                is_prop = self._is_propagatable2(term)
-            if not is_prop: 
-                nprop_terms.add(term)
-        return nprop_terms
+    def _has_qprime_with_many_classes(self) -> bool:
+        for sort, part_sig in self.prod_arg_partition.sort2part_sig.items():
+            for arg_partition in self.arg_partitions: 
+                class_sigs = arg_partition.sort2class_sigs[sort]
+                if len(class_sigs) == min(sort.card, len(part_sig.class_signatures)):
+                    return True         
+        return False
 
-    def _propagate_qstate_eq_constraints(self, qstate):
-        new_qstate = qstate 
-        self._update_qvars_qterms(qstate)
-        nprop_terms = self._get_non_propagatable_terms2()
-        if self._has_propagatable_terms():
-            self._propagate_until_fixpoint()
-            self._substitute_non_propagatable(nprop_terms)
-            new_qstate = self._get_state_from_terms(self.qterms)
-        return new_qstate 
+    def _set_constraint_mode(self) -> None:
+        if len(self.qprimes) == 1:
+            self.cmode = ConstraintMode.no_merge
+        elif self._has_sort_with_too_many_classes(): # enumerate all partitions for class signatures will be infeasible
+            self.cmode = ConstraintMode.merge_present
+        elif self._has_qprime_with_many_classes(): # use absent constraint result in more succint representation
+            self.cmode = ConstraintMode.merge_absent
+        else: # all qprimes have small number of classes, use present constraint result in more succinct representation
+            self.cmode = ConstraintMode.merge_present
+        vprint_title(self.options, 'QInference: _set_constraint_mode', 5)
+        vprint(self.options, f'constraint mode: {self.cmode}', 5)
 
-    def propagate_results_eq_constraints(self):
-        for (i, result) in enumerate(self.results):
-            qstate = self._propagate_qstate_eq_constraints(result[0])
-            self.results[i] = (qstate, result[1])
+    def _need_eq_constraints(self) -> None:
+        if len(self.constraint.partitions) == len(self.qprimes) and len(self.qprimes) > 1:              
+            vprint_title(self.options, 'QInference: _need_eq_constraints: ', 5)
+            vprint(self.options, f'{False}', 5)
+            return False
+        return True
 
-    def negate_qstates_in_results(self):
-        vprint_title(self.options, 'negate_qstates_in_results', 5)
-        for (i, result) in enumerate(self.results):
-            qstate = result[0]
-            qstate = il.Not(qstate)
-            self.results[i] = (qstate, result[1])
-            vprint(self.options, f'({str(qstate)}, {result[1]})', 5)
+    def _set_qclause(self):
+        if self.cmode == ConstraintMode.merge_absent:
+            self.constraint = AbsentConstraint(self.prod_arg_partition, self.arg_partitions, self.options)
+            if self._need_eq_constraints():
+                part_sigs : List[PartitionSignature] = self.constraint.get_absent_partition_signatures()
+                self.qformula.set_merge_constraints(part_sigs, self.cmode)
 
-    def infer_quantifier(self):
-        # original
-        self.set_repr_state()
-        self.vars  = self.get_free_variables() # sorts, quorums
-        # mapping
-        self.record_sort_occurrence_in_vars()
-        self.record_fully_occuring_sorts()
-        # quantified
-        self.set_qstate()
-        self.set_qvar_pairwise_neq_constraints()
-        # if common.gopts.const > 0:
-        #     self.propagate_eq_constraints()
-        # infer quantifier
-        if self.can_infer_forall():  # case: #(\psi, s) < |s|, for each sort s
-            self.infer_forall()
-        else: # case: #(\psi, s) = |s|, for some sort s 
-            self.init_infer()
-            for fs in self.full_occur_sorts:
-                self.infer_fully_occur_sort(sort=fs[0], qvars=fs[1])
-            self.add_required_neq_constraints()
-            self.finalize_infer()
-        # if common.gopts.const > 0:
-        #     self.propagate_results_eq_constraints()
-        self.negate_qstates_in_results()
-        assert(len(self.results) == 1)
-        result  = self.results[0]
-        qclause = result[0]
-        qclause = futil.de_morgan(qclause)
-        return qclause 
+        elif self.cmode == ConstraintMode.merge_present:
+            part_sigs : List[PartitionSignature] = [arg_part.part_sig for arg_part in self.arg_partitions]
+            self.qformula.set_merge_constraints(part_sigs, self.cmode)
+
+        elif self.cmode == ConstraintMode.no_merge:
+            self.qformula.set_no_merge_constraints()
+
+        self.qclause = self.qformula.get_qclause()
+
+    #------------------------------------------------   
+    # public methods
+    #------------------------------------------------
+    def get_qclause(self):
+        return self.qclause
 
     @staticmethod
     def setup(atoms, tran_sys) -> None:
         QInference.atoms    = atoms
         QInference.tran_sys = tran_sys
+        QPrime.setup(atoms, tran_sys)

@@ -24,13 +24,14 @@ def usage ():
     print('Options:')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
-    print('-c sat | mc  use sat solver or approximate model counter for coverage estimation (default: sat)')
+    print('-k           enable checking quantifier inference (default: off)')
+    print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
-    print('-r           write reachable states to FILE.reach (default: off)')
-    print('-p           write prime orbits to FILE.pis (default: off)')
-    print('-q           write quantified prime orbits to FILE.qpis (default: off)')
-    print('-w           write .reach, .pis, .qpis, equivalent to options -r -p -q (default: off)')
+    print('-w           write .reach, .pis, .qpis (default: off)')
+    print('             write reachable states to FILE.reach')
+    print('             write prime orbits to FILE.pis')
+    print('             write quantified prime orbits to FILE.qpis')
     print('-h           usage')
 
 def usage_and_exit():
@@ -61,7 +62,7 @@ def get_peak_memory_and_reset(options):
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:amc:v:l:rpqwhd")
+        opts, args = getopt.getopt(args, "s:amkc:v:l:whd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -77,6 +78,8 @@ def get_options(ivy_name, args):
             options.all_solutions   = False 
         elif optc == '-m':
             options.merge_suborbits = False 
+        elif optc == '-k':
+            options.check_qi        = True 
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
                 options.useMC = optv
@@ -90,12 +93,6 @@ def get_options(ivy_name, args):
             options.writeLog   = True
             options.log_name   = optv 
             options.open_log()
-        elif optc == '-r':
-            options.writeReach = True
-        elif optc == '-p':
-            options.writPrime  = True
-        elif optc == '-q':
-            options.writeQI    = True
         elif optc == '-w':
             options.writeReach = True
             options.writePrime = True
@@ -163,9 +160,9 @@ def qrm(ivy_name, args):
     invariants = minimizer.get_minimal_invariants()
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step6: sanity_check
-    step_start(options, f'[SANITY] Sanity Check on [{options.instance_name}: {options.size_str}]')
-    sanity_result = minimizer.sanity_check(instantiator, protocol)
+    # step6: minimization sanity check
+    step_start(options, f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
+    sanity_result = minimizer.minimization_check(protocol)
     time_stamp    = step_end(options, time_start, time_stamp)
 
     # step7: ivy_check

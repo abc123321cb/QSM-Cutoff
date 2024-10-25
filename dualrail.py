@@ -28,7 +28,7 @@ class DualRailNegation():
             nvar = self._get_neg_var(atom_id)
             self.clauses.append([-1*pvar, -1*nvar]) # (~pvar + ~nvar)
 
-        for state in protocol.reachable_states:
+        for state in protocol.quotient_reachable_states: # use quotient reachable states to prevent excessive redudant orbits
             clause = []
             for (atom_id, value) in enumerate(state):
                 if value == '0':

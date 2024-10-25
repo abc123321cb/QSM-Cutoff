@@ -245,6 +245,36 @@ class TransitionSystem():
         consts_str = [str(const) for const in consts]
         return consts_str
 
+    #------------------------------------------------------------
+    # TransitionSystem: update methods
+    #------------------------------------------------------------
+    def set_atom_equivalence_constraints(self, atom2equivs, atom2complements):
+        constraints = []
+        for atom, equivs in atom2equivs.items():
+            for equiv in equivs:
+                if il.is_eq(atom) and il.is_eq(equiv) and atom.args[1] == equiv.args[1]:
+                    constraints.append(il.Equals(atom.args[0], equiv.args[0]))
+                else:
+                    constraints.append(il.Equals(atom, equiv))
+        for atom, complements in atom2complements.items():
+            for cmpl in complements:
+                if il.is_eq(atom) and il.is_eq(equiv) and atom.args[1] == equiv.args[1]:
+                    constraints.append(il.Not(il.Equals(atom.args[0], equiv.args[0])))
+                else:
+                    constraints.append(il.Equals(atom, il.Not(cmpl)))
+        closed_constraints = []
+        for constraint in constraints:
+            consts    = ilu.used_constants_ast(constraint)
+            const2var = {}
+            for const in consts: 
+                if il.is_enumerated(const):
+                    const2var[const] = il.Variable(const.name.upper(), const.sort)
+            constraint = ilu.substitute_constants_ast(constraint, const2var)
+            constraint = il.close_formula(constraint)
+            closed_constraints.append(constraint)
+        self.atom_equivalence_constraints        = constraints
+        self.closed_atom_equivalence_constraints = closed_constraints
+
 def get_transition_system(options, ivy_filename): 
     module   = parse_ivy(options, ivy_filename)
     tran_sys = TransitionSystem(options, module)

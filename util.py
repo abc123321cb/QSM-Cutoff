@@ -1,6 +1,6 @@
 from enum import Enum
 Mode  = Enum('Mode', ['ivy', 'yaml'])
-UseMC = Enum('UseMC', ['sat', 'appMC'])
+UseMC = Enum('UseMC', ['sat', 'mc'])
 
 class QrmOptions():
     def __init__(self) -> None:
@@ -14,6 +14,7 @@ class QrmOptions():
         self.instance_suffix = ''
         self.mode  = Mode.ivy
         self.useMC = UseMC.sat
+        self.check_qi        = False
         self.writeReach      = False
         self.writePrime      = False
         self.writeQI         = False
@@ -175,16 +176,7 @@ def get_instances_from_yaml(yaml_name):
         for sort, interval in data['size'].items(): #stable
             is_quorum = False
             size_tuple = tuple([0])
-            if 'superset' in interval.keys():
-                dep_type = interval['superset']
-                dep_from = data['size'][dep_type]['from']
-                dep_to   = data["size"][dep_type]['to'] +2
-                for dep_size in range(dep_from, dep_to):
-                    quorum_size = comb(dep_size, int(dep_size/2)+1)
-                    dep2quorum_size[dep_size] = quorum_size
-                is_quorum  = True
-            else:
-                size_tuple = tuple(range(interval['from'],interval['to']+2))
+            size_tuple = tuple(range(interval['from'],interval['to']+1))
             is_quorum_list.append(is_quorum)
             sizes.append(size_tuple)
             sorts.append(sort)
