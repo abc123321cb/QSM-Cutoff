@@ -9,14 +9,14 @@ git clone --recurse-submodules git@github.com:lauren-yrluo/py-qrm.git
 apt-get install python3
 apt-get install pip
 apt-get install python3-dev
-pip install python-sat[aiger,approxmc,cryptosat,pblib]
-pip install python-sat
-pip install z3-solver==4.8.9
-pip install pyyaml
-pip install pytest
-pip install setuptools
-pip install more-itertools
-pip install itertools
+python3 -m pip install python-sat[aiger,approxmc,cryptosat,pblib]
+python3 -m pip install python-sat
+python3 -m pip install z3-solver==4.8.9
+python3 -m pip install pyyaml
+python3 -m pip install pytest
+python3 -m pip install setuptools
+python3 -m pip install more-itertools
+python3 -m pip install itertools
 ```
 
 2. Install swig
@@ -26,7 +26,7 @@ apt-get install automake
 apt-get install bison
 cd swig-4.2.1
 ./autogen.sh
-./configure --without-pcre
+./configure --prefix=YOUR_PATH
 make
 make install
 ```
@@ -37,14 +37,15 @@ apt-get install cmake
 cd ivy
 python3 build_submodules.py
 python3 setup.py install
+python3 setup.py develop
 ```
 
 ### Issues with Installation
 If you don't have permission to `apt-get install` or `yum install`, try the following steps:
 - Download the source
-- `./configure --prefix=/home/USERNAME/opt`
+- `./configure --prefix=YOUR_PATH`
 - `make` and then `make install`
-- `export PATH=/home/USERNAME/opt/bin/:$PATH` so that system looks up your path first
+- `export PATH=YOUR_PATH:$PATH` so that system looks up your path first
 
 ## Usage
 ```=python3
