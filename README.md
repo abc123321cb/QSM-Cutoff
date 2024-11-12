@@ -4,7 +4,7 @@
 apt-get install git
 git clone --recurse-submodules git@github.com:lauren-yrluo/py-qrm.git
 ```
-1. Set up python environment (recommend python3.11 and above)
+1. Set up python environment (recommend python3.12 and above)
 ```
 apt-get install python3
 apt-get install pip
