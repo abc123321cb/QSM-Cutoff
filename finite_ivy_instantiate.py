@@ -58,15 +58,18 @@ class FiniteIvyInstantiator():
 
     def _init_axiom_vars(self):
         self._axiom_vars = list(self._tran_sys.axiom_symbols)
+        self._axiom_vars.sort(key=lambda v: str(v))
 
     def _init_state_vars(self):
         self._state_vars = list(self._tran_sys.state_symbols)
+        self._state_vars.sort(key=lambda v: str(v))
 
     def _init_independent_vars(self):
         for symbol in self._tran_sys.state_symbols:
             if (symbol not in self._tran_sys.axiom_symbols and
                 symbol not in self._tran_sys.definitions.keys()):
                 self._indep_vars.append(symbol)
+        self._indep_vars.sort(key=lambda v: str(v))
         self._indep_vars += self._axiom_vars
 
     def _initialize(self):
