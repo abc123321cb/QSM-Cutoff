@@ -17,6 +17,7 @@ python3 -m pip install pytest
 python3 -m pip install setuptools
 python3 -m pip install more-itertools
 python3 -m pip install itertools
+python3 -m pip install numpy
 ```
 
 2. Install swig
