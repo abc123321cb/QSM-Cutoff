@@ -7,6 +7,7 @@ from finite_ivy_gen import FiniteIvyGenerator
 from finite_ivy_exec import FiniteIvyExecutor, IVY_ACTION_COMPLETE, IVY_ACTION_INCOMPLETE 
 from verbose import *
 from qutil import get_func_args
+import numpy as np
 
 class DfsNode():
     def __init__(self, dfs_state, ivy_state):
@@ -128,27 +129,13 @@ class ForwardReachability():
         FiniteIvyGenerator.clean()
 
     #------------------------------------------------------------
-    # ForwardReachability: update protocol 
+    # ForwardReachability: equivalence reduction 
     #------------------------------------------------------------
-    def _update_protocol_states(self):
-        protocol_states = [] 
-        for dfs_state in self.dfs_explored_states:
-            protocol_state = ''.join(dfs_state.split(','))
-            protocol_states.append(protocol_state)
-        self.protocol.init_reachable_states(protocol_states)
-        for repr_int in self.dfs_repr_states:
-            self.protocol.repr_states.append(repr_int)
+    def _get_state_array_from_state_list(self, state_list : List[str]):
+        # Convert list of strings to a 2D numpy array
+        return np.array([list(s) for s in state_list])
 
-    def _get_atom_bit_string(self) -> List[str]:
-        atom_num = len(self.instantiator.protocol_atoms)
-        atom_bits = [''] * atom_num 
-        for dfs_state in self.dfs_explored_states:
-            dfs_state = dfs_state.split(',')
-            for atom_id in range(atom_num):
-               atom_bits[atom_id] += dfs_state[atom_id]
-        return atom_bits
-
-    def _set_equivalent_complement_atoms(self, atom_bits : List[str]):
+    def _set_equivalent_complement_atoms(self, state_array):
         atom_num = len(self.instantiator.protocol_atoms)
         for i in range(atom_num-1):
             if i in self.remove_atom_ids:
@@ -160,20 +147,33 @@ class ForwardReachability():
                 atom_j = self.instantiator.protocol_atoms_fmlas[j]
                 if get_func_args(atom_i) != get_func_args(atom_j):
                     continue
-                if atom_bits[i] == atom_bits[j]:  # equivalent
+                if np.array_equal(state_array[:, i], state_array[:, j]):
                     if not atom_i in self.atom2equivs:
                         self.atom2equivs[atom_i] = []
                     self.atom2equivs[atom_i].append(atom_j)
                     self.remove_atom_ids.add(j)
-                elif int(atom_bits[i], 2) + int(atom_bits[j], 2) == int('1'*atom_num, 2):  # complement
+                elif int(''.join(state_array[:, i]), 2) + int(''.join(state_array[:, j]), 2) == int('1'*atom_num, 2):  # complement
                     if not atom_i in self.atom2complements:
                         self.atom2complements[atom_i] = []
                     self.atom2complements[atom_i].append(atom_j)
                     self.remove_atom_ids.add(j)
 
-    def _quotient_reachability_modulo_atom_equivalence(self):
-        atom_bits = self._get_atom_bit_string()
-        self._set_equivalent_complement_atoms(atom_bits)
+    #------------------------------------------------------------
+    # ForwardReachability: update protocol states
+    #------------------------------------------------------------
+    def _update_protocol_states(self):
+        # reachable states
+        protocol_states = [] 
+        for dfs_state in self.dfs_explored_states:
+            protocol_state = ''.join(dfs_state.split(','))
+            protocol_states.append(protocol_state)
+        self.protocol.init_reachable_states(protocol_states)
+        # representative states
+        for repr_int in self.dfs_repr_states:
+            self.protocol.repr_states.append(repr_int)
+        # equivalence reduced states (post-processing)
+        state_array = self._get_state_array_from_state_list(protocol_states)
+        self._set_equivalent_complement_atoms(state_array)
         self.protocol.set_quotient_reachabiliy(self.remove_atom_ids)
         self.tran_sys.set_atom_equivalence_constraints(self.atom2equivs, self.atom2complements)
 
@@ -200,7 +200,6 @@ class ForwardReachability():
         self._initialize()
         self._symmetry_aware_depth_first_search_reachability()
         self._update_protocol_states()
-        self._quotient_reachability_modulo_atom_equivalence()
         self._write_protocol()
         self._clean()
 
