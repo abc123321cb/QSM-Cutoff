@@ -8,6 +8,7 @@ from finite_ivy_exec import FiniteIvyExecutor, IVY_ACTION_COMPLETE, IVY_ACTION_I
 from verbose import *
 from qutil import get_func_args
 import numpy as np
+from math import factorial as fact
 
 class DfsNode():
     def __init__(self, dfs_state, ivy_state):
@@ -106,7 +107,7 @@ class ForwardReachability():
                 pending_children.append(child_node)
         return pending_children
 
-    def _symmetry_aware_depth_first_search_recur_node(self, node, level=0):
+    def _symmetric_quotient_depth_first_search_recur_node(self, node, level=0):
         # vprint_title(self.options, f'level {level}', 5)
         # vprint(self.options, node.dfs_state, 5)
         self.dfs_max_depth = max(level, self.dfs_max_depth)
@@ -114,12 +115,12 @@ class ForwardReachability():
             self._restore_ivy_state(node) 
             pending_children = self._expand_nondeterministic_successors(action)
             for child_node in pending_children:
-                self._symmetry_aware_depth_first_search_recur_node(child_node, level+1)
+                self._symmetric_quotient_depth_first_search_recur_node(child_node, level+1)
 
-    def _symmetry_aware_depth_first_search_reachability(self):
+    def _symmetric_quotient_depth_first_search_reachability(self):
         initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
         for initial_node in initial_nodes:
-            self._symmetry_aware_depth_first_search_recur_node(initial_node)
+            self._symmetric_quotient_depth_first_search_recur_node(initial_node)
         
     #------------------------------------------------------------
     # ForwardReachability: utils
@@ -169,22 +170,38 @@ class ForwardReachability():
             protocol_states.append(protocol_state)
         self.protocol.init_reachable_states(protocol_states)
         # representative states
-        for repr_int in self.dfs_repr_states:
-            self.protocol.repr_states.append(repr_int)
+        self.protocol.repr_states = self.dfs_repr_states
+
+    def _reduce_equivalent_atoms(self):
         # equivalence reduced states (post-processing)
-        state_array = self._get_state_array_from_state_list(protocol_states)
+        state_array = self._get_state_array_from_state_list(self.protocol.reachable_states)
         self._set_equivalent_complement_atoms(state_array)
         self.protocol.set_quotient_reachabiliy(self.remove_atom_ids)
         self.tran_sys.set_atom_equivalence_constraints(self.atom2equivs, self.atom2complements)
 
-    def _write_protocol(self):
-        if (self.options.writeReach):
-            self.protocol.write_reachability()
-        self.protocol.print_verbose(self.tran_sys)
+    #------------------------------------------------------------
+    # ForwardReachability: print methods
+    #------------------------------------------------------------
+    def _print_protocol_basic_info(self) -> None:
+        sym_group_order = 1
+        for sort_id, constants in enumerate(self.protocol.sort_constants):
+            sort_name     = self.protocol.sorts[sort_id]
+            if not self.tran_sys.get_finite_sort_from_sort_name(sort_name) in self.tran_sys.dep_types:
+                sym_group_order *= fact(len(constants))
+        vprint(self.options, f'[FW NOTE]: number of variables/atoms: {self.protocol.atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
+
+    def _print_reachability(self) -> None:
+        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint(self.options, '\n'.join(self.protocol.lines), 3)
+
+    def _print_dfs_statistics(self) -> None:
         vprint(self.options, f'[FW NOTE]: dfs max depth: {self.dfs_max_depth}', 2)
         vprint(self.options, f'[FW NOTE]: number of total reachable states:        {len(self.dfs_explored_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)-len(self.dfs_repr_states)}', 2)
+
+    def _print_equiv_reduction_info(self) -> None:
         vprint(self.options, f'[FW NOTE]: equivalent atoms', 2)
         for atom, equivs in self.atom2equivs.items():
             vprint(self.options, f'\t{str(atom)}: {[str(e) for e in equivs]}', 2)
@@ -196,15 +213,21 @@ class ForwardReachability():
     #------------------------------------------------------------
     # ForwardReachability: public methods
     #------------------------------------------------------------
-    def solve_reachability(self):
+    def setup(self):
         self._initialize()
-        self._symmetry_aware_depth_first_search_reachability()
-        self._update_protocol_states()
-        self._write_protocol()
-        self._clean()
+        self._print_protocol_basic_info()
 
-def get_protocol_forward_reachability(tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options:QrmOptions) -> Type[Protocol]:
-    # dfs
-    fr_solver = ForwardReachability(tran_sys, instantiator, options)
-    fr_solver.solve_reachability()
-    return fr_solver.protocol
+    def symmetric_quotient_depth_first_search_reachability(self):
+        self._symmetric_quotient_depth_first_search_reachability()
+        self._update_protocol_states()
+        self._clean()
+        self._print_dfs_statistics()
+        if (self.options.writeReach):
+            self.protocol.write_reachability()
+
+    def reduce_equivalent_atoms(self):
+        self._reduce_equivalent_atoms()
+        self._print_equiv_reduction_info()
+
+    def print_reachability(self):
+        self._print_reachability()

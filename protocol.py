@@ -5,7 +5,6 @@ from ivy import ivy_logic as il
 from transition_system import TransitionSystem
 from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
 from verbose import *
-from math import factorial as fact
 
 # utils
 def format_relational_atom(function: str, args: List[str]) -> str:
@@ -251,17 +250,6 @@ class Protocol():
         outF.write('.e\n')
         outF.close()
 
-    def print_verbose(self, tran_sys) -> None:
-        sym_group_order = 1
-        for sort_id, constants in enumerate(self.sort_constants):
-            sort_name     = self.sorts[sort_id]
-            if not tran_sys.get_finite_sort_from_sort_name(sort_name) in tran_sys.dep_types:
-                sym_group_order *= fact(len(constants))
-        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        vprint(self.options, '\n'.join(self.lines), 3)
-        vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
-        vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
-    
     def _get_renamed_arguments(self, permutation, sort_id, arguments) -> str:
         new_constant = []
         for const in arguments:

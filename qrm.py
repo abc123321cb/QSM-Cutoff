@@ -7,7 +7,7 @@ import os
 
 from transition_system import get_transition_system
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from forward_reach import get_protocol_forward_reachability
+from forward_reach import ForwardReachability 
 from prime import PrimeOrbits
 from minimize import Minimizer
 from run_ivy import run_ivy_check
@@ -130,42 +130,53 @@ def qrm(ivy_name, args):
     options    = get_options(ivy_name, args)
     qrm_result = False
     time_start = instance_start(options, ivy_name)
+    time_stamp = time_start
 
-    # step1: generate reachability
+    # generate reachability
     step_start(options, f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
+    step_start(options, 'Set up for forward reachability')
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
-    protocol     = get_protocol_forward_reachability(tran_sys, instantiator, options) 
-    time_stamp   = step_end(options, time_start, time_start)
+    fr_solver    = ForwardReachability(tran_sys, instantiator, options)
+    fr_solver.setup()
+    time_stamp   = step_end(options, time_start, time_stamp)
+    step_start(options, 'Symmetric Quotient DFS')
+    fr_solver.symmetric_quotient_depth_first_search_reachability()
+    time_stamp   = step_end(options, time_start, time_stamp)
+    step_start(options, 'Reduce Equivalent Atoms')
+    fr_solver.reduce_equivalent_atoms()
+    time_stamp   = step_end(options, time_start, time_stamp)
+    fr_solver.print_reachability()
+    time_stamp   = step_end(options, time_start, time_stamp)
 
-    # step2: generate prime orbits
+    # generate prime orbits
     step_start(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options) 
-    prime_orbits.symmetry_aware_enumerate(tran_sys, instantiator, protocol)               
+    prime_orbits.symmetry_aware_enumerate(tran_sys, instantiator, fr_solver.protocol)               
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step3: reduction
+    # reduction
     step_start(options, f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
     minimizer.reduce_redundant_prime_orbits()
     time_stamp   = step_end(options, time_start, time_stamp)
 
-    # step4: quantifier inference
+    # quantifier inference
     step_start(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
-    minimizer.quantifier_inference(protocol.atoms_fmla)
+    minimizer.quantifier_inference(fr_solver.protocol.atoms_fmla)
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step5: minimization
+    # minimization
     step_start(options, f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
     invariants = minimizer.get_minimal_invariants()
     time_stamp = step_end(options, time_start, time_stamp)
 
-    # step6: minimization sanity check
+    # minimization sanity check
     step_start(options, f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
-    sanity_result = minimizer.minimization_check(protocol)
+    sanity_result = minimizer.minimization_check(fr_solver.protocol)
     time_stamp    = step_end(options, time_start, time_stamp)
 
-    # step7: ivy_check
+    # ivy_check
     step_start(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
     ivy_result = run_ivy_check(invariants, options)
     qrm_result = sanity_result and ivy_result
