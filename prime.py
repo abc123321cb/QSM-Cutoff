@@ -174,7 +174,7 @@ class PrimeOrbits():
             self._write_primes(prime_filename)
         vprint_step_banner(self.options, f'[PRIME RESULT]: Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
         vprint(self.options, str(self), 3)
-        vprint(self.options, f'[PRIME NOTE]: number of orbits: {PrimeOrbit.count}', 2)
-        vprint(self.options, f'[PRIME NOTE]: number of suborbits: {self._sub_orbit_count}', 2)
+        vprint(self.options, f'[PRIME NOTE]: number of orbits after merging: {PrimeOrbit.count}', 2)
+        vprint(self.options, f'[PRIME NOTE]: number of orbits before merging: {PrimeOrbit.count + self._sub_orbit_count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
 
