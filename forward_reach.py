@@ -12,7 +12,7 @@ from math import factorial as fact
 
 class DfsNode():
     def __init__(self, dfs_state, ivy_state):
-        self.dfs_state = dfs_state   # bit string with delim ',':   b0,b1,b2,...
+        self.dfs_state = dfs_state   # bit string: b0b1b2...
         self.ivy_state = ivy_state   # value string with delim ',': v0,v1,v2,...
 
 class ForwardReachability():
@@ -31,6 +31,7 @@ class ForwardReachability():
         self.dfs_explored_states : Set[str]  = set()  # state is represented as bit string
         self.dfs_repr_states     : List[int] = []     # representative state is the smallest decimal representation of all bit strings in orbit
         self.dfs_max_depth       = 0
+        self.dfs_immutable_state = ''
         # equivalence quotient data structures
         self.atom2equivs      = {} 
         self.atom2complements = {}
@@ -44,7 +45,8 @@ class ForwardReachability():
         self.protocol.init_sort(self.tran_sys)
         self.protocol.init_dependent_sort(self.tran_sys)
         self.protocol.init_predicate(self.tran_sys)
-        self.protocol.init_atoms(self.instantiator.protocol_atoms, self.instantiator.protocol_atoms_fmlas)
+        self.protocol.init_atoms(self.instantiator.protocol_state_atoms, self.instantiator.protocol_state_atoms_fmlas,
+                                 self.instantiator.protocol_non_state_atoms, self.instantiator.protocol_non_state_atoms_fmlas)
         self.protocol.init_sorts_permutations(self.tran_sys)
 
     def _init_finite_ivy_generator(self):
@@ -75,15 +77,13 @@ class ForwardReachability():
         return node 
 
     def _add_dfs_explored_state(self, node):
-        values   = node.dfs_state.split(',')
-        repr_int = int(''.join(values), 2)
+        values   = list(node.dfs_state)
+        repr_int = int(node.dfs_state + self.dfs_immutable_state, 2)
         for nvalues in self.protocol.all_permutations(values):
-            nstate   = ','.join(nvalues)
-            repr_int = min(int(''.join(nvalues), 2), repr_int)
+            nstate   = ''.join(nvalues)
+            repr_int = min(int(nstate + self.dfs_immutable_state, 2), repr_int)
             self.dfs_explored_states.add(nstate)
         self.dfs_repr_states.append(repr_int)
-        # use this line instead if disabling symmetry aware
-        # self.dfs_explored_states.add(node.dfs_state) 
 
     def _restore_ivy_state(self, node):
         self.ivy_executor.restore_ivy_state(node.ivy_state)
@@ -118,7 +118,8 @@ class ForwardReachability():
                 self._symmetric_quotient_depth_first_search_recur_node(child_node, level+1)
 
     def _symmetric_quotient_depth_first_search_reachability(self):
-        initial_nodes         = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
+        self.dfs_immutable_state = self.ivy_executor.get_dfs_immutable_state()
+        initial_nodes = self._expand_nondeterministic_successors(action='QRM_INIT_PROTOCOL')
         for initial_node in initial_nodes:
             self._symmetric_quotient_depth_first_search_recur_node(initial_node)
         
@@ -137,15 +138,15 @@ class ForwardReachability():
         return np.array([list(s) for s in state_list])
 
     def _set_equivalent_complement_atoms(self, state_array):
-        atom_num = len(self.instantiator.protocol_atoms)
+        atom_num = self.protocol.state_atom_num
         for i in range(atom_num-1):
             if i in self.remove_atom_ids:
                 continue
             for j in range(i+1, atom_num):
                 if j in self.remove_atom_ids:
                     continue
-                atom_i = self.instantiator.protocol_atoms_fmlas[i] 
-                atom_j = self.instantiator.protocol_atoms_fmlas[j]
+                atom_i = self.protocol.atoms_fmla[i] 
+                atom_j = self.protocol.atoms_fmla[j]
                 if get_func_args(atom_i) != get_func_args(atom_j):
                     continue
                 if np.array_equal(state_array[:, i], state_array[:, j]):
@@ -163,11 +164,10 @@ class ForwardReachability():
     # ForwardReachability: update protocol states
     #------------------------------------------------------------
     def _update_protocol_states(self):
+        # immutable state
+        self.protocol.immutable_state = self.dfs_immutable_state
         # reachable states
-        protocol_states = [] 
-        for dfs_state in self.dfs_explored_states:
-            protocol_state = ''.join(dfs_state.split(','))
-            protocol_states.append(protocol_state)
+        protocol_states = list(self.dfs_explored_states)
         self.protocol.init_reachable_states(protocol_states)
         # representative states
         self.protocol.repr_states = self.dfs_repr_states
@@ -188,7 +188,8 @@ class ForwardReachability():
             sort_name     = self.protocol.sorts[sort_id]
             if not self.tran_sys.get_finite_sort_from_sort_name(sort_name) in self.tran_sys.dep_types:
                 sym_group_order *= fact(len(constants))
-        vprint(self.options, f'[FW NOTE]: number of variables/atoms: {self.protocol.atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: number of state variables: {self.protocol.state_atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: number of non state variables (e.g. member,le): {self.protocol.non_state_atom_num}', 2)
         vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
 
     def _print_reachability(self) -> None:

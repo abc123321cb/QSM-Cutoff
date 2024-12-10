@@ -13,18 +13,18 @@ InstantiateMode  = Enum('InstantiateMode', ['vars', 'equals', 'non_bools'])
 class FiniteIvyInstantiator():
     def __init__(self, tran_sys : TransitionSystem):
         self._tran_sys     = tran_sys
-        self._axiom_vars  = []  # axiom non-defined + axiom defined
-        self._state_vars  = []  # state non-defined + state defined
-        self._indep_vars  = []  # state + axiom non-defined
+        self._non_state_vars  = []  
+        self._state_vars      = []  
+        self._indep_vars      = [] # non-defined state vars + all non_state vars
 
         self._initialize()
 
         # instantiated
         # contains atomic predicate or non-boolean output functions
-        self._instantiated_axiom_vars       = [] 
+        self._instantiated_non_state_vars   = [] 
         self._instantiated_indep_vars       = []
         # contains either atomic predicate or equality term (f=g)
-        self._instantiated_axiom_equals     = [] 
+        self._instantiated_non_state_equals = [] 
         self._instantiated_state_equals     = []
         # contains non-boolean output functions only
         self._instantiated_indep_non_bools  = []
@@ -37,11 +37,14 @@ class FiniteIvyInstantiator():
         # public member 
         # dfs
         self.dfs_state_vars          = []
+        self.dfs_non_state_vars      = []
         # protocol
-        self.protocol_atoms          = []
-        self.protocol_axioms         = []
-        self.protocol_atoms_fmlas    = []        
-        self.protocol_axioms_fmlas   = []
+        self.protocol_state_atoms           = []
+        self.protocol_non_state_atoms       = []
+        self.protocol_state_atoms_fmlas     = []        
+        self.protocol_non_state_atoms_fmlas = []
+        self.protocol_atoms                 = []
+        self.protocol_atoms_fmlas           = []
         # ivy
         self.ivy_state_vars          = []
         self.ivy_non_bool_state_vars = {} 
@@ -56,9 +59,9 @@ class FiniteIvyInstantiator():
 
         self._set_pretty_instantiations()
 
-    def _init_axiom_vars(self):
-        self._axiom_vars = list(self._tran_sys.axiom_symbols)
-        self._axiom_vars.sort(key=lambda v: str(v))
+    def _init_non_state_vars(self):
+        self._non_state_vars = list(self._tran_sys.non_state_symbols)
+        self._non_state_vars.sort(key=lambda v: str(v))
 
     def _init_state_vars(self):
         self._state_vars = list(self._tran_sys.state_symbols)
@@ -66,14 +69,14 @@ class FiniteIvyInstantiator():
 
     def _init_independent_vars(self):
         for symbol in self._tran_sys.state_symbols:
-            if (symbol not in self._tran_sys.axiom_symbols and
-                symbol not in self._tran_sys.definitions.keys()):
+            assert(symbol not in self._tran_sys.non_state_symbols)
+            if (symbol not in self._tran_sys.definitions.keys()):
                 self._indep_vars.append(symbol)
         self._indep_vars.sort(key=lambda v: str(v))
-        self._indep_vars += self._axiom_vars
+        self._indep_vars += self._non_state_vars
 
     def _initialize(self):
-        self._init_axiom_vars()
+        self._init_non_state_vars()
         self._init_state_vars()
         self._init_independent_vars()
 
@@ -134,12 +137,12 @@ class FiniteIvyInstantiator():
         return parameterized_actions
 
     def _instantiate(self):
-        self._instantiated_axiom_vars      = self._get_instantiated_terms(terms=self._axiom_vars, mode=InstantiateMode.vars)
-        self._instantiated_indep_vars      = self._get_instantiated_terms(terms=self._indep_vars, mode=InstantiateMode.vars)
-        self._instantiated_axiom_equals    = self._get_instantiated_terms(terms=self._axiom_vars, mode=InstantiateMode.equals)
-        self._instantiated_state_equals    = self._get_instantiated_terms(terms=self._state_vars, mode=InstantiateMode.equals)
-        self._instantiated_indep_non_bools = self._get_instantiated_terms(terms=self._indep_vars, mode=InstantiateMode.non_bools)
-        self._instantiated_actions         = self._get_all_parameterized_actions()
+        self._instantiated_non_state_vars   = self._get_instantiated_terms(terms=self._non_state_vars, mode=InstantiateMode.vars)
+        self._instantiated_indep_vars       = self._get_instantiated_terms(terms=self._indep_vars,     mode=InstantiateMode.vars)
+        self._instantiated_non_state_equals = self._get_instantiated_terms(terms=self._non_state_vars, mode=InstantiateMode.equals)
+        self._instantiated_state_equals     = self._get_instantiated_terms(terms=self._state_vars,     mode=InstantiateMode.equals)
+        self._instantiated_indep_non_bools  = self._get_instantiated_terms(terms=self._indep_vars,     mode=InstantiateMode.non_bools)
+        self._instantiated_actions          = self._get_all_parameterized_actions()
 
     def _get_dfs_variables_from_instantiated_equals(self, instantiated_equals):
         pretty_equals   = []
@@ -170,17 +173,18 @@ class FiniteIvyInstantiator():
         return pretty_dfs_vars
 
     def _set_dfs_variables(self):
-        self.dfs_state_vars = self._get_dfs_variables_from_instantiated_equals(self._instantiated_state_equals + self._instantiated_axiom_equals)
+        self.dfs_state_vars     = self._get_dfs_variables_from_instantiated_equals(self._instantiated_state_equals)
+        self.dfs_non_state_vars = self._get_dfs_variables_from_instantiated_equals(self._instantiated_non_state_equals)
 
     def _set_protocol_atoms(self):
-        atoms = self._instantiated_state_equals + self._instantiated_axiom_equals
-        for atom in atoms:
-            self.protocol_atoms.append(str(atom))
-        self.protocol_atoms_fmlas  = atoms 
-        axioms = self._instantiated_axiom_equals
-        for axiom in axioms:
-            self.protocol_axioms.append(str(axiom))
-        self.protocol_axioms_fmlas = axioms 
+        for atom in self._instantiated_state_equals:
+            self.protocol_state_atoms.append(str(atom))
+        self.protocol_state_atoms_fmlas = self._instantiated_state_equals
+        for atom in self._instantiated_non_state_equals:
+            self.protocol_non_state_atoms.append(str(atom))
+        self.protocol_non_state_atoms_fmlas = self._instantiated_non_state_equals
+        self.protocol_atoms       = self.protocol_state_atoms + self.protocol_non_state_atoms
+        self.protocol_atoms_fmlas = self.protocol_state_atoms_fmlas + self.protocol_non_state_atoms_fmlas
     
     def _set_ivy_variables(self):
         ivy_vars      = self._instantiated_indep_vars

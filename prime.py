@@ -5,7 +5,7 @@ from protocol import Protocol
 from dualrail import DualRailNegation
 from transition_system import TransitionSystem
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from util import QrmOptions
+from util import QrmOptions, PrimeGen
 from util import FormulaUtility as futil
 from verbose import *
 
@@ -153,21 +153,38 @@ class PrimeOrbits():
             block_clauses.append(clause)
         return block_clauses
 
-    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, instantiator: FiniteIvyInstantiator, protocol: Protocol) -> None:
-        Prime.set_atoms(atoms_str=protocol.atoms)
-        # emumerate prime orbits
-        self._formula = DualRailNegation(protocol)
-        with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
-            for ubound in range(0,protocol.atom_num+1):
-                assumptions = self._formula.assume(ubound)
+    def _ilp_prime_gen(self, sat_solver, protocol : Protocol):
+        for ubound in range(0,protocol.state_atom_num+1):
+            assumptions = self._formula.assume(ubound)
+            result = sat_solver.solve(assumptions)
+            while (result):
+                model  = sat_solver.get_model()
+                values = self._formula.single_rail(model)
+                self._make_orbit(values, protocol)
+                block_clauses  = self._get_block_clauses(values, protocol)
+                sat_solver.append_formula(block_clauses) 
                 result = sat_solver.solve(assumptions)
-                while (result):
-                    model  = sat_solver.get_model()
-                    values = self._formula.single_rail(model)
-                    self._make_orbit(values, protocol)
-                    block_clauses  = self._get_block_clauses(values, protocol)
-                    sat_solver.append_formula(block_clauses) 
-                    result = sat_solver.solve(assumptions)
+
+    def _enumerate_prime_gen(self, sat_solver, protocol : Protocol):
+        result = sat_solver.solve()
+        while (result):
+            model  = sat_solver.get_model()
+            values = self._formula.single_rail(model)
+            self._make_orbit(values, protocol)
+            block_clauses  = self._get_block_clauses(values, protocol)
+            sat_solver.append_formula(block_clauses) 
+            result = sat_solver.solve() 
+
+    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, instantiator: FiniteIvyInstantiator, protocol: Protocol) -> None:
+        Prime.set_atoms(atoms_str=protocol.state_atoms)
+        # emumerate prime orbits
+        self._formula = DualRailNegation(self.options, protocol)
+        with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
+            if self.options.prime_gen == PrimeGen.ilp:
+                self._ilp_prime_gen(sat_solver, protocol)
+            elif self.options.prime_gen == PrimeGen.enumerate:
+                self._enumerate_prime_gen(sat_solver, protocol)
+
         # output result
         if self.options.writePrime:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pis'

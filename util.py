@@ -1,6 +1,7 @@
 from enum import Enum
 Mode  = Enum('Mode', ['ivy', 'yaml'])
 UseMC = Enum('UseMC', ['sat', 'mc'])
+PrimeGen = Enum('PrimeGen', ['ilp', 'enumerate'])
 
 class QrmOptions():
     def __init__(self) -> None:
@@ -14,6 +15,7 @@ class QrmOptions():
         self.instance_suffix = ''
         self.mode  = Mode.ivy
         self.useMC = UseMC.sat
+        self.prime_gen = PrimeGen.ilp
         self.check_qi        = False
         self.writeReach      = False
         self.writePrime      = False

@@ -14,6 +14,7 @@ from verbose import *
 registered_dependent_relations           = {}
 registered_dependent_relations['member'] = lambda elem_size : floor(elem_size/2) +1 # member selection function
 set_delim = SET_DELIM
+registered_non_state_symbols             = set(['member'])
 
 #*************************************************************************
 # helpers 
@@ -92,8 +93,9 @@ class TransitionSystem():
         self.symbols          = set()  # all declared symbols
         self.definitions      = dict() # definition symbols to Definition ast
         self.axiom_fmla       = None 
-        self.axiom_symbols    = set()  # globally unchanged symbols, e.g. member, le
-        self.state_symbols    = set()  # state variables (symbols that are non-axiom symbols)
+        self.axiom_symbols    = set()  # symbols that appear in axioms, e.g. member, le
+        self.state_symbols    = set()  # state variables (symbols that are un-interpreted)
+        self.non_state_symbols = set() # symbols whose values are interpreted (due to axioms), e.g. member, le
         # dependent sorts
         self.dep_types        = dict() # "quorum" to quorum meta data (e.g. "member", "node" ...) 
         # actions
@@ -180,8 +182,10 @@ class TransitionSystem():
 
     def _init_state_symbols(self):
         for symbol in self.symbols:
-            if symbol not in self.axiom_symbols:
+            if str(symbol) not in registered_non_state_symbols:
                 self.state_symbols.add(symbol)
+            else:
+                self.non_state_symbols.add(symbol)
 
     def _init_exported_actions(self):
         exports = set([str(export) for export in self.ivy_module.exports])

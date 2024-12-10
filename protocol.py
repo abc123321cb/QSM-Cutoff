@@ -50,14 +50,21 @@ class Protocol():
         self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
         self.predicates       : Dict[str,List[str]]  = {} # (function/constant name, [argsort1, argsort2, ..])
         self.atom_num         : int                  = 0
+        self.state_atom_num     : int                = 0
+        self.non_state_atom_num : int                = 0
         self.atoms            : List[str]            = [] # atom id -> atom name
-        self.atoms_fmla                              = []
+        self.state_atoms                             = [] # atoms = state_atoms + non_state_atoms
+        self.non_state_atoms                         = []
+        self.atoms_fmla                              = [] # atoms_fmla = state_atoms_fmla + non_state_atoms_fmla
+        self.state_atoms_fmla                        = []
+        self.non_state_atoms_fmla                    = []
         self.atom_Name2Id     : Dict[str,int]        = {} # atom name -> atom id
         self.atom_sig         : List[List[str]]      = [] # atom id -> [predname, arg1, arg2,..]
         self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self.repr_states      : List[int] = []
         self.quotient_reachable_states : List[str] = []
+        self.immutable_state = ''
         self._sorts_permutations  = []              
         self.options = options
 
@@ -95,7 +102,6 @@ class Protocol():
         # read '.a [atom1] [atom2] ...'
         # .a hold(n1) hold(n2)
         atoms = line.split()[1:] # remove '.a'
-        self.atom_num = len(atoms)
         assert( len(atoms) == self.atom_num )
         for (id,atom) in enumerate(atoms):
             predicate = '' 
@@ -128,7 +134,7 @@ class Protocol():
         # read '[reachable_state]'
         # 010-
         state = line.split()[0]
-        assert( len(state) == self.atom_num )
+        assert( len(state) == self.state_atom_num )
         if not state in states:
             self.reachable_states.append(state)
 
@@ -193,8 +199,13 @@ class Protocol():
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(line)
 
-    def init_atoms(self, atoms, atoms_fmla) -> None:
-        line = '.a'
+    def init_atoms(self, state_atoms, state_atoms_fmla, non_state_atoms, non_state_atoms_fmla) -> None:
+        atoms      = state_atoms + non_state_atoms
+        atoms_fmla = state_atoms_fmla + non_state_atoms_fmla
+        self.atom_num           = len(atoms)
+        self.state_atom_num     = len(state_atoms)
+        self.non_state_atom_num = len(non_state_atoms)
+        line  = '.a'
         for atom in atoms:
             predicate = '' 
             args     = []
@@ -219,15 +230,22 @@ class Protocol():
                 atom = format_relational_atom(predicate, args)
             line +=  ' ' + atom
         self._read_atoms(line)
-        self.atoms_fmla = atoms_fmla
+        self.state_atoms          = self.atoms[:self.state_atom_num]
+        self.non_state_atoms      = self.atoms[self.state_atom_num:]
+        self.atoms_fmla           = atoms_fmla
+        self.state_atoms_fmla     = state_atoms_fmla
+        self.non_state_atoms_fmla = non_state_atoms_fmla
         if self.options.writeReach or self.options.verbosity > 3:
             self.lines.append(line)
 
     def init_reachable_states(self, states) -> None:
-        for state in states:
+        for i, state in enumerate(states):
             self._read_states(state)
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(state)
+                if i == 0:
+                    self.lines.append(state + self.immutable_state)
+                else:
+                    self.lines.append(state)
 
     def init_sorts_permutations(self, tran_sys : TransitionSystem) -> None:
         all_sorts_permutations = []
@@ -293,12 +311,13 @@ class Protocol():
             if not atom in self.atom_Name2Id: # invalid permutation
                 return []
             nid = self.atom_Name2Id[atom]
+            assert(nid < self.state_atom_num)
             nvalues[nid] = val 
         return nvalues
 
     def all_permutations(self, values : List[str]) -> List[List[str]]:
         # values is a list of '0', '1', '-'
-        assert( len(values) == self.atom_num )
+        assert( len(values) == self.state_atom_num ) # only permute the mutable part
         values_list = [] 
         values_hash  = set() # avoid repeated insertion
         for perm in self._sorts_permutations:

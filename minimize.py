@@ -311,7 +311,8 @@ class Minimizer():
         while result:
             repr_int = int(''.join(values), 2)
             if result:
-                for nvalues in protocol.all_permutations(values):
+                for nvalues in protocol.all_permutations(values[:protocol.state_atom_num]): # only permute the mutable part
+                    nvalues += values[protocol.state_atom_num:]
                     repr_int = min(int(''.join(nvalues), 2), repr_int)
                     self.cover.block_minimization_check_minterm(nvalues)
             if not repr_int in protocol.repr_states:
