@@ -76,7 +76,7 @@ class PrimeOrbit():
         PrimeOrbit.count += 1
 
     def __str__(self) -> str:
-        lines  = f'\n=== Orbit {self.id} =====================\n'
+        lines  = f'\n=== Prime Orbit {self.id} =====================\n'
         lines += f'size : {len(self.primes)}\n'
         lines += f'num_suborbits: {self.num_suborbits}\n'
         for prime in self.primes:

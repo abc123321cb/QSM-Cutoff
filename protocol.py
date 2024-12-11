@@ -43,6 +43,7 @@ class Protocol():
     def __init__(self, options : QrmOptions) -> None:
         ## helper
         self.lines         = []
+        self.header        = []
         # member datas
         self.sorts            : List[str]            = [] # sort id -> sort name 
         self.sort_constants   : List[List[str]]      = [] # sort id -> constant names
@@ -79,7 +80,7 @@ class Protocol():
             for (const_id, const) in enumerate(consts_str):
                 self.constant_Name2Id[const]=const_id
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(f'sort: {sort_name}={consts_str}')
+                self.header.append(f'sort: {sort_name}={consts_str}')
 
     def init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
         for (set_sort, dep_type) in tran_sys.dep_types.items():
@@ -112,7 +113,7 @@ class Protocol():
             param_list = tuple(param_list) 
             self.predicates[pred_name] = param_list
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(f'predicate: {pred_name}{param_list}')
+                self.header.append(f'predicate: {pred_name}{param_list}')
 
     def init_atoms(self, state_atoms, state_atoms_fmla, interpreted_atoms, interpreted_atoms_fmla) -> None:
         atoms      = state_atoms + interpreted_atoms
@@ -155,8 +156,8 @@ class Protocol():
     def init_reachable_states(self, states) -> None:
         if self.options.writeReach or self.options.verbosity > 3:
             interpreted_values = {atom:val for (atom,val) in zip(self.interpreted_atoms, self.immutable_state)}
-            self.lines.append(f'interpreted atoms: {interpreted_values}')
-            self.lines.append(f'state atoms: {self.state_atoms}')
+            self.header.append(f'interpreted atoms: {interpreted_values}')
+            self.header.append(f'state atoms: {self.state_atoms}')
         for state in states:
             assert( len(state) == self.state_atom_num )
             self.reachable_states.append(state)
@@ -179,9 +180,10 @@ class Protocol():
     def write_reachability(self) -> None:
         filename = self.options.instance_name + '.' + self.options.instance_suffix + '.reach'
         outF = open(filename, "w")
+        for line in self.header:
+            outF.write(line+'\n')
         for line in self.lines:
             outF.write(line+'\n')
-        outF.write('.e\n')
         outF.close()
 
     def _get_renamed_arguments(self, permutation, sort_id, arguments) -> str:

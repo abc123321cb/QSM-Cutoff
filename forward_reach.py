@@ -15,6 +15,24 @@ class DfsNode():
         self.dfs_state = dfs_state   # bit string: b0b1b2...
         self.ivy_state = ivy_state   # value string with delim ',': v0,v1,v2,...
 
+class StateOrbit():
+    def __init__(self, dfs_state, visit_id):
+        self.repr_state = dfs_state # first visited state in this orbit
+        self.visit_id   = visit_id 
+        self.states     = set()
+        self.repr_int   = 0
+
+    def __str__(self) -> str:
+        lines  = f'\n=== State Orbit {self.visit_id} =====================\n'
+        lines += f'size : {len(self.states)}\n'
+        lines += f'repr state: {self.repr_state}\n'
+        lines += f'lex min decimal: {self.repr_int}\n'
+        lines += f'states:\n'
+        for state in self.states:
+            lines += f'{state}\n'
+        lines += '\n'
+        return lines
+
 class ForwardReachability():
     #------------------------------------------------------------
     # ForwardReachability: initializations
@@ -30,6 +48,7 @@ class ForwardReachability():
         # dfs data structures
         self.dfs_explored_states : Set[str]  = set()  # state is represented as bit string
         self.dfs_repr_states     : List[int] = []     # representative state is the smallest decimal representation of all bit strings in orbit
+        self.dfs_state_orbits    : List[StateOrbit] = []
         self.dfs_max_depth       = 0
         self.dfs_immutable_state = ''
         # equivalence quotient data structures
@@ -77,13 +96,17 @@ class ForwardReachability():
         return node 
 
     def _add_dfs_explored_state(self, node):
+        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits))
         values   = list(node.dfs_state)
         repr_int = int(node.dfs_state + self.dfs_immutable_state, 2)
         for nvalues in self.protocol.all_permutations(values):
             nstate   = ''.join(nvalues)
             repr_int = min(int(nstate + self.dfs_immutable_state, 2), repr_int)
             self.dfs_explored_states.add(nstate)
+            state_orbit.states.add(nstate)
         self.dfs_repr_states.append(repr_int)
+        state_orbit.repr_int = repr_int
+        self.dfs_state_orbits.append(state_orbit)
 
     def _restore_ivy_state(self, node):
         self.ivy_executor.restore_ivy_state(node.ivy_state)
@@ -194,7 +217,9 @@ class ForwardReachability():
 
     def _print_reachability(self) -> None:
         vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        vprint(self.options, '\n'.join(self.protocol.lines), 3)
+        vprint(self.options, '\n'.join(self.protocol.header), 3)
+        for state_orbit in self.dfs_state_orbits:
+            vprint(self.options, str(state_orbit), 3) 
 
     def _print_dfs_statistics(self) -> None:
         vprint(self.options, f'[FW NOTE]: dfs max depth: {self.dfs_max_depth}', 2)
