@@ -46,7 +46,7 @@ class ForwardReachability():
         self.protocol.init_dependent_sort(self.tran_sys)
         self.protocol.init_predicate(self.tran_sys)
         self.protocol.init_atoms(self.instantiator.protocol_state_atoms, self.instantiator.protocol_state_atoms_fmlas,
-                                 self.instantiator.protocol_non_state_atoms, self.instantiator.protocol_non_state_atoms_fmlas)
+                                 self.instantiator.protocol_interpreted_atoms, self.instantiator.protocol_interpreted_atoms_fmlas)
         self.protocol.init_sorts_permutations(self.tran_sys)
 
     def _init_finite_ivy_generator(self):
@@ -188,8 +188,8 @@ class ForwardReachability():
             sort_name     = self.protocol.sorts[sort_id]
             if not self.tran_sys.get_finite_sort_from_sort_name(sort_name) in self.tran_sys.dep_types:
                 sym_group_order *= fact(len(constants))
-        vprint(self.options, f'[FW NOTE]: number of state variables: {self.protocol.state_atom_num}', 2)
-        vprint(self.options, f'[FW NOTE]: number of non state variables (e.g. member,le): {self.protocol.non_state_atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: number of state atoms: {self.protocol.state_atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: number of interpreted atoms (e.g. member,le): {self.protocol.interpreted_atom_num}', 2)
         vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
 
     def _print_reachability(self) -> None:

@@ -155,7 +155,7 @@ class CoverConstraints():
     def _init_axioms_formula(self) -> None:
         dep_axioms = set(self.instantiator.dep_axioms_str)
         if len(dep_axioms) > 0:
-            for axiom_str in self.instantiator.protocol_non_state_atoms:
+            for axiom_str in self.instantiator.protocol_interpreted_atoms:
                 axiom_var = self.symbol2var_num[axiom_str]
                 if axiom_str in dep_axioms:  # member(n,q) in axioms_str
                     self.root_assume_clauses.append([axiom_var])
