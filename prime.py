@@ -132,7 +132,7 @@ class PrimeOrbits():
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
         key = make_key(values,protocol)
-        if key in self._orbit_hash:
+        if key in self._orbit_hash and self.options.merge_suborbits:
             self._sub_orbit_count += 1
         if not key in self._orbit_hash or not self.options.merge_suborbits:
             orbit = PrimeOrbit()
