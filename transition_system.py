@@ -266,16 +266,16 @@ class TransitionSystem():
                     constraints.append(il.Not(il.Equals(atom.args[0], equiv.args[0])))
                 else:
                     constraints.append(il.Equals(atom, il.Not(cmpl)))
-        closed_constraints = []
+        closed_constraints = set()
         for constraint in constraints:
             consts    = ilu.used_constants_ast(constraint)
             const2var = {}
             for const in consts: 
                 if il.is_enumerated(const):
-                    const2var[const] = il.Variable(const.name.upper(), const.sort)
+                    const2var[const] = il.Variable(const.sort.name.upper(), const.sort)
             constraint = ilu.substitute_constants_ast(constraint, const2var)
             constraint = il.close_formula(constraint)
-            closed_constraints.append(constraint)
+            closed_constraints.add(constraint)
         self.atom_equivalence_constraints        = constraints
         self.closed_atom_equivalence_constraints = closed_constraints
 
