@@ -175,12 +175,12 @@ class PrimeOrbits():
             sat_solver.append_formula(block_clauses) 
             result = sat_solver.solve() 
 
-    def symmetry_aware_enumerate(self, tran_sys: TransitionSystem, instantiator: FiniteIvyInstantiator, protocol: Protocol) -> None:
+    def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
         Prime.set_atoms(atoms_str=protocol.state_atoms)
         # emumerate prime orbits
         self._formula = DualRailNegation(self.options, protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
-            if self.options.prime_gen == PrimeGen.ilp:
+            if self.options.prime_gen == PrimeGen.ilp or self.options.prime_gen == PrimeGen.binary:
                 self._ilp_prime_gen(sat_solver, protocol)
             elif self.options.prime_gen == PrimeGen.enumerate:
                 self._enumerate_prime_gen(sat_solver, protocol)

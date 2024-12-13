@@ -12,7 +12,7 @@ class DualRailNegation():
         self._atom_id2vars : Dict[int, List[int]]  = {}
         self._var2clause_id : Dict[int, List[int]] = {}
         self._encode(protocol)
-        if self.options.prime_gen == PrimeGen.ilp:
+        if self.options.prime_gen == PrimeGen.ilp or self.options.prime_gen == PrimeGen.binary:
             self._set_totalizer()
         elif self.options.prime_gen == PrimeGen.enumerate: 
             # Implementing the paper "Enumerating Prime Implicants of Propositional Formulae in Conjunctive Normal Form"

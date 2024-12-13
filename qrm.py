@@ -25,6 +25,7 @@ def usage ():
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enable checking quantifier inference (default: off)')
+    print('-p 1|2|3     prime generation: 1. ilp, 2. binary search ilp 3. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
@@ -62,7 +63,7 @@ def get_peak_memory_and_reset(options):
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:amkc:v:l:whd")
+        opts, args = getopt.getopt(args, "s:amkp:c:v:l:whd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -80,6 +81,15 @@ def get_options(ivy_name, args):
             options.merge_suborbits = False 
         elif optc == '-k':
             options.check_qi        = True 
+        elif optc == '-p':
+            if optv == '1':
+                options.prime_gen = PrimeGen.ilp
+            elif optv == '2':
+                options.prime_gen = PrimeGen.binary
+            elif optv == '3':
+                options.prime_gen = PrimeGen.enumerate
+            else:
+                usage_and_exit()
         elif optc == '-c':
             if optv == 'sat' or optv == 'mc':
                 options.useMC = optv
@@ -152,7 +162,7 @@ def qrm(ivy_name, args):
     # generate prime orbits
     step_start(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options) 
-    prime_orbits.symmetry_aware_enumerate(tran_sys, instantiator, fr_solver.protocol)               
+    prime_orbits.symmetry_aware_enumerate(fr_solver.protocol)               
     time_stamp = step_end(options, time_start, time_stamp)
 
     # reduction

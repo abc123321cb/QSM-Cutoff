@@ -14,6 +14,7 @@ def usage ():
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enalbe quantifier inference (default: off)')
+    print('-p 1|2|3     prime generation: 1. ilp, 2. binary search ilp 3. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       append verbose info to LOG (default: off)')
@@ -41,7 +42,7 @@ def rm_and_recreate_log_file_if_exist(filename):
 def run_all(yaml_name, args):
     sys_args = args.copy()
     try:
-        opts, args = getopt.getopt(args, "amkc:v:l:wh")
+        opts, args = getopt.getopt(args, "amkp:c:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
