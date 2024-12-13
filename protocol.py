@@ -56,17 +56,17 @@ class Protocol():
         self.interpreted_atom_num : int              = 0
         self.atoms            : List[str]            = [] # atom id -> atom name
         self.state_atoms                             = [] # atoms = state_atoms + interpreted_atoms
-        self.interpreted_atoms                         = []
+        self.interpreted_atoms                       = []
         self.atoms_fmla                              = [] # atoms_fmla = state_atoms_fmla + interpreted_atoms_fmla
         self.state_atoms_fmla                        = []
-        self.interpreted_atoms_fmla                    = []
+        self.interpreted_atoms_fmla                  = []
+        self.interpreted_atoms_values                = {} 
         self.atom_Name2Id     : Dict[str,int]        = {} # atom name -> atom id
         self.atom_sig         : List[List[str]]      = [] # atom id -> [predname, arg1, arg2,..]
         self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
         self.repr_states      : List[int] = []
-        self.quotient_reachable_states : List[str] = []
-        self.immutable_state = ''
+        self.quotient_reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
         self.options = options
 
@@ -154,16 +154,16 @@ class Protocol():
         self.state_atoms          = self.atoms[:self.state_atom_num]
         self.interpreted_atoms    = self.atoms[self.state_atom_num:]
 
-    def init_reachable_states(self, states) -> None:
-        if self.options.writeReach or self.options.verbosity > 3:
-            interpreted_values = {atom:val for (atom,val) in zip(self.interpreted_atoms, self.immutable_state)}
-            self.header.append(f'interpreted atoms: {interpreted_values}')
-            self.header.append(f'state atoms: {self.state_atoms}')
+    def init_reachable_states(self, interpreted_state, states) -> None:
+        self.interpreted_atoms_values = {atom:val for (atom,val) in zip(self.interpreted_atoms, interpreted_state)}
         for state in states:
             assert( len(state) == self.state_atom_num )
             self.reachable_states.append(state)
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(state)
+        if self.options.writeReach or self.options.verbosity > 3:
+            self.header.append(f'interpreted atoms: {self.interpreted_atoms_values}')
+            self.header.append(f'state atoms: {self.state_atoms}')
 
     def init_sorts_permutations(self, tran_sys : TransitionSystem) -> None:
         all_sorts_permutations = []

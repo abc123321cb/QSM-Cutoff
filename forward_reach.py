@@ -187,11 +187,9 @@ class ForwardReachability():
     # ForwardReachability: update protocol states
     #------------------------------------------------------------
     def _update_protocol_states(self):
-        # immutable state
-        self.protocol.immutable_state = self.dfs_immutable_state
         # reachable states
         protocol_states = list(self.dfs_explored_states)
-        self.protocol.init_reachable_states(protocol_states)
+        self.protocol.init_reachable_states(self.dfs_immutable_state, protocol_states)
         # representative states
         self.protocol.repr_states = self.dfs_repr_states
 
@@ -213,6 +211,7 @@ class ForwardReachability():
                 sym_group_order *= fact(len(constants))
         vprint(self.options, f'[FW NOTE]: number of state atoms: {self.protocol.state_atom_num}', 2)
         vprint(self.options, f'[FW NOTE]: number of interpreted atoms (e.g. member,le): {self.protocol.interpreted_atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: number of branching actions: {len(self.ivy_actions)}', 2)
         vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
 
     def _print_reachability(self) -> None:
