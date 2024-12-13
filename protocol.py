@@ -5,6 +5,7 @@ from ivy import ivy_logic as il
 from transition_system import TransitionSystem
 from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
 from verbose import *
+import numpy as np
 
 # utils
 def format_relational_atom(function: str, args: List[str]) -> str:
@@ -244,19 +245,10 @@ class Protocol():
                 values_list.append(nvalues)
         return values_list 
 
-    def set_quotient_reachabiliy(self, remove_atom_ids : Set[int]):
+    def set_quotient_reachabiliy(self, state_array, remove_atom_ids : Set[int]):
         if len(remove_atom_ids) == 0:
             self.quotient_reachable_states = self.reachable_states
         else:
-            self.quotient_reachable_states = ['']*len(self.reachable_states)
-            for state_id, state in enumerate(self.reachable_states): 
-                for atom_id in range(self.atom_num):
-                    if atom_id in remove_atom_ids:
-                        self.quotient_reachable_states[state_id] += '-'
-                    else:
-                        self.quotient_reachable_states[state_id] += state[atom_id]
-            if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append('')
-                self.lines.append('------ quotient reachability -------')
-                self.lines.append('')
-                self.lines += self.quotient_reachable_states
+            for atom_id in remove_atom_ids:
+                state_array[:, atom_id] = '-'
+            self.quotient_reachable_states = [''.join(row) for row in state_array.tolist()]

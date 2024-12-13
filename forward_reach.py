@@ -199,7 +199,7 @@ class ForwardReachability():
         # equivalence reduced states (post-processing)
         state_array = self._get_state_array_from_state_list(self.protocol.reachable_states)
         self._set_equivalent_complement_atoms(state_array)
-        self.protocol.set_quotient_reachabiliy(self.remove_atom_ids)
+        self.protocol.set_quotient_reachabiliy(state_array, self.remove_atom_ids)
         self.tran_sys.set_atom_equivalence_constraints(self.atom2equivs, self.atom2complements)
 
     #------------------------------------------------------------
