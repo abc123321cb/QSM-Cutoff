@@ -10,7 +10,7 @@ from finite_ivy_instantiate import FiniteIvyInstantiator
 from forward_reach import ForwardReachability 
 from prime import PrimeOrbits
 from minimize import Minimizer
-from run_ivy import run_ivy_check
+from run_ivy import run_ivy_check, get_unsat_core
 from util import * 
 from verbose import *
 
@@ -186,11 +186,15 @@ def qrm(ivy_name, args):
     sanity_result = minimizer.minimization_check(fr_solver.protocol)
     time_stamp    = step_end(options, time_start, time_stamp)
 
+    # MUS 
+    get_unsat_core(tran_sys, minimizer)
+
     # ivy_check
     step_start(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
     ivy_result = run_ivy_check(invariants, options)
     qrm_result = sanity_result and ivy_result
     time_stamp = step_end(options, time_start, time_stamp)
+
 
     # end
     instance_end(options, ivy_name, qrm_result)

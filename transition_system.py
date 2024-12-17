@@ -100,6 +100,8 @@ class TransitionSystem():
         self.dep_types        = dict() # "quorum" to quorum meta data (e.g. "member", "node" ...) 
         # actions
         self.exported_actions = []
+        # safety
+        self.safety_properties= []
 
         self._initialize()
 
@@ -196,6 +198,9 @@ class TransitionSystem():
                 action_symbol    = il.Symbol(action_name, action_func_sort)
                 self.exported_actions.append(action_symbol)
 
+    def _init_safety_properties(self):
+        self.safety_properties = [il.close_formula(conj.formula) for conj in self.ivy_module.labeled_conjs]
+
     def _initialize(self):
         with self.ivy_module.theory_context():
             self._init_sorts()
@@ -205,6 +210,7 @@ class TransitionSystem():
             self._init_axioms()
             self._init_state_symbols()
             self._init_exported_actions()
+            self._init_safety_properties()
 
     #------------------------------------------------------------
     # TransitionSystem: public access methods

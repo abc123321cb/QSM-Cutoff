@@ -1,7 +1,12 @@
 import os
 import subprocess
 from typing import List
+from transition_system import TransitionSystem
+from minimize import Minimizer
 from ivy import ivy_utils as iu
+from ivy import ivy_logic as il
+from ivy import ivy_logic_utils as ilu
+from ivy import ivy_solver as slv
 from util import QrmOptions
 from verbose import *
 
@@ -34,3 +39,15 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
         return False
     vprint(options, f'[IVY_CHECK RESULT]: PASS')
     return True
+
+def get_unsat_core(tran_sys: TransitionSystem, minimizer : Minimizer):
+    defns =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in tran_sys.definitions.values()]
+    fmlas =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in tran_sys.closed_atom_equivalence_constraints]
+    fmlas += [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in minimizer.rmin]
+    clauses1      = ilu.Clauses(fmlas, defns)
+    empty_clauses = ilu.Clauses([])
+    clauses2      = ilu.Clauses(tran_sys.safety_properties)
+    unsat_core    = slv.unsat_core(clauses1, empty_clauses, implies=clauses2, unlikely=lambda x:True)
+    core_invar    = unsat_core.to_formula()
+    return core_invar 
+

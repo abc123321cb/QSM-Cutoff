@@ -41,6 +41,7 @@ class Minimizer():
         self.pending    : List[int] = list(range(len(orbits)))
         self.solution   : List[int] = []
         self.optimal_solutions : List[List[int]] = []
+        self.rmin          = []
         self.options = options
 
     def _get_cost(self) -> int:
@@ -237,9 +238,9 @@ class Minimizer():
         for i, atom_equiv in enumerate(self.tran_sys.closed_atom_equivalence_constraints):
             line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation'
             invariants.append(line)
-        for id in solution:
-            total_cost += self.orbits[id].qcost
-            line = f'invariant [invar_{id}] {str(self.orbits[id].quantified_form)} # qcost: {self.orbits[id].qcost}'
+        for i in solution:
+            total_cost += self.orbits[i].qcost
+            line = f'invariant [invar_{i}] {str(self.orbits[i].quantified_form)} # qcost: {self.orbits[i].qcost}'
             invariants.append(line)
         vprint(self.options, f'[MIN NOTE]: number of invariants in minimal solution: {len(solution)}', 2)
         vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
@@ -251,6 +252,7 @@ class Minimizer():
             self._solve_all()
         else:
             self._solve_one()
+        self.rmin = [self.orbits[i].quantified_form for i in self.optimal_solutions[0]]
         self.print_final_solutions()
         return self.get_final_invariants()
 
