@@ -14,6 +14,8 @@ def run_ivy_check(rmin_id : int, invariants : List[str], options : QrmOptions):
     ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{rmin_id}'+ '.ivy'
     cp_cmd = f'cp {options.ivy_filename} {ivy_name}'
     os.system(cp_cmd)
+    comment_invar_cmd = f"sed -i '/invariant/s/^/#/' {ivy_name}"
+    os.system(comment_invar_cmd) # comment out the existing invariants, including safety property
     ivy_file = open(ivy_name, 'a')
     ivy_file.write('\n')
     for line in invariants:
