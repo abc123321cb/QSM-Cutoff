@@ -2,7 +2,7 @@ import os
 import subprocess
 from typing import List
 from transition_system import TransitionSystem
-from minimize import Minimizer
+from minimize import Minimizer, Rmin
 from ivy import ivy_utils as iu
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
@@ -10,8 +10,8 @@ from ivy import ivy_solver as slv
 from util import QrmOptions
 from verbose import *
 
-def run_ivy_check(invariants : List[str], options : QrmOptions):
-    ivy_name = options.instance_name + '.' + options.instance_suffix + '.ivy'
+def run_ivy_check(rmin_id : int, invariants : List[str], options : QrmOptions):
+    ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{rmin_id}'+ '.ivy'
     cp_cmd = f'cp {options.ivy_filename} {ivy_name}'
     os.system(cp_cmd)
     ivy_file = open(ivy_name, 'a')
@@ -40,14 +40,25 @@ def run_ivy_check(invariants : List[str], options : QrmOptions):
     vprint(options, f'[IVY_CHECK RESULT]: PASS')
     return True
 
-def get_unsat_core(tran_sys: TransitionSystem, minimizer : Minimizer):
-    defns =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in tran_sys.definitions.values()]
-    fmlas =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in tran_sys.closed_atom_equivalence_constraints]
-    fmlas += [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in minimizer.rmin]
+def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
+    defns =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in Rmin.definitions.values()]
+    fmlas =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in Rmin.eq_relations]
+    fmlas += [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in rmin_invars]
     clauses1      = ilu.Clauses(fmlas, defns)
     empty_clauses = ilu.Clauses([])
     clauses2      = ilu.Clauses(tran_sys.safety_properties)
     unsat_core    = slv.unsat_core(clauses1, empty_clauses, implies=clauses2, unlikely=lambda x:True)
     core_invar    = unsat_core.to_formula()
-    return core_invar 
+    vprint(options, f'[UNSAT CORE]: {str(core_invar)}')
+
+def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : Minimizer, options: QrmOptions) -> bool:
+    rmins    = minimizer.rmin
+    has_true = False
+    for i, rmin in enumerate(rmins):
+        invariants = Rmin.def_lines + Rmin.eq_lines + rmin.invar_lines
+        result = run_ivy_check(i, invariants, options)
+        if result:
+            has_true = True
+            unsat_core(tran_sys, rmin.invariants, options)
+    return has_true
 
