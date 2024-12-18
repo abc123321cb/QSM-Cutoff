@@ -45,6 +45,7 @@ def run_ivy_check(rmin_id : int, invariants : List[str], options : QrmOptions):
 def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
     defns =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in Rmin.definitions.values()]
     fmlas =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in Rmin.eq_relations]
+    fmlas += [ilu.resort_ast(tran_sys.axiom_fmla, tran_sys.sort_fin2inf)]
     fmlas += [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in rmin_invars]
     clauses1      = ilu.Clauses(fmlas, defns)
     empty_clauses = ilu.Clauses([])
