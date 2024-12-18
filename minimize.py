@@ -158,7 +158,7 @@ class Minimizer():
             orbit = self.orbits[i]
             coverage = self.cover.get_coverage(orbit, self.solution)
             if coverage == 0:
-                covered.add(id)
+                covered.add(i)
         if self.options.verbosity >=5:
             assert(len(self.decision_stack))
             top = self.decision_stack[-1]
@@ -320,10 +320,10 @@ class Minimizer():
                     vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
         # output result
         self._print_quantifier_inference(inference_list)
-
-    def solve_rmin(self) -> List[str]:
         self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
         self.ubound   = self.max_cost
+
+    def solve_rmin(self) -> List[str]:
         if self.options.all_solutions:
             self._solve_all()
         else:
