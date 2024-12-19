@@ -10,6 +10,46 @@ from ivy import ivy_solver as slv
 from util import QrmOptions
 from verbose import *
 
+def run_finite_ivy_check(options: QrmOptions):
+    orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
+    next_sizes = options.sizes.copy()
+    for sort, size in options.sizes.items():
+        try_sizes = [f'{s}_{sz+1}' if s==sort else f'{s}_{sz}' for s,sz in options.sizes.items()]
+        try_size_str = '_'.join(try_sizes)
+        try_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.' + try_size_str + '.ivy'
+        cp_cmd = f'cp {orig_ivy_name} {try_ivy_name}'
+        os.system(cp_cmd) 
+        try_size_constants = [] 
+        for s, sz in options.sizes.items():
+            sz = sz + 1 if s == sort else sz
+            constants = [f'{s}{i}' for i in range(sz)]
+            try_size_constants.append(f'type {s} = ' +  '{' + ', '.join(constants) + '}')
+        comment_type_cmd = f"sed -i '/type/s/^/#/' {try_ivy_name}"
+        os.system(comment_type_cmd) # comment out the original type 
+        for line in try_size_constants:
+            insert_type_cmd = f"sed -i '0,/type/{{/type/i\\\n{line}\n}}' {try_ivy_name}"
+            os.system(insert_type_cmd) 
+        ivy_args = ['ivy_check', 'complete=fo', try_ivy_name]
+        ivy_cmd  = ' '.join(ivy_args)
+        vprint(options, ivy_cmd)
+        try:
+            if options.write_log:
+                subprocess.run(ivy_args, text=True, check=True, stdout=options.log_fout, timeout=options.ivy_to) 
+            else:
+                subprocess.run(ivy_args, capture_output=True, text=True, check=True, timeout=options.ivy_to) 
+            sys.stdout.flush()
+        except subprocess.CalledProcessError as error:
+            if error.returncode == 1:
+                vprint(options, f'[FINITE_CHECK RESULT]: FAIL ... exit with return code {error.returncode}')
+            else:
+                vprint(options, f'[FINITE_CHECK RESULT]: ABORT ... exit with return code {error.returncode}')
+            next_sizes[sort] = size +1
+        except subprocess.TimeoutExpired:
+            vprint(options, f'[FINITE_CHECK TO]: Timeout after {options.ivy_to}')
+            next_sizes[sort] = size +1
+        vprint(options, f'[FINITE_CHECK RESULT]: PASS')
+
+
 def run_ivy_check(rmin_id : int, invariants : List[str], options : QrmOptions):
     ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{rmin_id}'+ '.ivy'
     cp_cmd = f'cp {options.ivy_filename} {ivy_name}'
@@ -63,5 +103,7 @@ def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : M
         if result:
             has_true = True
             unsat_core(tran_sys, rmin.invariants, options)
+    if not has_true:
+        run_finite_ivy_check(options)
     return has_true
 
