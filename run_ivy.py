@@ -44,10 +44,16 @@ def run_finite_ivy_check(options: QrmOptions):
             else:
                 vprint(options, f'[FINITE_CHECK RESULT]: ABORT ... exit with return code {error.returncode}')
             next_sizes[sort] = size +1
+            continue
         except subprocess.TimeoutExpired:
             vprint(options, f'[FINITE_CHECK TO]: Timeout after {options.ivy_to}')
             next_sizes[sort] = size +1
+            continue
         vprint(options, f'[FINITE_CHECK RESULT]: PASS')
+    next_size_str = ','.join([f'{s}={sz}' for s,sz in next_sizes.items()])
+    vprint(options, f'next size: {next_size_str}')
+    next_size_file = open('next_size', 'w')
+    next_size_file.write(next_size_str+'\n')
 
 
 def run_ivy_check(rmin_id : int, invariants : List[str], options : QrmOptions):
