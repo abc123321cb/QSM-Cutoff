@@ -331,10 +331,11 @@ class Minimizer():
         self.set_rmin()
         self.print_rmin()
 
-    def minimization_check(self, protocol : Protocol):
-        quantified_orbits = [self.orbits[orbit_id].quantified_form for orbit_id in self.optimal_solutions[0]]
-        self.cover.init_minimization_check_solver(quantified_orbits)
+    def _enumerate_models(self, sol_id, invariants, protocol : Protocol):
+        vprint(self.options, f'Minimization check for Solution {sol_id}')
+        self.cover.init_minimization_check_solver(invariants)
         (result, values)  = self.cover.get_minimization_check_minterm()
+        model_repr_states = set()
         while result:
             repr_int = int(''.join(values), 2)
             if result:
@@ -349,13 +350,25 @@ class Minimizer():
                 vprint(self.options, f'binary: {bit_str}')
                 vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
                 return False
-            protocol.repr_states.remove(repr_int)
+            model_repr_states.add(repr_int)
             (result, values) = self.cover.get_minimization_check_minterm()
 
-        if not len(protocol.repr_states) == 0:
+        if len(model_repr_states) < len(protocol.repr_states):
             vprint(self.options, 'Found states not included in solution')
-            vprint(self.options, f'{protocol.repr_states}')
+            vprint(self.options, f'{protocol.repr_states - model_repr_states}')
             vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
             return False
         vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
         return True
+
+    def minimization_check(self, protocol : Protocol):
+        self.cover.init_minimization_check_clauses()
+        # when comparing Models(R_{n-1}[n]) = Reach[n]
+        # from ivy import ivy_logic_utils as ilu
+        # invariants  = [ilu.resort_ast(invar, self.tran_sys.sort_inf2fin) for invar in self.tran_sys.safety_properties]
+        # return self._enumerate_models(0, invariants, protocol)
+        result = True
+        for sol_id, solution in enumerate(self.optimal_solutions):
+            invariants = [self.orbits[orbit_id].quantified_form for orbit_id in solution]
+            result = result and self._enumerate_models(sol_id, invariants, protocol)
+        return result

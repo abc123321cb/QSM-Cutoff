@@ -19,7 +19,7 @@ class CoverConstraints():
         if useMC == UseMC.sat:
             self.sat_counter   = SatCounter()
         self.def_prime_checker = SatSolver()
-        self.min_checker       = SatSolver()   
+        self.min_checker       = None   
         self.useMC             = useMC
         self.top_var           = 0
         self.root_top_var      = 0
@@ -325,16 +325,21 @@ class CoverConstraints():
         result      = self.def_prime_checker.solve(assumptions)
         return False if result else True
 
+    def init_minimization_check_clauses(self):
+        for atom_eq in self.tran_sys.atom_equivalence_constraints:
+            atom_eq_var = self.tseitin_encode(atom_eq, is_root=True)
+            self.root_assume_clauses.append([atom_eq_var])
+
     def init_minimization_check_solver(self, quantified_orbits):
+        top_var = self.top_var
+        self.min_checker = SatSolver()   
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
         for qorbit in quantified_orbits: 
             inst_orbit = self.instantiator.instantiate_quantifier(qorbit)
             orbit_fmla_var = self.tseitin_encode(inst_orbit, is_root=False)
             self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
-        for atom_eq in self.tran_sys.atom_equivalence_constraints:
-            atom_eq_var = self.tseitin_encode(atom_eq, is_root=False)
-            self.instantiated_orbit_assume_clauses.append([atom_eq_var])
+
         for clause in self.root_assume_clauses:
             self.min_checker.add_clause(clause)
         for clause in self.root_tseitin_clauses:
@@ -343,6 +348,7 @@ class CoverConstraints():
             self.min_checker.add_clause(clause)
         for clause in self.instantiated_orbit_tseitin_clauses:
             self.min_checker.add_clause(clause)
+        self.top_var = top_var
 
     def get_minimization_check_minterm(self):
         result  = self.min_checker.solve()
@@ -372,10 +378,10 @@ class CoverConstraints():
         return il.Not(il.And(*literals))
 
     def init_quantifier_inference_check_solver(self, primes : List[Prime], quantified_orbit):
+        top_var = self.top_var
         self.qinfer_checker = SatSolver()
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
-        
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
         inst_orbit     = self.instantiator.instantiate_quantifier(quantified_orbit)
         eq_term        = il.Equals(il.And(*primes_clauses), inst_orbit)
@@ -391,6 +397,7 @@ class CoverConstraints():
             self.qinfer_checker.add_clause(clause)
         for clause in self.instantiated_orbit_tseitin_clauses:
             self.qinfer_checker.add_clause(clause)
+        self.top_var = top_var
             
     def quantifier_inference_check(self):
         result  = self.qinfer_checker.solve()

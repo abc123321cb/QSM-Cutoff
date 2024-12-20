@@ -191,7 +191,7 @@ class ForwardReachability():
         protocol_states = list(self.dfs_explored_states)
         self.protocol.init_reachable_states(self.dfs_immutable_state, protocol_states)
         # representative states
-        self.protocol.repr_states = self.dfs_repr_states
+        self.protocol.repr_states = set(self.dfs_repr_states)
 
     def _reduce_equivalent_atoms(self):
         # equivalence reduced states (post-processing)

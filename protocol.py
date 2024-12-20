@@ -65,7 +65,7 @@ class Protocol():
         self.atom_sig         : List[List[str]]      = [] # atom id -> [predname, arg1, arg2,..]
         self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
         self.reachable_states : List[str] = [] 
-        self.repr_states      : List[int] = []
+        self.repr_states      : Set[int]  = set()
         self.quotient_reachable_states : List[str] = [] 
         self._sorts_permutations  = []              
         self.options = options
