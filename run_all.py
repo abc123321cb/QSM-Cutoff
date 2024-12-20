@@ -7,8 +7,9 @@ from util import *
 from verbose import *
 
 def usage ():
-    print('Usage:   python3 run_all.py FILE.yaml')
-    print('         check all cases in the given yaml file')
+    print('Usage:   python3 run_all.py FILE.ivy -s SORT_SIZE [options]')
+    print('         read ivy file and start with the given sort size, incremeting size until deriving inductive invariant') 
+    print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Options:')
     print('-a           disable find all minimal solutions (default: on)')
@@ -39,18 +40,17 @@ def rm_and_recreate_log_file_if_exist(filename):
         os.system(f'rm {filename}')
         os.system(f'touch {filename}')
 
-def run_all(yaml_name, args):
+def run_all(ivy_name, args):
     sys_args = args.copy()
     try:
-        opts, args = getopt.getopt(args, "amkp:c:v:l:wh")
+        opts, args = getopt.getopt(args, "s:amkp:c:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
 
     options = QrmOptions()
-    options.mode = Mode.yaml
-    if file_exist(yaml_name):
-        options.yaml_filename = yaml_name
+    if file_exist(ivy_name):
+        options.ivy_filename = ivy_name
     for (optc, optv) in opts:
         if optc == '-v':
             options.verbosity = int(optv)
@@ -61,29 +61,37 @@ def run_all(yaml_name, args):
             options.log_name   = optv 
             rm_and_recreate_log_file_if_exist(options.log_name)
             options.open_log()
+        elif optc == '-s':
+            options.set_sizes(optv)
+            sys_args.remove(optc)
+            sys_args.remove(optv)
 
-    instances = get_instances_from_yaml(options.yaml_filename)
-    for ivy_name, sizes in instances.items():
-        vprint_instance_banner(options, f'[QRM]: {ivy_name}')
-        qrm_result = False
-        for size_str in sizes:
-            qrm_args = ['python3', 'qrm.py', ivy_name, '-s', size_str, '-d'] + sys_args
-            result = True 
-            try:
-                subprocess.run(qrm_args, check=True, timeout=options.qrm_to) 
-                sys.stdout.flush()
-            except subprocess.CalledProcessError:
-                result = False
-            except subprocess.TimeoutExpired:
-                vprint(options, f'[QRM TO]: Timeout after {options.qrm_to}')
-                result = False
-            qrm_result = result
-        
-        vprint_instance_banner(options, f'[QRM]: {ivy_name}')
-        if qrm_result:
-            vprint(options, '[QRM RESULT]: PASS')
-        else:
-            vprint(options, '[QRM RESULT]: FAIL')
+    vprint_instance_banner(options, f'[QRM]: {ivy_name}')
+    qrm_result = False
+    size_str   = options.size_str
+    while not qrm_result:
+        qrm_args = ['python3', 'qrm.py', ivy_name, '-s', size_str, '-d'] + sys_args
+        result = True 
+        try:
+            subprocess.run(qrm_args, check=True, timeout=options.qrm_to) 
+            sys.stdout.flush()
+        except subprocess.CalledProcessError:
+            result = False
+            next_size_file = open('next_size', 'r')
+            size_str = next_size_file.readline().strip()
+            next_size_file.close() 
+        except subprocess.TimeoutExpired:
+            vprint(options, f'[QRM TO]: Timeout after {options.qrm_to}')
+            result = False
+            break
+        qrm_result = result
+    
+    vprint_instance_banner(options, f'[QRM]: {ivy_name}')
+    if qrm_result:
+        vprint(options, '[QRM RESULT]: PASS')
+    else:
+        vprint(options, '[QRM RESULT]: FAIL')
+    os.system('rm next_size')
 
 if __name__ == '__main__':
     run_all(sys.argv[1], sys.argv[2:])

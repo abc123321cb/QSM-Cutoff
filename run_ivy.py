@@ -12,15 +12,18 @@ from verbose import *
 
 def run_finite_ivy_check(options: QrmOptions):
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
-    next_sizes = options.sizes.copy()
-    for sort, size in options.sizes.items():
-        try_sizes = [f'{s}_{sz+1}' if s==sort else f'{s}_{sz}' for s,sz in options.sizes.items()]
+    orig_sizes = options.sizes.copy()
+    if 'quorum' in orig_sizes:
+        del orig_sizes['quorum'] 
+    next_sizes = orig_sizes.copy()
+    for sort, size in orig_sizes.items():
+        try_sizes = [f'{s}_{sz+1}' if s==sort else f'{s}_{sz}' for s,sz in orig_sizes.items()]
         try_size_str = '_'.join(try_sizes)
         try_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.' + try_size_str + '.ivy'
         cp_cmd = f'cp {orig_ivy_name} {try_ivy_name}'
         os.system(cp_cmd) 
-        try_size_constants = [] 
-        for s, sz in options.sizes.items():
+        try_size_constants = ['type quorum'] if 'quorum' in options.sizes else []
+        for s, sz in orig_sizes.items():
             sz = sz + 1 if s == sort else sz
             constants = [f'{s}{i}' for i in range(sz)]
             try_size_constants.append(f'type {s} = ' +  '{' + ', '.join(constants) + '}')
@@ -54,7 +57,7 @@ def run_finite_ivy_check(options: QrmOptions):
     vprint(options, f'next size: {next_size_str}')
     next_size_file = open('next_size', 'w')
     next_size_file.write(next_size_str+'\n')
-
+    next_size_file.close()
 
 def run_ivy_check(rmin_id : int, invariants : List[str], options : QrmOptions):
     ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{rmin_id}'+ '.ivy'
