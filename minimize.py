@@ -299,7 +299,7 @@ class Minimizer():
         self._new_level()
         self._reduce()
 
-    def quantifier_inference(self, atoms) -> None:
+    def quantifier_inference(self, instantiator: FiniteIvyInstantiator, atoms) -> None:
         from qinference import QInference, QPrime
         QInference.setup(atoms, self.tran_sys)
         vprint_title(self.options, 'quantifier_inference', 5)
@@ -308,7 +308,7 @@ class Minimizer():
             orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
             qprimes = [QPrime(prime, self.options) for prime in orbit.suborbit_repr_primes]
-            qinf    = QInference(qprimes, self.options)
+            qinf    = QInference(qprimes, instantiator, self.options)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
             if self.options.check_qi:

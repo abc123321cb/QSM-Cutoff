@@ -75,7 +75,7 @@ def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
     qterms = futil.flatten_cube(qstate)
     return qterms
 
-def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
+def get_terms(tran_sys : TransitionSystem, atoms, prime : Prime):
     values = prime.values
     terms = []
     atom_symbols = []
@@ -90,6 +90,10 @@ def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
         else:
             assert(val == '-')
     terms += add_member_terms_for_dependent_sorts(atom_symbols, tran_sys)
+    return terms
+
+def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
+    terms  = get_terms(tran_sys, atoms, prime) 
     qterms = replace_var_with_qvar(tran_sys, terms)
     return qterms 
 

@@ -173,7 +173,7 @@ def qrm(ivy_name, args):
 
     # quantifier inference
     step_start(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
-    minimizer.quantifier_inference(fr_solver.protocol.state_atoms_fmla)
+    minimizer.quantifier_inference(instantiator, fr_solver.protocol.state_atoms_fmla)
     time_stamp = step_end(options, time_start, time_stamp)
 
     # minimization

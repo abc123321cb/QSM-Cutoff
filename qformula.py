@@ -61,13 +61,13 @@ class QFormula():
             if qmode == QuantifierMode.forall:
                 self.sort2class_sigs[sort] = part_sig.class_signatures
             else:
-                self.sort2class_sigs[sort] = part_sig.reduced_multi_class_sigs + part_sig.reduced_single_class_sigs
+                self.sort2class_sigs[sort] = part_sig.exists_class_sigs + part_sig.forall_class_sigs
 
     def _set_existential_argument_sigs(self) -> None:
         for sort, part_sig in self.pap.sort2part_sig.items():
             qmode = self.sort2qmode[sort]
             if qmode != QuantifierMode.forall:
-                for class_sig in part_sig.reduced_multi_class_sigs:
+                for class_sig in part_sig.exists_class_sigs:
                     for arg_sig in class_sig.arg_signatures:
                         self.exists_arg_sigs.add(str(arg_sig))
 
@@ -150,6 +150,7 @@ class QFormula():
 
     def _set_qterms(self) -> None:
         sig_gen : SigGenerator = self.pap.sig_gen
+        qterms = set()
         for sfname, args_lists in self.sign_func_name2args.items():
             (sign, fname) = split_signed_func_name(sfname)
             fsymbol = sig_gen.func_name2symbol[fname]
@@ -169,7 +170,8 @@ class QFormula():
                     qterm = fsymbol
                 if sign == '1':
                     qterm = il.Not(qterm)
-                self.qterms.append(qterm)
+                qterms.add(qterm)
+        self.qterms = list(qterms)
         vprint_title(self.options, 'QFormula: _set_qterms', 5)
         vprint(self.options, f'qterms: {[str(term) for term in self.qterms]}', 5)
 

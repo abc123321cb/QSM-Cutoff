@@ -76,7 +76,7 @@ class FormulaUtility():
                     flat.add(flat_arg)
         else:
             flat.add(formula)
-        return flat
+        return list(flat)
 
     def flatten_and(formula):
         flat = set()
@@ -94,7 +94,7 @@ class FormulaUtility():
                 flat.add(formula)
         else:
             flat.add(formula)
-        return flat 
+        return list(flat)
 
     def flatten_cube(cube):
         flat = set()
@@ -107,7 +107,7 @@ class FormulaUtility():
                     flat.add(flat_arg)
         else:
             flat.add(cube)
-        return flat
+        return list(flat)
 
     def count_quantifiers_and_literals(formula, pol=True, inF=0, inE=0, inL=0):
         outF = inF

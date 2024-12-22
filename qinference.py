@@ -3,11 +3,13 @@ from ivy import ivy_logic_utils as ilu
 from transition_system import TransitionSystem
 from prime import Prime 
 from util import QrmOptions
+from util import FormulaUtility as futil
 from verbose import *
 from qutil import *
 from itertools import product, permutations
 from signature import *
 from qformula import QFormula, ConstraintMode, QuantifierMode
+from finite_ivy_instantiate import *
 
 class QPrime():
     # static members
@@ -17,9 +19,9 @@ class QPrime():
     def __init__(self, prime : Prime, options : QrmOptions):
         self.options        = options
         self.prime          = prime
-        self.terms          = get_qterms(QPrime.tran_sys, QPrime.atoms, self.prime)
+        self.terms          = get_terms(QPrime.tran_sys, QPrime.atoms, self.prime)
         vprint_title(self.options, 'QPrime', 5)
-        self.binding        = VarArgBinding(self.terms, self.options)
+        self.binding        = ConstArgBinding(self.terms, self.options)
         self.arg_partition  = ArgPartition(self.binding, self.options)
 
     @staticmethod
@@ -102,13 +104,15 @@ class QInference():
     atoms = []
     tran_sys : TransitionSystem
 
-    def __init__(self, qprimes: List[QPrime], options : QrmOptions):
+    def __init__(self, qprimes: List[QPrime], instantiator : FiniteIvyInstantiator, options : QrmOptions):
         self.options = options
+        self.instantiator = instantiator
         self.qprimes = qprimes
-        self.terms   = get_qterms(QInference.tran_sys, QInference.atoms, self.qprimes[0].prime)
+        self.terms   = get_terms(QInference.tran_sys, QInference.atoms, self.qprimes[0].prime)
+
         self.sig_gen = SigGenerator(self.terms, self.options)
-        self.bindings       : List[VarArgBinding]  = [qprime.binding for qprime in self.qprimes] 
-        self.arg_partitions : List[ArgPartition]   = [qprime.arg_partition for qprime in self.qprimes]
+        self.bindings       : List[ConstArgBinding]  = [qprime.binding for qprime in self.qprimes] 
+        self.arg_partitions : List[ArgPartition]     = [qprime.arg_partition for qprime in self.qprimes]
         self.prod_arg_partition  = ProductArgPartition(self.sig_gen, self.bindings, self.options)
 
         # sort2infer_mode
@@ -124,124 +128,122 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
-    def _get_red_arg_signature_to_other_args(self, red_mult_class_sigs : List[ClassSignature], multi_class_arg_sigs : Set[str]):
-        # red_sig -> other_args s.t. {arg, other_args}=term.args & arg.red_sig=red_sig & arg.sig in multi_class_arg_sigs -> func_ids of all such terms
-        red_sig2other_args = {}
-        for class_sig in red_mult_class_sigs:
-            assert(len(class_sig.arg_signatures) == 1)
-            repr_arg_sig = class_sig.arg_signatures[0]
-            red_sig = repr_arg_sig.get_reduced_signature()
-            func_id = 0
-            red_sig2other_args[red_sig] = {} 
-            for term in self.terms:
-                (sign, atom)  = split_term(term)
-                fsymbol       = get_func_symbol(atom)
-                sfname        = get_signed_func_name(sign, atom, fsymbol) 
-                if sfname != repr_arg_sig.signed_fname:
-                    continue 
-                term_arg_sig = ArgumentSignature(repr_arg_sig.sort, sfname, func_id, repr_arg_sig.arg_id) 
-                if not str(term_arg_sig) in multi_class_arg_sigs:
-                    func_id += 1
-                    continue
-                args       = get_func_args(atom) 
-                other_args = []
-                for arg_id, arg in enumerate(args):
-                    if arg_id != repr_arg_sig.arg_id:
-                        other_args.append(arg)
-                if not str(other_args) in red_sig2other_args[red_sig]:
-                    red_sig2other_args[red_sig][str(other_args)] = []
-                red_sig2other_args[red_sig][str(other_args)].append(func_id)
-                func_id += 1
-        return red_sig2other_args 
+    def _map_argument_to_exists_var_id(self, arg_signatures: List[ArgumentSignature]):
+        sfname2arg_ids      = {}
+        red_arg_sig2var_id  = {}
+        for arg_sig in arg_signatures:
+            if arg_sig.get_reduced_signature() in red_arg_sig2var_id:
+                continue
+            sfname  = arg_sig.signed_fname
+            if not sfname in sfname2arg_ids:
+                sfname2arg_ids[sfname] = set() 
+            arg_ids = sfname2arg_ids[sfname]
+            red_arg_sig2var_id[arg_sig.get_reduced_signature()] = len(arg_ids)
+            arg_ids.add(arg_sig.arg_id)
+        return red_arg_sig2var_id
 
-    def _get_red_arg_signature_to_red_other_args(self, red_mult_class_sigs : List[ClassSignature], multi_class_arg_sigs : Set[str]):
-        used_other_arg_red_sigs = set()
-        red_sig2red_other_args   = {}
-        for class_sig in red_mult_class_sigs:
-            assert(len(class_sig.arg_signatures) == 1)
-            repr_arg_sig = class_sig.arg_signatures[0]
-            red_sig = repr_arg_sig.get_reduced_signature()
-            func_id = 0
-            red_sig2red_other_args[red_sig] = {} 
-            for term in self.terms:
-                (sign, atom)  = split_term(term)
-                fsymbol       = get_func_symbol(atom)
-                sfname        = get_signed_func_name(sign, atom, fsymbol) 
-                if sfname != repr_arg_sig.signed_fname:
-                    continue
-                term_arg_sig = ArgumentSignature(repr_arg_sig.sort, sfname, func_id, repr_arg_sig.arg_id) 
-                if not str(term_arg_sig) in multi_class_arg_sigs:
-                    func_id += 1
-                    continue
-                args       = get_func_args(atom) 
-                other_args = []
-                add_other_args = True
-                for arg_id, arg in enumerate(args):
-                    if arg_id != repr_arg_sig.arg_id:
-                        other_arg_sig = ArgumentSignature(arg.sort, sfname, func_id, arg_id)
-                        if str(other_arg_sig) in multi_class_arg_sigs:
-                            if not other_arg_sig.get_reduced_signature() in used_other_arg_red_sigs:
-                                used_other_arg_red_sigs.add(other_arg_sig.get_reduced_signature())
-                            else:
-                                add_other_args = False
-                                break
-                        other_args.append(arg)
-                if add_other_args:
-                    if not str(other_args) in red_sig2red_other_args[red_sig]:
-                        red_sig2red_other_args[red_sig][str(other_args)] = []
-                    red_sig2red_other_args[red_sig][str(other_args)].append(func_id)
-                func_id += 1
-        return red_sig2red_other_args 
+    def _map_var_id_to_argument_signature(self, arg_signatures, red_arg_sig2var_id, max_var_id):
+        var_id2arg_sigs = {var_id : [] for var_id in range(max_var_id+1)}
+        for arg_sig in arg_signatures:
+            var_id = red_arg_sig2var_id[arg_sig.get_reduced_signature()]
+            var_id2arg_sigs[var_id].append(arg_sig)
+        return var_id2arg_sigs
 
-    def _multi_class_appears_with_same_other_args(self, sort, part_sig : SortPartitionSignature_) -> bool:
-        # check if exists vars appear with the same combinations of other args
-        red_sig2other_args     = self._get_red_arg_signature_to_other_args(part_sig.reduced_multi_class_sigs, part_sig.multi_class_arg_sigs)
-        num_exists_vars        = sort.card - len(part_sig.reduced_single_class_sigs)
-        vprint_title(self.options, 'QInference: _multi_class_appears_with_same_other_args', 5)
-        vprint(self.options, f'red_sig2other_args: {red_sig2other_args}', 5)
-        vprint(self.options, f'num_exists_vars: {num_exists_vars}', 5)
-        for class_sig in part_sig.reduced_multi_class_sigs:
-            assert(len(class_sig.arg_signatures) == 1)
-            repr_arg_sig = class_sig.arg_signatures[0]
-            red_sig      = repr_arg_sig.get_reduced_signature()
-            for func_ids in red_sig2other_args[red_sig].values():
-                if num_exists_vars != len(func_ids):
-                    return False
-        # update red_multi_class_sigs to be sigs of exists vars 
-        red_sig2red_other_args = self._get_red_arg_signature_to_red_other_args(part_sig.reduced_multi_class_sigs, part_sig.multi_class_arg_sigs)
-        vprint(self.options, f'red_sig2red_other_args: {red_sig2red_other_args}', 5)
-        red_class_sigs : List[ClassSignature] = []
-        for class_sig in part_sig.reduced_multi_class_sigs:
-            assert(len(class_sig.arg_signatures) == 1)
-            repr_arg_sig = class_sig.arg_signatures[0]
-            red_sig = repr_arg_sig.get_reduced_signature()
-            for func_ids in red_sig2red_other_args[red_sig].values():
-                red_class_sigs.append(ClassSignature([ArgumentSignature(sort, repr_arg_sig.signed_fname, func_ids[0], repr_arg_sig.arg_id)]))
-        part_sig.reduced_multi_class_sigs = red_class_sigs
-        vprint(self.options, f'updated reduced multi class sigs: {part_sig.reduced_multi_class_sigs}', 5)
+    def _get_substituted_terms(self, sign_func_name2args):
+        qterms = set() 
+        for sfname, args_lists in sign_func_name2args.items():
+            (sign, fname) = split_signed_func_name(sfname)
+            fsymbol = self.sig_gen.func_name2symbol[fname]
+            for args in args_lists:
+                if args == None:
+                    continue
+                qterm = None
+                if fname.endswith('='):
+                    lhs = None
+                    if len(args) > 1:
+                        lhs = il.App(fsymbol, *args[:-1])
+                    else: 
+                        lhs = fsymbol
+                    rhs = args[-1]
+                    qterm = il.Equals(lhs,rhs)
+                elif len(args) >= 1:
+                    qterm = il.App(fsymbol, *args)
+                else:
+                    qterm = fsymbol
+                if sign == '1':
+                    qterm = il.Not(qterm)
+                qterms.add(qterm)
+        qterms = list(qterms)
+        return qterms
+
+    def _substituted_terms_arguments_with_exists_vars(self, arg_signatures : List[ArgumentSignature], red_arg_sig2var_id, exist_vars):
+        sign_func_name2args  = {}
+        sign_func_name2count = {}
+        arg_signatures = set([str(arg_sig) for arg_sig in arg_signatures])
+        for term  in self.terms:
+            (sign,atom) = split_term(term)
+            func_symbol = get_func_symbol(atom)
+            sfname      = get_signed_func_name(sign, atom, func_symbol) 
+            if not sfname in sign_func_name2count:
+                sign_func_name2count[sfname] = 0
+                sign_func_name2args[sfname]  = []
+            else:
+                sign_func_name2count[sfname] += 1
+            func_id  = sign_func_name2count[sfname]
+            args     = get_func_args(atom) 
+            new_args = []
+            for arg_id, arg in enumerate(args):
+                arg_sig = ArgumentSignature(arg.sort, sfname, func_id, arg_id)
+                if str(arg_sig) in arg_signatures:
+                    var_id = red_arg_sig2var_id[arg_sig.get_reduced_signature()]
+                    new_args.append(exist_vars[var_id])
+                else:
+                    new_args.append(arg)
+            sign_func_name2args[sfname].append(new_args)
+        return self._get_substituted_terms(sign_func_name2args) 
+
+    def _try_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
+        assert(len(part_sig.identical_multi_classes) == 1)
+        arg_signatures = list(part_sig.identical_multi_classes.values())[0]
+
+        red_arg_sig2var_id = self._map_argument_to_exists_var_id(arg_signatures)
+        max_var_id = max([var_id for var_id in red_arg_sig2var_id.values()])
+        exist_vars = [il.Variable(f'{sort.name.upper()}{i}', sort) for i in range(max_var_id+1)]
+        var_id2arg_sigs = self._map_var_id_to_argument_signature(arg_signatures, red_arg_sig2var_id, max_var_id)
+        qterms = self._substituted_terms_arguments_with_exists_vars(arg_signatures, red_arg_sig2var_id, exist_vars)
+
+        instantiated_qterms = []
+        for qterm in qterms:
+            qformula = il.ForAll(exist_vars, qterm) # only compare the set of literals, so either forall/exists is fine
+            qformula =  self.instantiator.instantiate_quantifier(qformula)
+            instantiated_qterms += futil.flatten_cube(qformula)
+        original_terms = ' '.join(sorted([str(t) for t in self.terms]))
+        substituted_terms = ' '.join(sorted([str(t) for t in instantiated_qterms]))
+        if original_terms != substituted_terms:
+            return False
+        part_sig.exists_class_sigs = [ClassSignature(arg_sigs) for arg_sigs in var_id2arg_sigs.values()] 
+        part_sig.forall_class_sigs = [class_sig for class_sig in part_sig.identical_single_classes.values()]
         return True
 
     def _can_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
-        num_class = len(part_sig.reduced_class)
+        num_class = len(part_sig.identical_classes)
         if num_class == 1: # all variables of this sort appear in exactly same positions:
-            # appearing in same positions is not enough, they have to appear with the same combinations of other args
-            return self._multi_class_appears_with_same_other_args(sort, part_sig)
+            return self._try_infer_exists(sort, part_sig)
         return False
 
     def _can_infer_forall_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
-        num_single_class  = len(part_sig.reduced_single_class)
-        num_multi_class   = len(part_sig.reduced_multi_class)
-        num_class         = len(part_sig.reduced_class)
+        num_single_class  = len(part_sig.identical_single_classes)
+        num_multi_class   = len(part_sig.identical_multi_classes)
+        num_class         = len(part_sig.identical_classes)
         if num_multi_class == 1 and (num_class == num_multi_class + num_single_class) and num_class > 1:
-            # appearing in same positions is not enough, they have to appear with the same combinations of other args
-            return self._multi_class_appears_with_same_other_args(sort, part_sig)
+            return self._try_infer_exists(sort, part_sig)
         return False
 
     def _get_sort_quantifier_mode(self, sort, part_sig : SortPartitionSignature_) -> QuantifierMode:
         # currently merging qprime only considers forall
         if len(self.qprimes) > 1:
             return QuantifierMode.forall
-        if len(part_sig.class_signatures) < sort.card:
+        if len(part_sig.class_signatures) < sort.card or sort.card == 1:
             return QuantifierMode.forall
         assert(len(part_sig.class_signatures) == sort.card)
         if self._can_infer_exists(sort, part_sig):
