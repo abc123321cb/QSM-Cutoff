@@ -202,12 +202,16 @@ class QInference():
             sign_func_name2args[sfname].append(new_args)
         return self._get_substituted_terms(sign_func_name2args) 
 
-    def _get_equality_constraint(self, qterms, exists_vars):
+    def _get_equality_constraint(self, sort, qterms, exists_vars):
         used_constants = set()
         for qterm in qterms:
             used_constants.update(ilu.used_constants_ast(qterm))
-        eqs = []
+        used_sort_constants = []
         for const in used_constants:
+            if const.sort == sort:
+                used_sort_constants.append(const)
+        eqs = []
+        for const in used_sort_constants:
             for var in exists_vars:
                 eq = il.Equals(const, var)
                 eqs.append(eq)
@@ -222,7 +226,7 @@ class QInference():
         exist_vars = [il.Variable(f'{sort.name.upper()}{i}', sort) for i in range(max_var_id+1)]
         var_id2arg_sigs = self._map_var_id_to_argument_signature(arg_signatures, red_arg_sig2var_id, max_var_id)
         qterms = self._substituted_terms_arguments_with_exists_vars(arg_signatures, red_arg_sig2var_id, exist_vars)
-        eq_constraint = self._get_equality_constraint(qterms, exist_vars)
+        eq_constraint = self._get_equality_constraint(sort, qterms, exist_vars)
 
         instantiated_qterms = []
         for qterm in qterms:
