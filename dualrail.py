@@ -18,14 +18,14 @@ class DualRailNegation():
             # Implementing the paper "Enumerating Prime Implicants of Propositional Formulae in Conjunctive Normal Form"
             self._encode_M()
 
-    def _set_dualrail_vars(self, id: int) -> None:
-        self._atom_id2vars[id] = [id*2+2, id*2+1]
+    def _set_dualrail_vars(self, atom_id: int) -> None:
+        self._atom_id2vars[atom_id] = [atom_id*2+2, atom_id*2+1]
         
-    def _get_pos_var(self, id: int) -> int:
-        return self._atom_id2vars[id][1]
+    def _get_pos_var(self, atom_id: int) -> int:
+        return self._atom_id2vars[atom_id][1]
 
-    def _get_neg_var(self, id: int) -> int:
-        return self._atom_id2vars[id][0]
+    def _get_neg_var(self, atom_id: int) -> int:
+        return self._atom_id2vars[atom_id][0]
 
     def _encode(self, protocol : Protocol) -> None:
         for atom_id in range(self._state_atom_num):
