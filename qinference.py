@@ -202,6 +202,17 @@ class QInference():
             sign_func_name2args[sfname].append(new_args)
         return self._get_substituted_terms(sign_func_name2args) 
 
+    def _get_equality_constraint(self, qterms, exists_vars):
+        used_constants = set()
+        for qterm in qterms:
+            used_constants.update(ilu.used_constants_ast(qterm))
+        eqs = []
+        for const in used_constants:
+            for var in exists_vars:
+                eq = il.Equals(const, var)
+                eqs.append(eq)
+        return il.Or(*eqs)
+
     def _try_infer_exists(self, sort, part_sig : SortPartitionSignature_) -> bool:
         assert(len(part_sig.identical_multi_classes) == 1)
         arg_signatures = list(part_sig.identical_multi_classes.values())[0]
@@ -211,10 +222,11 @@ class QInference():
         exist_vars = [il.Variable(f'{sort.name.upper()}{i}', sort) for i in range(max_var_id+1)]
         var_id2arg_sigs = self._map_var_id_to_argument_signature(arg_signatures, red_arg_sig2var_id, max_var_id)
         qterms = self._substituted_terms_arguments_with_exists_vars(arg_signatures, red_arg_sig2var_id, exist_vars)
+        eq_constraint = self._get_equality_constraint(qterms, exist_vars)
 
         instantiated_qterms = []
         for qterm in qterms:
-            qformula = il.ForAll(exist_vars, qterm) # only compare the set of literals, so either forall/exists is fine
+            qformula = il.ForAll(exist_vars, il.Or(*[qterm, eq_constraint])) # only compare the set of literals, so either forall/exists is fine
             qformula =  self.instantiator.instantiate_quantifier(qformula)
             instantiated_qterms += futil.flatten_cube(qformula)
         original_terms = ' '.join(sorted([str(t) for t in self.terms]))
