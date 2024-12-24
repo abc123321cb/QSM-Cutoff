@@ -16,6 +16,7 @@ def run_finite_ivy_check(options: QrmOptions):
     if 'quorum' in orig_sizes:
         del orig_sizes['quorum'] 
     next_sizes = orig_sizes.copy()
+    has_increase = False
     for sort, size in orig_sizes.items():
         try_sizes = [f'{s}_{sz+1}' if s==sort else f'{s}_{sz}' for s,sz in orig_sizes.items()]
         try_size_str = '_'.join(try_sizes)
@@ -47,12 +48,17 @@ def run_finite_ivy_check(options: QrmOptions):
             else:
                 vprint(options, f'[FINITE_CHECK RESULT]: ABORT ... exit with return code {error.returncode}')
             next_sizes[sort] = size +1
+            has_increase = True
             continue
         except subprocess.TimeoutExpired:
             vprint(options, f'[FINITE_CHECK TO]: Timeout after {options.ivy_to}')
             next_sizes[sort] = size +1
+            has_increase = True
             continue
         vprint(options, f'[FINITE_CHECK RESULT]: PASS')
+    if not has_increase:
+        first_sort = list(next_sizes.keys())[0]
+        next_sizes[first_sort] = next_sizes[first_sort] + 1
     next_size_str = ','.join([f'{s}={sz}' for s,sz in next_sizes.items()])
     vprint(options, f'next size: {next_size_str}')
     next_size_file = open('next_size', 'w')
