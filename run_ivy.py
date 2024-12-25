@@ -57,7 +57,7 @@ def run_finite_ivy_check(options: QrmOptions):
             continue
         vprint(options, f'[FINITE_CHECK RESULT]: PASS')
     if not has_increase:
-        for sort,size in next_sizes.keys():
+        for sort,size in next_sizes.items():
             next_sizes[sort] = next_sizes[sort] + 1
     next_size_str = ','.join([f'{s}={sz}' for s,sz in next_sizes.items()])
     vprint(options, f'next size: {next_size_str}')
