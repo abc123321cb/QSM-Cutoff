@@ -57,8 +57,8 @@ def run_finite_ivy_check(options: QrmOptions):
             continue
         vprint(options, f'[FINITE_CHECK RESULT]: PASS')
     if not has_increase:
-        first_sort = list(next_sizes.keys())[0]
-        next_sizes[first_sort] = next_sizes[first_sort] + 1
+        for sort,size in next_sizes.keys():
+            next_sizes[sort] = next_sizes[sort] + 1
     next_size_str = ','.join([f'{s}={sz}' for s,sz in next_sizes.items()])
     vprint(options, f'next size: {next_size_str}')
     next_size_file = open('next_size', 'w')
