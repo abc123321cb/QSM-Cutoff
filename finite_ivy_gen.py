@@ -388,7 +388,7 @@ class FiniteIvyGenerator():
 
     def _compile_cpp():
         gpp       = ['g++']
-        flags     = ['-v','-std=c++11', '-fpic', '-pthread', '-O3']
+        flags     = ['-std=c++11', '-fpic', '-pthread', '-O3']
         source    = [FiniteIvyGenerator.cpp_name, FiniteIvyGenerator.wrapper_name]
         include   = ['-I'+FiniteIvyGenerator.options.python_include_path]
         flag      = ['-c']
