@@ -10,6 +10,7 @@ from ivy import ivy_solver as slv
 from util import QrmOptions
 from verbose import *
 
+
 def run_finite_ivy_check(options: QrmOptions):
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
     orig_sizes = options.sizes.copy()
@@ -107,8 +108,12 @@ def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
     clauses2      = ilu.Clauses(tran_sys.safety_properties)
     slv.clear() # changing from finite signature (qpi) to uninterpreted signature
     unsat_core    = slv.unsat_core(clauses1, empty_clauses, implies=clauses2, unlikely=lambda x:True)
-    core_invar    = unsat_core.to_formula()
-    vprint(options, f'[UNSAT CORE]: {str(core_invar)}')
+    if unsat_core == None:
+        vprint(options, f'[R Implies P]: False')
+    else:
+        core_invar    = unsat_core.to_formula()
+        vprint(options, f'[R Implies P]: True')
+        vprint(options, f'[UNSAT CORE]: {str(core_invar)}')
 
 def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : Minimizer, options: QrmOptions) -> bool:
     rmins    = minimizer.rmin
