@@ -336,30 +336,32 @@ class Minimizer():
         self.cover.init_minimization_check_solver(invariants)
         (result, values)  = self.cover.get_minimization_check_minterm()
         model_repr_states = set()
+        model_match = True
         while result:
             repr_int = int(''.join(values), 2)
-            if result:
-                for nvalues in protocol.all_permutations(values[:protocol.state_atom_num]): # only permute the mutable part
-                    nvalues += values[protocol.state_atom_num:]
-                    repr_int = min(int(''.join(nvalues), 2), repr_int)
-                    self.cover.block_minimization_check_minterm(nvalues)
+            for nvalues in protocol.all_permutations(values[:protocol.state_atom_num]): # only permute the mutable part
+                nvalues += values[protocol.state_atom_num:]
+                repr_int = min(int(''.join(nvalues), 2), repr_int)
+                self.cover.block_minimization_check_minterm(nvalues)
             if not repr_int in protocol.repr_states:
                 bit_str = '{0:b}'.format(repr_int)
                 vprint(self.options, 'Found a state not in reachability')
                 vprint(self.options, f'decimal: {repr_int}')
                 vprint(self.options, f'binary: {bit_str}')
-                vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
-                return False
+                model_match = False 
             model_repr_states.add(repr_int)
             (result, values) = self.cover.get_minimization_check_minterm()
 
-        if len(model_repr_states) < len(protocol.repr_states):
+        difference = protocol.repr_states - model_repr_states
+        if len(difference) > 0:
             vprint(self.options, 'Found states not included in solution')
-            vprint(self.options, f'{protocol.repr_states - model_repr_states}')
+            vprint(self.options, f'{difference}')
+            model_match = False
+        if model_match:
+            vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
+        else:
             vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
-            return False
-        vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
-        return True
+        return model_match 
 
     def minimization_check(self, protocol : Protocol):
         self.cover.init_minimization_check_clauses()
