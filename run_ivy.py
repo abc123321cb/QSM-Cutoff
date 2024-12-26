@@ -105,6 +105,7 @@ def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
     clauses1      = ilu.Clauses(fmlas, defns)
     empty_clauses = ilu.Clauses([])
     clauses2      = ilu.Clauses(tran_sys.safety_properties)
+    slv.clear() # changing from finite signature (qpi) to uninterpreted signature
     unsat_core    = slv.unsat_core(clauses1, empty_clauses, implies=clauses2, unlikely=lambda x:True)
     core_invar    = unsat_core.to_formula()
     vprint(options, f'[UNSAT CORE]: {str(core_invar)}')
