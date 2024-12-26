@@ -292,12 +292,12 @@ class QInference():
     def _set_constraint_mode(self) -> None:
         if len(self.qprimes) == 1:
             self.cmode = ConstraintMode.no_merge
-        elif self._has_sort_with_too_many_classes(): # enumerate all partitions for class signatures will be infeasible
-            self.cmode = ConstraintMode.merge_present
-        elif self._has_qprime_with_many_classes(): # use absent constraint result in more succint representation
-            self.cmode = ConstraintMode.merge_absent
+        #elif self._has_sort_with_too_many_classes(): # enumerate all partitions for class signatures will be infeasible
+        #    self.cmode = ConstraintMode.merge_present
+        #elif self._has_qprime_with_many_classes(): # use absent constraint result in more succint representation
+        #    self.cmode = ConstraintMode.merge_present
         else: # all qprimes have small number of classes, use present constraint result in more succinct representation
-            self.cmode = ConstraintMode.merge_present
+            self.cmode = ConstraintMode.merge
         vprint_title(self.options, 'QInference: _set_constraint_mode', 5)
         vprint(self.options, f'constraint mode: {self.cmode}', 5)
 
@@ -309,16 +309,18 @@ class QInference():
         return True
 
     def _set_qclause(self):
-        if self.cmode == ConstraintMode.merge_absent:
-            self.constraint = AbsentConstraint(self.prod_arg_partition, self.arg_partitions, self.options)
-            if self._need_eq_constraints():
-                part_sigs : List[PartitionSignature] = self.constraint.get_absent_partition_signatures()
-                self.qformula.set_merge_constraints(part_sigs, self.cmode)
+        #if self.cmode == ConstraintMode.merge_absent:
+        #    self.constraint = AbsentConstraint(self.prod_arg_partition, self.arg_partitions, self.options)
+        #    if self._need_eq_constraints():
+        #        part_sigs : List[PartitionSignature] = self.constraint.get_absent_partition_signatures()
+        #        self.qformula.set_merge_constraints(part_sigs, self.cmode)
 
-        elif self.cmode == ConstraintMode.merge_present:
+        #elif self.cmode == ConstraintMode.merge_present:
+        #    part_sigs : List[PartitionSignature] = [arg_part.part_sig for arg_part in self.arg_partitions]
+        #    self.qformula.set_merge_constraints(part_sigs, self.cmode)
+        if self.cmode == ConstraintMode.merge:
             part_sigs : List[PartitionSignature] = [arg_part.part_sig for arg_part in self.arg_partitions]
-            self.qformula.set_merge_constraints(part_sigs, self.cmode)
-
+            self.qformula.set_merge_constraints(self.prod_arg_partition, part_sigs)
         elif self.cmode == ConstraintMode.no_merge:
             self.qformula.set_no_merge_constraints()
 

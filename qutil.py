@@ -168,18 +168,3 @@ def get_func_args_sort(atom, func_symbol):
     elif isinstance(atom, il.App) or il.is_boolean(atom):
         args_sort = func_symbol.sort.dom
     return args_sort
-
-from enum import Enum
-QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
-ConstraintMode  = Enum('ConstraintMode', ['merge_absent', 'merge_present', 'no_merge'])
-'''
-    'merge_absent':   enumerate all partitions of "class_signature" in self.product_arg_partition
-                for each arg_partition of qprime, 
-                it is also a partition of "class_signature" in self.product_arg_partition
-                we add final constraint describing partitions of "class_signature" in self.product_arg_partition 
-                that is absent among self.arg_partitions
-    'merge_present':  does not enumerate all partitions of "class_signature" in self.product_arg_partition
-                we add final constraint describing partitions of "class_signature" 
-                that is present in self.arg_partitions
-'''
-

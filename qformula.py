@@ -1,5 +1,6 @@
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
+from ivy import ivy_solver as slv
 from util import QrmOptions
 from verbose import *
 from qutil import *
@@ -8,17 +9,8 @@ from signature import *
 
 from enum import Enum
 QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
-ConstraintMode  = Enum('ConstraintMode', ['merge_absent', 'merge_present', 'no_merge'])
-'''
-    'merge_absent': enumerate all partitions of "class_signature" in self.product_arg_partition
-                    for each arg_partition of qprime, 
-                    it is also a partition of "class_signature" in self.product_arg_partition
-                    we add final constraint describing partitions of "class_signature" in self.product_arg_partition 
-                    that is absent among self.arg_partitions
-    'merge_present':  does not enumerate all partitions of "class_signature" in self.product_arg_partition
-                      we add final constraint describing partitions of "class_signature" 
-                      that is present in self.arg_partitions
-'''
+ConstraintMode  = Enum('ConstraintMode', ['merge', 'no_merge'])
+
 class QFormula():
     def __init__(self, pap : ProductArgPartition, sort2qmode : Dict[il.EnumeratedSort, QuantifierMode], options : QrmOptions):
         self.options = options
@@ -36,8 +28,9 @@ class QFormula():
         # sort2qvars
         self.sort2qvars       : Dict[il.EnumeratedSort, List[il.Variable]]    = {}
         self._set_sort_to_qvars()
-        # arg_sig2qvar
+        # arg_sig2qvar, qvar2arg_sigs
         self.arg_sig2qvar   : Dict[str, il.Variable] = {}
+        self.qvar2arg_sigs  : Dict[il.Variable, List[ArgumentSignature]] = {}
         self._set_signature_to_qvar()
         # qvars
         self.forall_qvars : Set[il.Variable] = set()
@@ -50,10 +43,19 @@ class QFormula():
         self.qterms = []
         self._set_qterms()
 
+        # merge constraints
+        self.sign_func_name2id : Dict[str, int]= {}
+        self.func_permutations = []
+        self.present_signatures : Dict[str, PartitionSignature] = {}
+        self.absent_signatures  : Dict[str, PartitionSignature] = {}
+        self.red_present_signatures : Dict[str, PartitionSignature] = {} # symmetric reduced
+        self.red_absent_signatures  : Dict[str, PartitionSignature] = {} # symmetric reduced
+
         # constraint
         self.forall_constraint = None
         self.forall_exists_constraint = None
         self.sub_exists_vars : Set[il.Variable] = set()
+
 
     def _set_sort_to_class_signatures(self) -> None:
         for sort, part_sig in self.pap.sort2part_sig.items():
@@ -101,6 +103,7 @@ class QFormula():
                 qvar = self._get_next_unused_qvar(sort)
                 for arg_sig in class_sig.arg_signatures:
                     self.arg_sig2qvar[str(arg_sig)] = qvar
+                self.qvar2arg_sigs[qvar] = class_sig.arg_signatures
                 
     def _set_qvars(self) -> None:
         for arg_sig, qvar in self.arg_sig2qvar.items():
@@ -180,8 +183,25 @@ class QFormula():
         for arg_sig in class_sig.arg_signatures: 
             qvar = self.arg_sig2qvar[str(arg_sig)]
             qvars.add(qvar)
-        qvars = list(qvars)
+        qvars = sorted(list(qvars))
 
+        eq_terms = set()
+        qvar = qvars[0] 
+        for j in range(1, len(qvars)):
+            assert(str(qvar) != str(qvars[j]))
+            eq = il.Equals(qvar, qvars[j])
+            eq_terms.add(eq)
+        vprint_title(self.options, 'QFormula: _get_class_constraint', 5)
+        vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
+        vprint(self.options, f'eq_terms: {[str(t) for t in eq_terms]}')
+        return list(eq_terms)
+
+    def _get_diff_class_constraint(self, class_sigs : List[ClassSignature]):
+        qvars = set()
+        for class_sig in class_sigs:
+            qvar = self.arg_sig2qvar[str(class_sig.arg_signatures[0])]
+            qvars.add(qvar)
+        qvars = list(qvars)
         neq_terms = set()
         for i in range(len(qvars)-1):
             for j in range(i+1, len(qvars)):
@@ -190,29 +210,10 @@ class QFormula():
                 neq_qvars.sort(key=lambda x: str(x))
                 neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
                 neq_terms.add(neq)
-        vprint_title(self.options, 'QFormula: _get_class_constraint', 5)
-        vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
-        vprint(self.options, f'neq_terms: {[str(t) for t in neq_terms]}')
-        return list(neq_terms)
-
-    def _get_diff_class_constraint(self, class_sigs : List[ClassSignature]):
-        qvars = set()
-        for class_sig in class_sigs:
-            qvar = self.arg_sig2qvar[str(class_sig.arg_signatures[0])]
-            qvars.add(qvar)
-        qvars = list(qvars)
-        eq_terms = set()
-        for i in range(len(qvars)-1):
-            for j in range(i+1, len(qvars)):
-                assert(str(qvars[i]) != str(qvars[j]))
-                eq_qvars = [qvars[i], qvars[j]]
-                eq_qvars.sort(key=lambda x: str(x))
-                eq = il.Equals(eq_qvars[0], eq_qvars[1])
-                eq_terms.add(eq)
         vprint_title(self.options, 'QFormula: _get_diff_class_constraint', 5)
         vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
-        vprint(self.options, f'eq_terms: {[str(t) for t in eq_terms]}')
-        return list(eq_terms)
+        vprint(self.options, f'eq_terms: {[str(t) for t in neq_terms]}')
+        return list(neq_terms)
 
     def _get_partition_constraint(self, partition : PartitionSignature):
         vprint_title(self.options, 'QFormula: _get_partition_constraint', 5)
@@ -227,35 +228,123 @@ class QFormula():
         vprint(self.options, f'constraint: {[str(c) for c in constraint]}', 5)
         return constraint
 
-    def _get_constraints(self, partitions : List[PartitionSignature]):
+    def _set_func_permutations(self, pap : ProductArgPartition) -> None:
+        all_func_permutations = []
+        fname_id = 0
+        self.sign_func_name2id : Dict[str, int]= {}
+        for sfname, count in pap.sig_gen.sign_func_name2count.items():
+            self.sign_func_name2id[sfname] = fname_id
+            fname_id += 1
+            func_ids  = list(range(count))
+            func_permutations = permutations(func_ids)
+            all_func_permutations.append(func_permutations)
+        # cartesian product
+        self.func_permutations = list(product(*all_func_permutations))
+        vprint(self.options, f'sign_func_name2id: {self.sign_func_name2id}', 5)
+        vprint(self.options, f'func permutations: {self.func_permutations}', 5)
+
+    def _add_present_signatures(self, part_sigs : List[PartitionSignature]):
+        for part_sig in part_sigs: 
+            for func_perm in self.func_permutations:
+                permuted_sig = get_permuted_signature(part_sig, self.sign_func_name2id, func_perm)
+                if not str(permuted_sig) in self.present_signatures:
+                    self.present_signatures[str(permuted_sig)] = permuted_sig
+            assert(not str(part_sig) in self.red_present_signatures)
+            self.red_present_signatures[str(part_sig)] = part_sig
+
+    def _convert_sat_model_to_absent_partition_signature(self, model) -> PartitionSignature:
+        qvar2value  : Dict[str, str] = {}
+        for decl in model.decls():
+            qvar_name = str(decl.name()).split('!')[0]
+            value = str(model.get_interp(decl))
+            qvar2value[qvar_name] = value
+        const2qvars : Dict[str, List[il.Variable]] = {}
+        for qvar in self.forall_qvars:
+            const = qvar2value[str(qvar)] 
+            if not const in const2qvars:
+                const2qvars[const] = []
+            const2qvars[const].append(qvar)
+        sort2class_sigs : Dict[il.EnumeratedSort, List[ClassSignature]] = {}
+        for qvars in const2qvars.values():
+            sort = qvars[0].sort
+            arg_sigs = []
+            for qvar in qvars:
+                arg_sigs += self.qvar2arg_sigs[qvar]
+            if not sort in sort2class_sigs:
+                sort2class_sigs[sort] = []
+            sort2class_sigs[sort].append(ClassSignature(arg_sigs))
+        sort2part_sig : Dict[il.EnumeratedSort, List[SortPartitionSignature]] = {}
+        for sort, class_sigs in sort2class_sigs.items():
+            sort2part_sig[sort] = SortPartitionSignature(class_sigs)
+        return PartitionSignature(sort2part_sig)
+
+    def _add_absent_signatures(self, part_sig: PartitionSignature):
+        absent_sigs : Dict[str, PartitionSignature] = {}
+        for func_perm in self.func_permutations:
+            permuted_sig = get_permuted_signature(part_sig, self.sign_func_name2id, func_perm)
+            if not str(permuted_sig) in self.absent_signatures:
+                self.absent_signatures[str(permuted_sig)] = permuted_sig
+                absent_sigs[str(permuted_sig)] = permuted_sig
+        assert(not str(part_sig) in self.red_absent_signatures)
+        self.red_absent_signatures[str(part_sig)] = part_sig
+        return list(absent_sigs.values())
+
+    def _get_constraints(self, part_sigs : List[PartitionSignature]):
         constraints = [] 
-        for partition in partitions: 
-            constraint = self._get_partition_constraint(partition)
+        for part_sig in part_sigs: 
+            constraint = self._get_partition_constraint(part_sig)
             constraints.append(constraint)
         constraints.sort(key=lambda constraint: len(constraint))
         return constraints
 
     def _get_constraint_term(self, constraints):
-        neq_terms = []
+        terms = []
         for constraint in constraints:
             if len(constraint):
-                neq_term = il.Or(*constraint)
-                neq_terms.append(neq_term)
-        if len(neq_terms):
-            return il.And(*neq_terms)    
+                term = il.And(*constraint)
+                terms.append(term)
+        if len(terms):
+            return il.Or(*terms)    
         return None
+
 
     #------------------------------------------------
     # public methods
     #------------------------------------------------
-    def set_merge_constraints(self, partitions : List[PartitionSignature], cmode : ConstraintMode) -> None:
-        constraints = self._get_constraints(partitions)
-        cterm = self._get_constraint_term(constraints)  
-        if cterm != None:
-            if cmode == ConstraintMode.merge_absent:      
-                self.qterms.append(cterm)          
-            else:
-                self.qterms.append(il.Not(cterm)) 
+    def set_merge_constraints(self, pap : ProductArgPartition, part_sigs : List[PartitionSignature]) -> None:
+        self._set_func_permutations(pap)
+        self._add_present_signatures(part_sigs)
+        present_constraints = self._get_constraints(list(self.present_signatures.values()))
+        present_cterm = self._get_constraint_term(present_constraints)  
+        assert(present_cterm != None)
+        # present_cterm is a disjuction of eq constraints for each sub-orbit 
+        absent_fmla = il.Exists(self.forall_qvars, il.Not(present_cterm))
+        solver = slv.z3.Solver()
+        solver.add(slv.formula_to_z3(absent_fmla))
+        res = solver.check() 
+        if res == slv.z3.unsat: # no constraints needed if unsat
+            return
+        while(res == slv.z3.sat):
+            model = slv.get_model(solver)
+            absent_part_sig   = self._convert_sat_model_to_absent_partition_signature(model)
+            absent_part_sigs  = self._add_absent_signatures(absent_part_sig)
+            block_constraints = self._get_constraints(absent_part_sigs)
+            block_cterm       = self._get_constraint_term(block_constraints)
+            fmla_body         = il.And(*[absent_fmla.body, il.Not(block_cterm)])
+            absent_fmla = il.Exists(self.forall_qvars, fmla_body)
+            solver = slv.z3.Solver()
+            solver.add(slv.formula_to_z3(absent_fmla))
+            res = solver.check() 
+        present_constraints = self._get_constraints(list(self.red_present_signatures.values()))
+        present_cost = sum([len(c) for c in present_constraints])
+        absent_constraints  = self._get_constraints(list(self.red_absent_signatures.values()))
+        absent_cost = sum([len(c) for c in absent_constraints])
+        if present_cost <= absent_cost:
+            cterm = self._get_constraint_term(present_constraints)
+            self.qterms.append(cterm)
+        else:
+            cterm = il.Not(self._get_constraint_term(absent_constraints))
+            self.qterms.append(cterm)
 
     def _set_forall_constraint(self):
         neq_terms = set()
