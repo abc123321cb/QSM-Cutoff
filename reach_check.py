@@ -201,7 +201,6 @@ class ReachCheck():
         self.sat_solver.add_clause(block_clause)
 
     def is_rmin_matching_reachability(self, protocol : Protocol) -> bool:
-        vprint(self.options, f'Reachability convergence check for {self.options.size_str}')
         (result, values)  = self._get_model()
         model_repr_states = set()
         model_match = True

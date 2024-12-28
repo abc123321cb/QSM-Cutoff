@@ -19,22 +19,22 @@ class QrmOptions():
         self.flow_mode     = 1
         self.useMC = UseMC.sat
         self.prime_gen = PrimeGen.ilp
-        self.readReach       = False
-        self.check_qi        = False
-        self.writeReach      = False
-        self.writePrime      = False
-        self.writeQI         = False
-        self.writeLog        = False
-        self.log_name        = ''
-        self.log_fout        = None
-        self.all_solutions   = True 
-        self.merge_suborbits = True 
-        self.ivy_to          = 120 
-        self.qrm_to          = 3600 
+        self.readReach         = False
+        self.check_qi          = False
+        self.writeReach        = False
+        self.writePrime        = False
+        self.writeQI           = False
+        self.writeLog          = False
+        self.log_name          = ''
+        self.log_fout          = None
+        self.all_solutions     = True 
+        self.merge_suborbits   = True 
+        self.convergence_check = False 
+        self.ivy_to            = 120 
+        self.qrm_to            = 3600 
+        self.time_start        = None
+        self.time_stamp        = None
         self.python_include_path = '/usr/include/python3.12'
-        self.disable_print   = False # FIXME
-        self.time_start      = None
-        self.time_stamp      = None
 
     def get_new_size_copy(self, new_size_str):
         options = QrmOptions()
@@ -64,6 +64,14 @@ class QrmOptions():
         self.log_fout.write(lines)
         self.log_fout.flush()
 
+    def close_log_if_exists(self) -> None:
+        if self.writeLog and self.log_fout != None:
+            self.log_fout.close()
+
+    def append_log_if_exists(self) -> None:
+        if self.writeLog:
+            self.log_fout = open(self.log_name, 'a')
+
     def set_sizes(self, size_str):
         self.size_str        = size_str
         self.instance_suffix = size_str.replace('=', '_').replace(',', '_')
@@ -91,7 +99,10 @@ class QrmOptions():
             delta   = new_time_stamp - self.time_stamp 
             seconds = delta.seconds + 1e-6 * delta.microseconds
             vprint(self, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 1)
-        self.time_stamp = new_time_stamp
+            self.time_stamp = new_time_stamp
+        else:
+            self.time_start = new_time_stamp
+            self.time_stamp = new_time_stamp
 
     def print_peak_memory_and_reset(self):
         (_, peak) = tracemalloc.get_traced_memory()

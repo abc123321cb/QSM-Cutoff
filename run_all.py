@@ -62,12 +62,15 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
     return options
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
-    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-d'] + sys_args
+    vprint_instance_banner(options, f'[Synthesize Rmin]: {options.instance_name}: {options.size_str}', 0)
+    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g'] + sys_args
     rmin_result = True 
     try:
+        options.close_log_if_exists()
         subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to) 
-        sys.stdout.flush()
+        options.append_log_if_exists()
     except subprocess.CalledProcessError as error:
+        options.append_log_if_exists()
         if 'QrmFail' == error.stderr:
             rmin_result = False
         else:
@@ -75,6 +78,7 @@ def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
             vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
             sys.exit(1)
     except subprocess.TimeoutExpired:
+        options.append_log_if_exists()
         vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
         sys.exit(1)
     return rmin_result 
@@ -95,18 +99,21 @@ def get_next_size_string(next_sizes) -> str:
     return next_size_str
 
 def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
+    vprint_instance_banner(options, f'[Convergence Check]: {options.instance_name}: {options.size_str}', 0)
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
     has_converge  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(sort, orig_sizes)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-d'] + sys_args
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g'] + sys_args
         try_result   = True 
         try:
+            options.close_log_if_exists()
             subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to) 
-            sys.stdout.flush()
+            options.append_log_if_exists()
         except subprocess.CalledProcessError as error:
+            options.append_log_if_exists()
             if error.stderr == 'QrmFail':
                 try_result = False
             else:
@@ -114,33 +121,41 @@ def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
                 vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
                 sys.exit(1)
         except subprocess.TimeoutExpired:
+            options.append_log_if_exists()
             vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
             sys.exit(1)
         if not try_result:
             next_sizes[sort] = size +1
             has_converge = False
-    next_size_str = get_next_size_string(next_sizes)
-    vprint(options, f'next size: {next_size_str}')
-    return has_converge, next_size_str
+    if has_converge:
+        cutoff_size_str = options.size_str
+        return has_converge, cutoff_size_str 
+    else:
+        next_size_str = get_next_size_string(next_sizes)
+        vprint(options, f'next size: {next_size_str}')
+        return has_converge, next_size_str
 
 def run_all(ivy_name, args):
     sys_args = args.copy()
     options  = get_options(ivy_name, args, sys_args)
 
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
-    qrm_result = False
+    qrm_result      = False
+    cutoff_size_str = ''
     while not qrm_result:
         rmin_result = synthesize_Rmin_and_ivy_check(options, sys_args)
-        converge_result, next_size_str = reachability_convergence_check(options, sys_args)
+        converge_result, size_str = reachability_convergence_check(options, sys_args)
         assert(not converge_result or rmin_result) # asserting converge -> rmin is inductive
         if rmin_result and converge_result:
             qrm_result = True
+            cutoff_size_str = size_str
         else:
-            assert(options.size_str != next_size_str) 
-            options = options.get_new_size_copy(next_size_str)
+            assert(options.size_str != size_str) 
+            options = options.get_new_size_copy(size_str)
 
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
     if qrm_result:
+        vprint(options, f'[CUTOFF]: {cutoff_size_str}')
         vprint(options, '[QRM RESULT]: PASS')
     else:
         vprint(options, '[QRM RESULT]: FAIL')

@@ -53,7 +53,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:f:ramkp:c:v:l:whd")
+        opts, args = getopt.getopt(args, "s:f:ramkp:c:v:l:whg")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -101,28 +101,30 @@ def get_options(ivy_name, args):
             options.writeReach = True
             options.writePrime = True
             options.writeQI    = True
-        elif optc == '-d': # FIXME: not for user
-            options.disable_print = True
+        elif optc == '-g': # NOTE: not for user, used when doing convergence
+            options.convergence_check = True
         else:
             usage_and_exit()
     if options.writeLog:
-        if options.flow_mode == 1:
-            options.open_log()
-        else:
+        if options.convergence_check:
             options.append_log()
+        else:
+            options.open_log()
     return options
 
-def instance_start(options, ivy_name):
-    vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
+def instance_start(options : QrmOptions, ivy_name):
+    if not options.convergence_check:
+        vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0)
     options.print_time()
 
 
-def instance_end(options, ivy_name, qrm_result):
-    vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
-    if qrm_result:
-        vprint(options, '[QRM RESULT]: PASS', 0, options.disable_print)
-    else:
-        vprint(options, '[QRM RESULT]: FAIL', 0, options.disable_print)
+def instance_end(options: QrmOptions, ivy_name, qrm_result):
+    if not options.convergence_check:
+        vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.convergence_check)
+        if qrm_result:
+            vprint(options, '[QRM RESULT]: PASS', 0, options.convergence_check)
+        else:
+            vprint(options, '[QRM RESULT]: FAIL', 0, options.convergence_check)
 
 def qrm(ivy_name, args):
     # start
@@ -145,16 +147,19 @@ def qrm(ivy_name, args):
         options.step_end()
         if options.flow_mode == 2:
             # check reachability converges
+            options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.instance_name}: {options.size_str}]')
             reach_checker = ReachCheck(options, tran_sys, instantiator)
             reach_result  = reach_checker.is_rmin_matching_reachability(fr_solver.protocol)
-            try:
-                if reach_result:
-                    sys.exit(0)
-                else:
-                    raise QrmFail()
-            except QrmFail as e:
-                sys.stderr.write('QrmFail')
-                sys.exit(1) 
+            options.step_end()
+            if options.convergence_check:
+                try:
+                    if reach_result:
+                        sys.exit(0)
+                    else:
+                        raise QrmFail()
+                except QrmFail as e:
+                    sys.stderr.write('QrmFail')
+                    sys.exit(1) 
         else:
             options.step_start('Reduce Equivalent Atoms')
             fr_solver.reduce_equivalent_atoms()
@@ -201,14 +206,15 @@ def qrm(ivy_name, args):
     # end
     qrm_result = sanity_result and ivy_result
     instance_end(options, ivy_name, qrm_result)
-    try:
-        if qrm_result:
-            sys.exit(0)
-        else:
-            raise QrmFail() 
-    except QrmFail as e:
-        sys.stderr.write('QrmFail')
-        sys.exit(1)
+    if options.convergence_check:
+        try:
+            if qrm_result:
+                sys.exit(0)
+            else:
+                raise QrmFail() 
+        except QrmFail as e:
+            sys.stderr.write('QrmFail')
+            sys.exit(1)
 
 if __name__ == '__main__':
     qrm(sys.argv[1], sys.argv[2:])
