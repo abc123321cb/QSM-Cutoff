@@ -1,6 +1,6 @@
+import os
 from typing import List,Set
 from transition_system import TransitionSystem
-from ivy import ivy_logic as il
 from prime import *
 from cover_constraints import CoverConstraints
 from finite_ivy_instantiate import FiniteIvyInstantiator
@@ -291,6 +291,21 @@ class Minimizer():
         Rmin.set_definitions_and_eq_relations(self.tran_sys)
         for solution in self.optimal_solutions:
             self.rmin.append(Rmin(solution, self.orbits))
+
+    def write_ivy_files(self) -> None:
+        for rmin_id, rmin in enumerate(self.rmin):
+            ivy_name = self.options.instance_name + '.' + self.options.instance_suffix + f'.{rmin_id}'+ '.ivy'
+            cp_cmd = f'cp {self.options.ivy_filename} {ivy_name}'
+            os.system(cp_cmd)
+            comment_invar_cmd = f"sed -i '/invariant/s/^/#/' {ivy_name}"
+            os.system(comment_invar_cmd) # comment out the existing invariants, including safety property
+            ivy_file = open(ivy_name, 'a')
+            ivy_file.write('\n')
+            invariants = Rmin.def_lines + Rmin.eq_lines + rmin.invar_lines
+            for line in invariants:
+                ivy_file.write(line+'\n')
+            ivy_file.close()
+
     #------------------------------------------------------------
     # Minimizer: public core methods
     #------------------------------------------------------------
@@ -330,6 +345,7 @@ class Minimizer():
             self._solve_one()
         self.set_rmin()
         self.print_rmin()
+        self.write_ivy_files()
 
     def _enumerate_models(self, sol_id, invariants, protocol : Protocol):
         vprint(self.options, f'Minimization check for Solution {sol_id}')
@@ -345,7 +361,7 @@ class Minimizer():
                 self.cover.block_minimization_check_minterm(nvalues)
             if not repr_int in protocol.repr_states:
                 bit_str = '{0:b}'.format(repr_int)
-                vprint(self.options, 'Found a state not in reachability')
+                vprint(self.options, 'Found a state in Rmin not in reachability')
                 vprint(self.options, f'decimal: {repr_int}')
                 vprint(self.options, f'binary: {bit_str}')
                 model_match = False 
@@ -354,7 +370,7 @@ class Minimizer():
 
         difference = protocol.repr_states - model_repr_states
         if len(difference) > 0:
-            vprint(self.options, 'Found states not included in solution')
+            vprint(self.options, 'Found states in reachability not in Rmin')
             vprint(self.options, f'{difference}')
             model_match = False
         if model_match:
@@ -365,10 +381,6 @@ class Minimizer():
 
     def minimization_check(self, protocol : Protocol):
         self.cover.init_minimization_check_clauses()
-        # when comparing Models(R_{n-1}[n]) = Reach[n]
-        # from ivy import ivy_logic_utils as ilu
-        # invariants  = [ilu.resort_ast(invar, self.tran_sys.sort_inf2fin) for invar in self.tran_sys.safety_properties]
-        # return self._enumerate_models(0, invariants, protocol)
         result = True
         for sol_id, solution in enumerate(self.optimal_solutions):
             invariants = [self.orbits[orbit_id].quantified_form for orbit_id in solution]

@@ -4,13 +4,14 @@ import getopt
 import datetime
 import tracemalloc
 import os
-
 from transition_system import get_transition_system
 from finite_ivy_instantiate import FiniteIvyInstantiator
+from protocol import Protocol
 from forward_reach import ForwardReachability 
 from prime import PrimeOrbits
 from minimize import Minimizer
 from run_ivy import check_inductive_and_prove_property 
+from reach_check import ReachCheck 
 from util import * 
 from verbose import *
 
@@ -21,14 +22,19 @@ def usage ():
     print('         read ivy file and check with the given sort size') 
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
+    print('Flow modes:')
+    print('-f 1|2       flow: 1. Synthesize Rmin and ivy_check (default)')
+    print('                   2. Read Rmin from invariants and do reachability check')               
+    print('')
     print('Options:')
+    print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enable checking quantifier inference (default: off)')
-    print('-p 1|2|3     prime generation: 1. ilp, 2. binary search ilp 3. enumerate (default: 1)')
+    print('-p 1|2|3     prime generation: 1. ilp 2. binary search ilp 3. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
-    print('-l LOG       append verbose info to LOG (default: off)')
+    print('-l LOG       write verbose info to LOG (default: off)')
     print('-w           write .reach, .pis, .qpis (default: off)')
     print('             write reachable states to FILE.reach')
     print('             write prime orbits to FILE.pis')
@@ -37,7 +43,7 @@ def usage ():
 
 def usage_and_exit():
     usage()
-    sys.exit(1)
+    sys.exit(2)
 
 def file_exist(filename) -> bool:
     if not os.path.isfile(filename):
@@ -45,36 +51,25 @@ def file_exist(filename) -> bool:
         usage_and_exit ()
     return True
 
-def get_time(options, time_start=None, time_stamp=None):
-    new_time_stamp  = datetime.datetime.now()
-    if time_start != None and time_stamp != None:
-        delta   = new_time_stamp - time_start 
-        seconds = delta.seconds + 1e-6 * delta.microseconds
-        vprint(options, "[QRM NOTE]: Time elapsed since start: %.3f seconds" % (seconds), 1)
-        delta   = new_time_stamp - time_stamp 
-        seconds = delta.seconds + 1e-6 * delta.microseconds
-        vprint(options, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 1)
-    return new_time_stamp
-
-def get_peak_memory_and_reset(options):
-    (_, peak) = tracemalloc.get_traced_memory()
-    vprint(options, f'[QRM NOTE]: Peak memory: {peak} bytes', 1)
-    tracemalloc.reset_peak()    
-
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:amkp:c:v:l:whd")
+        opts, args = getopt.getopt(args, "s:f:ramkp:c:v:l:whd")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
 
     options = QrmOptions()
-    options.mode = Mode.ivy
     if file_exist(ivy_name):
-        options.ivy_filename = ivy_name
+        options.set_files_name(ivy_name)
     for (optc, optv) in opts:
         if optc == '-s':
             options.set_sizes(optv)
+        elif optc == '-f':
+            options.flow_mode = int(optv)
+            if options.flow_mode < 0 or options.flow_mode > 2:
+                usage_and_exit()
+        elif optc == '-r':
+            options.readReach = True
         elif optc == '-a':
             options.all_solutions   = False 
         elif optc == '-m':
@@ -102,7 +97,6 @@ def get_options(ivy_name, args):
         elif optc == '-l':
             options.writeLog   = True
             options.log_name   = optv 
-            options.open_log()
         elif optc == '-w':
             options.writeReach = True
             options.writePrime = True
@@ -111,22 +105,17 @@ def get_options(ivy_name, args):
             options.disable_print = True
         else:
             usage_and_exit()
+    if options.writeLog:
+        if options.flow_mode == 1:
+            options.open_log()
+        else:
+            options.append_log()
     return options
 
 def instance_start(options, ivy_name):
     vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
-    time_start = get_time(options)
-    options.set_files_name(ivy_name)
-    return time_start
+    options.print_time()
 
-def step_start(options, verbose_string):
-    vprint_step_banner(options, verbose_string)
-    tracemalloc.start()
-
-def step_end(options, time_start, time_stamp):
-    time_stamp = get_time(options, time_start, time_stamp)
-    get_peak_memory_and_reset(options)
-    return time_stamp
 
 def instance_end(options, ivy_name, qrm_result):
     vprint_instance_banner(options, f'[QRM]: {ivy_name}', 0, options.disable_print)
@@ -139,62 +128,86 @@ def qrm(ivy_name, args):
     # start
     options    = get_options(ivy_name, args)
     qrm_result = False
-    time_start = instance_start(options, ivy_name)
-    time_stamp = time_start
+    instance_start(options, ivy_name)
 
-    # generate reachability
-    step_start(options, f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
-    step_start(options, 'Set up for forward reachability')
+    # get reachability
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
-    fr_solver    = ForwardReachability(tran_sys, instantiator, options)
-    fr_solver.setup()
-    time_stamp   = step_end(options, time_start, time_stamp)
-    step_start(options, 'Symmetric Quotient DFS')
-    fr_solver.symmetric_quotient_depth_first_search_reachability()
-    time_stamp   = step_end(options, time_start, time_stamp)
-    step_start(options, 'Reduce Equivalent Atoms')
-    fr_solver.reduce_equivalent_atoms()
-    time_stamp   = step_end(options, time_start, time_stamp)
-    fr_solver.print_reachability()
-    time_stamp   = step_end(options, time_start, time_stamp)
+    protocol     = None
+    if not options.readReach: # forward reachability
+        options.step_start(f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
+        options.step_start('Set up for forward reachability')
+        fr_solver    = ForwardReachability(tran_sys, instantiator, options)
+        fr_solver.setup()
+        options.step_end()
+        options.step_start('Symmetric Quotient DFS')
+        fr_solver.symmetric_quotient_depth_first_search_reachability()
+        options.step_end()
+        if options.flow_mode == 2:
+            # check reachability converges
+            reach_checker = ReachCheck(options, tran_sys, instantiator)
+            reach_result  = reach_checker.is_rmin_matching_reachability(fr_solver.protocol)
+            try:
+                if reach_result:
+                    sys.exit(0)
+                else:
+                    raise QrmFail()
+            except QrmFail as e:
+                sys.stderr.write('QrmFail')
+                sys.exit(1) 
+        else:
+            options.step_start('Reduce Equivalent Atoms')
+            fr_solver.reduce_equivalent_atoms()
+            options.step_end()
+            fr_solver.print_reachability()
+            options.step_end()
+        protocol = fr_solver.protocol
+    else: # read reachability
+        # TODO: read from file
+        protocol = Protocol()
 
     # generate prime orbits
-    step_start(options, f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options) 
-    prime_orbits.symmetry_aware_enumerate(fr_solver.protocol)               
-    time_stamp = step_end(options, time_start, time_stamp)
+    prime_orbits.symmetry_aware_enumerate(protocol)               
+    options.step_end()
 
     # reduction
-    step_start(options, f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
     minimizer.reduce_redundant_prime_orbits()
-    time_stamp   = step_end(options, time_start, time_stamp)
+    options.step_end()
 
     # quantifier inference
-    step_start(options, f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
-    minimizer.quantifier_inference(instantiator, fr_solver.protocol.state_atoms_fmla)
-    time_stamp = step_end(options, time_start, time_stamp)
+    options.step_start(f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
+    minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
+    options.step_end()
 
     # minimization
-    step_start(options, f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
     minimizer.solve_rmin()
-    time_stamp = step_end(options, time_start, time_stamp)
+    options.step_end()
 
     # minimization sanity check
-    step_start(options, f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
-    sanity_result = minimizer.minimization_check(fr_solver.protocol)
-    time_stamp    = step_end(options, time_start, time_stamp)
+    options.step_start(f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
+    sanity_result = minimizer.minimization_check(protocol)
+    options.step_end()
 
     # ivy_check
-    step_start(options, f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
     ivy_result = check_inductive_and_prove_property(tran_sys, minimizer, options)
-    qrm_result = sanity_result and ivy_result
-    time_stamp = step_end(options, time_start, time_stamp)
+    options.step_end()
 
     # end
+    qrm_result = sanity_result and ivy_result
     instance_end(options, ivy_name, qrm_result)
-    if not qrm_result:
+    try:
+        if qrm_result:
+            sys.exit(0)
+        else:
+            raise QrmFail() 
+    except QrmFail as e:
+        sys.stderr.write('QrmFail')
         sys.exit(1)
 
 if __name__ == '__main__':

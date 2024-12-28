@@ -1,21 +1,25 @@
+import datetime
+import tracemalloc
+from verbose import *
 from enum import Enum
-Mode  = Enum('Mode', ['ivy', 'yaml'])
 UseMC = Enum('UseMC', ['sat', 'mc'])
 PrimeGen = Enum('PrimeGen', ['ilp', 'binary', 'enumerate'])
+
+class QrmFail(Exception):
+    pass
 
 class QrmOptions():
     def __init__(self) -> None:
         self.verbosity  = 0
-        self.yaml_filename = ''
         self.instance_name = ''
         self.ivy_filename  = ''
-        self.vmt_filename  = ''
         self.size_str      = ''
         self.sizes         = {} # sort name to size
         self.instance_suffix = ''
-        self.mode  = Mode.ivy
+        self.flow_mode     = 1
         self.useMC = UseMC.sat
         self.prime_gen = PrimeGen.ilp
+        self.readReach       = False
         self.check_qi        = False
         self.writeReach      = False
         self.writePrime      = False
@@ -29,13 +33,30 @@ class QrmOptions():
         self.qrm_to          = 3600 
         self.python_include_path = '/usr/include/python3.12'
         self.disable_print   = False # FIXME
+        self.time_start      = None
+        self.time_stamp      = None
+
+    def get_new_size_copy(self, new_size_str):
+        options = QrmOptions()
+        options.verbosity = self.verbosity
+        options.instance_name =  self.instance_name
+        options.ivy_filename  =  self.ivy_filename 
+        options.set_sizes(new_size_str)
+        options.writeReach   = True 
+        options.writeLog     = self.writeLog 
+        options.log_name     = self.log_name
+        options.log_fout     = self.log_fout
+        return options
 
     def set_files_name(self, ivy_name):
         self.ivy_filename  = ivy_name
         self.instance_name = ivy_name.split('.')[0]
-        self.vmt_filename  = self.instance_name + '.vmt'
 
     def open_log(self) -> None:
+        assert(self.writeLog)
+        self.log_fout = open(self.log_name, 'w')
+
+    def append_log(self) -> None:
         assert(self.writeLog)
         self.log_fout = open(self.log_name, 'a')
 
@@ -61,6 +82,29 @@ class QrmOptions():
                 break
             self.sizes[sort] = int(size)
 
+    def print_time(self):
+        new_time_stamp  = datetime.datetime.now()
+        if self.time_start != None and self.time_stamp != None:
+            delta   = new_time_stamp - self.time_start 
+            seconds = delta.seconds + 1e-6 * delta.microseconds
+            vprint(self, "[QRM NOTE]: Time elapsed since start: %.3f seconds" % (seconds), 1)
+            delta   = new_time_stamp - self.time_stamp 
+            seconds = delta.seconds + 1e-6 * delta.microseconds
+            vprint(self, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 1)
+        self.time_stamp = new_time_stamp
+
+    def print_peak_memory_and_reset(self):
+        (_, peak) = tracemalloc.get_traced_memory()
+        vprint(self, f'[QRM NOTE]: Peak memory: {peak} bytes', 1)
+        tracemalloc.reset_peak()    
+
+    def step_start(self, verbose_string):
+        vprint_step_banner(self, verbose_string)
+        tracemalloc.start()
+
+    def step_end(self):
+        self.print_time()
+        self.print_peak_memory_and_reset()
 
 SET_DELIM      = '__'
 SET_ELEM_DELIM = '_'
@@ -162,36 +206,3 @@ class FormulaUtility():
             if isinstance(g, il.Exists):
                 return il.ForAll(prefix, negate_matrix)
         return il.Not(g)
-
-def get_instances_from_yaml(yaml_name):
-    import yaml
-    import itertools
-    from math import comb
-    instances  = {}
-    yaml_file  = open(yaml_name, 'r')
-    yaml_input = yaml.safe_load(yaml_file)
-    for data in yaml_input.values():
-        sizes = []
-        sorts = []
-        dep2quorum_size = {}
-        is_quorum_list = []
-        for sort, interval in data['size'].items(): #stable
-            is_quorum = False
-            size_tuple = tuple([0])
-            size_tuple = tuple(range(interval['from'],interval['to']+1))
-            is_quorum_list.append(is_quorum)
-            sizes.append(size_tuple)
-            sorts.append(sort)
-
-        ivy_name = data['path']
-        instances[ivy_name] = []
-        for size in itertools.product(*sizes):
-            size_list = list(size)
-            for idx, is_quorum in enumerate(is_quorum_list):
-                if is_quorum:
-                    dep_idx = list(data['size'].keys()).index(dep_type)
-                    dep_size = size_list[dep_idx]
-                    size_list[idx] = dep2quorum_size[dep_size]
-            size_str = ','.join([f'{k}={v}' for (k,v) in zip(sorts,size_list)])
-            instances[ivy_name].append(size_str)
-    return instances
