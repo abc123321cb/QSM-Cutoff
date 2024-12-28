@@ -126,6 +126,10 @@ def instance_end(options: QrmOptions, ivy_name, qrm_result):
         else:
             vprint(options, '[QRM RESULT]: FAIL', 0, options.convergence_check)
 
+def can_skip_forward_reachability(options) -> bool:
+    reach_filename = options.instance_name + '.' + options.instance_suffix + '.reach'
+    return os.path.isfile(reach_filename)
+
 def qrm(ivy_name, args):
     # start
     options    = get_options(ivy_name, args)
@@ -136,7 +140,10 @@ def qrm(ivy_name, args):
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
     protocol     = None
-    if not options.readReach: # forward reachability
+    if options.readReach and can_skip_forward_reachability(options): # read reachability
+        protocol = Protocol(options)
+        protocol.init_protocol_from_file(tran_sys, instantiator)
+    else: # forward reachability
         options.step_start(f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
         options.step_start('Set up for forward reachability')
         fr_solver    = ForwardReachability(tran_sys, instantiator, options)
@@ -145,31 +152,29 @@ def qrm(ivy_name, args):
         options.step_start('Symmetric Quotient DFS')
         fr_solver.symmetric_quotient_depth_first_search_reachability()
         options.step_end()
-        if options.flow_mode == 2:
-            # check reachability converges
-            options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.instance_name}: {options.size_str}]')
-            reach_checker = ReachCheck(options, tran_sys, instantiator)
-            reach_result  = reach_checker.is_rmin_matching_reachability(fr_solver.protocol)
-            options.step_end()
-            if options.convergence_check:
-                try:
-                    if reach_result:
-                        sys.exit(0)
-                    else:
-                        raise QrmFail()
-                except QrmFail as e:
-                    sys.stderr.write('QrmFail')
-                    sys.exit(1) 
-        else:
-            options.step_start('Reduce Equivalent Atoms')
-            fr_solver.reduce_equivalent_atoms()
-            options.step_end()
-            fr_solver.print_reachability()
-            options.step_end()
         protocol = fr_solver.protocol
-    else: # read reachability
-        # TODO: read from file
-        protocol = Protocol()
+
+    if options.flow_mode == 2:
+        # check reachability converges
+        options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.instance_name}: {options.size_str}]')
+        reach_checker = ReachCheck(options, tran_sys, instantiator)
+        reach_result  = reach_checker.is_rmin_matching_reachability(fr_solver.protocol)
+        options.step_end()
+        if options.convergence_check:
+            try:
+                if reach_result:
+                    sys.exit(0)
+                else:
+                    raise QrmFail()
+            except QrmFail as e:
+                sys.stderr.write('QrmFail')
+                sys.exit(1) 
+        else:
+            sys.exit(0)
+    else:
+        options.step_start('Reduce Equivalent Atoms')
+        protocol.reduce_equivalent_atoms(tran_sys) 
+        options.step_end()
 
     # generate prime orbits
     options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')

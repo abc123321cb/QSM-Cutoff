@@ -63,7 +63,7 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
     vprint_instance_banner(options, f'[Synthesize Rmin]: {options.instance_name}: {options.size_str}', 0)
-    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g'] + sys_args
+    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-r'] + sys_args
     rmin_result = True 
     try:
         options.close_log_if_exists()
@@ -106,7 +106,7 @@ def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
     has_converge  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(sort, orig_sizes)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g'] + sys_args
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args
         try_result   = True 
         try:
             options.close_log_if_exists()

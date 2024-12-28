@@ -6,8 +6,6 @@ from finite_ivy_instantiate import FiniteIvyInstantiator
 from finite_ivy_gen import FiniteIvyGenerator
 from finite_ivy_exec import FiniteIvyExecutor, IVY_ACTION_COMPLETE, IVY_ACTION_INCOMPLETE 
 from verbose import *
-from qutil import get_func_args
-import numpy as np
 from math import factorial as fact
 
 class DfsNode():
@@ -51,10 +49,7 @@ class ForwardReachability():
         self.dfs_state_orbits    : List[StateOrbit] = []
         self.dfs_max_depth       = 0
         self.dfs_immutable_state = ''
-        # equivalence quotient data structures
-        self.atom2equivs      = {} 
-        self.atom2complements = {}
-        self.remove_atom_ids  = set()
+
 
     def _init_ivy_actions(self):
         self.ivy_actions = self.instantiator.ivy_actions
@@ -154,36 +149,6 @@ class ForwardReachability():
         FiniteIvyGenerator.clean()
 
     #------------------------------------------------------------
-    # ForwardReachability: equivalence reduction 
-    #------------------------------------------------------------
-    def _get_state_array_from_state_list(self, state_list : List[str]):
-        # Convert list of strings to a 2D numpy array
-        return np.array([list(s) for s in state_list])
-
-    def _set_equivalent_complement_atoms(self, state_array):
-        atom_num = self.protocol.state_atom_num
-        for i in range(atom_num-1):
-            if i in self.remove_atom_ids:
-                continue
-            for j in range(i+1, atom_num):
-                if j in self.remove_atom_ids:
-                    continue
-                atom_i = self.protocol.atoms_fmla[i] 
-                atom_j = self.protocol.atoms_fmla[j]
-                if get_func_args(atom_i) != get_func_args(atom_j):
-                    continue
-                if np.array_equal(state_array[:, i], state_array[:, j]):
-                    if not atom_i in self.atom2equivs:
-                        self.atom2equivs[atom_i] = []
-                    self.atom2equivs[atom_i].append(atom_j)
-                    self.remove_atom_ids.add(j)
-                elif int(''.join(state_array[:, i]), 2) + int(''.join(state_array[:, j]), 2) == int('1'*atom_num, 2):  # complement
-                    if not atom_i in self.atom2complements:
-                        self.atom2complements[atom_i] = []
-                    self.atom2complements[atom_i].append(atom_j)
-                    self.remove_atom_ids.add(j)
-
-    #------------------------------------------------------------
     # ForwardReachability: update protocol states
     #------------------------------------------------------------
     def _update_protocol_states(self):
@@ -191,14 +156,7 @@ class ForwardReachability():
         protocol_states = list(self.dfs_explored_states)
         self.protocol.init_reachable_states(self.dfs_immutable_state, protocol_states)
         # representative states
-        self.protocol.repr_states = set(self.dfs_repr_states)
-
-    def _reduce_equivalent_atoms(self):
-        # equivalence reduced states (post-processing)
-        state_array = self._get_state_array_from_state_list(self.protocol.reachable_states)
-        self._set_equivalent_complement_atoms(state_array)
-        self.protocol.set_quotient_reachabiliy(state_array, self.remove_atom_ids)
-        self.tran_sys.set_atom_equivalence_constraints(self.atom2equivs, self.atom2complements)
+        self.protocol.init_representative_states(self.dfs_repr_states)
 
     #------------------------------------------------------------
     # ForwardReachability: print methods
@@ -226,15 +184,6 @@ class ForwardReachability():
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)-len(self.dfs_repr_states)}', 2)
 
-    def _print_equiv_reduction_info(self) -> None:
-        vprint(self.options, f'[FW NOTE]: equivalent atoms', 2)
-        for atom, equivs in self.atom2equivs.items():
-            vprint(self.options, f'\t{str(atom)}: {[str(e) for e in equivs]}', 2)
-        vprint(self.options, f'[FW NOTE]: complement atoms', 2)
-        for atom, cmpls in self.atom2complements.items():
-            vprint(self.options, f'\t{str(atom)}: {[str(c) for c in cmpls]}', 2)
-        vprint(self.options, f'[FW NOTE]: remove_atom_ids: {self.remove_atom_ids}', 2)
-
     #------------------------------------------------------------
     # ForwardReachability: public methods
     #------------------------------------------------------------
@@ -247,12 +196,6 @@ class ForwardReachability():
         self._update_protocol_states()
         self._clean()
         self._print_dfs_statistics()
+        self._print_reachability()
         if (self.options.writeReach):
             self.protocol.write_reachability()
-
-    def reduce_equivalent_atoms(self):
-        self._reduce_equivalent_atoms()
-        self._print_equiv_reduction_info()
-
-    def print_reachability(self):
-        self._print_reachability()
