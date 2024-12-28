@@ -37,12 +37,12 @@ def run_finite_ivy_check(options: QrmOptions):
         ivy_cmd  = ' '.join(ivy_args)
         vprint(options, ivy_cmd)
         try:
-            if options.write_log:
+            if options.writeLog:
                 subprocess.run(ivy_args, text=True, check=True, stdout=options.log_fout, timeout=options.ivy_to) 
             else:
                 subprocess.run(ivy_args, capture_output=True, text=True, check=True, timeout=options.ivy_to) 
-            sys.stdout.flush()
         except subprocess.CalledProcessError as error:
+            sys.stdout.flush()
             if error.returncode == 1:
                 vprint(options, f'[FINITE_CHECK RESULT]: FAIL ... exit with return code {error.returncode}')
             else:
@@ -51,10 +51,12 @@ def run_finite_ivy_check(options: QrmOptions):
             has_increase = True
             continue
         except subprocess.TimeoutExpired:
+            sys.stdout.flush()
             vprint(options, f'[FINITE_CHECK TO]: Timeout after {options.ivy_to}')
             next_sizes[sort] = size +1
             has_increase = True
             continue
+        sys.stdout.flush()
         vprint(options, f'[FINITE_CHECK RESULT]: PASS')
     if not has_increase:
         for sort,size in next_sizes.items():
@@ -75,16 +77,18 @@ def run_ivy_check(rmin_id : int, options : QrmOptions):
             subprocess.run(ivy_args, text=True, check=True, stdout=options.log_fout, timeout=options.ivy_to) 
         else:
             subprocess.run(ivy_args, capture_output=True, text=True, check=True, timeout=options.ivy_to) 
-        sys.stdout.flush()
     except subprocess.CalledProcessError as error:
+        sys.stdout.flush()
         if error.returncode == 1:
             vprint(options, f'[IVY_CHECK RESULT]: FAIL ... exit with return code {error.returncode}')
         else:
             vprint(options, f'[IVY_CHECK RESULT]: ABORT ... exit with return code {error.returncode}')
         return False
     except subprocess.TimeoutExpired:
+        sys.stdout.flush()
         vprint(options, f'[IVY_CHECK TO]: Timeout after {options.ivy_to}')
         return False
+    sys.stdout.flush()
     vprint(options, f'[IVY_CHECK RESULT]: PASS')
     return True
 

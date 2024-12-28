@@ -342,7 +342,7 @@ class FiniteIvyGenerator():
         ivy_cmd  = ' '.join(ivy_args)
         vprint(FiniteIvyGenerator.options, ivy_cmd)
         try:
-            if FiniteIvyGenerator.options.write_log:
+            if FiniteIvyGenerator.options.writeLog:
                 subprocess.run(ivy_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(ivy_args, capture_output=True, text=True, check=True) 
@@ -369,7 +369,7 @@ class FiniteIvyGenerator():
         swig_cmd  = ' '.join(swig_args)
         vprint(FiniteIvyGenerator.options, swig_cmd)
         try:
-            if FiniteIvyGenerator.options.write_log:
+            if FiniteIvyGenerator.options.writeLog:
                 subprocess.run(swig_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(swig_args, capture_output=True, text=True, check=True) 
@@ -396,7 +396,7 @@ class FiniteIvyGenerator():
         gpp_cmd   = ' '.join(gpp_args)
         vprint(FiniteIvyGenerator.options, gpp_cmd)
         try:
-            if FiniteIvyGenerator.options.write_log:
+            if FiniteIvyGenerator.options.writeLog:
                 subprocess.run(gpp_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(gpp_args, capture_output=True, text=True, check=True) 
@@ -427,7 +427,7 @@ class FiniteIvyGenerator():
         link_cmd  = ' '.join(link_args)
         vprint(FiniteIvyGenerator.options, link_cmd)
         try:
-            if FiniteIvyGenerator.options.write_log:
+            if FiniteIvyGenerator.options.writeLog:
                 subprocess.run(link_args, text=True, check=True, stdout=FiniteIvyGenerator.options.log_fout) 
             else:
                 subprocess.run(link_args, capture_output=True, text=True, check=True) 
