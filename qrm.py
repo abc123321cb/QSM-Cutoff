@@ -136,7 +136,8 @@ def qrm(ivy_name, args):
     options    = get_options(ivy_name, args)
     qrm_result = False
     instance_start(options, ivy_name)
-
+    tran_sys     = get_transition_system(options, options.ivy_filename)
+    instantiator = FiniteIvyInstantiator(tran_sys)
     if options.flow_mode == 3: # finite ivy check 
         options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
         finite_result = run_finite_ivy_check(options) 
@@ -154,8 +155,6 @@ def qrm(ivy_name, args):
             sys.exit(0)
 
     # get reachability
-    tran_sys     = get_transition_system(options, options.ivy_filename)
-    instantiator = FiniteIvyInstantiator(tran_sys)
     protocol     = None
     if options.readReach and can_skip_forward_reachability(options): # read reachability
         protocol = Protocol(options)
