@@ -340,6 +340,10 @@ class CoverConstraints():
             orbit_fmla_var = self.tseitin_encode(inst_orbit, is_root=False)
             self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
 
+        if len(quantified_orbits) == 0: # edge case
+            top_atom_var = self.atom_vars[-1]
+            self.min_checker.add_clause([top_atom_var, -1*top_atom_var])
+
         for clause in self.root_assume_clauses:
             self.min_checker.add_clause(clause)
         for clause in self.root_tseitin_clauses:

@@ -155,12 +155,14 @@ class ReachCheck():
                     self.root_assume_clauses.append(at_most_one)
 
     def _init_invariants(self) -> None:
-        # TODO: check definitions closed 
         invariants  = [ilu.resort_ast(invar, self.tran_sys.sort_inf2fin) for invar in self.tran_sys.safety_properties]
         for invar in invariants: 
             inst_invar = self.instantiator.instantiate_quantifier(invar)
             invar_fmla_var = self._tseitin_encode(inst_invar)
             self.root_assume_clauses.append([invar_fmla_var])
+        if len(invariants) == 0: # edge case
+            top_atom_var = self.atom_vars[-1]
+            self.sat_solver.add_clause([top_atom_var, -1*top_atom_var])
 
     def _push_clauses_into_solvers(self) -> None:
         for clause in self.root_assume_clauses:
