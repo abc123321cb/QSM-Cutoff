@@ -2,29 +2,36 @@ import os
 import subprocess
 from typing import List
 from transition_system import TransitionSystem
+from finite_ivy_instantiate import FiniteIvyInstantiator
 from minimize import Minimizer, Rmin
 from ivy import ivy_utils as iu
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
 from ivy import ivy_solver as slv
 from util import QrmOptions
+from transition_system import TransitionSystem
 from verbose import *
 
-def run_finite_ivy_check(options: QrmOptions):
+def run_finite_ivy_check(options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator):
     orig_ivy_name = options.ivy_filename
     try_ivy_name  = options.ivy_filename[:-4] + '.' + options.instance_suffix + '.ivy'
     cp_cmd = f'cp {orig_ivy_name} {try_ivy_name}'
     os.system(cp_cmd) 
-    try_size_constants = ['type quorum'] if 'quorum' in options.sizes else []
-    for sort, size in options.sizes.items():
-        if sort != 'quorum':
-            constants = [f'{sort}{i}' for i in range(size)]
-            try_size_constants.append(f'type {sort} = ' +  '{' + ', '.join(constants) + '}')
+    type_lines = []
+    for sort, consts in tran_sys.sort2consts.items():
+        constants = [str(c) for c in consts]
+        type_lines.append(f'type {sort.name} = ' +  '{' + ', '.join(constants) + '}')
     comment_type_cmd = f"sed -i '/type/s/^/#/' {try_ivy_name}"
     os.system(comment_type_cmd) # comment out the original type 
-    for line in try_size_constants:
+    for line in type_lines:
         insert_type_cmd = f"sed -i '0,/type/{{/type/i\\\n{line}\n}}' {try_ivy_name}"
         os.system(insert_type_cmd) 
+    axiom_lines = []
+    for line in instantiator.dep_axioms_str:
+        axiom_lines.append(f'axiom {line}')
+    for line in axiom_lines:
+        insert_axiom_cmd = f"sed -i '0,/after/{{/after/i\\\n{line}\n}}' {try_ivy_name}"
+        os.system(insert_axiom_cmd) 
     ivy_args = ['ivy_check', 'complete=fo', try_ivy_name]
     ivy_cmd  = ' '.join(ivy_args)
     vprint(options, ivy_cmd)

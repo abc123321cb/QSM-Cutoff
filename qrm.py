@@ -140,7 +140,7 @@ def qrm(ivy_name, args):
     instantiator = FiniteIvyInstantiator(tran_sys)
     if options.flow_mode == 3: # finite ivy check 
         options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
-        finite_result = run_finite_ivy_check(options) 
+        finite_result = run_finite_ivy_check(options, tran_sys, instantiator) 
         options.step_end()
         if options.convergence_check:
             try:
