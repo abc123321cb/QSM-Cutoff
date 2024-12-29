@@ -360,10 +360,8 @@ class Minimizer():
                 repr_int = min(int(''.join(nvalues), 2), repr_int)
                 self.cover.block_minimization_check_minterm(nvalues)
             if not repr_int in protocol.repr_states:
-                bit_str = '{0:b}'.format(repr_int)
-                vprint(self.options, 'Found a state in Rmin not in reachability')
-                vprint(self.options, f'decimal: {repr_int}')
-                vprint(self.options, f'binary: {bit_str}')
+                bit_str = '{0:0{1}b}'.format(repr_int, protocol.atom_num)[:protocol.state_atom_num]
+                vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}')
                 model_match = False 
             model_repr_states.add(repr_int)
             (result, values) = self.cover.get_minimization_check_minterm()
