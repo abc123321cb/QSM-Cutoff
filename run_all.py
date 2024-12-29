@@ -76,10 +76,12 @@ def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
         else:
             vprint(options, error.stderr)
             vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
+            vprint(options, '[QRM RESULT]: FAIL')
             sys.exit(1)
     except subprocess.TimeoutExpired:
         options.append_log_if_exists()
         vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
+        vprint(options, '[QRM RESULT]: FAIL')
         sys.exit(1)
     return rmin_result 
 
@@ -119,10 +121,12 @@ def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
             else:
                 vprint(options, error.stderr)
                 vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
+                vprint(options, '[QRM RESULT]: FAIL')
                 sys.exit(1)
         except subprocess.TimeoutExpired:
             options.append_log_if_exists()
             vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
+            vprint(options, '[QRM RESULT]: FAIL')
             sys.exit(1)
         if not try_result:
             next_sizes[sort] = size +1
