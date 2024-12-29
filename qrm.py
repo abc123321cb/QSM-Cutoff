@@ -137,6 +137,22 @@ def qrm(ivy_name, args):
     qrm_result = False
     instance_start(options, ivy_name)
 
+    if options.flow_mode == 3: # finite ivy check 
+        options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
+        finite_result = run_finite_ivy_check(options) 
+        options.step_end()
+        if options.convergence_check:
+            try:
+                if finite_result:
+                    sys.exit(0)
+                else:
+                    raise QrmFail()
+            except QrmFail:
+                sys.stderr.write('QrmFail')
+                sys.exit(1) 
+        else:
+            sys.exit(0)
+
     # get reachability
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
@@ -164,22 +180,6 @@ def qrm(ivy_name, args):
         if options.convergence_check:
             try:
                 if reach_result:
-                    sys.exit(0)
-                else:
-                    raise QrmFail()
-            except QrmFail:
-                sys.stderr.write('QrmFail')
-                sys.exit(1) 
-        else:
-            sys.exit(0)
-    elif options.flow_mode == 3:
-        # finite ivy check
-        options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
-        finite_result = run_finite_ivy_check(options) 
-        options.step_end()
-        if options.convergence_check:
-            try:
-                if finite_result:
                     sys.exit(0)
                 else:
                     raise QrmFail()
