@@ -47,8 +47,8 @@ declare -a hard_sym_ring_instances=(
     "chord_ring_maintenance"
 )
 
-timeout ${Timeout} python3 run_all.py ${sym_path}Consensus.ivy                 -s value=2                      -v 5 -w -k -l ${sym_path}Consensus.log
-timeout ${Timeout} python3 run_all.py ${sym_path}TCommit.ivy                   -s resource_manager=2           -v 5 -w -k -l ${sym_path}TCommit.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}Consensus.ivy                 -s value=1                      -v 5 -w -k -l ${sym_path}Consensus.log
+timeout ${Timeout} python3 run_all.py ${sym_path}TCommit.ivy                   -s resource_manager=1           -v 5 -w -k -l ${sym_path}TCommit.log 
 timeout ${Timeout} python3 run_all.py ${sym_path}Ricart-Agrawala.ivy           -s node=1                       -v 5 -w -k -l ${sym_path}Ricart-Agrawala.log 
 timeout ${Timeout} python3 run_all.py ${sym_path}lock_server.ivy               -s server=1,client=1            -v 5 -w -k -l ${sym_path}lock_server.log                                
 timeout ${Timeout} python3 run_all.py ${sym_path}sharded_kv.ivy                -s node=1,key=1,value=1         -v 5 -w -k -l ${sym_path}sharded_kv.log 
