@@ -260,10 +260,11 @@ class QFormula():
             qvar2value[qvar_name] = value
         const2qvars : Dict[str, List[il.Variable]] = {}
         for qvar in self.forall_qvars:
-            const = qvar2value[str(qvar)] 
-            if not const in const2qvars:
-                const2qvars[const] = []
-            const2qvars[const].append(qvar)
+            if str(qvar) in qvar2value:
+                const = qvar2value[str(qvar)] 
+                if not const in const2qvars:
+                    const2qvars[const] = []
+                const2qvars[const].append(qvar)
         sort2class_sigs : Dict[il.EnumeratedSort, List[ClassSignature]] = {}
         for qvars in const2qvars.values():
             sort = qvars[0].sort
