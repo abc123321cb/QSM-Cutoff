@@ -102,7 +102,7 @@ def get_next_size_string(next_sizes) -> str:
     return next_size_str
 
 def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
-    vprint_instance_banner(options, f'[Convergence Check]: {options.instance_name}: {options.size_str}', 0)
+    vprint_instance_banner(options, f'[Reachability Convergence Check]: {options.instance_name}: {options.size_str}', 0)
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
@@ -110,6 +110,46 @@ def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(sort, orig_sizes)
         qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args
+        try_result   = True 
+        try:
+            vprint(options, ' '.join(qrm_args))
+            options.close_log_if_exists()
+            subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to) 
+            options.append_log_if_exists()
+        except subprocess.CalledProcessError as error:
+            options.append_log_if_exists()
+            if error.stderr == 'QrmFail':
+                try_result = False
+            else:
+                vprint(options, error.stderr)
+                vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
+                vprint(options, '[QRM RESULT]: FAIL')
+                sys.exit(1)
+        except subprocess.TimeoutExpired:
+            options.append_log_if_exists()
+            vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
+            vprint(options, '[QRM RESULT]: FAIL')
+            sys.exit(1)
+        if not try_result:
+            next_sizes[sort] = size +1
+            has_converge = False
+    if has_converge:
+        cutoff_size_str = options.size_str
+        return has_converge, cutoff_size_str 
+    else:
+        next_size_str = get_next_size_string(next_sizes)
+        vprint(options, f'next size: {next_size_str}')
+        return has_converge, next_size_str
+
+def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
+    vprint_instance_banner(options, f'[Finite Inductive Check]: {options.instance_name}: {options.size_str}', 0)
+    orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
+    orig_sizes    = get_original_sizes(options) 
+    next_sizes    = orig_sizes.copy()
+    has_converge  = True 
+    for sort, size in orig_sizes.items():
+        try_size_str = get_try_increase_sort_size_string(sort, orig_sizes)
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '3', '-g', '-w'] + sys_args
         try_result   = True 
         try:
             vprint(options, ' '.join(qrm_args))
@@ -150,12 +190,18 @@ def run_all(ivy_name, args):
     cutoff_size_str = ''
     while not qrm_result:
         rmin_result = synthesize_Rmin_and_ivy_check(options, sys_args)
-        converge_result, size_str = reachability_convergence_check(options, sys_args)
-        assert(not converge_result or rmin_result) # asserting converge -> rmin is inductive
-        if rmin_result and converge_result:
-            qrm_result = True
-            cutoff_size_str = size_str
-        else:
+        reach_result, size_str = reachability_convergence_check(options, sys_args)
+        if reach_result:
+            if rmin_result:
+                qrm_result = True
+                cutoff_size_str = size_str
+            else: # Rmin is not inductive yet
+                finite_result, size_str = finite_ivy_check(options, sys_args)
+                assert(not finite_result)
+                assert(options.size_str != size_str)
+                options = options.get_new_size_copy(size_str)
+
+        else: # reachability not converged yet
             assert(options.size_str != size_str) 
             options = options.get_new_size_copy(size_str)
 

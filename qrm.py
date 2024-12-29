@@ -10,7 +10,7 @@ from protocol import Protocol
 from forward_reach import ForwardReachability 
 from prime import PrimeOrbits
 from minimize import Minimizer
-from run_ivy import check_inductive_and_prove_property 
+from run_ivy import check_inductive_and_prove_property, run_finite_ivy_check
 from reach_check import ReachCheck 
 from util import * 
 from verbose import *
@@ -23,8 +23,9 @@ def usage ():
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Flow modes:')
-    print('-f 1|2       flow: 1. Synthesize Rmin and ivy_check (default)')
+    print('-f 1|2|3     flow: 1. Synthesize Rmin and ivy_check (default)')
     print('                   2. Read Rmin from invariants and do reachability check')               
+    print('                   3. Read Rmin from invariants and do finite ivy check')               
     print('')
     print('Options:')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
@@ -66,7 +67,7 @@ def get_options(ivy_name, args):
             options.set_sizes(optv)
         elif optc == '-f':
             options.flow_mode = int(optv)
-            if options.flow_mode < 0 or options.flow_mode > 2:
+            if options.flow_mode < 0 or options.flow_mode > 3:
                 usage_and_exit()
         elif optc == '-r':
             options.readReach = True
@@ -166,7 +167,23 @@ def qrm(ivy_name, args):
                     sys.exit(0)
                 else:
                     raise QrmFail()
-            except QrmFail as e:
+            except QrmFail:
+                sys.stderr.write('QrmFail')
+                sys.exit(1) 
+        else:
+            sys.exit(0)
+    elif options.flow_mode == 3:
+        # finite ivy check
+        options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
+        finite_result = run_finite_ivy_check(options) 
+        options.step_end()
+        if options.convergence_check:
+            try:
+                if finite_result:
+                    sys.exit(0)
+                else:
+                    raise QrmFail()
+            except QrmFail:
                 sys.stderr.write('QrmFail')
                 sys.exit(1) 
         else:
@@ -217,7 +234,7 @@ def qrm(ivy_name, args):
                 sys.exit(0)
             else:
                 raise QrmFail() 
-        except QrmFail as e:
+        except QrmFail:
             sys.stderr.write('QrmFail')
             sys.exit(1)
 
