@@ -66,6 +66,7 @@ def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
     qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-r'] + sys_args
     rmin_result = True 
     try:
+        vprint(options, ' '.join(qrm_args))
         options.close_log_if_exists()
         subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to) 
         options.append_log_if_exists()
@@ -92,7 +93,7 @@ def get_original_sizes(options) -> Dict[str, int]:
     return orig_sizes
 
 def get_try_increase_sort_size_string(sort, orig_sizes) -> str:
-    try_sizes = [f'{s}={sz+1}' if s==sort else f'{s}_{sz}' for s,sz in orig_sizes.items()]
+    try_sizes = [f'{s}={sz+1}' if s==sort else f'{s}={sz}' for s,sz in orig_sizes.items()]
     try_size_str = ','.join(try_sizes)
     return try_size_str
 
@@ -111,6 +112,7 @@ def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
         qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args
         try_result   = True 
         try:
+            vprint(options, ' '.join(qrm_args))
             options.close_log_if_exists()
             subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to) 
             options.append_log_if_exists()
