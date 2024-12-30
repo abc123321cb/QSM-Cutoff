@@ -174,7 +174,7 @@ def qrm(ivy_name, args):
         # check reachability converges
         options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.instance_name}: {options.size_str}]')
         reach_checker = ReachCheck(options, tran_sys, instantiator)
-        reach_result  = reach_checker.is_rmin_matching_reachability(fr_solver.protocol)
+        reach_result  = reach_checker.is_rmin_matching_reachability(protocol)
         options.step_end()
         if options.convergence_check:
             try:

@@ -3,7 +3,9 @@ import os
 from os import path
 import subprocess
 import getopt
+from typing import List
 from util import *
+from run_ivy import run_ivy_check
 from verbose import *
 from typing import Dict
 
@@ -63,7 +65,7 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
     vprint_instance_banner(options, f'[Synthesize Rmin]: {options.instance_name}: {options.size_str}', 0)
-    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-r'] + sys_args
+    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-w', '-r'] + sys_args
     rmin_result = True 
     try:
         vprint(options, ' '.join(qrm_args))
@@ -101,15 +103,15 @@ def get_next_size_string(next_sizes) -> str:
     next_size_str = ','.join([f'{s}={sz}' for s,sz in next_sizes.items()])
     return next_size_str
 
-def reachability_convergence_check(options : QrmOptions, sys_args) -> bool:
+def reachability_convergence_check(sol_id, options : QrmOptions, sys_args) -> bool:
     vprint_instance_banner(options, f'[Reachability Convergence Check]: {options.instance_name}: {options.size_str}', 0)
-    orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
+    orig_ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{sol_id}.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
     has_converge  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(sort, orig_sizes)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w', '-r'] + sys_args
         try_result   = True 
         try:
             vprint(options, ' '.join(qrm_args))
@@ -149,7 +151,7 @@ def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
     has_converge  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(sort, orig_sizes)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '3', '-g', '-w'] + sys_args
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '3', '-g'] + sys_args
         try_result   = True 
         try:
             vprint(options, ' '.join(qrm_args))
@@ -181,6 +183,28 @@ def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
         vprint(options, f'next size: {next_size_str}')
         return has_converge, next_size_str
 
+def get_number_of_Rmin_solutions(options : QrmOptions) -> int:
+    num = 0
+    ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{num}.ivy'
+    while path.isfile(ivy_name):
+        num += 1
+        ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{num}.ivy'
+    return num
+
+def get_min_next_size_str(sizes_str : List[str]) -> str:
+    next_sizes = {}
+    for size_str in sizes_str:
+        sort_sizes_str = size_str.split(',')
+        for sort_size_str in sort_sizes_str:
+            pair = sort_size_str.split('=') 
+            sort = pair[0]
+            size = int(pair[1])
+            if not sort in next_sizes:
+                next_sizes[sort] = size
+            else:
+                next_sizes[sort] = min(size, next_sizes[sort])
+    return get_next_size_string(next_sizes)
+
 def run_all(ivy_name, args):
     sys_args = args.copy()
     options  = get_options(ivy_name, args, sys_args)
@@ -188,25 +212,33 @@ def run_all(ivy_name, args):
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
     qrm_result      = False
     cutoff_size_str = ''
+    Rmin_filename   = ''
     while not qrm_result:
-        rmin_result = synthesize_Rmin_and_ivy_check(options, sys_args)
-        reach_result, size_str = reachability_convergence_check(options, sys_args)
-        if reach_result:
-            if rmin_result:
-                qrm_result = True
-                cutoff_size_str = size_str
-            else: # Rmin is not inductive yet
-                finite_result, size_str = finite_ivy_check(options, sys_args)
-                assert(not finite_result)
-                assert(options.size_str != size_str)
-                options = options.get_new_size_copy(size_str)
-
-        else: # reachability not converged yet
-            assert(options.size_str != size_str) 
-            options = options.get_new_size_copy(size_str)
+        rmin_result  = synthesize_Rmin_and_ivy_check(options, sys_args)
+        num_solution = get_number_of_Rmin_solutions(options)
+        sizes_str = []
+        for sol_id in range(num_solution):
+            reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args)
+            if reach_result:
+                ivy_result = run_ivy_check(sol_id, options)
+                if ivy_result:
+                    qrm_result = True
+                    cutoff_size_str = size_str
+                    Rmin_filename   = options.instance_name + '.' + options.instance_suffix + f'.{sol_id}'+ '.ivy'
+                else:
+                    vprint(options, f'[QRM NOTE]: Reachability converges but Rmin not inductive')
+                    vprint(options, '[QRM RESULT]: FAIL')
+                    sys.exit(1)
+            sizes_str.append(size_str)
+        # reachability not converged yet
+        if not qrm_result:
+            next_size_str = get_min_next_size_str(sizes_str)
+            assert(options.size_str != next_size_str) 
+            options = options.get_new_size_copy(next_size_str)
 
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
     if qrm_result:
+        vprint(options, f'[RMIN RESULT]: {Rmin_filename}')
         vprint(options, f'[CUTOFF]: {cutoff_size_str}')
         vprint(options, '[QRM RESULT]: PASS')
     else:
