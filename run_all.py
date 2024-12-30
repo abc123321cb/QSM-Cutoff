@@ -212,7 +212,7 @@ def run_all(ivy_name, args):
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
     qrm_result      = False
     cutoff_size_str = ''
-    Rmin_filename   = ''
+    Rmin_solutions  = []
     while not qrm_result:
         rmin_result  = synthesize_Rmin_and_ivy_check(options, sys_args)
         num_solution = get_number_of_Rmin_solutions(options)
@@ -224,11 +224,7 @@ def run_all(ivy_name, args):
                 if ivy_result:
                     qrm_result = True
                     cutoff_size_str = size_str
-                    Rmin_filename   = options.instance_name + '.' + options.instance_suffix + f'.{sol_id}'+ '.ivy'
-                else:
-                    vprint(options, f'[QRM NOTE]: Reachability converges but Rmin not inductive')
-                    vprint(options, '[QRM RESULT]: FAIL')
-                    sys.exit(1)
+                    Rmin_solutions.append(options.instance_name + '.' + options.instance_suffix + f'.{sol_id}'+ '.ivy')
             sizes_str.append(size_str)
         # reachability not converged yet
         if not qrm_result:
@@ -238,7 +234,8 @@ def run_all(ivy_name, args):
 
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
     if qrm_result:
-        vprint(options, f'[RMIN RESULT]: {Rmin_filename}')
+        vprint(options, f'[RMIN NUM]: {len(Rmin_solutions)}')
+        vprint(options, f'[RMIN RESULT]: {Rmin_solutions}')
         vprint(options, f'[CUTOFF]: {cutoff_size_str}')
         vprint(options, '[QRM RESULT]: PASS')
     else:
