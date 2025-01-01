@@ -20,6 +20,7 @@ class QrmOptions():
         self.useMC = UseMC.sat
         self.prime_gen = PrimeGen.ilp
         self.readReach         = False
+        self.early_terminate_reach = False
         self.check_qi          = False
         self.writeReach        = False
         self.writePrime        = False

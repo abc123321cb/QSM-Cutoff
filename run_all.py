@@ -16,6 +16,8 @@ def usage ():
     print('')
     print('Options:')
     print('-i SORT      increase SORT by size 2 each time (default: off)')
+    print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
+    print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enalbe quantifier inference (default: off)')
@@ -41,7 +43,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:i:amkp:c:v:l:wh")
+        opts, args = getopt.getopt(args, "s:i:artmkp:c:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()

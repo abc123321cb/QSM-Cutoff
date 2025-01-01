@@ -29,6 +29,7 @@ def usage ():
     print('')
     print('Options:')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
+    print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enable checking quantifier inference (default: off)')
@@ -54,7 +55,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:f:ramkp:c:v:l:whg")
+        opts, args = getopt.getopt(args, "s:f:rtamkp:c:v:l:whg")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -71,6 +72,8 @@ def get_options(ivy_name, args):
                 usage_and_exit()
         elif optc == '-r':
             options.readReach = True
+        elif optc == '-t':
+            options.early_terminate_reach = True
         elif optc == '-a':
             options.all_solutions   = False 
         elif optc == '-m':

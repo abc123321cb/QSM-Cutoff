@@ -216,6 +216,9 @@ class ReachCheck():
                 bit_str = '{0:0{1}b}'.format(repr_int, protocol.atom_num)[:protocol.state_atom_num]
                 vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}')
                 model_match = False 
+                if self.options.early_terminate_reach:
+                    vprint(self.options, f'[REACH_CHECK RESULT]: FAIL')
+                    return model_match
             model_repr_states.add(repr_int)
             (result, values) = self._get_model()
 
