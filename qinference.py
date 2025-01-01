@@ -221,7 +221,7 @@ class QInference():
 
     def _set_qclause(self):
         if self.cmode == ConstraintMode.merge:
-            self.qformula.set_merge_constraints(self.arg_partitions, QInference.instantiator)
+            self.qformula.set_merge_constraints(self.sig_gen, self.arg_partitions, QInference.instantiator)
         elif self.cmode == ConstraintMode.no_merge:
             self.qformula.set_no_merge_constraints()
 

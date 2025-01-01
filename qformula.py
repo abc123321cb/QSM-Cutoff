@@ -45,7 +45,7 @@ class QFormula():
         self._set_qterms()
 
         # merge constraints
-        self.constraint_sigs = ConstraintSignatures(pap.sig_gen)
+        self.constraint_sigs : ConstraintSignatures
 
         # constraint
         self.forall_constraint = None
@@ -302,7 +302,8 @@ class QFormula():
     #------------------------------------------------
     # public methods
     #------------------------------------------------
-    def set_merge_constraints(self, arg_partitions : List[ArgPartition], instantiator : FiniteIvyInstantiator) -> None:
+    def set_merge_constraints(self, sig_gen : SigGenerator, arg_partitions : List[ArgPartition], instantiator : FiniteIvyInstantiator) -> None:
+        self.constraint_sigs = ConstraintSignatures(sig_gen)
         self.constraint_sigs.add_present_signatures(arg_partitions) 
         present_constraints = self._get_constraints(self.constraint_sigs.get_present_signatures())
         present_cterm = self._get_constraint_term(present_constraints)  
