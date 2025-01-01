@@ -13,6 +13,8 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
     terms = []
     args = set()
     for atom in atoms:
+        if isinstance(atom, il.Not):
+            atom = atom.args[0] 
         atom_args = atom.args
         if il.is_eq(atom):
             atom_args = [atom_args[1]]
@@ -78,18 +80,14 @@ def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
 def get_terms(tran_sys : TransitionSystem, atoms, prime : Prime):
     values = prime.values
     terms = []
-    atom_symbols = []
     for atom_id, atom in enumerate(atoms):
         val = values[atom_id]
         if val == '0':
             terms.append(il.Not(atom))
-            atom_symbols.append(atom)
         elif val == '1':
             terms.append(atom)
-            atom_symbols.append(atom)
         else:
             assert(val == '-')
-    terms += add_member_terms_for_dependent_sorts(atom_symbols, tran_sys)
     return terms
 
 def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):

@@ -6,6 +6,7 @@ from verbose import *
 from qutil import *
 from util import FormulaUtility as futil 
 from signature import *
+from finite_ivy_instantiate import FiniteIvyInstantiator
 
 from enum import Enum
 QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
@@ -44,12 +45,7 @@ class QFormula():
         self._set_qterms()
 
         # merge constraints
-        self.sign_func_name2id : Dict[str, int]= {}
-        self.func_permutations = []
-        self.present_signatures : Dict[str, PartitionSignature] = {}
-        self.absent_signatures  : Dict[str, PartitionSignature] = {}
-        self.red_present_signatures : Dict[str, PartitionSignature] = {} # symmetric reduced
-        self.red_absent_signatures  : Dict[str, PartitionSignature] = {} # symmetric reduced
+        self.constraint_sigs = ConstraintSignatures(pap.sig_gen)
 
         # constraint
         self.forall_constraint = None
@@ -178,6 +174,9 @@ class QFormula():
         vprint_title(self.options, 'QFormula: _set_qterms', 5)
         vprint(self.options, f'qterms: {[str(term) for term in self.qterms]}', 5)
 
+    #------------------------------------------------
+    # QFormula: merging constraints
+    #------------------------------------------------
     def _get_class_constraint(self, class_sig : ClassSignature):
         qvars = set() 
         for arg_sig in class_sig.arg_signatures: 
@@ -215,7 +214,20 @@ class QFormula():
         vprint(self.options, f'eq_terms: {[str(t) for t in neq_terms]}')
         return list(neq_terms)
 
-    def _get_partition_constraint(self, partition : PartitionSignature):
+    def _get_member_constraints(self, mem_sigs : List[MemberRelationSignature]):
+        terms = []
+        for mem_sig in mem_sigs:
+            for (elem_class_sig, set_class_sig) in mem_sig.member_relations:
+                elem_qvar = self.arg_sig2qvar[str(elem_class_sig.arg_signatures[0])] 
+                set_qvar  = self.arg_sig2qvar[str(set_class_sig.arg_signatures[0])] 
+                terms.append(il.App(mem_sig.member_symbol, *[elem_qvar, set_qvar]))
+            for (elem_class_sig, set_class_sig) in mem_sig.non_member_relations:
+                elem_qvar = self.arg_sig2qvar[str(elem_class_sig.arg_signatures[0])] 
+                set_qvar  = self.arg_sig2qvar[str(set_class_sig.arg_signatures[0])] 
+                terms.append(il.Not(il.App(mem_sig.member_symbol, *[elem_qvar, set_qvar])))
+        return terms
+
+    def _get_partition_constraint(self, partition : ConstraintPartitionSignature): 
         vprint_title(self.options, 'QFormula: _get_partition_constraint', 5)
         vprint(self.options, f'partition: {partition}', 5)
         constraint   = []
@@ -225,32 +237,9 @@ class QFormula():
                 vprint(self.options, f'class signature: {class_sig}', 5)
                 constraint  += self._get_class_constraint(class_sig)
             constraint += self._get_diff_class_constraint(sort_sig.class_signatures)
+        constraint += self._get_member_constraints(partition.member_sigs)
         vprint(self.options, f'constraint: {[str(c) for c in constraint]}', 5)
         return constraint
-
-    def _set_func_permutations(self, pap : ProductArgPartition) -> None:
-        all_func_permutations = []
-        fname_id = 0
-        self.sign_func_name2id : Dict[str, int]= {}
-        for sfname, count in pap.sig_gen.sign_func_name2count.items():
-            self.sign_func_name2id[sfname] = fname_id
-            fname_id += 1
-            func_ids  = list(range(count))
-            func_permutations = permutations(func_ids)
-            all_func_permutations.append(func_permutations)
-        # cartesian product
-        self.func_permutations = list(product(*all_func_permutations))
-        vprint(self.options, f'sign_func_name2id: {self.sign_func_name2id}', 5)
-        vprint(self.options, f'func permutations: {self.func_permutations}', 5)
-
-    def _add_present_signatures(self, part_sigs : List[PartitionSignature]):
-        for part_sig in part_sigs: 
-            for func_perm in self.func_permutations:
-                permuted_sig = get_permuted_signature(part_sig, self.sign_func_name2id, func_perm)
-                if not str(permuted_sig) in self.present_signatures:
-                    self.present_signatures[str(permuted_sig)] = permuted_sig
-            assert(not str(part_sig) in self.red_present_signatures)
-            self.red_present_signatures[str(part_sig)] = part_sig
 
     def _convert_sat_model_to_absent_partition_signature(self, model) -> PartitionSignature:
         qvar2value  : Dict[str, str] = {}
@@ -265,6 +254,8 @@ class QFormula():
                 if not const in const2qvars:
                     const2qvars[const] = []
                 const2qvars[const].append(qvar)
+
+        # sort2part_sig
         sort2class_sigs : Dict[il.EnumeratedSort, List[ClassSignature]] = {}
         for qvars in const2qvars.values():
             sort = qvars[0].sort
@@ -277,20 +268,20 @@ class QFormula():
         sort2part_sig : Dict[il.EnumeratedSort, List[SortPartitionSignature]] = {}
         for sort, class_sigs in sort2class_sigs.items():
             sort2part_sig[sort] = SortPartitionSignature(class_sigs)
-        return PartitionSignature(sort2part_sig)
+        part_sig = ConstraintPartitionSignature(sort2part_sig) 
+        # sig2const_str
+        class_sig2const : Dict[str,str] = {}
+        for class_sigs in sort2class_sigs.values():
+            for class_sig in class_sigs:
+                arg_sig = class_sig.arg_signatures[0]
+                qvar  = self.arg_sig2qvar[str(arg_sig)]
+                assert(str(qvar) in qvar2value)
+                const = qvar2value[str(qvar)]
+                class_sig2const[str(class_sig)] = const
+        part_sig.init_member_relations_from_model(class_sig2const)
+        return part_sig
 
-    def _add_absent_signatures(self, part_sig: PartitionSignature):
-        absent_sigs : Dict[str, PartitionSignature] = {}
-        for func_perm in self.func_permutations:
-            permuted_sig = get_permuted_signature(part_sig, self.sign_func_name2id, func_perm)
-            if not str(permuted_sig) in self.absent_signatures:
-                self.absent_signatures[str(permuted_sig)] = permuted_sig
-                absent_sigs[str(permuted_sig)] = permuted_sig
-        assert(not str(part_sig) in self.red_absent_signatures)
-        self.red_absent_signatures[str(part_sig)] = part_sig
-        return list(absent_sigs.values())
-
-    def _get_constraints(self, part_sigs : List[PartitionSignature]):
+    def _get_constraints(self, part_sigs : List[ConstraintPartitionSignature]):
         constraints = [] 
         for part_sig in part_sigs: 
             constraint = self._get_partition_constraint(part_sig)
@@ -308,18 +299,17 @@ class QFormula():
             return il.Or(*terms)    
         return None
 
-
     #------------------------------------------------
     # public methods
     #------------------------------------------------
-    def set_merge_constraints(self, pap : ProductArgPartition, part_sigs : List[PartitionSignature]) -> None:
-        self._set_func_permutations(pap)
-        self._add_present_signatures(part_sigs)
-        present_constraints = self._get_constraints(list(self.present_signatures.values()))
+    def set_merge_constraints(self, arg_partitions : List[ArgPartition], instantiator : FiniteIvyInstantiator) -> None:
+        self.constraint_sigs.add_present_signatures(arg_partitions) 
+        present_constraints = self._get_constraints(self.constraint_sigs.get_present_signatures())
         present_cterm = self._get_constraint_term(present_constraints)  
         assert(present_cterm != None)
         # present_cterm is a disjuction of eq constraints for each sub-orbit 
-        absent_fmla = il.Exists(self.forall_qvars, il.Not(present_cterm))
+        fmlas  = instantiator.dep_axioms_fmla + [il.Not(present_cterm)]
+        absent_fmla  = il.Exists(self.forall_qvars, il.And(*fmlas)) 
         solver = slv.z3.Solver()
         solver.add(slv.formula_to_z3(absent_fmla))
         res = solver.check() 
@@ -328,7 +318,7 @@ class QFormula():
         while(res == slv.z3.sat):
             model = slv.get_model(solver)
             absent_part_sig   = self._convert_sat_model_to_absent_partition_signature(model)
-            absent_part_sigs  = self._add_absent_signatures(absent_part_sig)
+            absent_part_sigs  = self.constraint_sigs.add_absent_signatures(absent_part_sig)
             block_constraints = self._get_constraints(absent_part_sigs)
             block_cterm       = self._get_constraint_term(block_constraints)
             fmla_body         = il.And(*[absent_fmla.body, il.Not(block_cterm)])
@@ -336,9 +326,9 @@ class QFormula():
             solver = slv.z3.Solver()
             solver.add(slv.formula_to_z3(absent_fmla))
             res = solver.check() 
-        present_constraints = self._get_constraints(list(self.red_present_signatures.values()))
+        present_constraints = self._get_constraints(self.constraint_sigs.get_reduced_present_signatures()) 
         present_cost = sum([len(c) for c in present_constraints])
-        absent_constraints  = self._get_constraints(list(self.red_absent_signatures.values()))
+        absent_constraints  = self._get_constraints(self.constraint_sigs.get_reduced_absent_signatures()) 
         absent_cost = sum([len(c) for c in absent_constraints])
         if present_cost <= absent_cost:
             cterm = self._get_constraint_term(present_constraints)

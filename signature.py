@@ -333,22 +333,168 @@ class ProductArgPartition():
             part_sig = SortPartitionSignature_(class_sigs)
             self.sort2part_sig[sort] = part_sig 
 
-def get_permuted_signature(sig, sign_func_name2id, func_perm):
-    if isinstance(sig, ArgumentSignature):
-        fname_id      = sign_func_name2id[sig.signed_fname]
-        new_func_id   = func_perm[fname_id][sig.func_id]
-        return ArgumentSignature(sig.sort, sig.signed_fname, new_func_id, sig.arg_id)
-    elif isinstance(sig, ClassSignature):
-        permuted_arg_sigs = [get_permuted_signature(s, sign_func_name2id, func_perm) for s in sig.arg_signatures]
-        return ClassSignature(permuted_arg_sigs)
-    elif isinstance(sig, SortPartitionSignature):
-        permuted_class_sigs = [get_permuted_signature(s, sign_func_name2id, func_perm) for s in sig.class_signatures]
-        return SortPartitionSignature(permuted_class_sigs)  
-    elif isinstance(sig, PartitionSignature):
-        sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature] = {} 
-        for sort, s in sig.sort2signature.items():
-            sort2sig[sort] = get_permuted_signature(s, sign_func_name2id, func_perm)
-        return PartitionSignature(sort2sig)
+
+class MemberRelationSignature():
+    def __init__(self, member_symbol):
+        self.member_symbol = member_symbol
+        self.member_relations     = [] # consists of (node_class_sig, quorum_class_sig)
+        self.non_member_relations = [] 
+
+    def sort_member_relations(self):
+        self.member_relations.sort(key=lambda x: str(x))
+        self.non_member_relations.sort(key=lambda x: str(x))
+
+    def __str__(self):
+        return str(self.member_symbol) + str(self.member_relations) + str(self.non_member_relations)
+
+class ConstraintPartitionSignature(PartitionSignature):
+    tran_sys : TransitionSystem
+
+    def __init__(self, sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature]): 
+        PartitionSignature.__init__(self, sort2sig)
+        self.member_sigs : List[MemberRelationSignature] = []
+        self.mem_sig_str = ''
+
+    def sort_member_relations(self):
+        self.member_sigs.sort(key=lambda x: str(x))
+        self.mem_sig_str = str([str(s) for s in self.member_sigs])
+    
+    def init_member_relations_from_binding(self, binding : ConstArgBinding):
+        for dep_type in ConstraintPartitionSignature.tran_sys.dep_types.values():
+            if not dep_type.elem_sort in self.sort2signature or not dep_type.set_sort in self.sort2signature:
+                continue
+            elem_class_sigs = self.sort2signature[dep_type.elem_sort].class_signatures
+            set_class_sigs  = self.sort2signature[dep_type.set_sort].class_signatures
+            mem_sig = MemberRelationSignature(dep_type.dep_relation)
+            for elem_class_sig in elem_class_sigs:
+                for set_class_sig in set_class_sigs:
+                    elem_arg_sig = elem_class_sig.arg_signatures[0] 
+                    set_arg_sig  = set_class_sig.arg_signatures[0]
+                    elem_const   = binding.sig2const[str(elem_arg_sig)]
+                    set_const    = binding.sig2const[str(set_arg_sig)]
+                    if str(elem_const) in str(set_const):
+                        mem_sig.member_relations.append(tuple([elem_class_sig, set_class_sig]))
+                    else:
+                        mem_sig.non_member_relations.append(tuple([elem_class_sig, set_class_sig]))
+            mem_sig.sort_member_relations()
+            self.member_sigs.append(mem_sig)
+        self.sort_member_relations()
+
+    def init_member_relations_from_model(self, class_sig2const : Dict[str,str]):
+        for dep_type in ConstraintPartitionSignature.tran_sys.dep_types.values():
+            if not dep_type.elem_sort in self.sort2signature or not dep_type.set_sort in self.sort2signature:
+                continue
+            elem_class_sigs = self.sort2signature[dep_type.elem_sort].class_signatures
+            set_class_sigs  = self.sort2signature[dep_type.set_sort].class_signatures
+            mem_sig = MemberRelationSignature(dep_type.dep_relation)
+            for elem_class_sig in elem_class_sigs:
+                for set_class_sig in set_class_sigs:
+                    elem_const   = class_sig2const[str(elem_class_sig)]
+                    set_const    = class_sig2const[str(set_class_sig)]
+                    if elem_const in set_const:
+                        mem_sig.member_relations.append(tuple([elem_class_sig, set_class_sig]))
+                    else:
+                        mem_sig.non_member_relations.append(tuple([elem_class_sig, set_class_sig]))
+            mem_sig.sort_member_relations()
+            self.member_sigs.append(mem_sig)
+        self.sort_member_relations()
+
+    def __str__(self): 
+        return PartitionSignature.__str__(self) + self.mem_sig_str 
+
+    @staticmethod
+    def setup(tran_sys : TransitionSystem):
+        ConstraintPartitionSignature.tran_sys = tran_sys
+
+class ConstraintSignatures():
+    def __init__(self, sig_gen : SigGenerator):
+        self.sign_func_name2id : Dict[str, int]= {}
+        self.func_permutations = []
+        # public data
+        self.present_signatures : Dict[str, ConstraintPartitionSignature] = {}
+        self.absent_signatures  : Dict[str, ConstraintPartitionSignature] = {}
+        self.red_present_signatures : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
+        self.red_absent_signatures  : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
+
+        self._set_func_permutations(sig_gen)
+
+    def _set_func_permutations(self, sig_gen : SigGenerator) -> None:
+        all_func_permutations = []
+        fname_id = 0
+        for sfname, count in sig_gen.sign_func_name2count.items():
+            self.sign_func_name2id[sfname] = fname_id
+            fname_id += 1
+            func_ids  = list(range(count))
+            func_permutations = permutations(func_ids)
+            all_func_permutations.append(func_permutations)
+        # cartesian product
+        self.func_permutations = list(product(*all_func_permutations))
+
+    def get_permuted_signature(self, sig, func_perm):
+        if isinstance(sig, ArgumentSignature):
+            fname_id      = self.sign_func_name2id[sig.signed_fname]
+            new_func_id   = func_perm[fname_id][sig.func_id]
+            return ArgumentSignature(sig.sort, sig.signed_fname, new_func_id, sig.arg_id)
+        elif isinstance(sig, ClassSignature):
+            permuted_arg_sigs = [self.get_permuted_signature(s, func_perm) for s in sig.arg_signatures]
+            return ClassSignature(permuted_arg_sigs)
+        elif isinstance(sig, SortPartitionSignature):
+            permuted_class_sigs = [self.get_permuted_signature(s, func_perm) for s in sig.class_signatures]
+            return SortPartitionSignature(permuted_class_sigs)  
+        elif isinstance(sig, MemberRelationSignature):
+            mem_sig = MemberRelationSignature(sig.member_symbol)
+            for (elem_class_sig, set_class_sig) in sig.member_relations:
+                relation = [self.get_permuted_signature(elem_class_sig, func_perm), self.get_permuted_signature(set_class_sig, func_perm)]
+                mem_sig.member_relations.append(tuple(relation))
+            for (elem_class_sig, set_class_sig) in sig.non_member_relations:
+                relation = [self.get_permuted_signature(elem_class_sig, func_perm), self.get_permuted_signature(set_class_sig, func_perm)]
+                mem_sig.non_member_relations.append(tuple(relation))
+            mem_sig.sort_member_relations() 
+            return mem_sig
+        elif isinstance(sig, ConstraintPartitionSignature):  
+            sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature] = {} 
+            for sort, s in sig.sort2signature.items():
+                sort2sig[sort] = self.get_permuted_signature(s, func_perm)
+            cpart_sig = ConstraintPartitionSignature(sort2sig) 
+            mem_sigs  = [self.get_permuted_signature(s, func_perm) for s in sig.member_sigs]
+            cpart_sig.member_sigs = mem_sigs
+            cpart_sig.sort_member_relations()
+            return cpart_sig 
+
+    def add_present_signatures(self, arg_partitions : List[ArgPartition]):
+        for arg_part in arg_partitions: 
+            cpart_sig = ConstraintPartitionSignature(arg_part.part_sig.sort2signature)
+            cpart_sig.init_member_relations_from_binding(arg_part.binding)
+            for func_perm in  self.func_permutations:
+                permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
+                if not str(permuted_sig) in self.present_signatures:
+                    self.present_signatures[str(permuted_sig)] = permuted_sig
+            assert(not str(cpart_sig) in self.red_present_signatures)
+            self.red_present_signatures[str(cpart_sig)] = cpart_sig
+
+    def add_absent_signatures(self, cpart_sig: ConstraintPartitionSignature):
+        absent_sigs : Dict[str, ConstraintPartitionSignature] = {}
+        for func_perm in self.func_permutations:
+            permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
+            if not str(permuted_sig) in self.absent_signatures:
+                self.absent_signatures[str(permuted_sig)] = permuted_sig
+                absent_sigs[str(permuted_sig)] = permuted_sig
+        assert(not str(cpart_sig) in self.red_absent_signatures)
+        self.red_absent_signatures[str(cpart_sig)] = cpart_sig
+        return list(absent_sigs.values())
+
+    def get_present_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.present_signatures.values())
+
+    def get_absent_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.absent_signatures.values())
+
+    def get_reduced_present_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.red_present_signatures.values())
+
+    def get_reduced_absent_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.red_absent_signatures.values())
+
 
 def merge_class_signatures(class_sigs: List[ClassSignature]) -> ClassSignature:
     arg_sigs = []

@@ -316,14 +316,13 @@ class Minimizer():
 
     def quantifier_inference(self, instantiator: FiniteIvyInstantiator, atoms) -> None:
         from qinference import QInference, QPrime
-        QInference.setup(atoms, self.tran_sys)
+        QInference.setup(atoms, self.tran_sys, instantiator)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
         for orbit_id in inference_list:
             orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
-            qprimes = [QPrime(prime, self.options) for prime in orbit.suborbit_repr_primes]
-            qinf    = QInference(qprimes, instantiator, self.options)
+            qinf    = QInference(orbit, self.options)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
             if self.options.check_qi:
