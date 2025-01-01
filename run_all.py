@@ -15,7 +15,7 @@ def usage ():
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Options:')
-    print('-i           increase node by size 2 each time (default: off)')
+    print('-i SORT      increase SORT by size 2 each time (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enalbe quantifier inference (default: off)')
@@ -41,7 +41,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:iamkp:c:v:l:wh")
+        opts, args = getopt.getopt(args, "s:i:amkp:c:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -63,8 +63,9 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
             sys_args.remove(optc)
             sys_args.remove(optv)
         elif optc == '-i':
-            options.increase_node_2 = True
+            options.increase2_sort = optv
             sys_args.remove(optc)
+            sys_args.remove(optv)
     return options
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
@@ -100,7 +101,7 @@ def get_original_sizes(options) -> Dict[str, int]:
 
 def get_try_increase_sort_size_string(options : QrmOptions, sort, orig_sizes) -> str:
     try_sizes = []
-    if options.increase_node_2 and sort == 'node':
+    if options.increase2_sort == sort:
         try_sizes = [f'{s}={sz+2}' if s==sort else f'{s}={sz}' for s,sz in orig_sizes.items()]
     else:
         try_sizes = [f'{s}={sz+1}' if s==sort else f'{s}={sz}' for s,sz in orig_sizes.items()]
@@ -141,7 +142,7 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args) -> bo
             vprint(options, '[QRM RESULT]: FAIL')
             sys.exit(1)
         if not try_result:
-            if options.increase_node_2 and sort == 'node':
+            if options.increase2_sort == sort:
                 next_sizes[sort] = size +2
             else:
                 next_sizes[sort] = size +1
@@ -184,7 +185,7 @@ def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
             vprint(options, '[QRM RESULT]: FAIL')
             sys.exit(1)
         if not try_result:
-            if options.increase_node_2 and sort == 'node':
+            if options.increase2_sort == sort:
                 next_sizes[sort] = size +2
             else:
                 next_sizes[sort] = size +1
