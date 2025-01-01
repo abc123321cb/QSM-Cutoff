@@ -34,6 +34,7 @@ class QrmOptions():
         self.qrm_to            = 3600 
         self.time_start        = None
         self.time_stamp        = None
+        self.increase_node_2   = False
         self.python_include_path = '/usr/include/python3.12'
 
     def get_new_size_copy(self, new_size_str):
@@ -46,6 +47,7 @@ class QrmOptions():
         options.writeLog     = self.writeLog 
         options.log_name     = self.log_name
         options.log_fout     = self.log_fout
+        options.increase_node_2 = self.increase_node_2
         return options
 
     def set_files_name(self, ivy_name):
