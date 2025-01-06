@@ -47,14 +47,24 @@ declare -a hard_sym_ring_instances=(
     "chord_ring_maintenance"
 )
 
-for instance in ${sym_instances[@]}; do
-    log=${sym_path}${instance}.log
-    yaml=${yaml_path}${instance}.converge.yaml
-    python3 run_all.py $yaml -v 5 -w -l $log
-done
-for instance in ${sym_quorum_instances[@]}; do
-    log=${sym_quorum_path}${instance}.log
-    yaml=${yaml_path}${instance}.converge.yaml
-    python3 run_all.py $yaml -v 5 -w -l $log
-done
-python3 run_all.py ${yaml_path}quorum-leader-election-wo-maj.yaml -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
+timeout ${Timeout} python3 run_all.py ${sym_path}Consensus.ivy                            -s value=1                             -v 5 -w -l ${sym_path}Consensus.cvg.log
+timeout ${Timeout} python3 run_all.py ${sym_path}TCommit.ivy                              -s resource_manager=1                  -v 5 -w -l ${sym_path}TCommit.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}Ricart-Agrawala.ivy                      -s node=1                              -v 5 -w -l ${sym_path}Ricart-Agrawala.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}lock_server.ivy                          -s server=1,client=1                   -v 5 -w -l ${sym_path}lock_server.cvg.log                                
+timeout ${Timeout} python3 run_all.py ${sym_path}sharded_kv.ivy                           -s node=1,key=1,value=1                -v 5 -w -l ${sym_path}sharded_kv.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}sharded_kv_no_lost_keys.ivy              -s node=1,key=1,value=1                -v 5 -w -l ${sym_path}sharded_kv_no_lost_keys.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}simple-decentralized-lock.ivy            -s node=1                              -v 5 -w -l ${sym_path}simple-decentralized-lock.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}firewall.ivy                             -s node=1                              -v 5 -w -l ${sym_path}firewall.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}lockserv.ivy                             -s node=1                              -v 5 -w -l ${sym_path}lockserv.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}lockserv_automaton.ivy                   -s node=1                              -v 5 -w -l ${sym_path}lockserv_automaton.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}client_server_ae.ivy                     -s node=1,request=1,response=1         -v 5 -w -l ${sym_path}client_server_ae.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_path}TwoPhase.ivy                             -s resource_manager=1                  -v 5 -w -l ${sym_path}TwoPhase.cvg.log
+
+
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus.ivy                 -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}toy_consensus.cvg.log
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_epr.ivy             -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}naive_consensus.ivy               -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}naive_consensus.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}simple-election.ivy               -s acceptor=1,proposer=1 -i acceptor   -v 5 -w -l ${sym_quorum_path}simple-election.cvg.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=1                -i node    -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.cvg.log
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}consensus_epr.cvg.log 
