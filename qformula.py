@@ -308,6 +308,8 @@ class QFormula():
         present_constraints = self._get_constraints(self.constraint_sigs.get_present_signatures())
         present_cterm = self._get_constraint_term(present_constraints)  
         assert(present_cterm != None)
+        present_constraints = self._get_constraints(self.constraint_sigs.get_reduced_present_signatures()) 
+        present_cost = sum([len(c) for c in present_constraints])
         # present_cterm is a disjuction of eq constraints for each sub-orbit 
         fmlas  = instantiator.dep_axioms_fmla + [il.Not(present_cterm)]
         absent_fmla  = il.Exists(self.forall_qvars, il.And(*fmlas)) 
@@ -316,10 +318,14 @@ class QFormula():
         res = solver.check() 
         if res == slv.z3.unsat: # no constraints needed if unsat
             return
+        absent_cost = 0
         while(res == slv.z3.sat):
             model = slv.get_model(solver)
             absent_part_sig   = self._convert_sat_model_to_absent_partition_signature(model)
             absent_part_sigs  = self.constraint_sigs.add_absent_signatures(absent_part_sig)
+            absent_cost += sum([len(c) for c in self._get_constraints([absent_part_sig]) ])
+            if present_cost <= absent_cost:
+                break
             block_constraints = self._get_constraints(absent_part_sigs)
             block_cterm       = self._get_constraint_term(block_constraints)
             fmla_body         = il.And(*[absent_fmla.body, il.Not(block_cterm)])
@@ -327,14 +333,11 @@ class QFormula():
             solver = slv.z3.Solver()
             solver.add(slv.formula_to_z3(absent_fmla))
             res = solver.check() 
-        present_constraints = self._get_constraints(self.constraint_sigs.get_reduced_present_signatures()) 
-        present_cost = sum([len(c) for c in present_constraints])
-        absent_constraints  = self._get_constraints(self.constraint_sigs.get_reduced_absent_signatures()) 
-        absent_cost = sum([len(c) for c in absent_constraints])
         if present_cost <= absent_cost:
             cterm = self._get_constraint_term(present_constraints)
             self.qterms.append(cterm)
         else:
+            absent_constraints  = self._get_constraints(self.constraint_sigs.get_reduced_absent_signatures()) 
             cterm = il.Not(self._get_constraint_term(absent_constraints))
             self.qterms.append(cterm)
 
