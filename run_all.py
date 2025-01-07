@@ -15,7 +15,6 @@ def usage ():
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Options:')
-    print('-i SORT      increase SORT by size 2 each time (default: off)')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
@@ -43,7 +42,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:i:artmkp:c:v:l:wh")
+        opts, args = getopt.getopt(args, "s:artmkp:c:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -62,10 +61,6 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
             options.open_log()
         elif optc == '-s':
             options.set_sizes(optv)
-            sys_args.remove(optc)
-            sys_args.remove(optv)
-        elif optc == '-i':
-            options.increase2_sort = optv
             sys_args.remove(optc)
             sys_args.remove(optv)
     return options
@@ -103,12 +98,8 @@ def get_original_sizes(options) -> Dict[str, int]:
         del orig_sizes['quorum'] 
     return orig_sizes
 
-def get_try_increase_sort_size_string(options : QrmOptions, sort, orig_sizes) -> str:
-    try_sizes = []
-    if options.increase2_sort == sort:
-        try_sizes = [f'{s}={sz+2}' if s==sort else f'{s}={sz}' for s,sz in orig_sizes.items()]
-    else:
-        try_sizes = [f'{s}={sz+1}' if s==sort else f'{s}={sz}' for s,sz in orig_sizes.items()]
+def get_try_increase_sort_size_string(options : QrmOptions, sort, orig_sizes, increase_size) -> str:
+    try_sizes = [f'{s}={sz+increase_size}' if s==sort else f'{s}={sz}' for s,sz in orig_sizes.items()]
     try_size_str = ','.join(try_sizes)
     return try_size_str
 
@@ -116,14 +107,14 @@ def get_next_size_string(next_sizes) -> str:
     next_size_str = ','.join([f'{s}={sz}' for s,sz in next_sizes.items()])
     return next_size_str
 
-def reachability_convergence_check(sol_id, options : QrmOptions, sys_args) -> bool:
+def reachability_convergence_check(sol_id, options : QrmOptions, sys_args, increase_size) -> bool:
     vprint_instance_banner(options, f'[Reachability Convergence Check]: {options.instance_name}: {options.size_str}', 0)
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{sol_id}.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
     has_converge  = True 
     for sort, size in orig_sizes.items():
-        try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes)
+        try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes, increase_size)
         qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w', '-r'] + sys_args
         try_result   = True 
         try:
@@ -148,10 +139,7 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args) -> bo
             options.print_time()
             sys.exit(1)
         if not try_result:
-            if options.increase2_sort == sort:
-                next_sizes[sort] = size +2
-            else:
-                next_sizes[sort] = size +1
+            next_sizes[sort] = size + increase_size
             has_converge = False
     if has_converge:
         cutoff_size_str = options.size_str
@@ -161,14 +149,14 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args) -> bo
         vprint(options, f'next size: {next_size_str}')
         return has_converge, next_size_str
 
-def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
+def finite_ivy_check(options : QrmOptions, sys_args, increase_size) -> bool:
     vprint_instance_banner(options, f'[Finite Inductive Check]: {options.instance_name}: {options.size_str}', 0)
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
     has_converge  = True 
     for sort, size in orig_sizes.items():
-        try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes)
+        try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes, increase_size)
         qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '3', '-g'] + sys_args
         try_result   = True 
         try:
@@ -193,10 +181,7 @@ def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
             options.print_time()
             sys.exit(1)
         if not try_result:
-            if options.increase2_sort == sort:
-                next_sizes[sort] = size +2
-            else:
-                next_sizes[sort] = size +1
+            next_sizes[sort] = size + increase_size
             has_converge = False
     if has_converge:
         cutoff_size_str = options.size_str
@@ -241,8 +226,9 @@ def run_all(ivy_name, args):
         rmin_result  = synthesize_Rmin_and_ivy_check(options, sys_args)
         num_solution = get_number_of_Rmin_solutions(options)
         sizes_str = []
-        for sol_id in range(num_solution):
-            reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args)
+        sol_id = 0
+        if num_solution == 1:
+            reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args, increase_size=1)
             if reach_result:
                 ivy_result = run_ivy_check(sol_id, options)
                 if ivy_result:
@@ -254,7 +240,16 @@ def run_all(ivy_name, args):
                     vprint(options, '[QRM RESULT]: FAIL')
                     options.print_time()
                     sys.exit(1)
-            sizes_str.append(size_str)
+        else:
+            has_fail_convergence = False
+            increase_size = 0 
+            while (not has_fail_convergence):
+                increase_size += 1
+                for sol_id in range(num_solution):
+                    reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args, increase_size)
+                    if not reach_result:
+                        has_fail_convergence = True
+                        sizes_str.append(size_str)
         # reachability not converged yet
         if not qrm_result:
             next_size_str = get_min_next_size_str(sizes_str)
