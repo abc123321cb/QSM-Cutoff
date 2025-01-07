@@ -614,14 +614,14 @@ void quorum_leader_election_wo_maj__node_5__finite::__init(){
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
         bool __tmp0[5][5];
-        for (int N = 0; N < 5; N++) {
-            for (int M = 0; M < 5; M++) {
-                __tmp0[N][M] = false;
+        for (int M = 0; M < 5; M++) {
+            for (int N = 0; N < 5; N++) {
+                __tmp0[M][N] = false;
             }
         }
-        for (int N = 0; N < 5; N++) {
-            for (int M = 0; M < 5; M++) {
-                voted[N][M] = __tmp0[N][M];
+        for (int M = 0; M < 5; M++) {
+            for (int N = 0; N < 5; N++) {
+                voted[N][M] = __tmp0[M][N];
             }
         }
         bool __tmp1[5];
@@ -707,16 +707,6 @@ void quorum_leader_election_wo_maj__node_5__finite::ext__become_leader(node n, n
         isleader[n] = true;
         quorum = s;
 }
-bool quorum_leader_election_wo_maj__node_5__finite::ext__get_isleader(node n0){
-    bool qrm_result;
-    qrm_result = isleader[n0];
-    return qrm_result;
-}
-bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_isleader(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (isleader[n0] == result);
-    return qrm_result;
-}
 bool quorum_leader_election_wo_maj__node_5__finite::ext__get_member(node n0, nset n1){
     bool qrm_result;
     qrm_result = member[n0][n1];
@@ -725,6 +715,16 @@ bool quorum_leader_election_wo_maj__node_5__finite::ext__get_member(node n0, nse
 bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_member(node n0, nset n1, bool result){
     bool qrm_result;
     qrm_result = (member[n0][n1] == result);
+    return qrm_result;
+}
+bool quorum_leader_election_wo_maj__node_5__finite::ext__get_isleader(node n0){
+    bool qrm_result;
+    qrm_result = isleader[n0];
+    return qrm_result;
+}
+bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_isleader(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (isleader[n0] == result);
     return qrm_result;
 }
 quorum_leader_election_wo_maj__node_5__finite::nset quorum_leader_election_wo_maj__node_5__finite::ext__get_quorum(){
