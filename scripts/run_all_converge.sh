@@ -66,5 +66,5 @@ timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_epr.ivy   
 timeout ${Timeout} python3 run_all.py ${sym_quorum_path}naive_consensus.ivy               -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}naive_consensus.cvg.log 
 timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.cvg.log 
 timeout ${Timeout} python3 run_all.py ${sym_quorum_path}simple-election.ivy               -s acceptor=1,proposer=1 -i acceptor   -v 5 -w -l ${sym_quorum_path}simple-election.cvg.log 
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=1                -i node    -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.cvg.log
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}consensus_epr.cvg.log 
+#timeout ${Timeout} python3 run_all.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=1                -i node       -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.cvg.log
+#timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=1,value=1        -i node       -v 5 -w -l ${sym_quorum_path}consensus_epr.cvg.log 
