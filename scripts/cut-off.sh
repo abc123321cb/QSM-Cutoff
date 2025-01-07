@@ -55,7 +55,7 @@ timeout ${Timeout} python3 qrm.py ${sym_path}sharded_kv.ivy                -s no
 timeout ${Timeout} python3 qrm.py ${sym_path}sharded_kv_no_lost_keys.ivy   -s node=3,key=1,value=2         -v 5 -w -l ${sym_path}sharded_kv_no_lost_keys.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_path}simple-decentralized-lock.ivy -s node=3                       -v 5 -w -l ${sym_path}simple-decentralized-lock.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_path}firewall.ivy                  -s node=3                       -v 5 -w -l ${sym_path}firewal.cutoff.log 
-timeout ${Timeout} python3 qrm.py ${sym_path}lockserv.ivy                  -s node=3                       -v 5 -w -l ${sym_path}lockser.cutoff.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}lockserv.ivy                  -s node=3                       -v 5 -w -l ${sym_path}lockserv.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_path}lockserv_automaton.ivy        -s node=3                       -v 5 -w -l ${sym_path}lockserv_automaton.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_path}client_server_ae.ivy          -s node=1,request=1,response=1  -v 5 -w -l ${sym_path}client_server_ae.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_path}TwoPhase.ivy                  -s resource_manager=1           -v 5 -w -l ${sym_path}TwoPhase.cutoff.log
