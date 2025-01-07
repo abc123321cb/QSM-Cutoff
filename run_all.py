@@ -87,11 +87,13 @@ def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
             vprint(options, error.stderr)
             vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
             vprint(options, '[QRM RESULT]: FAIL')
+            options.print_time()
             sys.exit(1)
     except subprocess.TimeoutExpired:
         options.append_log_if_exists()
         vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
         vprint(options, '[QRM RESULT]: FAIL')
+        options.print_time()
         sys.exit(1)
     return rmin_result 
 
@@ -137,11 +139,13 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args) -> bo
                 vprint(options, error.stderr)
                 vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
                 vprint(options, '[QRM RESULT]: FAIL')
+                options.print_time()
                 sys.exit(1)
         except subprocess.TimeoutExpired:
             options.append_log_if_exists()
             vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
             vprint(options, '[QRM RESULT]: FAIL')
+            options.print_time()
             sys.exit(1)
         if not try_result:
             if options.increase2_sort == sort:
@@ -180,11 +184,13 @@ def finite_ivy_check(options : QrmOptions, sys_args) -> bool:
                 vprint(options, error.stderr)
                 vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
                 vprint(options, '[QRM RESULT]: FAIL')
+                options.print_time()
                 sys.exit(1)
         except subprocess.TimeoutExpired:
             options.append_log_if_exists()
             vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
             vprint(options, '[QRM RESULT]: FAIL')
+            options.print_time()
             sys.exit(1)
         if not try_result:
             if options.increase2_sort == sort:
@@ -227,6 +233,7 @@ def run_all(ivy_name, args):
     options  = get_options(ivy_name, args, sys_args)
 
     vprint_instance_banner(options, f'[QRM]: {ivy_name}')
+    options.print_time()
     qrm_result      = False
     cutoff_size_str = ''
     Rmin_solutions  = []
@@ -245,6 +252,7 @@ def run_all(ivy_name, args):
                 else:
                     vprint(options, '[QRM NOTE]: Reachability converge but Rmin not inductive')
                     vprint(options, '[QRM RESULT]: FAIL')
+                    options.print_time()
                     sys.exit(1)
             sizes_str.append(size_str)
         # reachability not converged yet
@@ -261,6 +269,7 @@ def run_all(ivy_name, args):
         vprint(options, '[QRM RESULT]: PASS')
     else:
         vprint(options, '[QRM RESULT]: FAIL')
+    options.print_time()
 
 if __name__ == '__main__':
     run_all(sys.argv[1], sys.argv[2:])

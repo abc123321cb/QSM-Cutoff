@@ -49,6 +49,8 @@ class QrmOptions():
         options.log_name     = self.log_name
         options.log_fout     = self.log_fout
         options.increase2_sort = self.increase2_sort
+        options.time_start     = self.time_start 
+        options.time_stamp     = self.time_stamp 
         return options
 
     def set_files_name(self, ivy_name):
