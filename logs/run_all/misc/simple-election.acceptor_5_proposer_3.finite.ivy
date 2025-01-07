@@ -1,0 +1,183 @@
+#lang ivy1.7
+
+# Source: I4
+
+################################################################################
+#
+# Types, relations and functions describing state of the network
+#
+################################################################################
+
+type acceptor = {acceptor0, acceptor1, acceptor2, acceptor3, acceptor4}
+type quorum = {quorum__acceptor0_acceptor1_acceptor2, quorum__acceptor0_acceptor1_acceptor3, quorum__acceptor0_acceptor1_acceptor4, quorum__acceptor0_acceptor2_acceptor3, quorum__acceptor0_acceptor2_acceptor4, quorum__acceptor0_acceptor3_acceptor4, quorum__acceptor1_acceptor2_acceptor3, quorum__acceptor1_acceptor2_acceptor4, quorum__acceptor1_acceptor3_acceptor4, quorum__acceptor2_acceptor3_acceptor4}
+type proposer = {proposer0, proposer1, proposer2}
+
+# rounds are totally ordered with a least element called zero
+relation member(X: acceptor, Y: quorum)
+axiom forall Q1, Q2. exists A:acceptor. member(A, Q1) & member(A, Q2)
+
+relation start(P: proposer)
+relation promise(A: acceptor, P: proposer)
+
+relation leader(P: proposer)
+################################################################################
+#
+# Protocol description
+#
+################################################################################
+
+relation didNotPromise(A:acceptor) = forall P. ~promise(A, P)
+relation chosenAt(Q:quorum, P: proposer) = forall A. member(A, Q) -> promise(A, P)
+
+after init {
+    start(P) := false;
+    promise(A, P) := false;
+    leader(P) := false;
+}
+
+action send_1a(p: proposer) = {
+    start(p) := true;
+}
+
+action send_1b(a: acceptor, p: proposer) = {
+    require start(p);
+    require didNotPromise(a);
+    promise(a, p) := true;
+}
+
+action decide(p: proposer, q: quorum) = {
+    require chosenAt(q, p);
+    leader(p) := true;
+}
+
+export send_1a
+export send_1b
+export decide
+
+# the safety property
+#invariant leader(P1) & leader(P2) -> P1 = P2
+
+##invariant [manual_1] promise(A, P1) & promise(A, P2) -> P1 = P2
+##invariant [manual_2] leader(P) -> ( exists Q. forall A. (member(A,Q) -> promise(A, P)) )
+
+invariant [def_didNotPromise] didNotPromise(A) = forall P. ~promise(A,P) # definition
+invariant [def_chosenAt] chosenAt(Q,P) = forall A. member(A,Q) -> promise(A,P) # definition
+invariant [invar_2] forall PROPOSER1,ACCEPTOR0,PROPOSER0. ~promise(ACCEPTOR0,PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | PROPOSER0 = PROPOSER1 # qcost: 6
+invariant [invar_24] forall PROPOSER0. (exists QUORUM0. chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0)) # qcost: 4
+invariant [invar_1] forall ACCEPTOR0,PROPOSER0. ~promise(ACCEPTOR0,PROPOSER0) | start(PROPOSER0) # qcost: 4
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+axiom member(acceptor0,quorum__acceptor0_acceptor1_acceptor2)
+axiom member(acceptor1,quorum__acceptor0_acceptor1_acceptor2)
+axiom member(acceptor2,quorum__acceptor0_acceptor1_acceptor2)
+axiom ~member(acceptor3,quorum__acceptor0_acceptor1_acceptor2)
+axiom ~member(acceptor4,quorum__acceptor0_acceptor1_acceptor2)
+axiom member(acceptor0,quorum__acceptor0_acceptor1_acceptor3)
+axiom member(acceptor1,quorum__acceptor0_acceptor1_acceptor3)
+axiom ~member(acceptor2,quorum__acceptor0_acceptor1_acceptor3)
+axiom member(acceptor3,quorum__acceptor0_acceptor1_acceptor3)
+axiom ~member(acceptor4,quorum__acceptor0_acceptor1_acceptor3)
+axiom member(acceptor0,quorum__acceptor0_acceptor1_acceptor4)
+axiom member(acceptor1,quorum__acceptor0_acceptor1_acceptor4)
+axiom ~member(acceptor2,quorum__acceptor0_acceptor1_acceptor4)
+axiom ~member(acceptor3,quorum__acceptor0_acceptor1_acceptor4)
+axiom member(acceptor4,quorum__acceptor0_acceptor1_acceptor4)
+axiom member(acceptor0,quorum__acceptor0_acceptor2_acceptor3)
+axiom ~member(acceptor1,quorum__acceptor0_acceptor2_acceptor3)
+axiom member(acceptor2,quorum__acceptor0_acceptor2_acceptor3)
+axiom member(acceptor3,quorum__acceptor0_acceptor2_acceptor3)
+axiom ~member(acceptor4,quorum__acceptor0_acceptor2_acceptor3)
+axiom member(acceptor0,quorum__acceptor0_acceptor2_acceptor4)
+axiom ~member(acceptor1,quorum__acceptor0_acceptor2_acceptor4)
+axiom member(acceptor2,quorum__acceptor0_acceptor2_acceptor4)
+axiom ~member(acceptor3,quorum__acceptor0_acceptor2_acceptor4)
+axiom member(acceptor4,quorum__acceptor0_acceptor2_acceptor4)
+axiom member(acceptor0,quorum__acceptor0_acceptor3_acceptor4)
+axiom ~member(acceptor1,quorum__acceptor0_acceptor3_acceptor4)
+axiom ~member(acceptor2,quorum__acceptor0_acceptor3_acceptor4)
+axiom member(acceptor3,quorum__acceptor0_acceptor3_acceptor4)
+axiom member(acceptor4,quorum__acceptor0_acceptor3_acceptor4)
+axiom ~member(acceptor0,quorum__acceptor1_acceptor2_acceptor3)
+axiom member(acceptor1,quorum__acceptor1_acceptor2_acceptor3)
+axiom member(acceptor2,quorum__acceptor1_acceptor2_acceptor3)
+axiom member(acceptor3,quorum__acceptor1_acceptor2_acceptor3)
+axiom ~member(acceptor4,quorum__acceptor1_acceptor2_acceptor3)
+axiom ~member(acceptor0,quorum__acceptor1_acceptor2_acceptor4)
+axiom member(acceptor1,quorum__acceptor1_acceptor2_acceptor4)
+axiom member(acceptor2,quorum__acceptor1_acceptor2_acceptor4)
+axiom ~member(acceptor3,quorum__acceptor1_acceptor2_acceptor4)
+axiom member(acceptor4,quorum__acceptor1_acceptor2_acceptor4)
+axiom ~member(acceptor0,quorum__acceptor1_acceptor3_acceptor4)
+axiom member(acceptor1,quorum__acceptor1_acceptor3_acceptor4)
+axiom ~member(acceptor2,quorum__acceptor1_acceptor3_acceptor4)
+axiom member(acceptor3,quorum__acceptor1_acceptor3_acceptor4)
+axiom member(acceptor4,quorum__acceptor1_acceptor3_acceptor4)
+axiom ~member(acceptor0,quorum__acceptor2_acceptor3_acceptor4)
+axiom ~member(acceptor1,quorum__acceptor2_acceptor3_acceptor4)
+axiom member(acceptor2,quorum__acceptor2_acceptor3_acceptor4)
+axiom member(acceptor3,quorum__acceptor2_acceptor3_acceptor4)
+axiom member(acceptor4,quorum__acceptor2_acceptor3_acceptor4)
+
+## Access actions ##
+action get_leader(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := leader(p0)
+}
+export get_leader
+
+action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (leader(p0) = result)
+}
+export get_bool_leader
+
+action get_member(a0: acceptor, q1: quorum) returns(qrm_result: bool) = {
+    qrm_result := member(a0, q1)
+}
+export get_member
+
+action get_bool_member(a0: acceptor, q1: quorum, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (member(a0, q1) = result)
+}
+export get_bool_member
+
+action get_start(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := start(p0)
+}
+export get_start
+
+action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (start(p0) = result)
+}
+export get_bool_start
+
+action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
+    qrm_result := promise(a0, p1)
+}
+export get_promise
+
+action get_bool_promise(a0: acceptor, p1: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (promise(a0, p1) = result)
+}
+export get_bool_promise
+
+action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
+    qrm_result := didNotPromise(a0)
+}
+export get_didNotPromise
+
+action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (didNotPromise(a0) = result)
+}
+export get_bool_didNotPromise
+
+action get_chosenAt(q0: quorum, p1: proposer) returns(qrm_result: bool) = {
+    qrm_result := chosenAt(q0, p1)
+}
+export get_chosenAt
+
+action get_bool_chosenAt(q0: quorum, p1: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (chosenAt(q0, p1) = result)
+}
+export get_bool_chosenAt
+

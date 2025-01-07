@@ -1,0 +1,132 @@
+#lang ivy1.7
+
+type node = {node0, node1}
+
+relation lock_msg(N:node)
+relation grant_msg(N:node)
+relation unlock_msg(N:node)
+relation holds_lock(N:node)
+individual server_holds_lock: bool
+
+after init  {
+	lock_msg(N) := false;
+	grant_msg(N) := false;
+	unlock_msg(N) := false;
+	holds_lock(N) := false;
+	server_holds_lock := true;
+}
+
+action send_lock(n: node) = {
+  lock_msg(n) := true;
+}
+
+action recv_lock(n: node) = {
+  require server_holds_lock;
+  require lock_msg(n);
+
+  server_holds_lock := false;
+  lock_msg(N) := lock_msg(N) & N ~= n;
+  grant_msg(n) := true;
+}
+
+action recv_grant(n: node) = {
+  require grant_msg(n);
+
+  grant_msg(N) := grant_msg(N) & N ~= n;
+  holds_lock(n) := true;
+}
+
+action unlock(n: node) = {
+  require holds_lock(n);
+
+  holds_lock(N) := holds_lock(N) & N ~= n;
+  unlock_msg(n) := true;
+}
+
+action recv_unlock(n: node) = {
+  require unlock_msg(n);
+
+  unlock_msg(N) := unlock_msg(N) & N ~= n;
+  server_holds_lock := true;
+}
+
+export send_lock
+export recv_lock
+export recv_grant
+export unlock
+export recv_unlock
+
+#invariant [safety] holds_lock(N1) & holds_lock(N2) -> N1 = N2
+
+##invariant [manual_1] grant_msg(N1) & grant_msg(N2) -> N1 = N2
+##invariant [manual_2] unlock_msg(N1) & unlock_msg(N2) -> N1 = N2
+##invariant [manual_3] ~(holds_lock(N1) & grant_msg(N2))
+##invariant [manual_4] ~(holds_lock(N1) & unlock_msg(N2))
+##invariant [manual_5] ~(grant_msg(N1) & unlock_msg(N2))
+##invariant [manual_6] ~(grant_msg(N) & server_holds_lock)
+##invariant [manual_7] ~(holds_lock(N) & server_holds_lock)
+##invariant [manual_8] ~(unlock_msg(N) & server_holds_lock)
+
+invariant [invar_0] forall NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE0) # qcost: 3
+invariant [invar_1] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
+invariant [invar_2] forall NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE0) # qcost: 3
+invariant [invar_3] forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock # qcost: 3
+invariant [invar_4] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
+invariant [invar_5] forall NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_6] forall NODE0. holds_lock(NODE0) | unlock_msg(NODE0) | server_holds_lock | grant_msg(NODE0) # qcost: 5
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Access actions ##
+action get_grant_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := grant_msg(n0)
+}
+export get_grant_msg
+
+action get_bool_grant_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (grant_msg(n0) = result)
+}
+export get_bool_grant_msg
+
+action get_unlock_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := unlock_msg(n0)
+}
+export get_unlock_msg
+
+action get_bool_unlock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (unlock_msg(n0) = result)
+}
+export get_bool_unlock_msg
+
+action get_holds_lock(n0: node) returns(qrm_result: bool) = {
+    qrm_result := holds_lock(n0)
+}
+export get_holds_lock
+
+action get_bool_holds_lock(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (holds_lock(n0) = result)
+}
+export get_bool_holds_lock
+
+action get_server_holds_lock returns(qrm_result: bool) = {
+    qrm_result := server_holds_lock
+}
+export get_server_holds_lock
+
+action get_bool_server_holds_lock(result: bool) returns(qrm_result: bool) = {
+    qrm_result := (server_holds_lock = result)
+}
+export get_bool_server_holds_lock
+
+action get_lock_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := lock_msg(n0)
+}
+export get_lock_msg
+
+action get_bool_lock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (lock_msg(n0) = result)
+}
+export get_bool_lock_msg
+

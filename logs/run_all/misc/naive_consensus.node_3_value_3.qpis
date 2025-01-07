@@ -1,0 +1,90 @@
+
+=== Prime Orbit 0 =====================
+size : 18
+num_suborbits: 1
+0 (*) : --------1-----------0
+0     : ['decide(quorum__node1_node2,value2)', '~vote(node2,value2)']
+1     : -------1-----------0-
+1     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+2     : ------1-----------0--
+2     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+3     : --------1--------0---
+3     : ['decide(quorum__node1_node2,value2)', '~vote(node1,value2)']
+4     : -------1--------0----
+4     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+5     : ------1--------0-----
+5     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+6     : -----1--------------0
+6     : ['decide(quorum__node0_node2,value2)', '~vote(node2,value2)']
+7     : ----1--------------0-
+7     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+8     : ---1--------------0--
+8     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+9     : -----1--------0------
+9     : ['decide(quorum__node0_node2,value2)', '~vote(node0,value2)']
+10     : ----1--------0-------
+10     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+11     : ---1--------0--------
+11     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+12     : --1--------------0---
+12     : ['decide(quorum__node0_node1,value2)', '~vote(node1,value2)']
+13     : -1--------------0----
+13     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+14     : 1--------------0-----
+14     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+15     : --1-----------0------
+15     : ['decide(quorum__node0_node1,value2)', '~vote(node0,value2)']
+16     : -1-----------0-------
+16     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+17     : 1-----------0--------
+17     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall VALUE0,QUORUM0,NODE0. ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0)
+qcost : 6
+
+
+=== Prime Orbit 2 =====================
+size : 9
+num_suborbits: 1
+54 (*) : -------------------11
+54     : ['vote(node2,value1)', 'vote(node2,value2)']
+55     : ------------------1-1
+55     : ['vote(node2,value0)', 'vote(node2,value2)']
+56     : ------------------11-
+56     : ['vote(node2,value0)', 'vote(node2,value1)']
+57     : ----------------11---
+57     : ['vote(node1,value1)', 'vote(node1,value2)']
+58     : ---------------1-1---
+58     : ['vote(node1,value0)', 'vote(node1,value2)']
+59     : ---------------11----
+59     : ['vote(node1,value0)', 'vote(node1,value1)']
+60     : -------------11------
+60     : ['vote(node0,value1)', 'vote(node0,value2)']
+61     : ------------1-1------
+61     : ['vote(node0,value0)', 'vote(node0,value2)']
+62     : ------------11-------
+62     : ['vote(node0,value0)', 'vote(node0,value1)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1
+qcost : 6
+
+
+=== Prime Orbit 11 =====================
+size : 3
+num_suborbits: 1
+219 (*) : --0--0--0--1---------
+219     : ['decision(value2)', '~decide(quorum__node0_node1,value2)', '~decide(quorum__node0_node2,value2)', '~decide(quorum__node1_node2,value2)']
+220     : -0--0--0--1----------
+220     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+221     : 0--0--0--1-----------
+221     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0))
+qcost : 4
+

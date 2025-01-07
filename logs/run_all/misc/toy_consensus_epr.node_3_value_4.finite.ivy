@@ -1,0 +1,113 @@
+#lang ivy1.7
+
+type node = {node0, node1, node2}
+type quorum = {quorum__node0_node1, quorum__node0_node2, quorum__node1_node2}
+type value = {value0, value1, value2, value3}
+
+relation member(N:node, Q:quorum)
+axiom forall Q1, Q2. exists N. member(N, Q1) & member(N, Q2)
+
+relation voted(N:node)
+relation vote(N:node, V:value)
+relation decided(V:value)
+
+relation chosenAt(Q:quorum, V:value) = forall N. member(N, Q) -> vote(N, V)
+
+after init {
+    voted(N) := false;
+    vote(N, V) := false;
+    decided(V) := false;
+}
+
+action cast_vote(n: node, v: value) = {
+    require ~voted(n);
+    
+    vote(n, v) := true;
+    voted(n) := true;
+}
+
+action decide(v: value, q: quorum) = {
+    require chosenAt(q, v);
+    
+    decided(v) := true;
+}
+
+export cast_vote
+export decide
+
+#invariant [safety] decided(V1) & decided(V2) -> V1 = V2
+
+##invariant [manual_1] vote(N,V) -> voted(N)
+##invariant [manual_2] vote(N, V1) & vote(N, V2) -> V1 = V2
+##invariant [manual_3] forall V. decided(V) -> exists Q. forall N. member(N, Q) -> vote(N, V)
+
+invariant [def_chosenAt] chosenAt(Q,V) = forall N. member(N,Q) -> vote(N,V) # definition
+invariant [invar_0] forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
+invariant [invar_2] forall VALUE0,NODE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
+invariant [invar_21] forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0)) # qcost: 4
+invariant [invar_22] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0)) # qcost: 4
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+axiom member(node0,quorum__node0_node1)
+axiom member(node1,quorum__node0_node1)
+axiom ~member(node2,quorum__node0_node1)
+axiom member(node0,quorum__node0_node2)
+axiom ~member(node1,quorum__node0_node2)
+axiom member(node2,quorum__node0_node2)
+axiom ~member(node0,quorum__node1_node2)
+axiom member(node1,quorum__node1_node2)
+axiom member(node2,quorum__node1_node2)
+
+## Access actions ##
+action get_decided(v0: value) returns(qrm_result: bool) = {
+    qrm_result := decided(v0)
+}
+export get_decided
+
+action get_bool_decided(v0: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (decided(v0) = result)
+}
+export get_bool_decided
+
+action get_vote(n0: node, v1: value) returns(qrm_result: bool) = {
+    qrm_result := vote(n0, v1)
+}
+export get_vote
+
+action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (vote(n0, v1) = result)
+}
+export get_bool_vote
+
+action get_voted(n0: node) returns(qrm_result: bool) = {
+    qrm_result := voted(n0)
+}
+export get_voted
+
+action get_bool_voted(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (voted(n0) = result)
+}
+export get_bool_voted
+
+action get_member(n0: node, q1: quorum) returns(qrm_result: bool) = {
+    qrm_result := member(n0, q1)
+}
+export get_member
+
+action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (member(n0, q1) = result)
+}
+export get_bool_member
+
+action get_chosenAt(q0: quorum, v1: value) returns(qrm_result: bool) = {
+    qrm_result := chosenAt(q0, v1)
+}
+export get_chosenAt
+
+action get_bool_chosenAt(q0: quorum, v1: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (chosenAt(q0, v1) = result)
+}
+export get_bool_chosenAt
+
