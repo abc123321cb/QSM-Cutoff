@@ -240,6 +240,8 @@ def run_all(ivy_name, args):
                     vprint(options, '[QRM RESULT]: FAIL')
                     options.print_time()
                     sys.exit(1)
+            else:
+                sizes_str.append(size_str)
         else:
             has_fail_convergence = False
             increase_size = 0 
