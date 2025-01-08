@@ -2,7 +2,7 @@ sym_path='ivybench/sym/ivy/'
 sym_quorum_path='ivybench/sym_quorum/ivy/'
 sym_ring_path='ivybench/sym_ring/ivy/'
 yaml_path='yamls/'
-Timeout=5000
+Timeout=2000
 
 declare -a sym_instances=(
     "Consensus"
