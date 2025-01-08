@@ -56,6 +56,26 @@ invariant [safety] forall N,P. response_received(N,P) -> responseMatched(N, P)
 ## Dependent relation axioms ##
 
 ## Access actions ##
+action get_match(r0: request, r1: response) returns(qrm_result: bool) = {
+    qrm_result := match(r0, r1)
+}
+export get_match
+
+action get_bool_match(r0: request, r1: response, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (match(r0, r1) = result)
+}
+export get_bool_match
+
+action get_responseMatched(n0: node, r1: response) returns(qrm_result: bool) = {
+    qrm_result := responseMatched(n0, r1)
+}
+export get_responseMatched
+
+action get_bool_responseMatched(n0: node, r1: response, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (responseMatched(n0, r1) = result)
+}
+export get_bool_responseMatched
+
 action get_response_sent(n0: node, r1: response) returns(qrm_result: bool) = {
     qrm_result := response_sent(n0, r1)
 }
@@ -75,26 +95,6 @@ action get_bool_request_sent(n0: node, r1: request, result: bool) returns(qrm_re
     qrm_result := (request_sent(n0, r1) = result)
 }
 export get_bool_request_sent
-
-action get_responseMatched(n0: node, r1: response) returns(qrm_result: bool) = {
-    qrm_result := responseMatched(n0, r1)
-}
-export get_responseMatched
-
-action get_bool_responseMatched(n0: node, r1: response, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (responseMatched(n0, r1) = result)
-}
-export get_bool_responseMatched
-
-action get_match(r0: request, r1: response) returns(qrm_result: bool) = {
-    qrm_result := match(r0, r1)
-}
-export get_match
-
-action get_bool_match(r0: request, r1: response, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (match(r0, r1) = result)
-}
-export get_bool_match
 
 action get_response_received(n0: node, r1: response) returns(qrm_result: bool) = {
     qrm_result := response_received(n0, r1)

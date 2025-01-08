@@ -35,7 +35,7 @@ swig -c++ -python -o Ricart-Agrawala.node_2.finite_wrap.cpp ivy_exec.i
 
 [SWIG RESULT]: OK
 
-g++ -std=c++11 -fpic -pthread -O3 Ricart-Agrawala.node_2.finite.cpp Ricart-Agrawala.node_2.finite_wrap.cpp -I/usr/include/python3.12 -c
+g++ -std=c++11 -fpic -pthread -O3 Ricart-Agrawala.node_2.finite.cpp Ricart-Agrawala.node_2.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
 
 [G++ RESULT]: OK
 
@@ -51,11 +51,11 @@ g++ -shared Ricart-Agrawala.node_2.finite.o Ricart-Agrawala.node_2.finite_wrap.o
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 5.799 seconds
+[QRM NOTE]: Time elapsed since start: 5.954 seconds
 
-[QRM NOTE]: Time elapsed since last: 5.799 seconds
+[QRM NOTE]: Time elapsed since last: 5.954 seconds
 
-[QRM NOTE]: Peak memory: 651476 bytes
+[QRM NOTE]: Peak memory: 1176353 bytes
 
 
 =====================================
@@ -80,9 +80,9 @@ g++ -shared Ricart-Agrawala.node_2.finite.o Ricart-Agrawala.node_2.finite_wrap.o
 ==============================================================================================
 
 sort: node=['node0', 'node1']
-predicate: replied('node', 'node')
 predicate: holds('node',)
 predicate: requested('node', 'node')
+predicate: replied('node', 'node')
 interpreted atoms: {}
 state atoms: ['holds(node0)', 'holds(node1)', 'replied(node0,node0)', 'replied(node0,node1)', 'replied(node1,node0)', 'replied(node1,node1)', 'requested(node0,node0)', 'requested(node0,node1)', 'requested(node1,node0)', 'requested(node1,node1)']
 representative states : 0, 2, 6, 36, 38, 294, 292, 32, 34, 290, 288
@@ -103,8 +103,8 @@ size : 2
 repr state: 0000000100
 lex min decimal: 2
 states:
-0000000010
 0000000100
+0000000010
 
 
 
@@ -135,8 +135,8 @@ size : 2
 repr state: 0001000110
 lex min decimal: 38
 states:
-0001000110
 0000100110
+0001000110
 
 
 
@@ -146,8 +146,8 @@ size : 2
 repr state: 1001000110
 lex min decimal: 294
 states:
-1001000110
 0100100110
+1001000110
 
 
 
@@ -168,8 +168,8 @@ size : 2
 repr state: 0001000000
 lex min decimal: 32
 states:
-0000100000
 0001000000
+0000100000
 
 
 
@@ -206,11 +206,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 5.849 seconds
+[QRM NOTE]: Time elapsed since start: 6.032 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.050 seconds
+[QRM NOTE]: Time elapsed since last: 0.077 seconds
 
-[QRM NOTE]: Peak memory: 171372 bytes
+[QRM NOTE]: Peak memory: 1211643 bytes
 
 
 ======================================
@@ -229,11 +229,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: {9, 6}
 
-[QRM NOTE]: Time elapsed since start: 5.855 seconds
+[QRM NOTE]: Time elapsed since start: 6.034 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.006 seconds
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 171458 bytes
+[QRM NOTE]: Peak memory: 167369 bytes
 
 
 ==============================================================================================
@@ -323,11 +323,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 8
 
-[QRM NOTE]: Time elapsed since start: 5.863 seconds
+[QRM NOTE]: Time elapsed since start: 6.043 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.008 seconds
+[QRM NOTE]: Time elapsed since last: 0.009 seconds
 
-[QRM NOTE]: Peak memory: 217961 bytes
+[QRM NOTE]: Peak memory: 1258352 bytes
 
 
 ===================================================================================
@@ -381,11 +381,11 @@ After reduction :
  pending  : []
  solution : [0, 1, 4]
 
-[QRM NOTE]: Time elapsed since start: 5.869 seconds
+[QRM NOTE]: Time elapsed since start: 6.044 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.006 seconds
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 215146 bytes
+[QRM NOTE]: Peak memory: 211104 bytes
 
 
 =======================================================================================
@@ -584,12 +584,12 @@ signed_func_name2args: {'0$holds': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds(NODE0)', '~replied(NODE0,NODE1)']
+qterms: ['~replied(NODE0,NODE1)', 'holds(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,NODE1. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1
+qclause: forall NODE0,NODE1. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1
 
 
 === Prime Orbit 4 =====================
@@ -720,7 +720,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,NODE1. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1
 qcost : 5
 
 
@@ -739,11 +739,11 @@ qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 5.933 seconds
+[QRM NOTE]: Time elapsed since start: 6.101 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.064 seconds
+[QRM NOTE]: Time elapsed since last: 0.057 seconds
 
-[QRM NOTE]: Peak memory: 451834 bytes
+[QRM NOTE]: Peak memory: 1872302 bytes
 
 
 ================================================================================
@@ -811,18 +811,18 @@ Solution 0 : [0, 1, 4] (length = 3)
 
 invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
 
-invariant [invar_1] forall NODE0,NODE1. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_1] forall NODE0,NODE1. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1 # qcost: 5
 
 invariant [invar_4] forall NODE0,NODE1. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1 # qcost: 5
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 5.957 seconds
+[QRM NOTE]: Time elapsed since start: 6.135 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.024 seconds
+[QRM NOTE]: Time elapsed since last: 0.033 seconds
 
-[QRM NOTE]: Peak memory: 436323 bytes
+[QRM NOTE]: Peak memory: 1861130 bytes
 
 
 ==================================================================================================
@@ -835,11 +835,11 @@ Minimization check for Solution 0
 
 [MIN_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 5.974 seconds
+[QRM NOTE]: Time elapsed since start: 6.148 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.018 seconds
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
 
-[QRM NOTE]: Peak memory: 438404 bytes
+[QRM NOTE]: Peak memory: 818790 bytes
 
 
 ===================================================================================
@@ -916,13 +916,13 @@ OK
 
 [R Implies P]: True
 
-[UNSAT CORE]: ((forall NODE0,NODE1. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1) & (forall NODE0,NODE1. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1))
+[UNSAT CORE]: ((forall NODE0,NODE1. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1) & (forall NODE0,NODE1. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1))
 
-[QRM NOTE]: Time elapsed since start: 6.435 seconds
+[QRM NOTE]: Time elapsed since start: 8.306 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.461 seconds
+[QRM NOTE]: Time elapsed since last: 2.158 seconds
 
-[QRM NOTE]: Peak memory: 486678 bytes
+[QRM NOTE]: Peak memory: 867377 bytes
 
 
 ***************************************************************

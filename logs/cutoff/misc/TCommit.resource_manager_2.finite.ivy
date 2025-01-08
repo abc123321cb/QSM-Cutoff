@@ -65,16 +65,6 @@ action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result
 }
 export get_bool_committed
 
-action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := prepared(r0)
-}
-export get_prepared
-
-action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (prepared(r0) = result)
-}
-export get_bool_prepared
-
 action get_working(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := working(r0)
 }
@@ -84,6 +74,16 @@ action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: 
     qrm_result := (working(r0) = result)
 }
 export get_bool_working
+
+action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := prepared(r0)
+}
+export get_prepared
+
+action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (prepared(r0) = result)
+}
+export get_bool_prepared
 
 action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := aborted(r0)

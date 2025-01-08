@@ -35,7 +35,7 @@ swig -c++ -python -o simple-decentralized-lock.node_3.finite_wrap.cpp ivy_exec.i
 
 [SWIG RESULT]: OK
 
-g++ -std=c++11 -fpic -pthread -O3 simple-decentralized-lock.node_3.finite.cpp simple-decentralized-lock.node_3.finite_wrap.cpp -I/usr/include/python3.12 -c
+g++ -std=c++11 -fpic -pthread -O3 simple-decentralized-lock.node_3.finite.cpp simple-decentralized-lock.node_3.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
 
 [G++ RESULT]: OK
 
@@ -51,11 +51,11 @@ g++ -shared simple-decentralized-lock.node_3.finite.o simple-decentralized-lock.
 
 [FW NOTE]: symmetric group order: 6
 
-[QRM NOTE]: Time elapsed since start: 5.856 seconds
+[QRM NOTE]: Time elapsed since start: 6.070 seconds
 
-[QRM NOTE]: Time elapsed since last: 5.856 seconds
+[QRM NOTE]: Time elapsed since last: 6.070 seconds
 
-[QRM NOTE]: Peak memory: 651612 bytes
+[QRM NOTE]: Peak memory: 1177948 bytes
 
 
 =====================================
@@ -80,9 +80,9 @@ g++ -shared simple-decentralized-lock.node_3.finite.o simple-decentralized-lock.
 ========================================================================================================
 
 sort: node=['node0', 'node1', 'node2']
-predicate: has_lock('node',)
-predicate: message('node', 'node')
 predicate: start_node=('node',)
+predicate: message('node', 'node')
+predicate: has_lock('node',)
 interpreted atoms: {}
 state atoms: ['has_lock(node0)', 'has_lock(node1)', 'has_lock(node2)', 'message(node0,node0)', 'message(node0,node1)', 'message(node0,node2)', 'message(node1,node0)', 'message(node1,node1)', 'message(node1,node2)', 'message(node2,node0)', 'message(node2,node1)', 'message(node2,node2)', '(start_node=node0)', '(start_node=node1)', '(start_node=node2)']
 representative states : 4097, 9, 17, 4098, 18, 10, 20
@@ -105,9 +105,9 @@ size : 3
 repr state: 000100000000100
 lex min decimal: 9
 states:
-000000010000010
-000000000001001
 000100000000100
+000000000001001
+000000010000010
 
 
 
@@ -117,12 +117,12 @@ size : 6
 repr state: 000010000000100
 lex min decimal: 17
 states:
-000000000010001
+000010000000100
 000000001000010
 000001000000100
-000010000000100
-000000000100001
+000000000010001
 000000100000010
+000000000100001
 
 
 
@@ -133,11 +133,11 @@ repr state: 010000000000100
 lex min decimal: 4098
 states:
 010000000000100
-100000000000001
 010000000000001
-100000000000010
-001000000000010
+100000000000001
 001000000000100
+001000000000010
+100000000000010
 
 
 
@@ -147,12 +147,12 @@ size : 6
 repr state: 000000100000100
 lex min decimal: 18
 states:
-000000000010010
 000001000000001
-000000001000001
 000000000100100
-000000100000100
+000000000010010
 000010000000010
+000000100000100
+000000001000001
 
 
 
@@ -162,12 +162,12 @@ size : 6
 repr state: 000000010000100
 lex min decimal: 10
 states:
-000000010000100
-000100000000010
 000000000001010
-000000000001100
+000100000000010
 000100000000001
+000000010000100
 000000010000001
+000000000001100
 
 
 
@@ -177,20 +177,20 @@ size : 6
 repr state: 000000001000100
 lex min decimal: 20
 states:
-000000001000100
-000010000000001
-000000100000001
-000001000000010
 000000000010100
+000000001000100
+000000100000001
 000000000100010
+000010000000001
+000001000000010
 
 
 
-[QRM NOTE]: Time elapsed since start: 5.906 seconds
+[QRM NOTE]: Time elapsed since start: 6.161 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.050 seconds
+[QRM NOTE]: Time elapsed since last: 0.091 seconds
 
-[QRM NOTE]: Peak memory: 176795 bytes
+[QRM NOTE]: Peak memory: 1216720 bytes
 
 
 ======================================
@@ -205,11 +205,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 5.912 seconds
+[QRM NOTE]: Time elapsed since start: 6.163 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.006 seconds
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 177852 bytes
+[QRM NOTE]: Peak memory: 173297 bytes
 
 
 ========================================================================================================
@@ -227,66 +227,50 @@ states:
 
 
 === Prime Orbit 0 =====================
-size : 3
-num_suborbits: 1
-0 (*) : ------------1-1
-0     : ['(start_node=node0)', '(start_node=node2)']
-1     : ------------11-
-1     : ['(start_node=node0)', '(start_node=node1)']
-2     : -------------11
-2     : ['(start_node=node1)', '(start_node=node2)']
-num_forall :   0
-num_exists :   0
-num_literals : 0
-quantified form : None
-qcost : 0
-
-
-=== Prime Orbit 1 =====================
 size : 36
 num_suborbits: 8
-3 (*) : ---1-------1---
-3     : ['message(node0,node0)', 'message(node2,node2)']
-4     : ---1---1-------
-4     : ['message(node0,node0)', 'message(node1,node1)']
-5     : -------1---1---
-5     : ['message(node1,node1)', 'message(node2,node2)']
-15 (*) : ----1------1---
-15     : ['message(node0,node1)', 'message(node2,node2)']
-16     : -----1-1-------
-16     : ['message(node0,node2)', 'message(node1,node1)']
-17     : ------1----1---
-17     : ['message(node1,node0)', 'message(node2,node2)']
-18     : ---1----1------
-18     : ['message(node0,node0)', 'message(node1,node2)']
-19     : -------1-1-----
-19     : ['message(node1,node1)', 'message(node2,node0)']
-20     : ---1------1----
-20     : ['message(node0,node0)', 'message(node2,node1)']
-21 (*) : -----1-----1---
-21     : ['message(node0,node2)', 'message(node2,node2)']
-22     : ----1--1-------
-22     : ['message(node0,node1)', 'message(node1,node1)']
-23     : --------1--1---
-23     : ['message(node1,node2)', 'message(node2,node2)']
-24     : ---1--1--------
-24     : ['message(node0,node0)', 'message(node1,node0)']
-25     : -------1--1----
-25     : ['message(node1,node1)', 'message(node2,node1)']
-26     : ---1-----1-----
-26     : ['message(node0,node0)', 'message(node2,node0)']
-27 (*) : ---------1-1---
-27     : ['message(node2,node0)', 'message(node2,node2)']
-28     : ------11-------
-28     : ['message(node1,node0)', 'message(node1,node1)']
-29     : ----------11---
-29     : ['message(node2,node1)', 'message(node2,node2)']
-30     : ---11----------
-30     : ['message(node0,node0)', 'message(node0,node1)']
-31     : -------11------
-31     : ['message(node1,node1)', 'message(node1,node2)']
-32     : ---1-1---------
-32     : ['message(node0,node0)', 'message(node0,node2)']
+0 (*) : ---1-------1---
+0     : ['message(node0,node0)', 'message(node2,node2)']
+1     : ---1---1-------
+1     : ['message(node0,node0)', 'message(node1,node1)']
+2     : -------1---1---
+2     : ['message(node1,node1)', 'message(node2,node2)']
+12 (*) : ----1------1---
+12     : ['message(node0,node1)', 'message(node2,node2)']
+13     : -----1-1-------
+13     : ['message(node0,node2)', 'message(node1,node1)']
+14     : ------1----1---
+14     : ['message(node1,node0)', 'message(node2,node2)']
+15     : ---1----1------
+15     : ['message(node0,node0)', 'message(node1,node2)']
+16     : -------1-1-----
+16     : ['message(node1,node1)', 'message(node2,node0)']
+17     : ---1------1----
+17     : ['message(node0,node0)', 'message(node2,node1)']
+18 (*) : -----1-----1---
+18     : ['message(node0,node2)', 'message(node2,node2)']
+19     : ----1--1-------
+19     : ['message(node0,node1)', 'message(node1,node1)']
+20     : --------1--1---
+20     : ['message(node1,node2)', 'message(node2,node2)']
+21     : ---1--1--------
+21     : ['message(node0,node0)', 'message(node1,node0)']
+22     : -------1--1----
+22     : ['message(node1,node1)', 'message(node2,node1)']
+23     : ---1-----1-----
+23     : ['message(node0,node0)', 'message(node2,node0)']
+24 (*) : ---------1-1---
+24     : ['message(node2,node0)', 'message(node2,node2)']
+25     : ------11-------
+25     : ['message(node1,node0)', 'message(node1,node1)']
+26     : ----------11---
+26     : ['message(node2,node1)', 'message(node2,node2)']
+27     : ---11----------
+27     : ['message(node0,node0)', 'message(node0,node1)']
+28     : -------11------
+28     : ['message(node1,node1)', 'message(node1,node2)']
+29     : ---1-1---------
+29     : ['message(node0,node0)', 'message(node0,node2)']
 54 (*) : ----11---------
 54     : ['message(node0,node1)', 'message(node0,node2)']
 55     : ------1-1------
@@ -324,27 +308,27 @@ quantified form : None
 qcost : 0
 
 
-=== Prime Orbit 2 =====================
+=== Prime Orbit 1 =====================
 size : 27
 num_suborbits: 5
-6 (*) : 1----------1---
-6     : ['has_lock(node0)', 'message(node2,node2)']
-7     : 1------1-------
-7     : ['has_lock(node0)', 'message(node1,node1)']
-8     : -1---------1---
-8     : ['has_lock(node1)', 'message(node2,node2)']
-9     : -1-1-----------
-9     : ['has_lock(node1)', 'message(node0,node0)']
-10     : --1----1-------
-10     : ['has_lock(node2)', 'message(node1,node1)']
-11     : --11-----------
-11     : ['has_lock(node2)', 'message(node0,node0)']
-12 (*) : --1--------1---
-12     : ['has_lock(node2)', 'message(node2,node2)']
-13     : -1-----1-------
-13     : ['has_lock(node1)', 'message(node1,node1)']
-14     : 1--1-----------
-14     : ['has_lock(node0)', 'message(node0,node0)']
+3 (*) : 1----------1---
+3     : ['has_lock(node0)', 'message(node2,node2)']
+4     : 1------1-------
+4     : ['has_lock(node0)', 'message(node1,node1)']
+5     : -1---------1---
+5     : ['has_lock(node1)', 'message(node2,node2)']
+6     : -1-1-----------
+6     : ['has_lock(node1)', 'message(node0,node0)']
+7     : --1----1-------
+7     : ['has_lock(node2)', 'message(node1,node1)']
+8     : --11-----------
+8     : ['has_lock(node2)', 'message(node0,node0)']
+9 (*) : --1--------1---
+9     : ['has_lock(node2)', 'message(node2,node2)']
+10     : -1-----1-------
+10     : ['has_lock(node1)', 'message(node1,node1)']
+11     : 1--1-----------
+11     : ['has_lock(node0)', 'message(node0,node0)']
 36 (*) : --1-1----------
 36     : ['has_lock(node2)', 'message(node0,node1)']
 37     : -1---1---------
@@ -357,30 +341,46 @@ num_suborbits: 5
 40     : ['has_lock(node1)', 'message(node2,node0)']
 41     : 1---------1----
 41     : ['has_lock(node0)', 'message(node2,node1)']
-42 (*) : -1--1----------
-42     : ['has_lock(node1)', 'message(node0,node1)']
-43     : --1--1---------
-43     : ['has_lock(node2)', 'message(node0,node2)']
-44     : 1-----1--------
-44     : ['has_lock(node0)', 'message(node1,node0)']
-45     : --1-----1------
-45     : ['has_lock(node2)', 'message(node1,node2)']
-46     : 1--------1-----
-46     : ['has_lock(node0)', 'message(node2,node0)']
-47     : -1--------1----
-47     : ['has_lock(node1)', 'message(node2,node1)']
-48 (*) : 1---1----------
-48     : ['has_lock(node0)', 'message(node0,node1)']
-49     : 1----1---------
-49     : ['has_lock(node0)', 'message(node0,node2)']
-50     : -1----1--------
-50     : ['has_lock(node1)', 'message(node1,node0)']
-51     : -1------1------
-51     : ['has_lock(node1)', 'message(node1,node2)']
-52     : --1------1-----
-52     : ['has_lock(node2)', 'message(node2,node0)']
-53     : --1-------1----
-53     : ['has_lock(node2)', 'message(node2,node1)']
+42 (*) : 1---1----------
+42     : ['has_lock(node0)', 'message(node0,node1)']
+43     : 1----1---------
+43     : ['has_lock(node0)', 'message(node0,node2)']
+44     : -1----1--------
+44     : ['has_lock(node1)', 'message(node1,node0)']
+45     : -1------1------
+45     : ['has_lock(node1)', 'message(node1,node2)']
+46     : --1------1-----
+46     : ['has_lock(node2)', 'message(node2,node0)']
+47     : --1-------1----
+47     : ['has_lock(node2)', 'message(node2,node1)']
+48 (*) : -1--1----------
+48     : ['has_lock(node1)', 'message(node0,node1)']
+49     : --1--1---------
+49     : ['has_lock(node2)', 'message(node0,node2)']
+50     : 1-----1--------
+50     : ['has_lock(node0)', 'message(node1,node0)']
+51     : --1-----1------
+51     : ['has_lock(node2)', 'message(node1,node2)']
+52     : 1--------1-----
+52     : ['has_lock(node0)', 'message(node2,node0)']
+53     : -1--------1----
+53     : ['has_lock(node1)', 'message(node2,node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 3
+num_suborbits: 1
+30 (*) : ------------11-
+30     : ['(start_node=node0)', '(start_node=node1)']
+31     : ------------1-1
+31     : ['(start_node=node0)', '(start_node=node2)']
+32     : -------------11
+32     : ['(start_node=node1)', '(start_node=node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -435,11 +435,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 71
 
-[QRM NOTE]: Time elapsed since start: 5.940 seconds
+[QRM NOTE]: Time elapsed since start: 6.188 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.028 seconds
+[QRM NOTE]: Time elapsed since last: 0.025 seconds
 
-[QRM NOTE]: Peak memory: 296098 bytes
+[QRM NOTE]: Peak memory: 1338410 bytes
 
 
 =============================================================================================
@@ -448,19 +448,19 @@ qcost : 0
 
 =============================================================================================
 
-definition primes: {0, 4}
+definition primes: {2, 4}
 
 
 New level: 0
- pending : [1, 2, 3, 5]
+ pending : [0, 1, 3, 5]
  solution : []
 
 
 Before reduction : 
- pending  : [1, 2, 3, 5]
+ pending  : [0, 1, 3, 5]
  solution : []
 
-Essensial at level 0 : {1, 2, 3, 5}
+Essensial at level 0 : {0, 1, 3, 5}
 
 Before removed
  coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1)]
@@ -472,12 +472,12 @@ Covered at level 0 : set()
 
 After reduction : 
  pending  : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 
 Before reduction : 
  pending  : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 Essensial at level 0 : set()
 
@@ -491,13 +491,13 @@ Covered at level 0 : set()
 
 After reduction : 
  pending  : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
-[QRM NOTE]: Time elapsed since start: 5.950 seconds
+[QRM NOTE]: Time elapsed since start: 6.190 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.010 seconds
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 294416 bytes
+[QRM NOTE]: Peak memory: 292293 bytes
 
 
 =================================================================================================
@@ -510,51 +510,51 @@ After reduction :
 ---------- quantifier_inference ----------
 
 
-=== Prime Orbit 1 =====================
+=== Prime Orbit 0 =====================
 size : 36
 num_suborbits: 8
-3 (*) : ---1-------1---
-3     : ['message(node0,node0)', 'message(node2,node2)']
-4     : ---1---1-------
-4     : ['message(node0,node0)', 'message(node1,node1)']
-5     : -------1---1---
-5     : ['message(node1,node1)', 'message(node2,node2)']
-15 (*) : ----1------1---
-15     : ['message(node0,node1)', 'message(node2,node2)']
-16     : -----1-1-------
-16     : ['message(node0,node2)', 'message(node1,node1)']
-17     : ------1----1---
-17     : ['message(node1,node0)', 'message(node2,node2)']
-18     : ---1----1------
-18     : ['message(node0,node0)', 'message(node1,node2)']
-19     : -------1-1-----
-19     : ['message(node1,node1)', 'message(node2,node0)']
-20     : ---1------1----
-20     : ['message(node0,node0)', 'message(node2,node1)']
-21 (*) : -----1-----1---
-21     : ['message(node0,node2)', 'message(node2,node2)']
-22     : ----1--1-------
-22     : ['message(node0,node1)', 'message(node1,node1)']
-23     : --------1--1---
-23     : ['message(node1,node2)', 'message(node2,node2)']
-24     : ---1--1--------
-24     : ['message(node0,node0)', 'message(node1,node0)']
-25     : -------1--1----
-25     : ['message(node1,node1)', 'message(node2,node1)']
-26     : ---1-----1-----
-26     : ['message(node0,node0)', 'message(node2,node0)']
-27 (*) : ---------1-1---
-27     : ['message(node2,node0)', 'message(node2,node2)']
-28     : ------11-------
-28     : ['message(node1,node0)', 'message(node1,node1)']
-29     : ----------11---
-29     : ['message(node2,node1)', 'message(node2,node2)']
-30     : ---11----------
-30     : ['message(node0,node0)', 'message(node0,node1)']
-31     : -------11------
-31     : ['message(node1,node1)', 'message(node1,node2)']
-32     : ---1-1---------
-32     : ['message(node0,node0)', 'message(node0,node2)']
+0 (*) : ---1-------1---
+0     : ['message(node0,node0)', 'message(node2,node2)']
+1     : ---1---1-------
+1     : ['message(node0,node0)', 'message(node1,node1)']
+2     : -------1---1---
+2     : ['message(node1,node1)', 'message(node2,node2)']
+12 (*) : ----1------1---
+12     : ['message(node0,node1)', 'message(node2,node2)']
+13     : -----1-1-------
+13     : ['message(node0,node2)', 'message(node1,node1)']
+14     : ------1----1---
+14     : ['message(node1,node0)', 'message(node2,node2)']
+15     : ---1----1------
+15     : ['message(node0,node0)', 'message(node1,node2)']
+16     : -------1-1-----
+16     : ['message(node1,node1)', 'message(node2,node0)']
+17     : ---1------1----
+17     : ['message(node0,node0)', 'message(node2,node1)']
+18 (*) : -----1-----1---
+18     : ['message(node0,node2)', 'message(node2,node2)']
+19     : ----1--1-------
+19     : ['message(node0,node1)', 'message(node1,node1)']
+20     : --------1--1---
+20     : ['message(node1,node2)', 'message(node2,node2)']
+21     : ---1--1--------
+21     : ['message(node0,node0)', 'message(node1,node0)']
+22     : -------1--1----
+22     : ['message(node1,node1)', 'message(node2,node1)']
+23     : ---1-----1-----
+23     : ['message(node0,node0)', 'message(node2,node0)']
+24 (*) : ---------1-1---
+24     : ['message(node2,node0)', 'message(node2,node2)']
+25     : ------11-------
+25     : ['message(node1,node0)', 'message(node1,node1)']
+26     : ----------11---
+26     : ['message(node2,node1)', 'message(node2,node2)']
+27     : ---11----------
+27     : ['message(node0,node0)', 'message(node0,node1)']
+28     : -------11------
+28     : ['message(node1,node1)', 'message(node1,node2)']
+29     : ---1-1---------
+29     : ['message(node0,node0)', 'message(node0,node2)']
 54 (*) : ----11---------
 54     : ['message(node0,node1)', 'message(node0,node2)']
 55     : ------1-1------
@@ -816,7 +816,7 @@ constraint mode: ConstraintMode.merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE3', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE3', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -828,7 +828,7 @@ signed_func_name2args: {'0$message': [[Var('NODE0', EnumeratedSort('node', ('nod
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['message(NODE0,NODE2)', 'message(NODE1,NODE3)']
+qterms: ['message(NODE1,NODE3)', 'message(NODE0,NODE2)']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -858,7 +858,7 @@ eq_terms: ['NODE1:node = NODE3']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
@@ -901,11 +901,11 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE1:node = NODE3', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+constraint: ['NODE1:node = NODE3', 'NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -944,7 +944,7 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE3:node', 'NODE0:node']
+qvars: ['NODE3:node', 'NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE3', 'NODE1:node ~= NODE3']
 
@@ -973,16 +973,16 @@ class signature: node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
 
 qvars: ['NODE1:node', 'NODE2:node', 'NODE3:node']
 
-eq_terms: ['NODE1:node = NODE3', 'NODE1:node = NODE2']
+eq_terms: ['NODE1:node = NODE2', 'NODE1:node = NODE3']
 
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
-constraint: ['NODE1:node = NODE3', 'NODE1:node = NODE2', 'NODE0:node ~= NODE1']
+constraint: ['NODE1:node = NODE2', 'NODE1:node = NODE3', 'NODE0:node ~= NODE1']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -998,7 +998,7 @@ class signature: node$0$message$0$0; node$0$message$1$0; node$0$message$1$1
 
 qvars: ['NODE0:node', 'NODE2:node', 'NODE3:node']
 
-eq_terms: ['NODE0:node = NODE2', 'NODE0:node = NODE3']
+eq_terms: ['NODE0:node = NODE3', 'NODE0:node = NODE2']
 
 class signature: node$0$message$0$1
 
@@ -1012,11 +1012,11 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
-constraint: ['NODE0:node = NODE2', 'NODE0:node = NODE3', 'NODE0:node ~= NODE1']
+constraint: ['NODE0:node = NODE3', 'NODE0:node = NODE2', 'NODE0:node ~= NODE1']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1066,7 +1066,7 @@ class signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0
 
 qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node']
 
-eq_terms: ['NODE0:node = NODE2', 'NODE0:node = NODE1']
+eq_terms: ['NODE0:node = NODE1', 'NODE0:node = NODE2']
 
 class signature: node$0$message$1$1
 
@@ -1084,7 +1084,7 @@ qvars: ['NODE3:node', 'NODE0:node']
 
 eq_terms: ['NODE0:node ~= NODE3']
 
-constraint: ['NODE0:node = NODE2', 'NODE0:node = NODE1', 'NODE0:node ~= NODE3']
+constraint: ['NODE0:node = NODE1', 'NODE0:node = NODE2', 'NODE0:node ~= NODE3']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1125,9 +1125,9 @@ eq_terms: []
 
 qvars: ['NODE2:node', 'NODE3:node', 'NODE0:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE3', 'NODE2:node ~= NODE3']
+eq_terms: ['NODE0:node ~= NODE2', 'NODE2:node ~= NODE3', 'NODE0:node ~= NODE3']
 
-constraint: ['NODE0:node = NODE1', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE3', 'NODE2:node ~= NODE3']
+constraint: ['NODE0:node = NODE1', 'NODE0:node ~= NODE2', 'NODE2:node ~= NODE3', 'NODE0:node ~= NODE3']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1166,11 +1166,11 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE0:node = NODE3', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+constraint: ['NODE0:node = NODE3', 'NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1209,7 +1209,7 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE3:node', 'NODE0:node']
+qvars: ['NODE3:node', 'NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE3', 'NODE1:node ~= NODE3']
 
@@ -1243,7 +1243,7 @@ eq_terms: ['NODE1:node = NODE2']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
@@ -1286,70 +1286,11 @@ eq_terms: ['NODE2:node = NODE3']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE2:node = NODE3', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
-
-
----------- QFormula: _get_partition_constraint ----------
-
-partition: ('node$0$message$0$0; node$0$message$0$1 | node$0$message$1$0; node$0$message$1$1',)[]
-
-sort partition signature: node$0$message$0$0; node$0$message$0$1 | node$0$message$1$0; node$0$message$1$1
-
-class signature: node$0$message$0$0; node$0$message$0$1
-
-
----------- QFormula: _get_class_constraint ----------
-
-qvars: ['NODE0:node', 'NODE1:node']
-
-eq_terms: ['NODE0:node = NODE1']
-
-class signature: node$0$message$1$0; node$0$message$1$1
-
-
----------- QFormula: _get_class_constraint ----------
-
-qvars: ['NODE2:node', 'NODE3:node']
-
-eq_terms: ['NODE2:node = NODE3']
-
-
----------- QFormula: _get_diff_class_constraint ----------
-
-qvars: ['NODE2:node', 'NODE0:node']
-
-eq_terms: ['NODE0:node ~= NODE2']
-
-constraint: ['NODE0:node = NODE1', 'NODE2:node = NODE3', 'NODE0:node ~= NODE2']
-
-
----------- QFormula: _get_partition_constraint ----------
-
-partition: ('node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1',)[]
-
-sort partition signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
-
-class signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
-
-
----------- QFormula: _get_class_constraint ----------
-
-qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node', 'NODE3:node']
-
-eq_terms: ['NODE0:node = NODE2', 'NODE0:node = NODE1', 'NODE0:node = NODE3']
-
-
----------- QFormula: _get_diff_class_constraint ----------
-
-qvars: ['NODE0:node']
-
-eq_terms: []
-
-constraint: ['NODE0:node = NODE2', 'NODE0:node = NODE1', 'NODE0:node = NODE3']
+constraint: ['NODE2:node = NODE3', 'NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1379,7 +1320,7 @@ eq_terms: ['NODE1:node = NODE3']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
@@ -1422,11 +1363,11 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE1:node = NODE3', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+constraint: ['NODE1:node = NODE3', 'NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1451,16 +1392,16 @@ class signature: node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
 
 qvars: ['NODE1:node', 'NODE2:node', 'NODE3:node']
 
-eq_terms: ['NODE1:node = NODE3', 'NODE1:node = NODE2']
+eq_terms: ['NODE1:node = NODE2', 'NODE1:node = NODE3']
 
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
-constraint: ['NODE1:node = NODE3', 'NODE1:node = NODE2', 'NODE0:node ~= NODE1']
+constraint: ['NODE1:node = NODE2', 'NODE1:node = NODE3', 'NODE0:node ~= NODE1']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1535,9 +1476,9 @@ eq_terms: []
 
 qvars: ['NODE2:node', 'NODE3:node', 'NODE0:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE3', 'NODE2:node ~= NODE3']
+eq_terms: ['NODE0:node ~= NODE2', 'NODE2:node ~= NODE3', 'NODE0:node ~= NODE3']
 
-constraint: ['NODE0:node = NODE1', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE3', 'NODE2:node ~= NODE3']
+constraint: ['NODE0:node = NODE1', 'NODE0:node ~= NODE2', 'NODE2:node ~= NODE3', 'NODE0:node ~= NODE3']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1576,11 +1517,11 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE0:node = NODE3', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+constraint: ['NODE0:node = NODE3', 'NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1610,7 +1551,7 @@ eq_terms: ['NODE1:node = NODE2']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
@@ -1653,11 +1594,45 @@ eq_terms: ['NODE2:node = NODE3']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE2:node = NODE3', 'NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+constraint: ['NODE2:node = NODE3', 'NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$message$0$0; node$0$message$0$1 | node$0$message$1$0; node$0$message$1$1',)[]
+
+sort partition signature: node$0$message$0$0; node$0$message$0$1 | node$0$message$1$0; node$0$message$1$1
+
+class signature: node$0$message$0$0; node$0$message$0$1
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node = NODE1']
+
+class signature: node$0$message$1$0; node$0$message$1$1
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE2:node', 'NODE3:node']
+
+eq_terms: ['NODE2:node = NODE3']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE2:node', 'NODE0:node']
+
+eq_terms: ['NODE0:node ~= NODE2']
+
+constraint: ['NODE0:node = NODE1', 'NODE2:node = NODE3', 'NODE0:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -1707,7 +1682,7 @@ class signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; nod
 
 qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node', 'NODE3:node']
 
-eq_terms: ['NODE0:node = NODE2', 'NODE0:node = NODE1', 'NODE0:node = NODE3']
+eq_terms: ['NODE0:node = NODE3', 'NODE0:node = NODE1', 'NODE0:node = NODE2']
 
 
 ---------- QFormula: _get_diff_class_constraint ----------
@@ -1716,35 +1691,119 @@ qvars: ['NODE0:node']
 
 eq_terms: []
 
-constraint: ['NODE0:node = NODE2', 'NODE0:node = NODE1', 'NODE0:node = NODE3']
+constraint: ['NODE0:node = NODE3', 'NODE0:node = NODE1', 'NODE0:node = NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1',)[]
+
+sort partition signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
+
+class signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node', 'NODE3:node']
+
+eq_terms: ['NODE0:node = NODE3', 'NODE0:node = NODE1', 'NODE0:node = NODE2']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node']
+
+eq_terms: []
+
+constraint: ['NODE0:node = NODE3', 'NODE0:node = NODE1', 'NODE0:node = NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$message$0$0; node$0$message$0$1 | node$0$message$1$0; node$0$message$1$1',)[]
+
+sort partition signature: node$0$message$0$0; node$0$message$0$1 | node$0$message$1$0; node$0$message$1$1
+
+class signature: node$0$message$0$0; node$0$message$0$1
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node = NODE1']
+
+class signature: node$0$message$1$0; node$0$message$1$1
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE2:node', 'NODE3:node']
+
+eq_terms: ['NODE2:node = NODE3']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE2:node', 'NODE0:node']
+
+eq_terms: ['NODE0:node ~= NODE2']
+
+constraint: ['NODE0:node = NODE1', 'NODE2:node = NODE3', 'NODE0:node ~= NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1',)[]
+
+sort partition signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
+
+class signature: node$0$message$0$0; node$0$message$0$1; node$0$message$1$0; node$0$message$1$1
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node', 'NODE3:node']
+
+eq_terms: ['NODE0:node = NODE3', 'NODE0:node = NODE1', 'NODE0:node = NODE2']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node']
+
+eq_terms: []
+
+constraint: ['NODE0:node = NODE3', 'NODE0:node = NODE1', 'NODE0:node = NODE2']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,NODE3,NODE2,NODE1. ~message(NODE0,NODE2) | ~message(NODE1,NODE3) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1 & NODE0 = NODE3))
+qclause: forall NODE0,NODE1,NODE2,NODE3. ~message(NODE1,NODE3) | ~message(NODE0,NODE2) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE3 & NODE0 = NODE1 & NODE0 = NODE2))
 
 
-=== Prime Orbit 2 =====================
+=== Prime Orbit 1 =====================
 size : 27
 num_suborbits: 5
-6 (*) : 1----------1---
-6     : ['has_lock(node0)', 'message(node2,node2)']
-7     : 1------1-------
-7     : ['has_lock(node0)', 'message(node1,node1)']
-8     : -1---------1---
-8     : ['has_lock(node1)', 'message(node2,node2)']
-9     : -1-1-----------
-9     : ['has_lock(node1)', 'message(node0,node0)']
-10     : --1----1-------
-10     : ['has_lock(node2)', 'message(node1,node1)']
-11     : --11-----------
-11     : ['has_lock(node2)', 'message(node0,node0)']
-12 (*) : --1--------1---
-12     : ['has_lock(node2)', 'message(node2,node2)']
-13     : -1-----1-------
-13     : ['has_lock(node1)', 'message(node1,node1)']
-14     : 1--1-----------
-14     : ['has_lock(node0)', 'message(node0,node0)']
+3 (*) : 1----------1---
+3     : ['has_lock(node0)', 'message(node2,node2)']
+4     : 1------1-------
+4     : ['has_lock(node0)', 'message(node1,node1)']
+5     : -1---------1---
+5     : ['has_lock(node1)', 'message(node2,node2)']
+6     : -1-1-----------
+6     : ['has_lock(node1)', 'message(node0,node0)']
+7     : --1----1-------
+7     : ['has_lock(node2)', 'message(node1,node1)']
+8     : --11-----------
+8     : ['has_lock(node2)', 'message(node0,node0)']
+9 (*) : --1--------1---
+9     : ['has_lock(node2)', 'message(node2,node2)']
+10     : -1-----1-------
+10     : ['has_lock(node1)', 'message(node1,node1)']
+11     : 1--1-----------
+11     : ['has_lock(node0)', 'message(node0,node0)']
 36 (*) : --1-1----------
 36     : ['has_lock(node2)', 'message(node0,node1)']
 37     : -1---1---------
@@ -1757,30 +1816,30 @@ num_suborbits: 5
 40     : ['has_lock(node1)', 'message(node2,node0)']
 41     : 1---------1----
 41     : ['has_lock(node0)', 'message(node2,node1)']
-42 (*) : -1--1----------
-42     : ['has_lock(node1)', 'message(node0,node1)']
-43     : --1--1---------
-43     : ['has_lock(node2)', 'message(node0,node2)']
-44     : 1-----1--------
-44     : ['has_lock(node0)', 'message(node1,node0)']
-45     : --1-----1------
-45     : ['has_lock(node2)', 'message(node1,node2)']
-46     : 1--------1-----
-46     : ['has_lock(node0)', 'message(node2,node0)']
-47     : -1--------1----
-47     : ['has_lock(node1)', 'message(node2,node1)']
-48 (*) : 1---1----------
-48     : ['has_lock(node0)', 'message(node0,node1)']
-49     : 1----1---------
-49     : ['has_lock(node0)', 'message(node0,node2)']
-50     : -1----1--------
-50     : ['has_lock(node1)', 'message(node1,node0)']
-51     : -1------1------
-51     : ['has_lock(node1)', 'message(node1,node2)']
-52     : --1------1-----
-52     : ['has_lock(node2)', 'message(node2,node0)']
-53     : --1-------1----
-53     : ['has_lock(node2)', 'message(node2,node1)']
+42 (*) : 1---1----------
+42     : ['has_lock(node0)', 'message(node0,node1)']
+43     : 1----1---------
+43     : ['has_lock(node0)', 'message(node0,node2)']
+44     : -1----1--------
+44     : ['has_lock(node1)', 'message(node1,node0)']
+45     : -1------1------
+45     : ['has_lock(node1)', 'message(node1,node2)']
+46     : --1------1-----
+46     : ['has_lock(node2)', 'message(node2,node0)']
+47     : --1-------1----
+47     : ['has_lock(node2)', 'message(node2,node1)']
+48 (*) : -1--1----------
+48     : ['has_lock(node1)', 'message(node0,node1)']
+49     : --1--1---------
+49     : ['has_lock(node2)', 'message(node0,node2)']
+50     : 1-----1--------
+50     : ['has_lock(node0)', 'message(node1,node0)']
+51     : --1-----1------
+51     : ['has_lock(node2)', 'message(node1,node2)']
+52     : 1--------1-----
+52     : ['has_lock(node0)', 'message(node2,node0)']
+53     : -1--------1----
+53     : ['has_lock(node1)', 'message(node2,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1864,29 +1923,6 @@ part_sig: ('node$0$has_lock$0$0 | node$0$message$0$0 | node$0$message$1$0',)
 
 ---------- ConstArgBinding ----------
 
-terms: ['has_lock(node1)', 'message(node0,node1)']
-
-sign_func_name2args: {'0$has_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$message': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))))]}
-
-const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$has_lock$0$0, node$0$message$1$0], Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$message$0$0]}
-
-sig2const: {'node$0$has_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$message$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$message$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
-
-
----------- ArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$has_lock$0$0; node$0$message$1$0, node$0$message$0$0]}
-
-sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0}
-
-part_sig: ('node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0',)
-
-
----------- QPrime ----------
-
-
----------- ConstArgBinding ----------
-
 terms: ['has_lock(node0)', 'message(node0,node1)']
 
 sign_func_name2args: {'0$has_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$message': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))))]}
@@ -1903,6 +1939,29 @@ sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$h
 sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$has_lock$0$0; node$0$message$0$0 | node$0$message$1$0}
 
 part_sig: ('node$0$has_lock$0$0; node$0$message$0$0 | node$0$message$1$0',)
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['has_lock(node1)', 'message(node0,node1)']
+
+sign_func_name2args: {'0$has_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$message': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))))]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$has_lock$0$0, node$0$message$1$0], Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$message$0$0]}
+
+sig2const: {'node$0$has_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$message$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$message$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$has_lock$0$0; node$0$message$1$0, node$0$message$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0}
+
+part_sig: ('node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0',)
 
 
 ---------- SigGenerator ----------
@@ -1943,7 +2002,7 @@ constraint mode: ConstraintMode.merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -1985,7 +2044,7 @@ eq_terms: ['NODE1:node = NODE2']
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE0:node']
+qvars: ['NODE0:node', 'NODE1:node']
 
 eq_terms: ['NODE0:node ~= NODE1']
 
@@ -2005,7 +2064,7 @@ class signature: node$0$has_lock$0$0; node$0$message$0$0; node$0$message$1$0
 
 qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node']
 
-eq_terms: ['NODE0:node = NODE2', 'NODE0:node = NODE1']
+eq_terms: ['NODE0:node = NODE1', 'NODE0:node = NODE2']
 
 
 ---------- QFormula: _get_diff_class_constraint ----------
@@ -2014,7 +2073,7 @@ qvars: ['NODE0:node']
 
 eq_terms: []
 
-constraint: ['NODE0:node = NODE2', 'NODE0:node = NODE1']
+constraint: ['NODE0:node = NODE1', 'NODE0:node = NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -2053,45 +2112,11 @@ eq_terms: []
 
 ---------- QFormula: _get_diff_class_constraint ----------
 
-qvars: ['NODE1:node', 'NODE2:node', 'NODE0:node']
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
 
-eq_terms: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
-constraint: ['NODE0:node ~= NODE2', 'NODE0:node ~= NODE1', 'NODE1:node ~= NODE2']
-
-
----------- QFormula: _get_partition_constraint ----------
-
-partition: ('node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0',)[]
-
-sort partition signature: node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0
-
-class signature: node$0$has_lock$0$0; node$0$message$1$0
-
-
----------- QFormula: _get_class_constraint ----------
-
-qvars: ['NODE0:node', 'NODE2:node']
-
-eq_terms: ['NODE0:node = NODE2']
-
-class signature: node$0$message$0$0
-
-
----------- QFormula: _get_class_constraint ----------
-
-qvars: ['NODE1:node']
-
-eq_terms: []
-
-
----------- QFormula: _get_diff_class_constraint ----------
-
-qvars: ['NODE1:node', 'NODE0:node']
-
-eq_terms: ['NODE0:node ~= NODE1']
-
-constraint: ['NODE0:node = NODE2', 'NODE0:node ~= NODE1']
+constraint: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -2128,9 +2153,213 @@ eq_terms: ['NODE0:node ~= NODE2']
 constraint: ['NODE0:node = NODE1', 'NODE0:node ~= NODE2']
 
 
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0',)[]
+
+sort partition signature: node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0
+
+class signature: node$0$has_lock$0$0; node$0$message$1$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE2:node']
+
+eq_terms: ['NODE0:node = NODE2']
+
+class signature: node$0$message$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE1:node']
+
+eq_terms: []
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node ~= NODE1']
+
+constraint: ['NODE0:node = NODE2', 'NODE0:node ~= NODE1']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$has_lock$0$0 | node$0$message$0$0; node$0$message$1$0',)[]
+
+sort partition signature: node$0$has_lock$0$0 | node$0$message$0$0; node$0$message$1$0
+
+class signature: node$0$has_lock$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node']
+
+eq_terms: []
+
+class signature: node$0$message$0$0; node$0$message$1$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE1:node', 'NODE2:node']
+
+eq_terms: ['NODE1:node = NODE2']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node ~= NODE1']
+
+constraint: ['NODE1:node = NODE2', 'NODE0:node ~= NODE1']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$has_lock$0$0; node$0$message$0$0; node$0$message$1$0',)[]
+
+sort partition signature: node$0$has_lock$0$0; node$0$message$0$0; node$0$message$1$0
+
+class signature: node$0$has_lock$0$0; node$0$message$0$0; node$0$message$1$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node', 'NODE2:node']
+
+eq_terms: ['NODE0:node = NODE1', 'NODE0:node = NODE2']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node']
+
+eq_terms: []
+
+constraint: ['NODE0:node = NODE1', 'NODE0:node = NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$has_lock$0$0 | node$0$message$0$0 | node$0$message$1$0',)[]
+
+sort partition signature: node$0$has_lock$0$0 | node$0$message$0$0 | node$0$message$1$0
+
+class signature: node$0$has_lock$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node']
+
+eq_terms: []
+
+class signature: node$0$message$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE1:node']
+
+eq_terms: []
+
+class signature: node$0$message$1$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE2:node']
+
+eq_terms: []
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE2:node', 'NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
+
+constraint: ['NODE0:node ~= NODE1', 'NODE0:node ~= NODE2', 'NODE1:node ~= NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$has_lock$0$0; node$0$message$0$0 | node$0$message$1$0',)[]
+
+sort partition signature: node$0$has_lock$0$0; node$0$message$0$0 | node$0$message$1$0
+
+class signature: node$0$has_lock$0$0; node$0$message$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node = NODE1']
+
+class signature: node$0$message$1$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE2:node']
+
+eq_terms: []
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE2:node', 'NODE0:node']
+
+eq_terms: ['NODE0:node ~= NODE2']
+
+constraint: ['NODE0:node = NODE1', 'NODE0:node ~= NODE2']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0',)[]
+
+sort partition signature: node$0$has_lock$0$0; node$0$message$1$0 | node$0$message$0$0
+
+class signature: node$0$has_lock$0$0; node$0$message$1$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE2:node']
+
+eq_terms: ['NODE0:node = NODE2']
+
+class signature: node$0$message$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE1:node']
+
+eq_terms: []
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node ~= NODE1']
+
+constraint: ['NODE0:node = NODE2', 'NODE0:node ~= NODE1']
+
+
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,NODE2,NODE1. ~message(NODE1,NODE2) | ~has_lock(NODE0)
+qclause: forall NODE0,NODE1,NODE2. ~message(NODE1,NODE2) | ~has_lock(NODE0)
 
 
 === Prime Orbit 3 =====================
@@ -2212,7 +2441,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -2224,12 +2453,12 @@ signed_func_name2args: {'0$has_lock': [[Var('NODE0', EnumeratedSort('node', ('no
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['has_lock(NODE1)', 'has_lock(NODE0)']
+qterms: ['has_lock(NODE0)', 'has_lock(NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,NODE1. ~has_lock(NODE1) | ~has_lock(NODE0) | NODE0 = NODE1
+qclause: forall NODE0,NODE1. ~has_lock(NODE0) | ~has_lock(NODE1) | NODE0 = NODE1
 
 
 === Prime Orbit 5 =====================
@@ -2309,7 +2538,7 @@ constraint mode: ConstraintMode.no_merge
 
 forall_qvars: set()
 
-exists_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
@@ -2334,51 +2563,51 @@ qclause: exists NODE0,NODE1. message(NODE0,NODE1) | has_lock(NODE0)
 ===========================================================================================================
 
 
-=== Prime Orbit 1 =====================
+=== Prime Orbit 0 =====================
 size : 36
 num_suborbits: 8
-3 (*) : ---1-------1---
-3     : ['message(node0,node0)', 'message(node2,node2)']
-4     : ---1---1-------
-4     : ['message(node0,node0)', 'message(node1,node1)']
-5     : -------1---1---
-5     : ['message(node1,node1)', 'message(node2,node2)']
-15 (*) : ----1------1---
-15     : ['message(node0,node1)', 'message(node2,node2)']
-16     : -----1-1-------
-16     : ['message(node0,node2)', 'message(node1,node1)']
-17     : ------1----1---
-17     : ['message(node1,node0)', 'message(node2,node2)']
-18     : ---1----1------
-18     : ['message(node0,node0)', 'message(node1,node2)']
-19     : -------1-1-----
-19     : ['message(node1,node1)', 'message(node2,node0)']
-20     : ---1------1----
-20     : ['message(node0,node0)', 'message(node2,node1)']
-21 (*) : -----1-----1---
-21     : ['message(node0,node2)', 'message(node2,node2)']
-22     : ----1--1-------
-22     : ['message(node0,node1)', 'message(node1,node1)']
-23     : --------1--1---
-23     : ['message(node1,node2)', 'message(node2,node2)']
-24     : ---1--1--------
-24     : ['message(node0,node0)', 'message(node1,node0)']
-25     : -------1--1----
-25     : ['message(node1,node1)', 'message(node2,node1)']
-26     : ---1-----1-----
-26     : ['message(node0,node0)', 'message(node2,node0)']
-27 (*) : ---------1-1---
-27     : ['message(node2,node0)', 'message(node2,node2)']
-28     : ------11-------
-28     : ['message(node1,node0)', 'message(node1,node1)']
-29     : ----------11---
-29     : ['message(node2,node1)', 'message(node2,node2)']
-30     : ---11----------
-30     : ['message(node0,node0)', 'message(node0,node1)']
-31     : -------11------
-31     : ['message(node1,node1)', 'message(node1,node2)']
-32     : ---1-1---------
-32     : ['message(node0,node0)', 'message(node0,node2)']
+0 (*) : ---1-------1---
+0     : ['message(node0,node0)', 'message(node2,node2)']
+1     : ---1---1-------
+1     : ['message(node0,node0)', 'message(node1,node1)']
+2     : -------1---1---
+2     : ['message(node1,node1)', 'message(node2,node2)']
+12 (*) : ----1------1---
+12     : ['message(node0,node1)', 'message(node2,node2)']
+13     : -----1-1-------
+13     : ['message(node0,node2)', 'message(node1,node1)']
+14     : ------1----1---
+14     : ['message(node1,node0)', 'message(node2,node2)']
+15     : ---1----1------
+15     : ['message(node0,node0)', 'message(node1,node2)']
+16     : -------1-1-----
+16     : ['message(node1,node1)', 'message(node2,node0)']
+17     : ---1------1----
+17     : ['message(node0,node0)', 'message(node2,node1)']
+18 (*) : -----1-----1---
+18     : ['message(node0,node2)', 'message(node2,node2)']
+19     : ----1--1-------
+19     : ['message(node0,node1)', 'message(node1,node1)']
+20     : --------1--1---
+20     : ['message(node1,node2)', 'message(node2,node2)']
+21     : ---1--1--------
+21     : ['message(node0,node0)', 'message(node1,node0)']
+22     : -------1--1----
+22     : ['message(node1,node1)', 'message(node2,node1)']
+23     : ---1-----1-----
+23     : ['message(node0,node0)', 'message(node2,node0)']
+24 (*) : ---------1-1---
+24     : ['message(node2,node0)', 'message(node2,node2)']
+25     : ------11-------
+25     : ['message(node1,node0)', 'message(node1,node1)']
+26     : ----------11---
+26     : ['message(node2,node1)', 'message(node2,node2)']
+27     : ---11----------
+27     : ['message(node0,node0)', 'message(node0,node1)']
+28     : -------11------
+28     : ['message(node1,node1)', 'message(node1,node2)']
+29     : ---1-1---------
+29     : ['message(node0,node0)', 'message(node0,node2)']
 54 (*) : ----11---------
 54     : ['message(node0,node1)', 'message(node0,node2)']
 55     : ------1-1------
@@ -2412,33 +2641,33 @@ num_suborbits: 8
 num_forall :   4
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE0,NODE3,NODE2,NODE1. ~message(NODE0,NODE2) | ~message(NODE1,NODE3) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1 & NODE0 = NODE3))
+quantified form : forall NODE0,NODE1,NODE2,NODE3. ~message(NODE1,NODE3) | ~message(NODE0,NODE2) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE3 & NODE0 = NODE1 & NODE0 = NODE2))
 qcost : 12
 
 
 
 
-=== Prime Orbit 2 =====================
+=== Prime Orbit 1 =====================
 size : 27
 num_suborbits: 5
-6 (*) : 1----------1---
-6     : ['has_lock(node0)', 'message(node2,node2)']
-7     : 1------1-------
-7     : ['has_lock(node0)', 'message(node1,node1)']
-8     : -1---------1---
-8     : ['has_lock(node1)', 'message(node2,node2)']
-9     : -1-1-----------
-9     : ['has_lock(node1)', 'message(node0,node0)']
-10     : --1----1-------
-10     : ['has_lock(node2)', 'message(node1,node1)']
-11     : --11-----------
-11     : ['has_lock(node2)', 'message(node0,node0)']
-12 (*) : --1--------1---
-12     : ['has_lock(node2)', 'message(node2,node2)']
-13     : -1-----1-------
-13     : ['has_lock(node1)', 'message(node1,node1)']
-14     : 1--1-----------
-14     : ['has_lock(node0)', 'message(node0,node0)']
+3 (*) : 1----------1---
+3     : ['has_lock(node0)', 'message(node2,node2)']
+4     : 1------1-------
+4     : ['has_lock(node0)', 'message(node1,node1)']
+5     : -1---------1---
+5     : ['has_lock(node1)', 'message(node2,node2)']
+6     : -1-1-----------
+6     : ['has_lock(node1)', 'message(node0,node0)']
+7     : --1----1-------
+7     : ['has_lock(node2)', 'message(node1,node1)']
+8     : --11-----------
+8     : ['has_lock(node2)', 'message(node0,node0)']
+9 (*) : --1--------1---
+9     : ['has_lock(node2)', 'message(node2,node2)']
+10     : -1-----1-------
+10     : ['has_lock(node1)', 'message(node1,node1)']
+11     : 1--1-----------
+11     : ['has_lock(node0)', 'message(node0,node0)']
 36 (*) : --1-1----------
 36     : ['has_lock(node2)', 'message(node0,node1)']
 37     : -1---1---------
@@ -2451,34 +2680,34 @@ num_suborbits: 5
 40     : ['has_lock(node1)', 'message(node2,node0)']
 41     : 1---------1----
 41     : ['has_lock(node0)', 'message(node2,node1)']
-42 (*) : -1--1----------
-42     : ['has_lock(node1)', 'message(node0,node1)']
-43     : --1--1---------
-43     : ['has_lock(node2)', 'message(node0,node2)']
-44     : 1-----1--------
-44     : ['has_lock(node0)', 'message(node1,node0)']
-45     : --1-----1------
-45     : ['has_lock(node2)', 'message(node1,node2)']
-46     : 1--------1-----
-46     : ['has_lock(node0)', 'message(node2,node0)']
-47     : -1--------1----
-47     : ['has_lock(node1)', 'message(node2,node1)']
-48 (*) : 1---1----------
-48     : ['has_lock(node0)', 'message(node0,node1)']
-49     : 1----1---------
-49     : ['has_lock(node0)', 'message(node0,node2)']
-50     : -1----1--------
-50     : ['has_lock(node1)', 'message(node1,node0)']
-51     : -1------1------
-51     : ['has_lock(node1)', 'message(node1,node2)']
-52     : --1------1-----
-52     : ['has_lock(node2)', 'message(node2,node0)']
-53     : --1-------1----
-53     : ['has_lock(node2)', 'message(node2,node1)']
+42 (*) : 1---1----------
+42     : ['has_lock(node0)', 'message(node0,node1)']
+43     : 1----1---------
+43     : ['has_lock(node0)', 'message(node0,node2)']
+44     : -1----1--------
+44     : ['has_lock(node1)', 'message(node1,node0)']
+45     : -1------1------
+45     : ['has_lock(node1)', 'message(node1,node2)']
+46     : --1------1-----
+46     : ['has_lock(node2)', 'message(node2,node0)']
+47     : --1-------1----
+47     : ['has_lock(node2)', 'message(node2,node1)']
+48 (*) : -1--1----------
+48     : ['has_lock(node1)', 'message(node0,node1)']
+49     : --1--1---------
+49     : ['has_lock(node2)', 'message(node0,node2)']
+50     : 1-----1--------
+50     : ['has_lock(node0)', 'message(node1,node0)']
+51     : --1-----1------
+51     : ['has_lock(node2)', 'message(node1,node2)']
+52     : 1--------1-----
+52     : ['has_lock(node0)', 'message(node2,node0)']
+53     : -1--------1----
+53     : ['has_lock(node1)', 'message(node2,node1)']
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,NODE2,NODE1. ~message(NODE1,NODE2) | ~has_lock(NODE0)
+quantified form : forall NODE0,NODE1,NODE2. ~message(NODE1,NODE2) | ~has_lock(NODE0)
 qcost : 5
 
 
@@ -2496,7 +2725,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,NODE1. ~has_lock(NODE1) | ~has_lock(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~has_lock(NODE0) | ~has_lock(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -2515,11 +2744,11 @@ qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.373 seconds
+[QRM NOTE]: Time elapsed since start: 6.397 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.423 seconds
+[QRM NOTE]: Time elapsed since last: 0.208 seconds
 
-[QRM NOTE]: Peak memory: 691824 bytes
+[QRM NOTE]: Peak memory: 2037462 bytes
 
 
 ==========================================================================================
@@ -2531,12 +2760,12 @@ qcost : 4
 
 New level: 1
  pending : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 
 Before reduction : 
  pending  : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 Essensial at level 1 : set()
 
@@ -2550,19 +2779,19 @@ Covered at level 1 : set()
 
 After reduction : 
  pending  : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 
-Solution : [1, 2, 3, 5] has cost 26.
+Solution : [0, 1, 3, 5] has cost 26.
 
 
 Before backtrack at level 1
  pending : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 After backtrack at level 1
  pending : []
- solution : [1, 2, 3, 5]
+ solution : [0, 1, 3, 5]
 
 
 =========================================================================================================
@@ -2581,24 +2810,24 @@ Definitions (length=0)
 
 Equality Relations (length=0)
 
-Solution 0 : [1, 2, 3, 5] (length = 4)
+Solution 0 : [0, 1, 3, 5] (length = 4)
 
-invariant [invar_1] forall NODE0,NODE3,NODE2,NODE1. ~message(NODE0,NODE2) | ~message(NODE1,NODE3) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1 & NODE0 = NODE3)) # qcost: 12
+invariant [invar_0] forall NODE0,NODE1,NODE2,NODE3. ~message(NODE1,NODE3) | ~message(NODE0,NODE2) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE3 & NODE0 = NODE1 & NODE0 = NODE2)) # qcost: 12
 
-invariant [invar_2] forall NODE0,NODE2,NODE1. ~message(NODE1,NODE2) | ~has_lock(NODE0) # qcost: 5
+invariant [invar_1] forall NODE0,NODE1,NODE2. ~message(NODE1,NODE2) | ~has_lock(NODE0) # qcost: 5
 
-invariant [invar_3] forall NODE0,NODE1. ~has_lock(NODE1) | ~has_lock(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_3] forall NODE0,NODE1. ~has_lock(NODE0) | ~has_lock(NODE1) | NODE0 = NODE1 # qcost: 5
 
 invariant [invar_5] exists NODE0,NODE1. message(NODE0,NODE1) | has_lock(NODE0) # qcost: 4
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.404 seconds
+[QRM NOTE]: Time elapsed since start: 6.433 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.031 seconds
+[QRM NOTE]: Time elapsed since last: 0.036 seconds
 
-[QRM NOTE]: Peak memory: 566329 bytes
+[QRM NOTE]: Peak memory: 1996668 bytes
 
 
 ============================================================================================================
@@ -2611,11 +2840,11 @@ Minimization check for Solution 0
 
 [MIN_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.623 seconds
+[QRM NOTE]: Time elapsed since start: 6.620 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.219 seconds
+[QRM NOTE]: Time elapsed since last: 0.186 seconds
 
-[QRM NOTE]: Peak memory: 688537 bytes
+[QRM NOTE]: Peak memory: 1059348 bytes
 
 
 =============================================================================================
@@ -2630,8 +2859,8 @@ ivy_check complete=fo ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy
 Isolate this:
 
     The inductive invariant consists of the following conjectures:
-        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_1
-        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_2
+        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_0
+        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_1
         ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 41: invar_3
         ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 42: invar_5
 
@@ -2643,20 +2872,20 @@ Isolate this:
         ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 12: init[after1]
 
     Initialization must establish the invariant
-        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_1 ... PASS
-        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_2 ... PASS
+        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_0 ... PASS
+        ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_1 ... PASS
         ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 41: invar_3 ... PASS
         ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 42: invar_5 ... PASS
 
     The following set of external actions must preserve the invariant:
         (internal) ext:recv
-            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_1 ... PASS
-            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_2 ... PASS
+            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_0 ... PASS
+            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_1 ... PASS
             ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 41: invar_3 ... PASS
             ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 42: invar_5 ... PASS
         (internal) ext:send
-            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_1 ... PASS
-            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_2 ... PASS
+            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 39: invar_0 ... PASS
+            ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 40: invar_1 ... PASS
             ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 41: invar_3 ... PASS
             ivybench/sym/ivy/simple-decentralized-lock.node_3.0.ivy: line 42: invar_5 ... PASS
 
@@ -2671,13 +2900,13 @@ OK
 
 [R Implies P]: True
 
-[UNSAT CORE]: ((forall NODE0,NODE1. ~has_lock(NODE1) | ~has_lock(NODE0) | NODE0 = NODE1))
+[UNSAT CORE]: ((forall NODE0,NODE1. ~has_lock(NODE0) | ~has_lock(NODE1) | NODE0 = NODE1))
 
-[QRM NOTE]: Time elapsed since start: 7.030 seconds
+[QRM NOTE]: Time elapsed since start: 8.325 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.407 seconds
+[QRM NOTE]: Time elapsed since last: 1.705 seconds
 
-[QRM NOTE]: Peak memory: 722974 bytes
+[QRM NOTE]: Peak memory: 1094906 bytes
 
 
 *************************************************************************
