@@ -1,0 +1,92 @@
+#lang ivy1.7
+
+# Source: https://github.com/sat-group/cfg-enum/blob/master/examples/quorum-leader-election.ivy
+
+type node = {node0, node1, node2}
+type nset = {nset__node0_node1, nset__node0_node2, nset__node1_node2}
+
+relation isleader(N:node)
+relation voted(N:node, M:node)
+relation member(N: node, Q: nset)
+individual quorum : nset
+
+axiom forall S1:nset, S2:nset. exists N . member(N, S1) & member(N, S2)
+
+after init {
+	voted(N, M) := false;
+	isleader(N) := false;
+}
+
+action vote(v : node , n : node) = {
+    require (forall M:node . ~voted(v, M));
+    voted(v, n) := true;
+}
+
+action become_leader(n : node , s : nset) = {
+	require forall M:node . member(M, s) -> voted(M, n);
+	isleader(n) := true;
+	quorum := s;
+}
+
+export vote
+export become_leader
+
+invariant (isleader(N) & isleader(M)) -> N = M
+
+#invariant [manual_1] voted(N,M) & voted(N,O) -> M = O
+#invariant [manual_2] isleader(N) -> (majority(quorum) & (member(M,quorum) -> voted(M, N)))
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+axiom member(node0,nset__node0_node1)
+axiom member(node1,nset__node0_node1)
+axiom ~member(node2,nset__node0_node1)
+axiom member(node0,nset__node0_node2)
+axiom ~member(node1,nset__node0_node2)
+axiom member(node2,nset__node0_node2)
+axiom ~member(node0,nset__node1_node2)
+axiom member(node1,nset__node1_node2)
+axiom member(node2,nset__node1_node2)
+
+## Access actions ##
+action get_voted(n0: node, n1: node) returns(qrm_result: bool) = {
+    qrm_result := voted(n0, n1)
+}
+export get_voted
+
+action get_bool_voted(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (voted(n0, n1) = result)
+}
+export get_bool_voted
+
+action get_quorum returns(qrm_result: nset) = {
+    qrm_result := quorum
+}
+export get_quorum
+
+action get_bool_quorum(result: nset) returns(qrm_result: bool) = {
+    qrm_result := (quorum = result)
+}
+export get_bool_quorum
+
+action get_member(n0: node, n1: nset) returns(qrm_result: bool) = {
+    qrm_result := member(n0, n1)
+}
+export get_member
+
+action get_bool_member(n0: node, n1: nset, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (member(n0, n1) = result)
+}
+export get_bool_member
+
+action get_isleader(n0: node) returns(qrm_result: bool) = {
+    qrm_result := isleader(n0)
+}
+export get_isleader
+
+action get_bool_isleader(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (isleader(n0) = result)
+}
+export get_bool_isleader
+

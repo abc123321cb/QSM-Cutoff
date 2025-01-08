@@ -1,11 +1,19 @@
 
 === Prime Orbit 0 =====================
-size : 2
+size : 6
 num_suborbits: 1
-0 (*) : ----------1-------0
-0     : ['leader(proposer1)', '~start(proposer1)']
-1     : ---------1-------0-
-1     : ['leader(proposer0)', '~start(proposer0)']
+0 (*) : --------1-------1--
+0     : ['didNotPromise(acceptor2)', 'promise(acceptor2,proposer1)']
+1     : --------1------1---
+1     : ['didNotPromise(acceptor2)', 'promise(acceptor2,proposer0)']
+2     : -------1------1----
+2     : ['didNotPromise(acceptor1)', 'promise(acceptor1,proposer1)']
+3     : -------1-----1-----
+3     : ['didNotPromise(acceptor1)', 'promise(acceptor1,proposer0)']
+4     : ------1-----1------
+4     : ['didNotPromise(acceptor0)', 'promise(acceptor0,proposer1)']
+5     : ------1----1-------
+5     : ['didNotPromise(acceptor0)', 'promise(acceptor0,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -14,20 +22,32 @@ qcost : 0
 
 
 === Prime Orbit 1 =====================
-size : 6
+size : 12
 num_suborbits: 1
-2 (*) : ------------1-----0
-2     : ['promise(acceptor0,proposer1)', '~start(proposer1)']
-3     : -----------1-----0-
-3     : ['promise(acceptor0,proposer0)', '~start(proposer0)']
-4     : --------------1---0
-4     : ['promise(acceptor1,proposer1)', '~start(proposer1)']
-5     : -------------1---0-
-5     : ['promise(acceptor1,proposer0)', '~start(proposer0)']
-6     : ----------------1-0
-6     : ['promise(acceptor2,proposer1)', '~start(proposer1)']
-7     : ---------------1-0-
-7     : ['promise(acceptor2,proposer0)', '~start(proposer0)']
+6 (*) : ----1-----------1--
+6     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
+7     : -----1---------1---
+7     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor2,proposer0)']
+8     : ----1---------1----
+8     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor1,proposer1)']
+9     : -----1-------1-----
+9     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor1,proposer0)']
+10     : --1-------------1--
+10     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
+11     : ---1-----------1---
+11     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor2,proposer0)']
+12     : --1---------1------
+12     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor0,proposer1)']
+13     : ---1-------1-------
+13     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor0,proposer0)']
+14     : 1-------------1----
+14     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor1,proposer1)']
+15     : -1-----------1-----
+15     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor1,proposer0)']
+16     : 1-----------1------
+16     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor0,proposer1)']
+17     : -1---------1-------
+17     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor0,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -36,20 +56,14 @@ qcost : 0
 
 
 === Prime Orbit 2 =====================
-size : 6
+size : 3
 num_suborbits: 1
-8 (*) : ---1--------------0
-8     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~start(proposer1)']
-9     : --1--------------0-
-9     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~start(proposer0)']
-10     : -1----------------0
-10     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~start(proposer1)']
-11     : 1----------------0-
-11     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~start(proposer0)']
-12     : -----1------------0
-12     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~start(proposer1)']
-13     : ----1------------0-
-13     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~start(proposer0)']
+18 (*) : ---------------11--
+18     : ['promise(acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
+19     : -------------11----
+19     : ['promise(acceptor1,proposer0)', 'promise(acceptor1,proposer1)']
+20     : -----------11------
+20     : ['promise(acceptor0,proposer0)', 'promise(acceptor0,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -58,32 +72,20 @@ qcost : 0
 
 
 === Prime Orbit 3 =====================
-size : 12
+size : 6
 num_suborbits: 1
-14 (*) : -1------------0----
-14     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor1,proposer1)']
-15     : 1------------0-----
-15     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor1,proposer0)']
-16     : ---1------------0--
-16     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor2,proposer1)']
-17     : --1------------0---
-17     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor2,proposer0)']
-18     : -1----------0------
-18     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor0,proposer1)']
-19     : 1----------0-------
-19     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor0,proposer0)']
-20     : -----1----------0--
-20     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~promise(acceptor2,proposer1)']
-21     : ----1----------0---
-21     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~promise(acceptor2,proposer0)']
-22     : ---1--------0------
-22     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor0,proposer1)']
-23     : --1--------0-------
-23     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor0,proposer0)']
-24     : -----1--------0----
-24     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~promise(acceptor1,proposer1)']
-25     : ----1--------0-----
-25     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~promise(acceptor1,proposer0)']
+21 (*) : ----------------1-0
+21     : ['promise(acceptor2,proposer1)', '~start(proposer1)']
+22     : ---------------1-0-
+22     : ['promise(acceptor2,proposer0)', '~start(proposer0)']
+23     : --------------1---0
+23     : ['promise(acceptor1,proposer1)', '~start(proposer1)']
+24     : -------------1---0-
+24     : ['promise(acceptor1,proposer0)', '~start(proposer0)']
+25     : ------------1-----0
+25     : ['promise(acceptor0,proposer1)', '~start(proposer1)']
+26     : -----------1-----0-
+26     : ['promise(acceptor0,proposer0)', '~start(proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -92,14 +94,20 @@ qcost : 0
 
 
 === Prime Orbit 4 =====================
-size : 3
+size : 6
 num_suborbits: 1
-26 (*) : -------------11----
-26     : ['promise(acceptor1,proposer0)', 'promise(acceptor1,proposer1)']
-27     : ---------------11--
-27     : ['promise(acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
-28     : -----------11------
-28     : ['promise(acceptor0,proposer0)', 'promise(acceptor0,proposer1)']
+27 (*) : 1----------------0-
+27     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~start(proposer0)']
+28     : -1----------------0
+28     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~start(proposer1)']
+29     : --1--------------0-
+29     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~start(proposer0)']
+30     : ---1--------------0
+30     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~start(proposer1)']
+31     : ----1------------0-
+31     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~start(proposer0)']
+32     : -----1------------0
+32     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~start(proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -108,20 +116,12 @@ qcost : 0
 
 
 === Prime Orbit 5 =====================
-size : 6
+size : 2
 num_suborbits: 1
-29 (*) : -------1-----1-----
-29     : ['didNotPromise(acceptor1)', 'promise(acceptor1,proposer0)']
-30     : -------1------1----
-30     : ['didNotPromise(acceptor1)', 'promise(acceptor1,proposer1)']
-31     : --------1------1---
-31     : ['didNotPromise(acceptor2)', 'promise(acceptor2,proposer0)']
-32     : --------1-------1--
-32     : ['didNotPromise(acceptor2)', 'promise(acceptor2,proposer1)']
-33     : ------1----1-------
-33     : ['didNotPromise(acceptor0)', 'promise(acceptor0,proposer0)']
-34     : ------1-----1------
-34     : ['didNotPromise(acceptor0)', 'promise(acceptor0,proposer1)']
+33 (*) : ---------1-------0-
+33     : ['leader(proposer0)', '~start(proposer0)']
+34     : ----------1-------0
+34     : ['leader(proposer1)', '~start(proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -132,30 +132,30 @@ qcost : 0
 === Prime Orbit 6 =====================
 size : 12
 num_suborbits: 1
-35 (*) : -1-----------1-----
-35     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor1,proposer0)']
-36     : 1-------------1----
-36     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor1,proposer1)']
-37     : ---1-----------1---
-37     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor2,proposer0)']
-38     : --1-------------1--
-38     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
-39     : -1---------1-------
-39     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor0,proposer0)']
-40     : 1-----------1------
-40     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor0,proposer1)']
-41     : -----1---------1---
-41     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor2,proposer0)']
-42     : ----1-----------1--
-42     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
-43     : ---1-------1-------
-43     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor0,proposer0)']
-44     : --1---------1------
-44     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor0,proposer1)']
-45     : -----1-------1-----
-45     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor1,proposer0)']
-46     : ----1---------1----
-46     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor1,proposer1)']
+35 (*) : ----1----------0---
+35     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~promise(acceptor2,proposer0)']
+36     : -----1----------0--
+36     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~promise(acceptor2,proposer1)']
+37     : ----1--------0-----
+37     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~promise(acceptor1,proposer0)']
+38     : -----1--------0----
+38     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~promise(acceptor1,proposer1)']
+39     : --1------------0---
+39     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor2,proposer0)']
+40     : ---1------------0--
+40     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor2,proposer1)']
+41     : --1--------0-------
+41     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor0,proposer0)']
+42     : ---1--------0------
+42     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor0,proposer1)']
+43     : 1------------0-----
+43     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor1,proposer0)']
+44     : -1------------0----
+44     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor1,proposer1)']
+45     : 1----------0-------
+45     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor0,proposer0)']
+46     : -1----------0------
+46     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor0,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -164,26 +164,32 @@ qcost : 0
 
 
 === Prime Orbit 7 =====================
-size : 9
-num_suborbits: 2
-47 (*) : 11-----------------
-47     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-48     : --11---------------
-48     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-49     : ----11-------------
-49     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-69 (*) : 1----1-------------
-69     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-70     : -1--1--------------
-70     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-71     : --1--1-------------
-71     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-72     : ---11--------------
-72     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-73     : 1--1---------------
-73     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-74     : -11----------------
-74     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+size : 12
+num_suborbits: 1
+47 (*) : ----1--1-----------
+47     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'didNotPromise(acceptor1)']
+48     : -----1-1-----------
+48     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'didNotPromise(acceptor1)']
+49     : ----1---1----------
+49     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'didNotPromise(acceptor2)']
+50     : -----1--1----------
+50     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'didNotPromise(acceptor2)']
+51     : --1---1------------
+51     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'didNotPromise(acceptor0)']
+52     : ---1--1------------
+52     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'didNotPromise(acceptor0)']
+53     : --1-----1----------
+53     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'didNotPromise(acceptor2)']
+54     : ---1----1----------
+54     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'didNotPromise(acceptor2)']
+55     : 1-----1------------
+55     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'didNotPromise(acceptor0)']
+56     : -1----1------------
+56     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'didNotPromise(acceptor0)']
+57     : 1------1-----------
+57     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'didNotPromise(acceptor1)']
+58     : -1-----1-----------
+58     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'didNotPromise(acceptor1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -194,18 +200,18 @@ qcost : 0
 === Prime Orbit 8 =====================
 size : 6
 num_suborbits: 1
-50 (*) : -1-------1---------
-50     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'leader(proposer0)']
-51     : 1---------1--------
-51     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'leader(proposer1)']
-52     : ---1-----1---------
-52     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'leader(proposer0)']
-53     : --1-------1--------
-53     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'leader(proposer1)']
-54     : -----1---1---------
-54     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'leader(proposer0)']
-55     : ----1-----1--------
-55     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'leader(proposer1)']
+59 (*) : ----1-----1--------
+59     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'leader(proposer1)']
+60     : -----1---1---------
+60     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'leader(proposer0)']
+61     : --1-------1--------
+61     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'leader(proposer1)']
+62     : ---1-----1---------
+62     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'leader(proposer0)']
+63     : 1---------1--------
+63     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'leader(proposer1)']
+64     : -1-------1---------
+64     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'leader(proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -214,32 +220,26 @@ qcost : 0
 
 
 === Prime Orbit 9 =====================
-size : 12
-num_suborbits: 1
-56 (*) : -1----1------------
-56     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'didNotPromise(acceptor0)']
-57     : 1-----1------------
-57     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'didNotPromise(acceptor0)']
-58     : ---1--1------------
-58     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'didNotPromise(acceptor0)']
-59     : --1---1------------
-59     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'didNotPromise(acceptor0)']
-60     : -1-----1-----------
-60     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'didNotPromise(acceptor1)']
-61     : 1------1-----------
-61     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'didNotPromise(acceptor1)']
-62     : -----1-1-----------
-62     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'didNotPromise(acceptor1)']
-63     : ----1--1-----------
-63     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'didNotPromise(acceptor1)']
-64     : ---1----1----------
-64     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'didNotPromise(acceptor2)']
-65     : --1-----1----------
-65     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'didNotPromise(acceptor2)']
-66     : -----1--1----------
-66     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'didNotPromise(acceptor2)']
-67     : ----1---1----------
-67     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'didNotPromise(acceptor2)']
+size : 9
+num_suborbits: 2
+65 (*) : -1--1--------------
+65     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+66     : 1----1-------------
+66     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+67     : ---11--------------
+67     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+68     : --1--1-------------
+68     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+69     : -11----------------
+69     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+70     : 1--1---------------
+70     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+71 (*) : ----11-------------
+71     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+72     : --11---------------
+72     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+73     : 11-----------------
+73     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor1,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -250,8 +250,8 @@ qcost : 0
 === Prime Orbit 10 =====================
 size : 1
 num_suborbits: 1
-68 (*) : ---------11--------
-68     : ['leader(proposer0)', 'leader(proposer1)']
+74 (*) : ---------11--------
+74     : ['leader(proposer0)', 'leader(proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -260,20 +260,32 @@ qcost : 0
 
 
 === Prime Orbit 11 =====================
-size : 6
+size : 12
 num_suborbits: 1
-75 (*) : --------0------0--0
-75     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)', '~start(proposer1)']
-76     : --------0-------00-
-76     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)', '~start(proposer0)']
-77     : -------0-----0----0
-77     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)', '~start(proposer1)']
-78     : -------0------0--0-
-78     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)', '~start(proposer0)']
-79     : ------0----0------0
-79     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)', '~start(proposer1)']
-80     : ------0-----0----0-
-80     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)', '~start(proposer0)']
+75 (*) : --1-0--------1-----
+75     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+76     : ---1-0--------1----
+76     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+77     : 1---0----------1---
+77     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+78     : -1---0----------1--
+78     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+79     : --0-1------1-------
+79     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+80     : ---0-1------1------
+80     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+81     : 1-0------------1---
+81     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+82     : -1-0------------1--
+82     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+83     : 0---1------1-------
+83     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+84     : -0---1------1------
+84     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
+85     : 0-1----------1-----
+85     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+86     : -0-1----------1----
+86     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -282,14 +294,20 @@ qcost : 0
 
 
 === Prime Orbit 12 =====================
-size : 3
+size : 6
 num_suborbits: 1
-81 (*) : --------0--------00
-81     : ['~didNotPromise(acceptor2)', '~start(proposer0)', '~start(proposer1)']
-82     : -------0---------00
-82     : ['~didNotPromise(acceptor1)', '~start(proposer0)', '~start(proposer1)']
-83     : ------0----------00
-83     : ['~didNotPromise(acceptor0)', '~start(proposer0)', '~start(proposer1)']
+87 (*) : 0-1-1--------------
+87     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+88     : -0-1-1-------------
+88     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
+89     : 1-0-1--------------
+89     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+90     : -1-0-1-------------
+90     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+91     : 1-1-0--------------
+91     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+92     : -1-1-0-------------
+92     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -298,32 +316,20 @@ qcost : 0
 
 
 === Prime Orbit 13 =====================
-size : 12
+size : 6
 num_suborbits: 1
-84 (*) : --0-1------1-------
-84     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
-85     : ---0-1------1------
-85     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-86     : 0---1------1-------
-86     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
-87     : -0---1------1------
-87     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-88     : --1-0--------1-----
-88     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-89     : ---1-0--------1----
-89     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-90     : 0-1----------1-----
-90     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
-91     : -0-1----------1----
-91     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-92     : 1---0----------1---
-92     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-93     : -1---0----------1--
-93     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-94     : 1-0------------1---
-94     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
-95     : -1-0------------1--
-95     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+93 (*) : --0----1-1---------
+93     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+94     : ---0---1--1--------
+94     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+95     : 0-------11---------
+95     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+96     : -0------1-1--------
+96     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
+97     : ----0-1--1---------
+97     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+98     : -----01---1--------
+98     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -332,20 +338,32 @@ qcost : 0
 
 
 === Prime Orbit 14 =====================
-size : 6
+size : 12
 num_suborbits: 1
-96 (*) : 0-1-1--------------
-96     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
-97     : -0-1-1-------------
-97     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-98     : 1-0-1--------------
-98     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
-99     : -1-0-1-------------
-99     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-100     : 1-1-0--------------
-100     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-101     : -1-1-0-------------
-101     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+99 (*) : -------1-1-0-------
+99     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~promise(acceptor0,proposer0)']
+100     : -------1--1-0------
+100     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~promise(acceptor0,proposer1)']
+101     : --------11-0-------
+101     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~promise(acceptor0,proposer0)']
+102     : --------1-1-0------
+102     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~promise(acceptor0,proposer1)']
+103     : ------1--1---0-----
+103     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~promise(acceptor1,proposer0)']
+104     : ------1---1---0----
+104     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~promise(acceptor1,proposer1)']
+105     : --------11---0-----
+105     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~promise(acceptor1,proposer0)']
+106     : --------1-1---0----
+106     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~promise(acceptor1,proposer1)']
+107     : ------1--1-----0---
+107     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~promise(acceptor2,proposer0)']
+108     : ------1---1-----0--
+108     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~promise(acceptor2,proposer1)']
+109     : -------1-1-----0---
+109     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~promise(acceptor2,proposer0)']
+110     : -------1--1-----0--
+110     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~promise(acceptor2,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -356,18 +374,18 @@ qcost : 0
 === Prime Orbit 15 =====================
 size : 6
 num_suborbits: 1
-102 (*) : --0--------1---1---
-102     : ['promise(acceptor0,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
-103     : ---0--------1---1--
-103     : ['promise(acceptor0,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-104     : 0----------1-1-----
-104     : ['promise(acceptor0,proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
-105     : -0----------1-1----
-105     : ['promise(acceptor0,proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-106     : ----0--------1-1---
-106     : ['promise(acceptor1,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-107     : -----0--------1-1--
-107     : ['promise(acceptor1,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+111 (*) : -------111---------
+111     : ['didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer0)']
+112     : -------11-1--------
+112     : ['didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer1)']
+113     : ------1-11---------
+113     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor2)', 'leader(proposer0)']
+114     : ------1-1-1--------
+114     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor2)', 'leader(proposer1)']
+115     : ------11-1---------
+115     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer0)']
+116     : ------11--1--------
+116     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -376,14 +394,32 @@ qcost : 0
 
 
 === Prime Orbit 16 =====================
-size : 3
+size : 12
 num_suborbits: 1
-108 (*) : ------0----00------
-108     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)', '~promise(acceptor0,proposer1)']
-109     : -------0-----00----
-109     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)', '~promise(acceptor1,proposer1)']
-110     : --------0------00--
-110     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)', '~promise(acceptor2,proposer1)']
+117 (*) : -------1-1------1--
+117     : ['didNotPromise(acceptor1)', 'leader(proposer0)', 'promise(acceptor2,proposer1)']
+118     : -------1--1----1---
+118     : ['didNotPromise(acceptor1)', 'leader(proposer1)', 'promise(acceptor2,proposer0)']
+119     : --------11----1----
+119     : ['didNotPromise(acceptor2)', 'leader(proposer0)', 'promise(acceptor1,proposer1)']
+120     : --------1-1--1-----
+120     : ['didNotPromise(acceptor2)', 'leader(proposer1)', 'promise(acceptor1,proposer0)']
+121     : ------1--1------1--
+121     : ['didNotPromise(acceptor0)', 'leader(proposer0)', 'promise(acceptor2,proposer1)']
+122     : ------1---1----1---
+122     : ['didNotPromise(acceptor0)', 'leader(proposer1)', 'promise(acceptor2,proposer0)']
+123     : --------11--1------
+123     : ['didNotPromise(acceptor2)', 'leader(proposer0)', 'promise(acceptor0,proposer1)']
+124     : --------1-11-------
+124     : ['didNotPromise(acceptor2)', 'leader(proposer1)', 'promise(acceptor0,proposer0)']
+125     : ------1--1----1----
+125     : ['didNotPromise(acceptor0)', 'leader(proposer0)', 'promise(acceptor1,proposer1)']
+126     : ------1---1--1-----
+126     : ['didNotPromise(acceptor0)', 'leader(proposer1)', 'promise(acceptor1,proposer0)']
+127     : -------1-1--1------
+127     : ['didNotPromise(acceptor1)', 'leader(proposer0)', 'promise(acceptor0,proposer1)']
+128     : -------1--11-------
+128     : ['didNotPromise(acceptor1)', 'leader(proposer1)', 'promise(acceptor0,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -392,32 +428,20 @@ qcost : 0
 
 
 === Prime Orbit 17 =====================
-size : 12
+size : 6
 num_suborbits: 1
-111 (*) : -------1-1------1--
-111     : ['didNotPromise(acceptor1)', 'leader(proposer0)', 'promise(acceptor2,proposer1)']
-112     : -------1--1----1---
-112     : ['didNotPromise(acceptor1)', 'leader(proposer1)', 'promise(acceptor2,proposer0)']
-113     : --------11----1----
-113     : ['didNotPromise(acceptor2)', 'leader(proposer0)', 'promise(acceptor1,proposer1)']
-114     : --------1-1--1-----
-114     : ['didNotPromise(acceptor2)', 'leader(proposer1)', 'promise(acceptor1,proposer0)']
-115     : ------1--1------1--
-115     : ['didNotPromise(acceptor0)', 'leader(proposer0)', 'promise(acceptor2,proposer1)']
-116     : ------1---1----1---
-116     : ['didNotPromise(acceptor0)', 'leader(proposer1)', 'promise(acceptor2,proposer0)']
-117     : --------11--1------
-117     : ['didNotPromise(acceptor2)', 'leader(proposer0)', 'promise(acceptor0,proposer1)']
-118     : --------1-11-------
-118     : ['didNotPromise(acceptor2)', 'leader(proposer1)', 'promise(acceptor0,proposer0)']
-119     : ------1--1----1----
-119     : ['didNotPromise(acceptor0)', 'leader(proposer0)', 'promise(acceptor1,proposer1)']
-120     : ------1---1--1-----
-120     : ['didNotPromise(acceptor0)', 'leader(proposer1)', 'promise(acceptor1,proposer0)']
-121     : -------1-1--1------
-121     : ['didNotPromise(acceptor1)', 'leader(proposer0)', 'promise(acceptor0,proposer1)']
-122     : -------1--11-------
-122     : ['didNotPromise(acceptor1)', 'leader(proposer1)', 'promise(acceptor0,proposer0)']
+129 (*) : --------0-------00-
+129     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)', '~start(proposer0)']
+130     : --------0------0--0
+130     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)', '~start(proposer1)']
+131     : -------0------0--0-
+131     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)', '~start(proposer0)']
+132     : -------0-----0----0
+132     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)', '~start(proposer1)']
+133     : ------0-----0----0-
+133     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)', '~start(proposer0)']
+134     : ------0----0------0
+134     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)', '~start(proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -426,32 +450,14 @@ qcost : 0
 
 
 === Prime Orbit 18 =====================
-size : 12
+size : 3
 num_suborbits: 1
-123 (*) : -------1-1-----0---
-123     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~promise(acceptor2,proposer0)']
-124     : -------1--1-----0--
-124     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~promise(acceptor2,proposer1)']
-125     : --------11---0-----
-125     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~promise(acceptor1,proposer0)']
-126     : --------1-1---0----
-126     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~promise(acceptor1,proposer1)']
-127     : ------1--1-----0---
-127     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~promise(acceptor2,proposer0)']
-128     : ------1---1-----0--
-128     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~promise(acceptor2,proposer1)']
-129     : --------11-0-------
-129     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~promise(acceptor0,proposer0)']
-130     : --------1-1-0------
-130     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~promise(acceptor0,proposer1)']
-131     : ------1--1---0-----
-131     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~promise(acceptor1,proposer0)']
-132     : ------1---1---0----
-132     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~promise(acceptor1,proposer1)']
-133     : -------1-1-0-------
-133     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~promise(acceptor0,proposer0)']
-134     : -------1--1-0------
-134     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~promise(acceptor0,proposer1)']
+135 (*) : -------0---------00
+135     : ['~didNotPromise(acceptor1)', '~start(proposer0)', '~start(proposer1)']
+136     : --------0--------00
+136     : ['~didNotPromise(acceptor2)', '~start(proposer0)', '~start(proposer1)']
+137     : ------0----------00
+137     : ['~didNotPromise(acceptor0)', '~start(proposer0)', '~start(proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -460,20 +466,14 @@ qcost : 0
 
 
 === Prime Orbit 19 =====================
-size : 6
+size : 3
 num_suborbits: 1
-135 (*) : --0----1-1---------
-135     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
-136     : ---0---1--1--------
-136     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-137     : 0-------11---------
-137     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
-138     : -0------1-1--------
-138     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-139     : ----0-1--1---------
-139     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-140     : -----01---1--------
-140     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+138 (*) : --------0------00--
+138     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)', '~promise(acceptor2,proposer1)']
+139     : -------0-----00----
+139     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)', '~promise(acceptor1,proposer1)']
+140     : ------0----00------
+140     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)', '~promise(acceptor0,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -484,18 +484,18 @@ qcost : 0
 === Prime Orbit 20 =====================
 size : 6
 num_suborbits: 1
-141 (*) : ------11-1---------
-141     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer0)']
-142     : ------11--1--------
-142     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer1)']
-143     : ------1-11---------
-143     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor2)', 'leader(proposer0)']
-144     : ------1-1-1--------
-144     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor2)', 'leader(proposer1)']
-145     : -------111---------
-145     : ['didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer0)']
-146     : -------11-1--------
-146     : ['didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer1)']
+141 (*) : -----0--------1-1--
+141     : ['promise(acceptor1,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+142     : ----0--------1-1---
+142     : ['promise(acceptor1,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+143     : ---0--------1---1--
+143     : ['promise(acceptor0,proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+144     : --0--------1---1---
+144     : ['promise(acceptor0,proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+145     : -0----------1-1----
+145     : ['promise(acceptor0,proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
+146     : 0----------1-1-----
+146     : ['promise(acceptor0,proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -506,14 +506,14 @@ qcost : 0
 === Prime Orbit 21 =====================
 size : 6
 num_suborbits: 1
-147 (*) : --0------1---0-----
-147     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor1,proposer0)']
-148     : ---0------1---0----
-148     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor1,proposer1)']
-149     : 0--------1-----0---
-149     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
-150     : -0--------1-----0--
-150     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor2,proposer1)']
+147 (*) : 0--------1-----0---
+147     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
+148     : -0--------1-----0--
+148     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor2,proposer1)']
+149     : --0------1---0-----
+149     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor1,proposer0)']
+150     : ---0------1---0----
+150     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor1,proposer1)']
 151     : ----0----1-0-------
 151     : ['leader(proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~promise(acceptor0,proposer0)']
 152     : -----0----1-0------
@@ -528,18 +528,18 @@ qcost : 0
 === Prime Orbit 22 =====================
 size : 6
 num_suborbits: 1
-153 (*) : ---------1---0-0---
-153     : ['leader(proposer0)', '~promise(acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
-154     : ----------1---0-0--
-154     : ['leader(proposer1)', '~promise(acceptor1,proposer1)', '~promise(acceptor2,proposer1)']
+153 (*) : ---------1-0-0-----
+153     : ['leader(proposer0)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer0)']
+154     : ----------1-0-0----
+154     : ['leader(proposer1)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer1)']
 155     : ---------1-0---0---
 155     : ['leader(proposer0)', '~promise(acceptor0,proposer0)', '~promise(acceptor2,proposer0)']
 156     : ----------1-0---0--
 156     : ['leader(proposer1)', '~promise(acceptor0,proposer1)', '~promise(acceptor2,proposer1)']
-157     : ---------1-0-0-----
-157     : ['leader(proposer0)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer0)']
-158     : ----------1-0-0----
-158     : ['leader(proposer1)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer1)']
+157     : ---------1---0-0---
+157     : ['leader(proposer0)', '~promise(acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
+158     : ----------1---0-0--
+158     : ['leader(proposer1)', '~promise(acceptor1,proposer1)', '~promise(acceptor2,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -548,32 +548,20 @@ qcost : 0
 
 
 === Prime Orbit 23 =====================
-size : 12
+size : 6
 num_suborbits: 1
-159 (*) : ---------1-0----1--
-159     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~promise(acceptor0,proposer0)']
-160     : ----------1-0--1---
-160     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~promise(acceptor0,proposer1)']
-161     : ---------1-0--1----
-161     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~promise(acceptor0,proposer0)']
-162     : ----------1-01-----
-162     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~promise(acceptor0,proposer1)']
-163     : ---------1---0--1--
-163     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~promise(acceptor1,proposer0)']
-164     : ----------1---01---
-164     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~promise(acceptor1,proposer1)']
-165     : ---------1--10-----
-165     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~promise(acceptor1,proposer0)']
-166     : ----------11--0----
-166     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~promise(acceptor1,proposer1)']
-167     : ---------1----10---
-167     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~promise(acceptor2,proposer0)']
-168     : ----------1--1--0--
-168     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~promise(acceptor2,proposer1)']
-169     : ---------1--1--0---
-169     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~promise(acceptor2,proposer0)']
-170     : ----------11----0--
-170     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~promise(acceptor2,proposer1)']
+159 (*) : ----0----1--1------
+159     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+160     : -----0----11-------
+160     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+161     : --0------1----1----
+161     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+162     : ---0------1--1-----
+162     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+163     : 0--------1------1--
+163     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+164     : -0--------1----1---
+164     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -582,20 +570,32 @@ qcost : 0
 
 
 === Prime Orbit 24 =====================
-size : 6
+size : 12
 num_suborbits: 1
-171 (*) : 0--------1------1--
-171     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
-172     : -0--------1----1---
-172     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
-173     : --0------1----1----
-173     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
-174     : ---0------1--1-----
-174     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-175     : ----0----1--1------
-175     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-176     : -----0----11-------
-176     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+165 (*) : ---------1--10-----
+165     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~promise(acceptor1,proposer0)']
+166     : ----------11--0----
+166     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~promise(acceptor1,proposer1)']
+167     : ---------1--1--0---
+167     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~promise(acceptor2,proposer0)']
+168     : ----------11----0--
+168     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~promise(acceptor2,proposer1)']
+169     : ---------1-0--1----
+169     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~promise(acceptor0,proposer0)']
+170     : ----------1-01-----
+170     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~promise(acceptor0,proposer1)']
+171     : ---------1----10---
+171     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~promise(acceptor2,proposer0)']
+172     : ----------1--1--0--
+172     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~promise(acceptor2,proposer1)']
+173     : ---------1-0----1--
+173     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~promise(acceptor0,proposer0)']
+174     : ----------1-0--1---
+174     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~promise(acceptor0,proposer1)']
+175     : ---------1---0--1--
+175     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~promise(acceptor1,proposer0)']
+176     : ----------1---01---
+176     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~promise(acceptor1,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -606,18 +606,18 @@ qcost : 0
 === Prime Orbit 25 =====================
 size : 6
 num_suborbits: 1
-177 (*) : ---------1----1-1--
-177     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', 'promise(acceptor2,proposer1)']
-178     : ----------1--1-1---
-178     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', 'promise(acceptor2,proposer0)']
+177 (*) : ---------1--1-1----
+177     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor1,proposer1)']
+178     : ----------11-1-----
+178     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor1,proposer0)']
 179     : ---------1--1---1--
 179     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor2,proposer1)']
 180     : ----------11---1---
 180     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor2,proposer0)']
-181     : ---------1--1-1----
-181     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor1,proposer1)']
-182     : ----------11-1-----
-182     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor1,proposer0)']
+181     : ---------1----1-1--
+181     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', 'promise(acceptor2,proposer1)']
+182     : ----------1--1-1---
+182     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', 'promise(acceptor2,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -626,12 +626,32 @@ qcost : 0
 
 
 === Prime Orbit 26 =====================
-size : 2
+size : 12
 num_suborbits: 1
-183 (*) : -0-0-0----1--------
-183     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-184     : 0-0-0----1---------
-184     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+183 (*) : --0---0-----0--1---
+183     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+184     : ---0--0----0----1--
+184     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
+185     : 0-----0-----01-----
+185     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+186     : -0----0----0--1----
+186     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
+187     : ----0--0------01---
+187     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+188     : -----0-0-----0--1--
+188     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+189     : 0------0---1--0----
+189     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+190     : -0-----0----10-----
+190     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+191     : ----0---0----1--0--
+191     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+192     : -----0--0-----10---
+192     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+193     : --0-----0--1----0--
+193     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+194     : ---0----0---1--0---
+194     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -640,20 +660,32 @@ qcost : 0
 
 
 === Prime Orbit 27 =====================
-size : 6
+size : 12
 num_suborbits: 1
-185 (*) : -0---0----1---1----
-185     : ['leader(proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-186     : 0---0----1---1-----
-186     : ['leader(proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-187     : ---0-0----1-----1--
-187     : ['leader(proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
-188     : --0-0----1-----1---
-188     : ['leader(proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
-189     : -0-0------1-1------
-189     : ['leader(proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
-190     : 0-0------1-1-------
-190     : ['leader(proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+195 (*) : -0-1---0-----0-----
+195     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+196     : 0-1----0------0----
+196     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+197     : -1-0----0------0---
+197     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+198     : 1-0-----0-------0--
+198     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+199     : -0---10----0-------
+199     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
+200     : 0---1-0-----0------
+200     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+201     : -1---0--0------0---
+201     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+202     : 1---0---0-------0--
+202     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+203     : ---0-10----0-------
+203     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
+204     : --0-1-0-----0------
+204     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+205     : ---1-0-0-----0-----
+205     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+206     : --1-0--0------0----
+206     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -662,32 +694,20 @@ qcost : 0
 
 
 === Prime Orbit 28 =====================
-size : 12
+size : 6
 num_suborbits: 1
-191 (*) : --0---0-----0--1---
-191     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
-192     : ---0--0----0----1--
-192     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
-193     : 0-----0-----01-----
-193     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
-194     : -0----0----0--1----
-194     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
-195     : ----0--0------01---
-195     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
-196     : -----0-0-----0--1--
-196     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
-197     : 0------0---1--0----
-197     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
-198     : -0-----0----10-----
-198     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
-199     : ----0---0----1--0--
-199     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-200     : -----0--0-----10---
-200     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-201     : --0-----0--1----0--
-201     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-202     : ---0----0---1--0---
-202     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+207 (*) : -0-0------1-1------
+207     : ['leader(proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+208     : 0-0------1-1-------
+208     : ['leader(proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+209     : -0---0----1---1----
+209     : ['leader(proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+210     : 0---0----1---1-----
+210     : ['leader(proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+211     : ---0-0----1-----1--
+211     : ['leader(proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+212     : --0-0----1-----1---
+212     : ['leader(proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -696,32 +716,12 @@ qcost : 0
 
 
 === Prime Orbit 29 =====================
-size : 12
+size : 2
 num_suborbits: 1
-203 (*) : --0---0--------1--0
-203     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
-204     : ---0--0---------10-
-204     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
-205     : 0-----0------1----0
-205     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
-206     : -0----0-------1--0-
-206     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
-207     : ----0--0-------1--0
-207     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
-208     : -----0-0--------10-
-208     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
-209     : 0------0---1------0
-209     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
-210     : -0-----0----1----0-
-210     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
-211     : ----0---0----1----0
-211     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
-212     : -----0--0-----1--0-
-212     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
-213     : --0-----0--1------0
-213     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
-214     : ---0----0---1----0-
-214     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+213 (*) : -0-0-0----1--------
+213     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+214     : 0-0-0----1---------
+214     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -730,32 +730,20 @@ qcost : 0
 
 
 === Prime Orbit 30 =====================
-size : 12
+size : 6
 num_suborbits: 1
-215 (*) : -0-1---0-----0-----
-215     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
-216     : 0-1----0------0----
-216     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
-217     : -1-0----0------0---
-217     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-218     : 1-0-----0-------0--
-218     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-219     : -0---10----0-------
-219     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
-220     : 0---1-0-----0------
-220     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
-221     : -1---0--0------0---
-221     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-222     : 1---0---0-------0--
-222     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-223     : ---0-10----0-------
-223     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
-224     : --0-1-0-----0------
-224     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
-225     : ---1-0-0-----0-----
-225     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
-226     : --1-0--0------0----
-226     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+215 (*) : ----0--00---------0
+215     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+216     : -----0-00--------0-
+216     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+217     : --0---0-0---------0
+217     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+218     : ---0--0-0--------0-
+218     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+219     : 0-----00----------0
+219     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+220     : -0----00---------0-
+220     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~start(proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -764,20 +752,32 @@ qcost : 0
 
 
 === Prime Orbit 31 =====================
-size : 6
+size : 12
 num_suborbits: 1
-227 (*) : -----0-00--------0-
-227     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
-228     : ----0--00---------0
-228     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~start(proposer1)']
-229     : ---0--0-0--------0-
-229     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~start(proposer0)']
-230     : --0---0-0---------0
-230     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
-231     : -0----00---------0-
-231     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~start(proposer0)']
-232     : 0-----00----------0
-232     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+221 (*) : 1-0-----0---------0
+221     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+222     : -1-0----0--------0-
+222     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+223     : 0-1----0----------0
+223     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+224     : -0-1---0---------0-
+224     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+225     : 1---0---0---------0
+225     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+226     : -1---0--0--------0-
+226     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+227     : 0---1-0-----------0
+227     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+228     : -0---10----------0-
+228     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+229     : --1-0--0----------0
+229     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+230     : ---1-0-0---------0-
+230     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+231     : --0-1-0-----------0
+231     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+232     : ---0-10----------0-
+232     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -788,30 +788,30 @@ qcost : 0
 === Prime Orbit 32 =====================
 size : 12
 num_suborbits: 1
-233 (*) : ---1-0-0---------0-
-233     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
-234     : --1-0--0----------0
-234     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
-235     : -1---0--0--------0-
-235     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
-236     : 1---0---0---------0
-236     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
-237     : ---0-10----------0-
-237     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
-238     : --0-1-0-----------0
-238     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
-239     : -1-0----0--------0-
-239     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
-240     : 1-0-----0---------0
-240     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
-241     : -0---10----------0-
-241     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
-242     : 0---1-0-----------0
-242     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
-243     : -0-1---0---------0-
-243     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
-244     : 0-1----0----------0
-244     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+233 (*) : ----0---0----1----0
+233     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+234     : -----0--0-----1--0-
+234     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+235     : ----0--0-------1--0
+235     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+236     : -----0-0--------10-
+236     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+237     : --0-----0--1------0
+237     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+238     : ---0----0---1----0-
+238     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+239     : --0---0--------1--0
+239     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+240     : ---0--0---------10-
+240     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+241     : 0------0---1------0
+241     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+242     : -0-----0----1----0-
+242     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+243     : 0-----0------1----0
+243     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+244     : -0----0-------1--0-
+244     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -822,18 +822,18 @@ qcost : 0
 === Prime Orbit 33 =====================
 size : 6
 num_suborbits: 1
-245 (*) : -0--0--0----1--1---
-245     : ['promise(acceptor0,proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)']
-246     : 0----0-0---1----1--
-246     : ['promise(acceptor0,proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)']
-247     : ---00---0---11-----
-247     : ['promise(acceptor0,proposer1)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)']
-248     : --0--0--0--1--1----
-248     : ['promise(acceptor0,proposer0)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)']
-249     : -00---0-------11---
-249     : ['promise(acceptor1,proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)']
-250     : 0--0--0------1--1--
-250     : ['promise(acceptor1,proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)']
+245 (*) : 0-0---0--1--------0
+245     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+246     : -0-0--0---1------0-
+246     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+247     : 0---0--0-1--------0
+247     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+248     : -0---0-0--1------0-
+248     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+249     : --0-0---01--------0
+249     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+250     : ---0-0--0-1------0-
+250     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -844,18 +844,18 @@ qcost : 0
 === Prime Orbit 34 =====================
 size : 6
 num_suborbits: 1
-251 (*) : ---0-0--0-1----0---
-251     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-252     : --0-0---01------0--
-252     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-253     : -0---0-0--1--0-----
-253     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
-254     : 0---0--0-1----0----
-254     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
-255     : -0-0--0---10-------
-255     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
-256     : 0-0---0--1--0------
-256     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+251 (*) : 0-0---0--1--0------
+251     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+252     : -0-0--0---10-------
+252     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
+253     : 0---0--0-1----0----
+253     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+254     : -0---0-0--1--0-----
+254     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+255     : --0-0---01------0--
+255     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+256     : ---0-0--0-1----0---
+256     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -866,18 +866,18 @@ qcost : 0
 === Prime Orbit 35 =====================
 size : 6
 num_suborbits: 1
-257 (*) : -0-0--0---1------0-
-257     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
-258     : 0-0---0--1--------0
-258     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
-259     : -0---0-0--1------0-
-259     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
-260     : 0---0--0-1--------0
-260     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
-261     : ---0-0--0-1------0-
-261     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
-262     : --0-0---01--------0
-262     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+257 (*) : 0--0--0------1--1--
+257     : ['promise(acceptor1,proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)']
+258     : -00---0-------11---
+258     : ['promise(acceptor1,proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)']
+259     : 0----0-0---1----1--
+259     : ['promise(acceptor0,proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)']
+260     : -0--0--0----1--1---
+260     : ['promise(acceptor0,proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)']
+261     : --0--0--0--1--1----
+261     : ['promise(acceptor0,proposer0)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)']
+262     : ---00---0---11-----
+262     : ['promise(acceptor0,proposer1)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -888,14 +888,14 @@ qcost : 0
 === Prime Orbit 36 =====================
 size : 6
 num_suborbits: 1
-263 (*) : -0----00---0-0-----
-263     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer0)']
-264     : 0-----00----0-0----
-264     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer1)']
-265     : ---0--0-0--0---0---
-265     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)', '~promise(acceptor2,proposer0)']
-266     : --0---0-0---0---0--
-266     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)', '~promise(acceptor2,proposer1)']
+263 (*) : ---0--0-0--0---0---
+263     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)', '~promise(acceptor2,proposer0)']
+264     : --0---0-0---0---0--
+264     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)', '~promise(acceptor2,proposer1)']
+265     : -0----00---0-0-----
+265     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer0)']
+266     : 0-----00----0-0----
+266     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer1)']
 267     : -----0-00----0-0---
 267     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
 268     : ----0--00-----0-0--
@@ -908,20 +908,32 @@ qcost : 0
 
 
 === Prime Orbit 37 =====================
-size : 6
+size : 12
 num_suborbits: 1
-269 (*) : 0-0--0-00--1-------
-269     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)']
-270     : -0-00--00---1------
-270     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)']
-271     : 0--00-0-0----1-----
-271     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)']
-272     : -00--00-0-----1----
-272     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)']
-273     : -00-0-00-------1---
-273     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)']
-274     : 0--0-000--------1--
-274     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)']
+269 (*) : -0--0--00---1---0--
+269     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+270     : 0----0-00--1---0---
+270     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+271     : ---00--00---1-0----
+271     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer1)']
+272     : --0--0-00--1-0-----
+272     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)']
+273     : -00---0-0-----1-0--
+273     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+274     : 0--0--0-0----1-0---
+274     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+275     : --0--00-0---0-1----
+275     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)']
+276     : ---00-0-0--0-1-----
+276     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)']
+277     : 0--0--00------0-1--
+277     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+278     : -00---00-----0-1---
+278     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+279     : 0----000----0---1--
+279     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer1)']
+280     : -0--0-00---0---1---
+280     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -930,32 +942,20 @@ qcost : 0
 
 
 === Prime Orbit 38 =====================
-size : 12
+size : 6
 num_suborbits: 1
-275 (*) : ---00--00---1-0----
-275     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer1)']
-276     : --0--0-00--1-0-----
-276     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)']
-277     : -0--0--00---1---0--
-277     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-278     : 0----0-00--1---0---
-278     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-279     : --0--00-0---0-1----
-279     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)']
-280     : ---00-0-0--0-1-----
-280     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)']
-281     : -00---0-0-----1-0--
-281     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
-282     : 0--0--0-0----1-0---
-282     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-283     : 0----000----0---1--
-283     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer1)']
-284     : -0--0-00---0---1---
-284     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor0,proposer0)']
-285     : 0--0--00------0-1--
-285     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
-286     : -00---00-----0-1---
-286     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+281 (*) : 0--00-0-0----1-----
+281     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)']
+282     : -00--00-0-----1----
+282     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)']
+283     : -00-0-00-------1---
+283     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)']
+284     : 0--0-000--------1--
+284     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)']
+285     : 0-0--0-00--1-------
+285     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)']
+286     : -0-00--00---1------
+286     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -966,18 +966,18 @@ qcost : 0
 === Prime Orbit 39 =====================
 size : 6
 num_suborbits: 1
-287 (*) : -0--0-000--0----0--
-287     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)', '~promise(acceptor2,proposer1)']
-288     : 0----0000---0--0---
-288     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)', '~promise(acceptor2,proposer0)']
-289     : ---00-000--0--0----
-289     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer1)']
-290     : --0--0000---00-----
-290     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer0)']
-291     : -00---000----0--0--
-291     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)', '~promise(acceptor2,proposer1)']
-292     : 0--0--000-----00---
-292     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer1)', '~promise(acceptor2,proposer0)']
+287 (*) : -00-0-000-------0--
+287     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+288     : 0--0-0000------0---
+288     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+289     : 0--00-000-----0----
+289     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer1)']
+290     : -00--0000----0-----
+290     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)']
+291     : 0-0--0000---0------
+291     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)']
+292     : -0-00-000--0-------
+292     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -988,18 +988,18 @@ qcost : 0
 === Prime Orbit 40 =====================
 size : 6
 num_suborbits: 1
-293 (*) : -0-00-000--0-------
-293     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)']
-294     : 0-0--0000---0------
-294     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)']
-295     : -00--0000----0-----
-295     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)']
-296     : 0--00-000-----0----
-296     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer1)']
-297     : 0--0-0000------0---
-297     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
-298     : -00-0-000-------0--
-298     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+293 (*) : -0--0-000--0----0--
+293     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)', '~promise(acceptor2,proposer1)']
+294     : 0----0000---0--0---
+294     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)', '~promise(acceptor2,proposer0)']
+295     : ---00-000--0--0----
+295     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer1)']
+296     : --0--0000---00-----
+296     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer0)']
+297     : -00---000----0--0--
+297     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer0)', '~promise(acceptor2,proposer1)']
+298     : 0--0--000-----00---
+298     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~promise(acceptor1,proposer1)', '~promise(acceptor2,proposer0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0

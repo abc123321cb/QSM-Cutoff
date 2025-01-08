@@ -49,5 +49,5 @@ export put
 ##invariant [manual_4] transfer_msg(N1, K, V1) & transfer_msg(N2, K, V2) -> N1 = N2 & V1 = V2
 
 
-invariant [invar_0] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
-invariant [invar_1] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
+invariant [invar_0] forall NODE0,KEY0,VALUE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_1] forall NODE0,KEY0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5

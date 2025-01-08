@@ -55,6 +55,16 @@ invariant [safety] (forall R1, R2. ~(aborted(R1) & committed(R2)) )
 ## Dependent relation axioms ##
 
 ## Access actions ##
+action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := prepared(r0)
+}
+export get_prepared
+
+action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (prepared(r0) = result)
+}
+export get_bool_prepared
+
 action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := aborted(r0)
 }
@@ -84,14 +94,4 @@ action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result
     qrm_result := (committed(r0) = result)
 }
 export get_bool_committed
-
-action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := prepared(r0)
-}
-export get_prepared
-
-action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (prepared(r0) = result)
-}
-export get_bool_prepared
 

@@ -639,11 +639,11 @@ class firewall__node_4__finite {
 void __init();
     virtual void ext__send_from_internal(node src, node dst);
     virtual void ext__send_to_internal(node src, node dst);
+    virtual bool ext__get_allowed_in(node n0);
+    virtual bool ext__get_bool_allowed_in(node n0, bool result);
     virtual bool ext__get_sent(node n0, node n1);
     virtual bool ext__get_bool_sent(node n0, node n1, bool result);
     virtual bool ext__get_internal(node n0);
     virtual bool ext__get_bool_internal(node n0, bool result);
-    virtual bool ext__get_allowed_in(node n0);
-    virtual bool ext__get_bool_allowed_in(node n0, bool result);
     void __tick(int timeout);
 };

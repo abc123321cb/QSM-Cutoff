@@ -55,10 +55,15 @@ export send_1b
 export decide
 
 # the safety property
-invariant leader(P1) & leader(P2) -> P1 = P2
+#invariant leader(P1) & leader(P2) -> P1 = P2
 
-#invariant [manual_1] promise(A, P1) & promise(A, P2) -> P1 = P2
-#invariant [manual_2] leader(P) -> ( exists Q. forall A. (member(A,Q) -> promise(A, P)) )
+##invariant [manual_1] promise(A, P1) & promise(A, P2) -> P1 = P2
+##invariant [manual_2] leader(P) -> ( exists Q. forall A. (member(A,Q) -> promise(A, P)) )
+
+invariant [def_didNotPromise] didNotPromise(A) = forall P. ~promise(A,P) # definition
+invariant [def_chosenAt] chosenAt(Q,P) = forall A. member(A,Q) -> promise(A,P) # definition
+invariant [invar_2] forall PROPOSER0,ACCEPTOR0. didNotPromise(ACCEPTOR0) | start(PROPOSER0) # qcost: 4
+invariant [invar_21] forall PROPOSER0. (exists QUORUM0. chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0)) # qcost: 4
 
 ### For QRM DFS reachability ###
 
@@ -74,6 +79,26 @@ axiom member(acceptor1,quorum__acceptor1_acceptor2)
 axiom member(acceptor2,quorum__acceptor1_acceptor2)
 
 ## Access actions ##
+action get_start(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := start(p0)
+}
+export get_start
+
+action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (start(p0) = result)
+}
+export get_bool_start
+
+action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
+    qrm_result := promise(a0, p1)
+}
+export get_promise
+
+action get_bool_promise(a0: acceptor, p1: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (promise(a0, p1) = result)
+}
+export get_bool_promise
+
 action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
     qrm_result := didNotPromise(a0)
 }
@@ -83,16 +108,6 @@ action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bo
     qrm_result := (didNotPromise(a0) = result)
 }
 export get_bool_didNotPromise
-
-action get_leader(p0: proposer) returns(qrm_result: bool) = {
-    qrm_result := leader(p0)
-}
-export get_leader
-
-action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (leader(p0) = result)
-}
-export get_bool_leader
 
 action get_chosenAt(q0: quorum, p1: proposer) returns(qrm_result: bool) = {
     qrm_result := chosenAt(q0, p1)
@@ -104,16 +119,6 @@ action get_bool_chosenAt(q0: quorum, p1: proposer, result: bool) returns(qrm_res
 }
 export get_bool_chosenAt
 
-action get_start(p0: proposer) returns(qrm_result: bool) = {
-    qrm_result := start(p0)
-}
-export get_start
-
-action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (start(p0) = result)
-}
-export get_bool_start
-
 action get_member(a0: acceptor, q1: quorum) returns(qrm_result: bool) = {
     qrm_result := member(a0, q1)
 }
@@ -124,13 +129,13 @@ action get_bool_member(a0: acceptor, q1: quorum, result: bool) returns(qrm_resul
 }
 export get_bool_member
 
-action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
-    qrm_result := promise(a0, p1)
+action get_leader(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := leader(p0)
 }
-export get_promise
+export get_leader
 
-action get_bool_promise(a0: acceptor, p1: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (promise(a0, p1) = result)
+action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (leader(p0) = result)
 }
-export get_bool_promise
+export get_bool_leader
 

@@ -117,26 +117,6 @@ invariant [safety] (forall R1, R2. ~(aborted(R1) & committed(R2)) )
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_working(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := working(r0)
-}
-export get_working
-
-action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (working(r0) = result)
-}
-export get_bool_working
-
-action get_msg_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := msg_prepared(r0)
-}
-export get_msg_prepared
-
-action get_bool_msg_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (msg_prepared(r0) = result)
-}
-export get_bool_msg_prepared
-
 action get_msg_commit returns(qrm_result: bool) = {
     qrm_result := msg_commit
 }
@@ -167,16 +147,6 @@ action get_bool_msg_abort(result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_msg_abort
 
-action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := prepared(r0)
-}
-export get_prepared
-
-action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (prepared(r0) = result)
-}
-export get_bool_prepared
-
 action get_tm_init returns(qrm_result: bool) = {
     qrm_result := tm_init
 }
@@ -197,6 +167,16 @@ action get_bool_tm_prepared(r0: resource_manager, result: bool) returns(qrm_resu
 }
 export get_bool_tm_prepared
 
+action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := prepared(r0)
+}
+export get_prepared
+
+action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (prepared(r0) = result)
+}
+export get_bool_prepared
+
 action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := aborted(r0)
 }
@@ -206,6 +186,16 @@ action get_bool_aborted(r0: resource_manager, result: bool) returns(qrm_result: 
     qrm_result := (aborted(r0) = result)
 }
 export get_bool_aborted
+
+action get_working(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := working(r0)
+}
+export get_working
+
+action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (working(r0) = result)
+}
+export get_bool_working
 
 action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := committed(r0)
@@ -226,4 +216,14 @@ action get_bool_tm_committed(result: bool) returns(qrm_result: bool) = {
     qrm_result := (tm_committed = result)
 }
 export get_bool_tm_committed
+
+action get_msg_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := msg_prepared(r0)
+}
+export get_msg_prepared
+
+action get_bool_msg_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (msg_prepared(r0) = result)
+}
+export get_bool_msg_prepared
 

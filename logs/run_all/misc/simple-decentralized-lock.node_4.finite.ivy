@@ -36,26 +36,16 @@ export recv
 ##invariant [manual_3] ~message(X,Y) | ~message(Z,W) | Y=W
 ##invariant [manual_4] forall A, B, C, D . ((((A) = (B)) & ((C) = (D))) | ((~(has_lock(A))) & (~(message(A, C)))) | (~(message(B, D))))
 
-invariant [invar_0] forall NODE1,NODE0,NODE2. ~message(NODE1,NODE2) | ~has_lock(NODE0) # qcost: 5
-invariant [invar_1] forall NODE1,NODE0,NODE3,NODE2. ~message(NODE0,NODE2) | ~message(NODE1,NODE3) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE1 & NODE0 = NODE2 & NODE0 = NODE3)) # qcost: 12
-invariant [invar_3] forall NODE0,NODE1. ~has_lock(NODE1) | ~has_lock(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_5] exists NODE0,NODE1. has_lock(NODE0) | message(NODE0,NODE1) # qcost: 4
+invariant [invar_0] forall NODE1,NODE3,NODE0,NODE2. ~message(NODE1,NODE3) | ~message(NODE0,NODE2) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE1 & NODE0 = NODE2 & NODE0 = NODE3)) # qcost: 12
+invariant [invar_1] forall NODE1,NODE0,NODE2. ~message(NODE1,NODE2) | ~has_lock(NODE0) # qcost: 5
+invariant [invar_3] forall NODE1,NODE0. ~has_lock(NODE0) | ~has_lock(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_5] exists NODE1,NODE0. has_lock(NODE0) | message(NODE0,NODE1) # qcost: 4
 
 ### For QRM DFS reachability ###
 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_has_lock(n0: node) returns(qrm_result: bool) = {
-    qrm_result := has_lock(n0)
-}
-export get_has_lock
-
-action get_bool_has_lock(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (has_lock(n0) = result)
-}
-export get_bool_has_lock
-
 action get_start_node returns(qrm_result: node) = {
     qrm_result := start_node
 }
@@ -75,4 +65,14 @@ action get_bool_message(n0: node, n1: node, result: bool) returns(qrm_result: bo
     qrm_result := (message(n0, n1) = result)
 }
 export get_bool_message
+
+action get_has_lock(n0: node) returns(qrm_result: bool) = {
+    qrm_result := has_lock(n0)
+}
+export get_has_lock
+
+action get_bool_has_lock(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (has_lock(n0) = result)
+}
+export get_bool_has_lock
 

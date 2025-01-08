@@ -1,0 +1,162 @@
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : ------0--1
+0     : ['voted(node2)', '~vote(node2,value0)']
+1     : -----0--1-
+1     : ['voted(node1)', '~vote(node1,value0)']
+2     : ----0--1--
+2     : ['voted(node0)', '~vote(node0,value0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall VALUE0,NODE0. ~voted(NODE0) | vote(NODE0,VALUE0)
+qcost : 4
+
+
+=== Prime Orbit 2 =====================
+size : 3
+num_suborbits: 1
+9 (*) : ------1--0
+9     : ['vote(node2,value0)', '~voted(node2)']
+10     : -----1--0-
+10     : ['vote(node1,value0)', '~voted(node1)']
+11     : ----1--0--
+11     : ['vote(node0,value0)', '~voted(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0)
+qcost : 4
+
+
+=== Prime Orbit 10 =====================
+size : 3
+num_suborbits: 1
+45 (*) : ---1----00
+45     : ['decided(value0)', '~voted(node1)', '~voted(node2)']
+46     : ---1---0-0
+46     : ['decided(value0)', '~voted(node0)', '~voted(node2)']
+47     : ---1---00-
+47     : ['decided(value0)', '~voted(node0)', '~voted(node1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE1,VALUE0,NODE0. voted(NODE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
+qcost : 7
+
+
+=== Prime Orbit 11 =====================
+size : 3
+num_suborbits: 1
+48 (*) : -0-1----0-
+48     : ['decided(value0)', '~chosenAt(quorum__node0_node2,value0)', '~voted(node1)']
+49     : 0--1-----0
+49     : ['decided(value0)', '~chosenAt(quorum__node0_node1,value0)', '~voted(node2)']
+50     : --01---0--
+50     : ['decided(value0)', '~chosenAt(quorum__node1_node2,value0)', '~voted(node0)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall VALUE0,QUORUM0,NODE0. chosenAt(QUORUM0,VALUE0) | voted(NODE0) | ~decided(VALUE0) | member(NODE0,QUORUM0)
+qcost : 7
+
+
+=== Prime Orbit 12 =====================
+size : 6
+num_suborbits: 1
+51 (*) : ---10---0-
+51     : ['decided(value0)', '~vote(node0,value0)', '~voted(node1)']
+52     : ---10----0
+52     : ['decided(value0)', '~vote(node0,value0)', '~voted(node2)']
+53     : ---1-0-0--
+53     : ['decided(value0)', '~vote(node1,value0)', '~voted(node0)']
+54     : ---1-0---0
+54     : ['decided(value0)', '~vote(node1,value0)', '~voted(node2)']
+55     : ---1--00--
+55     : ['decided(value0)', '~vote(node2,value0)', '~voted(node0)']
+56     : ---1--0-0-
+56     : ['decided(value0)', '~vote(node2,value0)', '~voted(node1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE1,VALUE0,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
+qcost : 7
+
+
+=== Prime Orbit 13 =====================
+size : 3
+num_suborbits: 1
+57 (*) : -0-1-0----
+57     : ['decided(value0)', '~chosenAt(quorum__node0_node2,value0)', '~vote(node1,value0)']
+58     : 0--1--0---
+58     : ['decided(value0)', '~chosenAt(quorum__node0_node1,value0)', '~vote(node2,value0)']
+59     : --010-----
+59     : ['decided(value0)', '~chosenAt(quorum__node1_node2,value0)', '~vote(node0,value0)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall VALUE0,QUORUM0,NODE0. chosenAt(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | member(NODE0,QUORUM0)
+qcost : 7
+
+
+=== Prime Orbit 14 =====================
+size : 3
+num_suborbits: 1
+60 (*) : ---100----
+60     : ['decided(value0)', '~vote(node0,value0)', '~vote(node1,value0)']
+61     : ---10-0---
+61     : ['decided(value0)', '~vote(node0,value0)', '~vote(node2,value0)']
+62     : ---1-00---
+62     : ['decided(value0)', '~vote(node1,value0)', '~vote(node2,value0)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE1,VALUE0,NODE0. vote(NODE0,VALUE0) | vote(NODE1,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
+qcost : 7
+
+
+=== Prime Orbit 15 =====================
+size : 3
+num_suborbits: 1
+63 (*) : -001-----1
+63     : ['decided(value0)', 'voted(node2)', '~chosenAt(quorum__node0_node2,value0)', '~chosenAt(quorum__node1_node2,value0)']
+64     : 0-01----1-
+64     : ['decided(value0)', 'voted(node1)', '~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node1_node2,value0)']
+65     : 00-1---1--
+65     : ['decided(value0)', 'voted(node0)', '~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)']
+num_forall :   4
+num_exists :   0
+num_literals : 7
+quantified form : forall VALUE0,QUORUM0,NODE0,QUORUM1. ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM1,VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~voted(NODE0) | QUORUM0 = QUORUM1
+qcost : 11
+
+
+=== Prime Orbit 16 =====================
+size : 3
+num_suborbits: 1
+66 (*) : -001--1---
+66     : ['decided(value0)', 'vote(node2,value0)', '~chosenAt(quorum__node0_node2,value0)', '~chosenAt(quorum__node1_node2,value0)']
+67     : 0-01-1----
+67     : ['decided(value0)', 'vote(node1,value0)', '~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node1_node2,value0)']
+68     : 00-11-----
+68     : ['decided(value0)', 'vote(node0,value0)', '~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)']
+num_forall :   4
+num_exists :   0
+num_literals : 7
+quantified form : forall VALUE0,QUORUM0,NODE0,QUORUM1. ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM1,VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~vote(NODE0,VALUE0) | QUORUM0 = QUORUM1
+qcost : 11
+
+
+=== Prime Orbit 17 =====================
+size : 1
+num_suborbits: 1
+69 (*) : 0001------
+69     : ['decided(value0)', '~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)', '~chosenAt(quorum__node1_node2,value0)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0))
+qcost : 4
+

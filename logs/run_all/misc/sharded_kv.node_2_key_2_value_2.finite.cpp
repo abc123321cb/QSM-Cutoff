@@ -621,32 +621,32 @@ void sharded_kv__node_2_key_2_value_2__finite::__init(){
     const int max_qrm_solution_count = 4;
     if (qrm_solution_count == 0){
         bool __tmp0[2][2][2];
-        for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 2; V++) {
-                for (int K = 0; K < 2; K++) {
-                    __tmp0[N][V][K] = false;
+        for (int K = 0; K < 2; K++) {
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 2; V++) {
+                    __tmp0[K][N][V] = false;
                 }
             }
         }
-        for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 2; V++) {
-                for (int K = 0; K < 2; K++) {
-                    table[N][K][V] = __tmp0[N][V][K];
+        for (int K = 0; K < 2; K++) {
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 2; V++) {
+                    table[N][K][V] = __tmp0[K][N][V];
                 }
             }
         }
         bool __tmp1[2][2][2];
-        for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 2; V++) {
-                for (int K = 0; K < 2; K++) {
-                    __tmp1[N][V][K] = false;
+        for (int K = 0; K < 2; K++) {
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 2; V++) {
+                    __tmp1[K][N][V] = false;
                 }
             }
         }
-        for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 2; V++) {
-                for (int K = 0; K < 2; K++) {
-                    transfer_msg[N][K][V] = __tmp1[N][V][K];
+        for (int K = 0; K < 2; K++) {
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 2; V++) {
+                    transfer_msg[N][K][V] = __tmp1[K][N][V];
                 }
             }
         }
@@ -657,21 +657,21 @@ void sharded_kv__node_2_key_2_value_2__finite::__init(){
     }
     else if (qrm_solution_count == 1){
         owner[0][0] = false;
+        owner[0][1] = true;
+        owner[1][0] = false;
+        owner[1][1] = false;
+    }
+    else if (qrm_solution_count == 2){
+        owner[0][0] = true;
+        owner[0][1] = true;
+        owner[1][0] = false;
+        owner[1][1] = false;
+    }
+    else if (qrm_solution_count == 3){
+        owner[0][0] = true;
         owner[0][1] = false;
         owner[1][0] = false;
         owner[1][1] = true;
-    }
-    else if (qrm_solution_count == 2){
-        owner[0][0] = false;
-        owner[0][1] = false;
-        owner[1][0] = true;
-        owner[1][1] = true;
-    }
-    else if (qrm_solution_count == 3){
-        owner[0][0] = false;
-        owner[0][1] = true;
-        owner[1][0] = true;
-        owner[1][1] = false;
     }
     ++ qrm_solution_count;
     if (qrm_solution_count != max_qrm_solution_count)

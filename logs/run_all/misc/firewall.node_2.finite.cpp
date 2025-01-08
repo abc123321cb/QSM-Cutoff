@@ -607,14 +607,14 @@ void firewall__node_2__finite::__init(){
     const int max_qrm_solution_count = 3;
     if (qrm_solution_count == 0){
         bool __tmp0[2][2];
-        for (int D = 0; D < 2; D++) {
-            for (int S = 0; S < 2; S++) {
-                __tmp0[D][S] = false;
+        for (int S = 0; S < 2; S++) {
+            for (int D = 0; D < 2; D++) {
+                __tmp0[S][D] = false;
             }
         }
-        for (int D = 0; D < 2; D++) {
-            for (int S = 0; S < 2; S++) {
-                sent[S][D] = __tmp0[D][S];
+        for (int S = 0; S < 2; S++) {
+            for (int D = 0; D < 2; D++) {
+                sent[S][D] = __tmp0[S][D];
             }
         }
         bool __tmp1[2];
@@ -652,6 +652,16 @@ void firewall__node_2__finite::ext__send_to_internal(node src, node dst){
         ivy_assume(allowed_in[src], "firewall.node_2.finite.ivy: line 26");
         sent[src][dst] = true;
 }
+bool firewall__node_2__finite::ext__get_sent(node n0, node n1){
+    bool qrm_result;
+    qrm_result = sent[n0][n1];
+    return qrm_result;
+}
+bool firewall__node_2__finite::ext__get_bool_sent(node n0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (sent[n0][n1] == result);
+    return qrm_result;
+}
 bool firewall__node_2__finite::ext__get_internal(node n0){
     bool qrm_result;
     qrm_result = internal[n0];
@@ -670,16 +680,6 @@ bool firewall__node_2__finite::ext__get_allowed_in(node n0){
 bool firewall__node_2__finite::ext__get_bool_allowed_in(node n0, bool result){
     bool qrm_result;
     qrm_result = (allowed_in[n0] == result);
-    return qrm_result;
-}
-bool firewall__node_2__finite::ext__get_sent(node n0, node n1){
-    bool qrm_result;
-    qrm_result = sent[n0][n1];
-    return qrm_result;
-}
-bool firewall__node_2__finite::ext__get_bool_sent(node n0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (sent[n0][n1] == result);
     return qrm_result;
 }
 void firewall__node_2__finite::__tick(int __timeout){

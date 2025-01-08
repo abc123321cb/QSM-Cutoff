@@ -34,14 +34,10 @@ export cast_vote
 export decide
 
 # safety property:
-#invariant decision(V1) & decision(V2) -> V1 = V2
+invariant decision(V1) & decision(V2) -> V1 = V2
 
-##invariant [manual_1] vote(N,V1) & vote(N,V2) -> V1 = V2
-##invariant [manual_2] decision(V) -> exists Q:quorum. forall N:node. member(N, Q) -> vote(N,V)
-
-invariant [def_didNotVote] didNotVote(N) = forall V. ~vote(N,V) # definition
-invariant [def_chosenAt] chosenAt(Q,V) = forall N. member(N,Q) -> vote(N,V) # definition
-invariant [invar_2] forall NODE0,VALUE0. vote(NODE0,VALUE0) | ~decision(VALUE0) # qcost: 4
+#invariant [manual_1] vote(N,V1) & vote(N,V2) -> V1 = V2
+#invariant [manual_2] decision(V) -> exists Q:quorum. forall N:node. member(N, Q) -> vote(N,V)
 
 ### For QRM DFS reachability ###
 

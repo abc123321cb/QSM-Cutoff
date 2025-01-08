@@ -639,10 +639,10 @@ class simple_decentralized_lock__node_3__finite {
 void __init();
     virtual void ext__send(node src, node dst);
     virtual void ext__recv(node src, node dst);
-    virtual node ext__get_start_node();
-    virtual bool ext__get_bool_start_node(node result);
     virtual bool ext__get_message(node n0, node n1);
     virtual bool ext__get_bool_message(node n0, node n1, bool result);
+    virtual node ext__get_start_node();
+    virtual bool ext__get_bool_start_node(node result);
     virtual bool ext__get_has_lock(node n0);
     virtual bool ext__get_bool_has_lock(node n0, bool result);
     void __tick(int timeout);

@@ -83,16 +83,16 @@ export recv_unlock
 #    (forall N1, N2. unlock_msg(N1) & unlock_msg(N2) -> N1 = N2)
 #)
 
-invariant [invar_0] forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) # qcost: 4
-invariant [invar_1] forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0) # qcost: 4
-invariant [invar_2] forall NODE0. ~holds_lock(NODE0) | held # qcost: 3
-invariant [invar_3] forall NODE1,NODE0. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_0] forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) # qcost: 4
+invariant [invar_1] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~holds_lock(NODE0) # qcost: 4
+invariant [invar_2] forall NODE0. held | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_3] forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1 # qcost: 5
 invariant [invar_4] forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) # qcost: 4
-invariant [invar_5] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_6] forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1 # qcost: 5
-invariant [invar_7] forall NODE0. ~grant_msg(NODE0) | held # qcost: 3
-invariant [invar_8] forall NODE0. ~unlock_msg(NODE0) | held # qcost: 3
-invariant [invar_9] exists NODE0. unlock_msg(NODE0) | ~held | holds_lock(NODE0) | grant_msg(NODE0) # qcost: 5
+invariant [invar_5] forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_6] forall NODE0. ~grant_msg(NODE0) | held # qcost: 3
+invariant [invar_7] forall NODE0. held | ~unlock_msg(NODE0) # qcost: 3
+invariant [invar_8] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_9] exists NODE0. holds_lock(NODE0) | unlock_msg(NODE0) | ~held | grant_msg(NODE0) # qcost: 5
 
 ### For QRM DFS reachability ###
 
@@ -108,16 +108,6 @@ action get_bool_lock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
     qrm_result := (lock_msg(n0) = result)
 }
 export get_bool_lock_msg
-
-action get_grant_msg(n0: node) returns(qrm_result: bool) = {
-    qrm_result := grant_msg(n0)
-}
-export get_grant_msg
-
-action get_bool_grant_msg(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (grant_msg(n0) = result)
-}
-export get_bool_grant_msg
 
 action get_unlock_msg(n0: node) returns(qrm_result: bool) = {
     qrm_result := unlock_msg(n0)
@@ -138,6 +128,16 @@ action get_bool_holds_lock(n0: node, result: bool) returns(qrm_result: bool) = {
     qrm_result := (holds_lock(n0) = result)
 }
 export get_bool_holds_lock
+
+action get_grant_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := grant_msg(n0)
+}
+export get_grant_msg
+
+action get_bool_grant_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (grant_msg(n0) = result)
+}
+export get_bool_grant_msg
 
 action get_held returns(qrm_result: bool) = {
     qrm_result := held
