@@ -60,9 +60,9 @@ g++ -shared lock_server.server_1_client_1.finite.o lock_server.server_1_client_1
 
 [FW NOTE]: symmetric group order: 1
 
-[QRM NOTE]: Time elapsed since start: 5.953 seconds
+[QRM NOTE]: Time elapsed since start: 6.379 seconds
 
-[QRM NOTE]: Time elapsed since last: 5.953 seconds
+[QRM NOTE]: Time elapsed since last: 6.379 seconds
 
 [QRM NOTE]: Peak memory: 1169176 bytes
 
@@ -90,8 +90,8 @@ g++ -shared lock_server.server_1_client_1.finite.o lock_server.server_1_client_1
 
 sort: client=['client0']
 sort: server=['server0']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'semaphore(server0)']
 representative states : 1, 2
@@ -116,11 +116,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.030 seconds
+[QRM NOTE]: Time elapsed since start: 6.458 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.077 seconds
+[QRM NOTE]: Time elapsed since last: 0.079 seconds
 
-[QRM NOTE]: Peak memory: 1193445 bytes
+[QRM NOTE]: Peak memory: 1193551 bytes
 
 
 ======================================
@@ -135,11 +135,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 6.033 seconds
+[QRM NOTE]: Time elapsed since start: 6.461 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.003 seconds
 
-[QRM NOTE]: Peak memory: 143618 bytes
+[QRM NOTE]: Peak memory: 143724 bytes
 
 
 =====================================================================================================
@@ -187,11 +187,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 2
 
-[QRM NOTE]: Time elapsed since start: 6.045 seconds
+[QRM NOTE]: Time elapsed since start: 6.470 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.012 seconds
+[QRM NOTE]: Time elapsed since last: 0.009 seconds
 
-[QRM NOTE]: Peak memory: 1198226 bytes
+[QRM NOTE]: Peak memory: 1198332 bytes
 
 
 ==========================================================================================
@@ -245,11 +245,11 @@ After reduction :
  pending  : []
  solution : [0, 1]
 
-[QRM NOTE]: Time elapsed since start: 6.046 seconds
+[QRM NOTE]: Time elapsed since start: 6.471 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 150491 bytes
+[QRM NOTE]: Peak memory: 150609 bytes
 
 
 ==============================================================================================
@@ -347,7 +347,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0',))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT0', EnumeratedSort('client', ('client0',)))}
 
 exists_qvars: set()
 
@@ -457,7 +457,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0',))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT0', EnumeratedSort('client', ('client0',)))}
 
 exists_qvars: set()
 
@@ -469,12 +469,12 @@ signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
+qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+qclause: forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 
 
 ---------- Quantifier Inference: orbit 1 ----------
@@ -511,16 +511,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+quantified form : forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.111 seconds
+[QRM NOTE]: Time elapsed since start: 6.538 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.065 seconds
+[QRM NOTE]: Time elapsed since last: 0.066 seconds
 
-[QRM NOTE]: Peak memory: 1812952 bytes
+[QRM NOTE]: Peak memory: 1812943 bytes
 
 
 =======================================================================================
@@ -586,16 +586,16 @@ Solution 0 : [0, 1] (length = 2)
 
 invariant [invar_0] forall SERVER0,CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0) # qcost: 4
 
-invariant [invar_1] forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_1] forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.150 seconds
+[QRM NOTE]: Time elapsed since start: 6.571 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.039 seconds
+[QRM NOTE]: Time elapsed since last: 0.034 seconds
 
-[QRM NOTE]: Peak memory: 1801571 bytes
+[QRM NOTE]: Peak memory: 1801562 bytes
 
 
 =========================================================================================================
@@ -608,11 +608,11 @@ Minimization check for Solution 0
 
 [MIN_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.152 seconds
+[QRM NOTE]: Time elapsed since start: 6.573 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 754212 bytes
+[QRM NOTE]: Peak memory: 754211 bytes
 
 
 ==========================================================================================
@@ -658,11 +658,11 @@ Isolate this:
 error: failed checks: 2
 [IVY_CHECK RESULT]: FAIL ... exit with return code 1
 
-[QRM NOTE]: Time elapsed since start: 7.885 seconds
+[QRM NOTE]: Time elapsed since start: 8.556 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.732 seconds
+[QRM NOTE]: Time elapsed since last: 1.982 seconds
 
-[QRM NOTE]: Peak memory: 803963 bytes
+[QRM NOTE]: Peak memory: 803954 bytes
 
 
 *****************************************************************************************************
@@ -719,9 +719,9 @@ g++ -shared lock_server.server_2_client_1.finite.o lock_server.server_2_client_1
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 6.069 seconds
+[QRM NOTE]: Time elapsed since start: 6.388 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.069 seconds
+[QRM NOTE]: Time elapsed since last: 6.388 seconds
 
 [QRM NOTE]: Peak memory: 1171270 bytes
 
@@ -749,8 +749,8 @@ g++ -shared lock_server.server_2_client_1.finite.o lock_server.server_2_client_1
 
 sort: client=['client0']
 sort: server=['server0', 'server1']
-predicate: semaphore('server',)
 predicate: link('client', 'server')
+predicate: semaphore('server',)
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client0,server1)', 'semaphore(server0)', 'semaphore(server1)']
 representative states : 3, 6, 12
@@ -771,8 +771,8 @@ size : 2
 repr state: 1001
 lex min decimal: 6
 states:
-1001
 0110
+1001
 
 
 
@@ -786,11 +786,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.142 seconds
+[QRM NOTE]: Time elapsed since start: 6.468 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.073 seconds
+[QRM NOTE]: Time elapsed since last: 0.080 seconds
 
-[QRM NOTE]: Peak memory: 1196513 bytes
+[QRM NOTE]: Peak memory: 1196630 bytes
 
 
 ==========================================================================================================================
@@ -801,11 +801,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.148 seconds
+[QRM NOTE]: Time elapsed since start: 6.475 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.006 seconds
+[QRM NOTE]: Time elapsed since last: 0.008 seconds
 
-[QRM NOTE]: Peak memory: 152527 bytes
+[QRM NOTE]: Peak memory: 152562 bytes
 
 python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy -s server=1,client=2 -f 2 -g -w -r -t -k -v 5 -w -l ivybench/sym/ivy/lock_server.check.log
 
@@ -855,11 +855,11 @@ g++ -shared lock_server.server_1_client_2.finite.o lock_server.server_1_client_2
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 6.069 seconds
+[QRM NOTE]: Time elapsed since start: 6.102 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.069 seconds
+[QRM NOTE]: Time elapsed since last: 6.102 seconds
 
-[QRM NOTE]: Peak memory: 1170804 bytes
+[QRM NOTE]: Peak memory: 1170759 bytes
 
 
 =====================================
@@ -907,16 +907,16 @@ size : 2
 repr state: 100
 lex min decimal: 2
 states:
-100
 010
+100
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.141 seconds
+[QRM NOTE]: Time elapsed since start: 6.178 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.073 seconds
+[QRM NOTE]: Time elapsed since last: 0.076 seconds
 
-[QRM NOTE]: Peak memory: 1195419 bytes
+[QRM NOTE]: Peak memory: 1195388 bytes
 
 
 ==========================================================================================================================
@@ -929,11 +929,11 @@ Found a representative state in Rmin not in reachability: decimal: 6, binary: 11
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 6.147 seconds
+[QRM NOTE]: Time elapsed since start: 6.184 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.006 seconds
 
-[QRM NOTE]: Peak memory: 151431 bytes
+[QRM NOTE]: Peak memory: 151455 bytes
 
 next size: server=1,client=2
 
@@ -972,9 +972,9 @@ OK
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.016 seconds
+[QRM NOTE]: Time elapsed since start: 0.017 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.016 seconds
+[QRM NOTE]: Time elapsed since last: 0.017 seconds
 
 [QRM NOTE]: Peak memory: 934 bytes
 
@@ -1040,7 +1040,7 @@ qcost : 0
 
 [QRM NOTE]: Time elapsed since start: 0.028 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.012 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
 [QRM NOTE]: Peak memory: 1058923 bytes
 
@@ -1322,12 +1322,12 @@ signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
+qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+qclause: forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 
 
 ---------- Quantifier Inference: orbit 1 ----------
@@ -1432,12 +1432,12 @@ signed_func_name2args: {'1$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~link(CLIENT0,SERVER0)', '~semaphore(SERVER0)']
+qterms: ['~semaphore(SERVER0)', '~link(CLIENT0,SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))
+qclause: forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
 
 
 ---------- Quantifier Inference: orbit 2 ----------
@@ -1476,7 +1476,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+quantified form : forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 qcost : 4
 
 
@@ -1490,16 +1490,16 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))
+quantified form : forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.108 seconds
+[QRM NOTE]: Time elapsed since start: 0.109 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.078 seconds
+[QRM NOTE]: Time elapsed since last: 0.079 seconds
 
-[QRM NOTE]: Peak memory: 1689096 bytes
+[QRM NOTE]: Peak memory: 1689093 bytes
 
 
 =======================================================================================
@@ -1565,18 +1565,18 @@ Solution 0 : [0, 1, 2] (length = 3)
 
 invariant [invar_0] forall SERVER0. (exists CLIENT0. ~link(CLIENT0,SERVER0)) # qcost: 3
 
-invariant [invar_1] forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_1] forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
 
-invariant [invar_2] forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0)) # qcost: 4
-
-
+invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)) # qcost: 4
 
 
-[QRM NOTE]: Time elapsed since start: 0.152 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.044 seconds
 
-[QRM NOTE]: Peak memory: 1675708 bytes
+[QRM NOTE]: Time elapsed since start: 0.157 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.048 seconds
+
+[QRM NOTE]: Peak memory: 1675705 bytes
 
 
 =========================================================================================================
@@ -1589,11 +1589,11 @@ Minimization check for Solution 0
 
 [MIN_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.159 seconds
+[QRM NOTE]: Time elapsed since start: 0.164 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.007 seconds
 
-[QRM NOTE]: Peak memory: 629536 bytes
+[QRM NOTE]: Peak memory: 629435 bytes
 
 
 ==========================================================================================
@@ -1643,11 +1643,11 @@ Isolate this:
 error: failed checks: 2
 [IVY_CHECK RESULT]: FAIL ... exit with return code 1
 
-[QRM NOTE]: Time elapsed since start: 1.839 seconds
+[QRM NOTE]: Time elapsed since start: 1.842 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.680 seconds
+[QRM NOTE]: Time elapsed since last: 1.678 seconds
 
-[QRM NOTE]: Peak memory: 679358 bytes
+[QRM NOTE]: Peak memory: 679265 bytes
 
 
 *****************************************************************************************************
@@ -1704,11 +1704,11 @@ g++ -shared lock_server.server_2_client_2.finite.o lock_server.server_2_client_2
 
 [FW NOTE]: symmetric group order: 4
 
-[QRM NOTE]: Time elapsed since start: 6.080 seconds
+[QRM NOTE]: Time elapsed since start: 6.040 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.080 seconds
+[QRM NOTE]: Time elapsed since last: 6.040 seconds
 
-[QRM NOTE]: Peak memory: 1172553 bytes
+[QRM NOTE]: Peak memory: 1172447 bytes
 
 
 =====================================
@@ -1734,8 +1734,8 @@ g++ -shared lock_server.server_2_client_2.finite.o lock_server.server_2_client_2
 
 sort: client=['client0', 'client1']
 sort: server=['server0', 'server1']
-predicate: semaphore('server',)
 predicate: link('client', 'server')
+predicate: semaphore('server',)
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,server0)', 'link(client1,server1)', 'semaphore(server0)', 'semaphore(server1)']
 representative states : 3, 6, 12, 24
@@ -1756,9 +1756,9 @@ size : 4
 repr state: 100001
 lex min decimal: 6
 states:
+000110
 001001
 100001
-000110
 010010
 
 
@@ -1769,8 +1769,8 @@ size : 2
 repr state: 110000
 lex min decimal: 12
 states:
-110000
 001100
+110000
 
 
 
@@ -1780,16 +1780,16 @@ size : 2
 repr state: 100100
 lex min decimal: 24
 states:
-011000
 100100
+011000
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.159 seconds
+[QRM NOTE]: Time elapsed since start: 6.118 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.080 seconds
+[QRM NOTE]: Time elapsed since last: 0.078 seconds
 
-[QRM NOTE]: Peak memory: 1199903 bytes
+[QRM NOTE]: Peak memory: 1199842 bytes
 
 
 ==========================================================================================================================
@@ -1800,11 +1800,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.177 seconds
+[QRM NOTE]: Time elapsed since start: 6.136 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.018 seconds
 
-[QRM NOTE]: Peak memory: 160992 bytes
+[QRM NOTE]: Peak memory: 160878 bytes
 
 python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy -s server=1,client=3 -f 2 -g -w -r -t -k -v 5 -w -l ivybench/sym/ivy/lock_server.check.log
 
@@ -1854,11 +1854,11 @@ g++ -shared lock_server.server_1_client_3.finite.o lock_server.server_1_client_3
 
 [FW NOTE]: symmetric group order: 6
 
-[QRM NOTE]: Time elapsed since start: 6.023 seconds
+[QRM NOTE]: Time elapsed since start: 6.042 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.023 seconds
+[QRM NOTE]: Time elapsed since last: 6.042 seconds
 
-[QRM NOTE]: Peak memory: 1171734 bytes
+[QRM NOTE]: Peak memory: 1171793 bytes
 
 
 =====================================
@@ -1884,8 +1884,8 @@ g++ -shared lock_server.server_1_client_3.finite.o lock_server.server_1_client_3
 
 sort: client=['client0', 'client1', 'client2']
 sort: server=['server0']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,server0)', 'semaphore(server0)']
 representative states : 1, 2
@@ -1906,17 +1906,17 @@ size : 3
 repr state: 1000
 lex min decimal: 2
 states:
-0100
-0010
 1000
+0010
+0100
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.099 seconds
+[QRM NOTE]: Time elapsed since start: 6.118 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.076 seconds
 
-[QRM NOTE]: Peak memory: 1196509 bytes
+[QRM NOTE]: Peak memory: 1196615 bytes
 
 
 ==========================================================================================================================
@@ -1929,11 +1929,11 @@ Found a representative state in Rmin not in reachability: decimal: 6, binary: 01
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 6.113 seconds
+[QRM NOTE]: Time elapsed since start: 6.132 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.013 seconds
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
 
-[QRM NOTE]: Peak memory: 156367 bytes
+[QRM NOTE]: Peak memory: 156465 bytes
 
 next size: server=1,client=3
 
@@ -2044,9 +2044,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 7
 
-[QRM NOTE]: Time elapsed since start: 0.025 seconds
+[QRM NOTE]: Time elapsed since start: 0.024 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.010 seconds
+[QRM NOTE]: Time elapsed since last: 0.008 seconds
 
 [QRM NOTE]: Peak memory: 1063922 bytes
 
@@ -2102,11 +2102,11 @@ After reduction :
  pending  : []
  solution : [0, 1, 2]
 
-[QRM NOTE]: Time elapsed since start: 0.026 seconds
+[QRM NOTE]: Time elapsed since start: 0.025 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 16120 bytes
+[QRM NOTE]: Peak memory: 16179 bytes
 
 
 ==============================================================================================
@@ -2220,12 +2220,12 @@ signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
+qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+qclause: forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 
 
 ---------- Quantifier Inference: orbit 0 ----------
@@ -2322,7 +2322,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2')))}
+forall_qvars: {Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
 
 exists_qvars: set()
 
@@ -2339,7 +2339,7 @@ qterms: ['link(CLIENT1,SERVER0)', 'link(CLIENT0,SERVER0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
+qclause: forall CLIENT0,SERVER0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
 
 
 ---------- Quantifier Inference: orbit 1 ----------
@@ -2476,7 +2476,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+quantified form : forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 qcost : 4
 
 
@@ -2494,7 +2494,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall SERVER0,CLIENT0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
+quantified form : forall CLIENT0,SERVER0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
 qcost : 6
 
 
@@ -2513,11 +2513,11 @@ qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.130 seconds
+[QRM NOTE]: Time elapsed since start: 0.122 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.104 seconds
+[QRM NOTE]: Time elapsed since last: 0.097 seconds
 
-[QRM NOTE]: Peak memory: 1703085 bytes
+[QRM NOTE]: Peak memory: 1703147 bytes
 
 
 =======================================================================================
@@ -2581,20 +2581,20 @@ Equality Relations (length=0)
 
 Solution 0 : [0, 1, 2] (length = 3)
 
-invariant [invar_0] forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_0] forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
 
-invariant [invar_1] forall SERVER0,CLIENT0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
+invariant [invar_1] forall CLIENT0,SERVER0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
 
 invariant [invar_2] forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0)) # qcost: 4
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.178 seconds
+[QRM NOTE]: Time elapsed since start: 0.169 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.048 seconds
+[QRM NOTE]: Time elapsed since last: 0.047 seconds
 
-[QRM NOTE]: Peak memory: 1687026 bytes
+[QRM NOTE]: Peak memory: 1687088 bytes
 
 
 =========================================================================================================
@@ -2607,11 +2607,11 @@ Minimization check for Solution 0
 
 [MIN_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.194 seconds
+[QRM NOTE]: Time elapsed since start: 0.186 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.016 seconds
 
-[QRM NOTE]: Peak memory: 646448 bytes
+[QRM NOTE]: Peak memory: 646510 bytes
 
 
 ==========================================================================================
@@ -2663,13 +2663,13 @@ OK
 
 [R Implies P]: True
 
-[UNSAT CORE]: ((forall SERVER0,CLIENT0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1))
+[UNSAT CORE]: ((forall CLIENT0,SERVER0,CLIENT1. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1))
 
-[QRM NOTE]: Time elapsed since start: 1.890 seconds
+[QRM NOTE]: Time elapsed since start: 1.933 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.696 seconds
+[QRM NOTE]: Time elapsed since last: 1.747 seconds
 
-[QRM NOTE]: Peak memory: 695414 bytes
+[QRM NOTE]: Peak memory: 695376 bytes
 
 
 *****************************************************************************************************
@@ -2726,11 +2726,11 @@ g++ -shared lock_server.server_2_client_3.finite.o lock_server.server_2_client_3
 
 [FW NOTE]: symmetric group order: 12
 
-[QRM NOTE]: Time elapsed since start: 6.083 seconds
+[QRM NOTE]: Time elapsed since start: 6.241 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.083 seconds
+[QRM NOTE]: Time elapsed since last: 6.241 seconds
 
-[QRM NOTE]: Peak memory: 1171884 bytes
+[QRM NOTE]: Peak memory: 1171988 bytes
 
 
 =====================================
@@ -2756,8 +2756,8 @@ g++ -shared lock_server.server_2_client_3.finite.o lock_server.server_2_client_3
 
 sort: client=['client0', 'client1', 'client2']
 sort: server=['server0', 'server1']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,server0)', 'link(client1,server1)', 'link(client2,server0)', 'link(client2,server1)', 'semaphore(server0)', 'semaphore(server1)']
 representative states : 3, 6, 12, 24
@@ -2778,12 +2778,12 @@ size : 6
 repr state: 10000001
 lex min decimal: 6
 states:
-00100001
-00010010
-01000010
-00001001
 00000110
 10000001
+01000010
+00001001
+00010010
+00100001
 
 
 
@@ -2805,20 +2805,20 @@ size : 6
 repr state: 10010000
 lex min decimal: 24
 states:
+01100000
 10000100
-00011000
-10010000
 00100100
 01001000
-01100000
+10010000
+00011000
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.167 seconds
+[QRM NOTE]: Time elapsed since start: 6.318 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.085 seconds
+[QRM NOTE]: Time elapsed since last: 0.077 seconds
 
-[QRM NOTE]: Peak memory: 1201298 bytes
+[QRM NOTE]: Peak memory: 1201416 bytes
 
 
 ==========================================================================================================================
@@ -2829,11 +2829,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.204 seconds
+[QRM NOTE]: Time elapsed since start: 6.362 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.037 seconds
+[QRM NOTE]: Time elapsed since last: 0.044 seconds
 
-[QRM NOTE]: Peak memory: 176673 bytes
+[QRM NOTE]: Peak memory: 176701 bytes
 
 python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy -s server=1,client=4 -f 2 -g -w -r -t -k -v 5 -w -l ivybench/sym/ivy/lock_server.check.log
 
@@ -2883,11 +2883,11 @@ g++ -shared lock_server.server_1_client_4.finite.o lock_server.server_1_client_4
 
 [FW NOTE]: symmetric group order: 24
 
-[QRM NOTE]: Time elapsed since start: 6.504 seconds
+[QRM NOTE]: Time elapsed since start: 6.223 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.504 seconds
+[QRM NOTE]: Time elapsed since last: 6.223 seconds
 
-[QRM NOTE]: Peak memory: 1171963 bytes
+[QRM NOTE]: Peak memory: 1171885 bytes
 
 
 =====================================
@@ -2935,18 +2935,18 @@ size : 4
 repr state: 10000
 lex min decimal: 2
 states:
-10000
 00100
+10000
 01000
 00010
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.583 seconds
+[QRM NOTE]: Time elapsed since start: 6.305 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.079 seconds
+[QRM NOTE]: Time elapsed since last: 0.082 seconds
 
-[QRM NOTE]: Peak memory: 1197500 bytes
+[QRM NOTE]: Peak memory: 1197490 bytes
 
 
 ==========================================================================================================================
@@ -2957,11 +2957,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.613 seconds
+[QRM NOTE]: Time elapsed since start: 6.336 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.030 seconds
 
-[QRM NOTE]: Peak memory: 170642 bytes
+[QRM NOTE]: Peak memory: 170573 bytes
 
 ivy_check complete=fo ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy
 
@@ -3019,7 +3019,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 75.339 seconds
+[QRM NOTE]: Time elapsed since start: 77.093 seconds
 
-[QRM NOTE]: Time elapsed since last: 75.339 seconds
+[QRM NOTE]: Time elapsed since last: 77.093 seconds
 
