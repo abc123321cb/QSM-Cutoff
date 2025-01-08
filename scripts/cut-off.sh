@@ -63,7 +63,7 @@ timeout ${Timeout} python3 qrm.py ${sym_path}TwoPhase.ivy                  -s re
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus.ivy                 -s node=3,value=3           -v 5 -w -l ${sym_quorum_path}toy_consensus.cutoff.log
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_epr.ivy             -s node=3,value=3           -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}naive_consensus.ivy               -s node=3,value=3           -v 5 -w -l ${sym_quorum_path}naive_consensus.cutoff.log 
-timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=3,value=3           -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}simple-election.ivy               -s acceptor=3,proposer=3    -v 5 -w -l ${sym_quorum_path}simple-election.cutoff.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=5,value=3           -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.cutoff.log 
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=5                   -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.cutoff.log
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}consensus_epr.ivy                 -s node=3,value=2           -v 5 -w -l ${sym_quorum_path}consensus_epr.cutoff.log 

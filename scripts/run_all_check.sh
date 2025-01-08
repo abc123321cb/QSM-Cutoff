@@ -60,10 +60,10 @@ timeout ${Timeout} python3 run_all.py ${sym_path}lockserv_automaton.ivy         
 timeout ${Timeout} python3 run_all.py ${sym_path}client_server_ae.ivy                     -s node=1,request=1,response=1         -t -k -v 5 -w -l ${sym_path}client_server_ae.check.log 
 timeout ${Timeout} python3 run_all.py ${sym_path}TwoPhase.ivy                             -s resource_manager=1                  -t -k -v 5 -w -l ${sym_path}TwoPhase.check.log
 
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus.ivy                 -s node=1,value=1        -i node       -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus.check.log
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_epr.ivy             -s node=1,value=1        -i node       -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.check.log 
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}naive_consensus.ivy               -s node=1,value=1        -i node       -t -k -v 5 -w -l ${sym_quorum_path}naive_consensus.check.log 
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=1,value=1        -i node       -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.check.log 
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}simple-election.ivy               -s acceptor=1,proposer=1 -i acceptor   -t -k -v 5 -w -l ${sym_quorum_path}simple-election.check.log 
-#timeout ${Timeout} python3 run_all.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=1                -i node       -t -k -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.check.log
-#timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=1,value=1        -i node       -t -k -v 5 -w -l ${sym_quorum_path}consensus_epr.check.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus.ivy                 -s node=3,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus.check.log
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_epr.ivy             -s node=3,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.check.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}naive_consensus.ivy               -s node=3,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}naive_consensus.check.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=3,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.check.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}simple-election.ivy               -s acceptor=3,proposer=1               -t -k -v 5 -w -l ${sym_quorum_path}simple-election.check.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=3                              -t -k -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.check.log
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=3,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}consensus_epr.check.log 

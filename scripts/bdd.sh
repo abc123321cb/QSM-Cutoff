@@ -2,7 +2,7 @@ sym_path='ivybench/sym/ivy/'
 sym_quorum_path='ivybench/sym_quorum/ivy/'
 sym_ring_path='ivybench/sym_ring/ivy/'
 yaml_path='yamls/'
-Timeout=36000
+Timeout=5000
 
 declare -a sym_instances=(
     "Consensus"
@@ -73,10 +73,10 @@ timeout ${Timeout} python3 qrm.py -i ${sym_path}lockserv.ivy                    
 timeout ${Timeout} python3 qrm.py -i ${sym_path}lockserv_automaton.ivy                   -s node=4                          -v 5 -w -l ${sym_path}lockserv_automaton.bdd.log 
 timeout ${Timeout} python3 qrm.py -i ${sym_path}TwoPhase.ivy                             -s resource_manager=2              -v 5 -w -l ${sym_path}TwoPhase.bdd.log
 timeout ${Timeout} python3 qrm.py -i ${sym_path}client_server_ae.ivy                     -s node=2,request=2,response=2     -v 5 -w -l ${sym_path}client_server_ae.bdd.log 
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}naive_consensus.ivy               -s node=5,quorum=10,value=4        -v 5 -w -l ${sym_quorum_path}naive_consensus.bdd.log 
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus.ivy                 -s node=5,quorum=10,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus.bdd.log
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus_epr.ivy             -s node=5,quorum=10,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.bdd.log 
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}simple-election.ivy               -s acceptor=5,quorum=10,proposer=4 -v 5 -w -l ${sym_quorum_path}simple-election.bdd.log 
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus_forall.ivy          -s node=5,quorum=10,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.bdd.log 
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}consensus_epr.ivy                 -s node=5,quorum=10,value=3        -v 5 -w -l ${sym_quorum_path}consensus_epr.bdd.log 
-timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=7,nset=35                  -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.bdd.log
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}naive_consensus.ivy               -s node=4,quorum=4,value=4         -v 5 -w -l ${sym_quorum_path}naive_consensus.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus.ivy                 -s node=4,quorum=4,value=4         -v 5 -w -l ${sym_quorum_path}toy_consensus.bdd.log
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus_epr.ivy             -s node=4,quorum=4,value=4         -v 5 -w -l ${sym_quorum_path}toy_consensus_epr.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}simple-election.ivy               -s acceptor=4,quorum=4,proposer=4  -v 5 -w -l ${sym_quorum_path}simple-election.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}consensus_epr.ivy                 -s node=4,quorum=4,value=3         -v 5 -w -l ${sym_quorum_path}consensus_epr.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus_forall.ivy          -s node=6,quorum=15,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=6,nset=15                  -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.bdd.log
