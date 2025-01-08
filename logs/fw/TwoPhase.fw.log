@@ -1,0 +1,465 @@
+
+********************************************************
+
+	[QRM]: ivybench/sym/ivy/TwoPhase.ivy
+
+********************************************************
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/TwoPhase: resource_manager=2]
+
+============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+ivy_to_cpp target=qrm TwoPhase.resource_manager_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o TwoPhase.resource_manager_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 TwoPhase.resource_manager_2.finite.cpp TwoPhase.resource_manager_2.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared TwoPhase.resource_manager_2.finite.o TwoPhase.resource_manager_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[FW NOTE]: number of state atoms: 17
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: number of branching actions: 12
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 6.903 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.903 seconds
+
+[QRM NOTE]: Peak memory: 1189141 bytes
+
+
+=====================================
+
+	Symmetric Quotient DFS
+
+=====================================
+
+[FW NOTE]: dfs max depth: 7
+
+[FW NOTE]: number of total reachable states:        56
+
+[FW NOTE]: number of dfs representative states:     34
+
+[FW NOTE]: number of dfs non-representative states: 22
+
+
+===================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/TwoPhase: resource_manager=2]
+
+===================================================================================================
+
+sort: resource_manager=['resource_manager0', 'resource_manager1']
+predicate: working('resource_manager',)
+predicate: tm_init()
+predicate: msg_commit()
+predicate: tm_prepared('resource_manager',)
+predicate: committed('resource_manager',)
+predicate: msg_prepared('resource_manager',)
+predicate: prepared('resource_manager',)
+predicate: msg_abort()
+predicate: aborted('resource_manager',)
+predicate: tm_committed()
+predicate: tm_aborted()
+interpreted atoms: {}
+state atoms: ['aborted(resource_manager0)', 'aborted(resource_manager1)', 'committed(resource_manager0)', 'committed(resource_manager1)', 'msg_abort()', 'msg_commit()', 'msg_prepared(resource_manager0)', 'msg_prepared(resource_manager1)', 'prepared(resource_manager0)', 'prepared(resource_manager1)', 'tm_aborted()', 'tm_committed()', 'tm_init()', 'tm_prepared(resource_manager0)', 'tm_prepared(resource_manager1)', 'working(resource_manager0)', 'working(resource_manager1)']
+representative states : 19, 4163, 4802, 6080, 38720, 104000, 38208, 102976, 37442, 36930, 102464, 658, 662, 4806, 6084, 38724, 104004, 38728, 38216, 102980, 37446, 1940, 1948, 4012, 12076, 28204, 6092, 38732, 104012, 34072, 1936, 34064, 32786, 98320
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 00000000000010011
+lex min decimal: 19
+states:
+00000000000010011
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 00001000001000011
+lex min decimal: 4163
+states:
+00001000001000011
+
+
+
+
+=== State Orbit 2 =====================
+size : 2
+repr state: 00001010101000001
+lex min decimal: 4802
+states:
+00001001011000010
+00001010101000001
+
+
+
+
+=== State Orbit 3 =====================
+size : 1
+repr state: 00001011111000000
+lex min decimal: 6080
+states:
+00001011111000000
+
+
+
+
+=== State Orbit 4 =====================
+size : 2
+repr state: 10001011011000000
+lex min decimal: 38720
+states:
+01001011101000000
+10001011011000000
+
+
+
+
+=== State Orbit 5 =====================
+size : 1
+repr state: 11001011001000000
+lex min decimal: 104000
+states:
+11001011001000000
+
+
+
+
+=== State Orbit 6 =====================
+size : 2
+repr state: 01001010101000000
+lex min decimal: 38208
+states:
+01001010101000000
+10001001011000000
+
+
+
+
+=== State Orbit 7 =====================
+size : 2
+repr state: 11001010001000000
+lex min decimal: 102976
+states:
+11001010001000000
+11001001001000000
+
+
+
+
+=== State Orbit 8 =====================
+size : 2
+repr state: 10001010001000001
+lex min decimal: 37442
+states:
+01001001001000010
+10001010001000001
+
+
+
+
+=== State Orbit 9 =====================
+size : 2
+repr state: 10001000001000001
+lex min decimal: 36930
+states:
+10001000001000001
+01001000001000010
+
+
+
+
+=== State Orbit 10 =====================
+size : 1
+repr state: 11001000001000000
+lex min decimal: 102464
+states:
+11001000001000000
+
+
+
+
+=== State Orbit 11 =====================
+size : 2
+repr state: 00000010100010001
+lex min decimal: 658
+states:
+00000001010010010
+00000010100010001
+
+
+
+
+=== State Orbit 12 =====================
+size : 2
+repr state: 00000010100011001
+lex min decimal: 662
+states:
+00000010100011001
+00000001010010110
+
+
+
+
+=== State Orbit 13 =====================
+size : 2
+repr state: 00001010101001001
+lex min decimal: 4806
+states:
+00001010101001001
+00001001011000110
+
+
+
+
+=== State Orbit 14 =====================
+size : 2
+repr state: 00001011111001000
+lex min decimal: 6084
+states:
+00001011111001000
+00001011111000100
+
+
+
+
+=== State Orbit 15 =====================
+size : 2
+repr state: 10001011011001000
+lex min decimal: 38724
+states:
+10001011011001000
+01001011101000100
+
+
+
+
+=== State Orbit 16 =====================
+size : 2
+repr state: 11001011001001000
+lex min decimal: 104004
+states:
+11001011001001000
+11001011001000100
+
+
+
+
+=== State Orbit 17 =====================
+size : 2
+repr state: 01001011101001000
+lex min decimal: 38728
+states:
+01001011101001000
+10001011011000100
+
+
+
+
+=== State Orbit 18 =====================
+size : 2
+repr state: 01001010101001000
+lex min decimal: 38216
+states:
+01001010101001000
+10001001011000100
+
+
+
+
+=== State Orbit 19 =====================
+size : 2
+repr state: 11001010001001000
+lex min decimal: 102980
+states:
+11001001001000100
+11001010001001000
+
+
+
+
+=== State Orbit 20 =====================
+size : 2
+repr state: 10001010001001001
+lex min decimal: 37446
+states:
+01001001001000110
+10001010001001001
+
+
+
+
+=== State Orbit 21 =====================
+size : 2
+repr state: 00000011110011000
+lex min decimal: 1940
+states:
+00000011110011000
+00000011110010100
+
+
+
+
+=== State Orbit 22 =====================
+size : 1
+repr state: 00000011110011100
+lex min decimal: 1948
+states:
+00000011110011100
+
+
+
+
+=== State Orbit 23 =====================
+size : 1
+repr state: 00000111110101100
+lex min decimal: 4012
+states:
+00000111110101100
+
+
+
+
+=== State Orbit 24 =====================
+size : 2
+repr state: 00100111010101100
+lex min decimal: 12076
+states:
+00010111100101100
+00100111010101100
+
+
+
+
+=== State Orbit 25 =====================
+size : 1
+repr state: 00110111000101100
+lex min decimal: 28204
+states:
+00110111000101100
+
+
+
+
+=== State Orbit 26 =====================
+size : 1
+repr state: 00001011111001100
+lex min decimal: 6092
+states:
+00001011111001100
+
+
+
+
+=== State Orbit 27 =====================
+size : 2
+repr state: 10001011011001100
+lex min decimal: 38732
+states:
+01001011101001100
+10001011011001100
+
+
+
+
+=== State Orbit 28 =====================
+size : 1
+repr state: 11001011001001100
+lex min decimal: 104012
+states:
+11001011001001100
+
+
+
+
+=== State Orbit 29 =====================
+size : 2
+repr state: 01000010100011000
+lex min decimal: 34072
+states:
+01000010100011000
+10000001010010100
+
+
+
+
+=== State Orbit 30 =====================
+size : 1
+repr state: 00000011110010000
+lex min decimal: 1936
+states:
+00000011110010000
+
+
+
+
+=== State Orbit 31 =====================
+size : 2
+repr state: 01000010100010000
+lex min decimal: 34064
+states:
+01000010100010000
+10000001010010000
+
+
+
+
+=== State Orbit 32 =====================
+size : 2
+repr state: 10000000000010001
+lex min decimal: 32786
+states:
+01000000000010010
+10000000000010001
+
+
+
+
+=== State Orbit 33 =====================
+size : 1
+repr state: 11000000000010000
+lex min decimal: 98320
+states:
+11000000000010000
+
+
+
+[QRM NOTE]: Time elapsed since start: 7.224 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.321 seconds
+
+[QRM NOTE]: Peak memory: 1245077 bytes
+
