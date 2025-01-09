@@ -32,7 +32,7 @@ def usage ():
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
-    print('-k           enable checking quantifier inference (default: off)')
+    print('-k           enalbe sanity checks for quantifier inference and minimization (default: off)')
     print('-p 1|2|3     prime generation: 1. ilp 2. binary search ilp 3. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
@@ -79,7 +79,7 @@ def get_options(ivy_name, args):
         elif optc == '-m':
             options.merge_suborbits = False 
         elif optc == '-k':
-            options.check_qi        = True 
+            options.sanity_check    = True 
         elif optc == '-p':
             if optv == '1':
                 options.prime_gen = PrimeGen.ilp
@@ -218,9 +218,10 @@ def qrm(ivy_name, args):
     options.step_end()
 
     # minimization sanity check
-    options.step_start(f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
-    sanity_result = minimizer.minimization_check(protocol)
-    options.step_end()
+    if options.sanity_check:
+        options.step_start(f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
+        sanity_result = minimizer.minimization_check(protocol)
+        options.step_end()
 
     # ivy_check
     options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
@@ -228,8 +229,7 @@ def qrm(ivy_name, args):
     options.step_end()
 
     # end
-    qrm_result = sanity_result and ivy_result
-    instance_end(options, ivy_name, qrm_result)
+    instance_end(options, ivy_name, ivy_result)
     if options.convergence_check:
         try:
             if qrm_result:

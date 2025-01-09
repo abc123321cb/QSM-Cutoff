@@ -325,7 +325,7 @@ class Minimizer():
             qinf    = QInference(orbit, self.options)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
-            if self.options.check_qi:
+            if self.options.sanity_check:
                 self.cover.init_quantifier_inference_check_solver(orbit.primes, qclause)
                 vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
                 if self.cover.quantifier_inference_check():

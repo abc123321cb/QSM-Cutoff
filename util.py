@@ -21,7 +21,7 @@ class QrmOptions():
         self.prime_gen = PrimeGen.ilp
         self.readReach         = False
         self.early_terminate_reach = False
-        self.check_qi          = False
+        self.sanity_check      = False
         self.writeReach        = False
         self.writePrime        = False
         self.writeQI           = False
