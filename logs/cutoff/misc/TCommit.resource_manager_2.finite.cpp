@@ -664,26 +664,6 @@ void TCommit__resource_manager_2__finite::ext__decide_abort(resource_manager rm)
         committed[rm] = false;
         aborted[rm] = true;
 }
-bool TCommit__resource_manager_2__finite::ext__get_committed(resource_manager r0){
-    bool qrm_result;
-    qrm_result = committed[r0];
-    return qrm_result;
-}
-bool TCommit__resource_manager_2__finite::ext__get_bool_committed(resource_manager r0, bool result){
-    bool qrm_result;
-    qrm_result = (committed[r0] == result);
-    return qrm_result;
-}
-bool TCommit__resource_manager_2__finite::ext__get_working(resource_manager r0){
-    bool qrm_result;
-    qrm_result = working[r0];
-    return qrm_result;
-}
-bool TCommit__resource_manager_2__finite::ext__get_bool_working(resource_manager r0, bool result){
-    bool qrm_result;
-    qrm_result = (working[r0] == result);
-    return qrm_result;
-}
 bool TCommit__resource_manager_2__finite::ext__get_prepared(resource_manager r0){
     bool qrm_result;
     qrm_result = prepared[r0];
@@ -702,6 +682,26 @@ bool TCommit__resource_manager_2__finite::ext__get_aborted(resource_manager r0){
 bool TCommit__resource_manager_2__finite::ext__get_bool_aborted(resource_manager r0, bool result){
     bool qrm_result;
     qrm_result = (aborted[r0] == result);
+    return qrm_result;
+}
+bool TCommit__resource_manager_2__finite::ext__get_working(resource_manager r0){
+    bool qrm_result;
+    qrm_result = working[r0];
+    return qrm_result;
+}
+bool TCommit__resource_manager_2__finite::ext__get_bool_working(resource_manager r0, bool result){
+    bool qrm_result;
+    qrm_result = (working[r0] == result);
+    return qrm_result;
+}
+bool TCommit__resource_manager_2__finite::ext__get_committed(resource_manager r0){
+    bool qrm_result;
+    qrm_result = committed[r0];
+    return qrm_result;
+}
+bool TCommit__resource_manager_2__finite::ext__get_bool_committed(resource_manager r0, bool result){
+    bool qrm_result;
+    qrm_result = (committed[r0] == result);
     return qrm_result;
 }
 void TCommit__resource_manager_2__finite::__tick(int __timeout){

@@ -635,13 +635,13 @@ void firewall__node_3__finite::__init(){
     }
     else if (qrm_solution_count == 2){
         internal[0] = true;
-        internal[1] = false;
-        internal[2] = true;
+        internal[1] = true;
+        internal[2] = false;
     }
     else if (qrm_solution_count == 3){
-        internal[0] = false;
+        internal[0] = true;
         internal[1] = false;
-        internal[2] = true;
+        internal[2] = false;
     }
     ++ qrm_solution_count;
     if (qrm_solution_count != max_qrm_solution_count)
@@ -660,14 +660,14 @@ void firewall__node_3__finite::ext__send_to_internal(node src, node dst){
         ivy_assume(allowed_in[src], "firewall.node_3.finite.ivy: line 26");
         sent[src][dst] = true;
 }
-bool firewall__node_3__finite::ext__get_allowed_in(node n0){
+bool firewall__node_3__finite::ext__get_sent(node n0, node n1){
     bool qrm_result;
-    qrm_result = allowed_in[n0];
+    qrm_result = sent[n0][n1];
     return qrm_result;
 }
-bool firewall__node_3__finite::ext__get_bool_allowed_in(node n0, bool result){
+bool firewall__node_3__finite::ext__get_bool_sent(node n0, node n1, bool result){
     bool qrm_result;
-    qrm_result = (allowed_in[n0] == result);
+    qrm_result = (sent[n0][n1] == result);
     return qrm_result;
 }
 bool firewall__node_3__finite::ext__get_internal(node n0){
@@ -680,14 +680,14 @@ bool firewall__node_3__finite::ext__get_bool_internal(node n0, bool result){
     qrm_result = (internal[n0] == result);
     return qrm_result;
 }
-bool firewall__node_3__finite::ext__get_sent(node n0, node n1){
+bool firewall__node_3__finite::ext__get_allowed_in(node n0){
     bool qrm_result;
-    qrm_result = sent[n0][n1];
+    qrm_result = allowed_in[n0];
     return qrm_result;
 }
-bool firewall__node_3__finite::ext__get_bool_sent(node n0, node n1, bool result){
+bool firewall__node_3__finite::ext__get_bool_allowed_in(node n0, bool result){
     bool qrm_result;
-    qrm_result = (sent[n0][n1] == result);
+    qrm_result = (allowed_in[n0] == result);
     return qrm_result;
 }
 void firewall__node_3__finite::__tick(int __timeout){

@@ -41,5 +41,5 @@ export decide
 
 invariant [def_didNotVote] didNotVote(N) = forall V. ~vote(N,V) # definition
 invariant [def_chosenAt] chosenAt(Q,V) = forall N. member(N,Q) -> vote(N,V) # definition
-invariant [invar_0] forall VALUE0,VALUE1,NODE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1 # qcost: 6
-invariant [invar_22] forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0)) # qcost: 4
+invariant [invar_0] forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1 # qcost: 6
+invariant [invar_22] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4

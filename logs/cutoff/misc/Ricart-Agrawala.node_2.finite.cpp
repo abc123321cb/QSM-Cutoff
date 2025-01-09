@@ -603,25 +603,25 @@ int Ricart_Agrawala__node_2__finite::___ivy_choose(int rng,const char *name,int 
 struct ivy_nondet_except {}; // lauren-yrluo added
 void Ricart_Agrawala__node_2__finite::__init(){
         bool __tmp0[2][2];
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                __tmp0[N2][N1] = false;
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                __tmp0[N1][N2] = false;
             }
         }
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                requested[N1][N2] = __tmp0[N2][N1];
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                requested[N1][N2] = __tmp0[N1][N2];
             }
         }
         bool __tmp1[2][2];
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                __tmp1[N2][N1] = false;
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                __tmp1[N1][N2] = false;
             }
         }
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                replied[N1][N2] = __tmp1[N2][N1];
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                replied[N1][N2] = __tmp1[N1][N2];
             }
         }
         bool __tmp2[2];
@@ -676,16 +676,6 @@ bool Ricart_Agrawala__node_2__finite::ext__get_bool_holds(node n0, bool result){
     qrm_result = (holds[n0] == result);
     return qrm_result;
 }
-bool Ricart_Agrawala__node_2__finite::ext__get_requested(node n0, node n1){
-    bool qrm_result;
-    qrm_result = requested[n0][n1];
-    return qrm_result;
-}
-bool Ricart_Agrawala__node_2__finite::ext__get_bool_requested(node n0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (requested[n0][n1] == result);
-    return qrm_result;
-}
 bool Ricart_Agrawala__node_2__finite::ext__get_replied(node n0, node n1){
     bool qrm_result;
     qrm_result = replied[n0][n1];
@@ -694,6 +684,16 @@ bool Ricart_Agrawala__node_2__finite::ext__get_replied(node n0, node n1){
 bool Ricart_Agrawala__node_2__finite::ext__get_bool_replied(node n0, node n1, bool result){
     bool qrm_result;
     qrm_result = (replied[n0][n1] == result);
+    return qrm_result;
+}
+bool Ricart_Agrawala__node_2__finite::ext__get_requested(node n0, node n1){
+    bool qrm_result;
+    qrm_result = requested[n0][n1];
+    return qrm_result;
+}
+bool Ricart_Agrawala__node_2__finite::ext__get_bool_requested(node n0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (requested[n0][n1] == result);
     return qrm_result;
 }
 void Ricart_Agrawala__node_2__finite::__tick(int __timeout){
