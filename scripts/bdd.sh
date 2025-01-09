@@ -60,7 +60,7 @@ declare -a hard_sym_ring_instances=(
 #done
 #python3 run_all.py ${yaml_path}quorum-leader-election-wo-maj.yaml -m -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.log
 
-# running <= cut-off
+
 timeout ${Timeout} python3 qrm.py -i ${sym_path}Consensus.ivy                            -s value=4                         -v 5 -w -l ${sym_path}Consensus.bdd.log
 timeout ${Timeout} python3 qrm.py -i ${sym_path}TCommit.ivy                              -s resource_manager=3              -v 5 -w -l ${sym_path}TCommit.bdd.log 
 timeout ${Timeout} python3 qrm.py -i ${sym_path}Ricart-Agrawala.ivy                      -s node=3                          -v 5 -w -l ${sym_path}Ricart-Agrawala.bdd.log 
@@ -80,3 +80,8 @@ timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}simple-election.ivy      
 timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}consensus_epr.ivy                 -s node=4,quorum=4,value=3         -v 5 -w -l ${sym_quorum_path}consensus_epr.bdd.log 
 timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus_forall.ivy          -s node=4,quorum=4,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.bdd.log 
 timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=6,nset=15                  -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.bdd.log
+
+timeout ${Timeout} python3 qrm.py -i ${sym_path}sharded_kv.ivy                           -s node=4,key=3,value=3            -v 5 -w -l ${sym_path}sharded_kv.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_path}sharded_kv_no_lost_keys.ivy              -s node=4,key=3,value=3            -v 5 -w -l ${sym_path}sharded_kv_no_lost_keys.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}toy_consensus_forall.ivy          -s node=5,quorum=10,value=4        -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.bdd.log 
+timeout ${Timeout} python3 qrm.py -i ${sym_quorum_path}naive_consensus.ivy               -s node=5,quorum=10,value=4         -v 5 -w -l ${sym_quorum_path}naive_consensus.bdd.log 

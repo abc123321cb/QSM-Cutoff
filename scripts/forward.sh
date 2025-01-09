@@ -67,3 +67,8 @@ timeout ${Timeout} python3 qrm.py ${sym_quorum_path}simple-election.ivy         
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=4,value=4           -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.fw.log 
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=6                   -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.fw.log
 timeout ${Timeout} python3 qrm.py ${sym_quorum_path}consensus_epr.ivy                 -s node=4,value=3           -v 5 -w -l ${sym_quorum_path}consensus_epr.fw.log 
+
+timeout ${Timeout} python3 qrm.py ${sym_path}sharded_kv.ivy                           -s node=4,key=3,value=3                -v 5 -w -l ${sym_path}sharded_kv.fw.log 
+timeout ${Timeout} python3 qrm.py ${sym_path}sharded_kv_no_lost_keys.ivy              -s node=4,key=3,value=3                -v 5 -w -l ${sym_path}sharded_kv_no_lost_keys.fw.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=5,value=4           -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.fw.log 
+timeout ${Timeout} python3 qrm.py ${sym_quorum_path}naive_consensus.ivy               -s node=5,value=4           -v 5 -w -l ${sym_quorum_path}naive_consensus.fw.log 
