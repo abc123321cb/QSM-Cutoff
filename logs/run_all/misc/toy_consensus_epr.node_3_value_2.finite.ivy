@@ -35,16 +35,11 @@ action decide(v: value, q: quorum) = {
 export cast_vote
 export decide
 
-#invariant [safety] decided(V1) & decided(V2) -> V1 = V2
+invariant [safety] decided(V1) & decided(V2) -> V1 = V2
 
-##invariant [manual_1] vote(N,V) -> voted(N)
-##invariant [manual_2] vote(N, V1) & vote(N, V2) -> V1 = V2
-##invariant [manual_3] forall V. decided(V) -> exists Q. forall N. member(N, Q) -> vote(N, V)
-
-invariant [def_chosenAt] chosenAt(Q,V) = forall N. member(N,Q) -> vote(N,V) # definition
-invariant [invar_0] forall VALUE0,NODE0. ~voted(NODE0) | vote(NODE0,VALUE0) # qcost: 4
-invariant [invar_2] forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0) # qcost: 4
-invariant [invar_17] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0)) # qcost: 4
+#invariant [manual_1] vote(N,V) -> voted(N)
+#invariant [manual_2] vote(N, V1) & vote(N, V2) -> V1 = V2
+#invariant [manual_3] forall V. decided(V) -> exists Q. forall N. member(N, Q) -> vote(N, V)
 
 ### For QRM DFS reachability ###
 
@@ -60,6 +55,16 @@ axiom member(node1,quorum__node1_node2)
 axiom member(node2,quorum__node1_node2)
 
 ## Access actions ##
+action get_vote(n0: node, v1: value) returns(qrm_result: bool) = {
+    qrm_result := vote(n0, v1)
+}
+export get_vote
+
+action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (vote(n0, v1) = result)
+}
+export get_bool_vote
+
 action get_voted(n0: node) returns(qrm_result: bool) = {
     qrm_result := voted(n0)
 }
@@ -99,14 +104,4 @@ action get_bool_chosenAt(q0: quorum, v1: value, result: bool) returns(qrm_result
     qrm_result := (chosenAt(q0, v1) = result)
 }
 export get_bool_chosenAt
-
-action get_vote(n0: node, v1: value) returns(qrm_result: bool) = {
-    qrm_result := vote(n0, v1)
-}
-export get_vote
-
-action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (vote(n0, v1) = result)
-}
-export get_bool_vote
 

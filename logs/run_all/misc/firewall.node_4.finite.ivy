@@ -36,10 +36,10 @@ export send_to_internal
 ##invariant [manual_1] allowed_in(D) -> exists I. internal(I) & sent(I,D)
 
 invariant [invar_0] forall NODE0. ~sent(NODE0,NODE0) # qcost: 2
-invariant [invar_2] forall NODE1. ~allowed_in(NODE1) | (exists NODE0. (sent(NODE0,NODE1) & NODE0 ~= NODE1)) # qcost: 5
+invariant [invar_6] forall NODE1. ~allowed_in(NODE1) | (exists NODE0. (sent(NODE0,NODE1) & NODE0 ~= NODE1)) # qcost: 5
 invariant [invar_1] forall NODE0. ~internal(NODE0) | ~allowed_in(NODE0) # qcost: 3
-invariant [invar_14] forall NODE1,NODE0. internal(NODE1) | internal(NODE0) | ~sent(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
-invariant [invar_12] forall NODE1,NODE0. allowed_in(NODE1) | allowed_in(NODE0) | ~sent(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
+invariant [invar_13] forall NODE1,NODE0. ~sent(NODE0,NODE1) | internal(NODE0) | internal(NODE1) | NODE0 = NODE1 # qcost: 6
+invariant [invar_11] forall NODE1,NODE0. ~sent(NODE0,NODE1) | allowed_in(NODE0) | allowed_in(NODE1) | NODE0 = NODE1 # qcost: 6
 
 ### For QRM DFS reachability ###
 
@@ -56,16 +56,6 @@ action get_bool_allowed_in(n0: node, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_allowed_in
 
-action get_sent(n0: node, n1: node) returns(qrm_result: bool) = {
-    qrm_result := sent(n0, n1)
-}
-export get_sent
-
-action get_bool_sent(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (sent(n0, n1) = result)
-}
-export get_bool_sent
-
 action get_internal(n0: node) returns(qrm_result: bool) = {
     qrm_result := internal(n0)
 }
@@ -75,4 +65,14 @@ action get_bool_internal(n0: node, result: bool) returns(qrm_result: bool) = {
     qrm_result := (internal(n0) = result)
 }
 export get_bool_internal
+
+action get_sent(n0: node, n1: node) returns(qrm_result: bool) = {
+    qrm_result := sent(n0, n1)
+}
+export get_sent
+
+action get_bool_sent(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (sent(n0, n1) = result)
+}
+export get_bool_sent
 

@@ -37,7 +37,7 @@ export become_leader
 ##invariant [manual_2] isleader(N) -> (majority(quorum) & (member(M,quorum) -> voted(M, N)))
 
 invariant [invar_0] forall NODE1,NODE0,NODE2. ~voted(NODE0,NODE1) | ~voted(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE1 & NODE0 = NODE2)) # qcost: 9
-invariant [invar_9] forall NODE1,NODE0,NSET0. ~isleader(NODE0) | voted(NODE1,NODE0) | quorum = NSET0 | ((NODE0 ~= NODE1 | member(NODE0,NSET0)) & (NODE0 = NODE1 | ~member(NODE0,NSET0) | member(NODE1,NSET0))) # qcost: 11
+invariant [invar_5] forall NODE1,NSET0,NODE0. quorum = NSET0 | voted(NODE1,NODE0) | ~isleader(NODE0) | ((NODE0 ~= NODE1 | member(NODE0,NSET0)) & (NODE0 = NODE1 | ~member(NODE0,NSET0) | member(NODE1,NSET0))) # qcost: 11
 
 ### For QRM DFS reachability ###
 
@@ -60,6 +60,16 @@ axiom member(node2,nset__node1_node2_node3)
 axiom member(node3,nset__node1_node2_node3)
 
 ## Access actions ##
+action get_quorum returns(qrm_result: nset) = {
+    qrm_result := quorum
+}
+export get_quorum
+
+action get_bool_quorum(result: nset) returns(qrm_result: bool) = {
+    qrm_result := (quorum = result)
+}
+export get_bool_quorum
+
 action get_member(n0: node, n1: nset) returns(qrm_result: bool) = {
     qrm_result := member(n0, n1)
 }
@@ -79,16 +89,6 @@ action get_bool_voted(n0: node, n1: node, result: bool) returns(qrm_result: bool
     qrm_result := (voted(n0, n1) = result)
 }
 export get_bool_voted
-
-action get_quorum returns(qrm_result: nset) = {
-    qrm_result := quorum
-}
-export get_quorum
-
-action get_bool_quorum(result: nset) returns(qrm_result: bool) = {
-    qrm_result := (quorum = result)
-}
-export get_bool_quorum
 
 action get_isleader(n0: node) returns(qrm_result: bool) = {
     qrm_result := isleader(n0)

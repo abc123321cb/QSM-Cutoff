@@ -37,4 +37,4 @@ export recv
 ##invariant [manual_4] forall A, B, C, D . ((((A) = (B)) & ((C) = (D))) | ((~(has_lock(A))) & (~(message(A, C)))) | (~(message(B, D))))
 
 invariant [invar_1] forall NODE0. has_lock(NODE0) | message(NODE0,NODE0) # qcost: 3
-invariant [invar_2] forall NODE0. ~has_lock(NODE0) | ~message(NODE0,NODE0) # qcost: 3
+invariant [invar_2] forall NODE0. ~message(NODE0,NODE0) | ~has_lock(NODE0) # qcost: 3

@@ -55,25 +55,15 @@ invariant [safety] (forall R1, R2. ~(aborted(R1) & committed(R2)) )
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := prepared(r0)
+action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := committed(r0)
 }
-export get_prepared
+export get_committed
 
-action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (prepared(r0) = result)
+action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (committed(r0) = result)
 }
-export get_bool_prepared
-
-action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := aborted(r0)
-}
-export get_aborted
-
-action get_bool_aborted(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (aborted(r0) = result)
-}
-export get_bool_aborted
+export get_bool_committed
 
 action get_working(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := working(r0)
@@ -85,13 +75,23 @@ action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: 
 }
 export get_bool_working
 
-action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := committed(r0)
+action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := aborted(r0)
 }
-export get_committed
+export get_aborted
 
-action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (committed(r0) = result)
+action get_bool_aborted(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (aborted(r0) = result)
 }
-export get_bool_committed
+export get_bool_aborted
+
+action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := prepared(r0)
+}
+export get_prepared
+
+action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (prepared(r0) = result)
+}
+export get_bool_prepared
 

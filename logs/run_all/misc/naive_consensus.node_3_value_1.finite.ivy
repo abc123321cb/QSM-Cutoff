@@ -37,11 +37,14 @@ export collect_votes
 export learn_value
 
 # safety property:
-invariant decision(V1) & decision(V2) -> V1 = V2
+#invariant decision(V1) & decision(V2) -> V1 = V2
 
-#invariant [manual_1] vote(N, V1) &  vote(N, V2) -> V1 = V2
-#invariant [manual_2] decide(Q, V) -> (forall N. member(N, Q) -> vote(N, V))
-#invariant [manual_3] decision(V) -> exists Q. decide(Q, V)
+##invariant [manual_1] vote(N, V1) &  vote(N, V2) -> V1 = V2
+##invariant [manual_2] decide(Q, V) -> (forall N. member(N, Q) -> vote(N, V))
+##invariant [manual_3] decision(V) -> exists Q. decide(Q, V)
+
+invariant [invar_0] forall VALUE0,NODE0,QUORUM0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
+invariant [invar_2] forall VALUE0,QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0) # qcost: 4
 
 ### For QRM DFS reachability ###
 

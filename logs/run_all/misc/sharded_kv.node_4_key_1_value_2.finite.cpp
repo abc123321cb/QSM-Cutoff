@@ -620,33 +620,33 @@ void sharded_kv__node_4_key_1_value_2__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 2;
     if (qrm_solution_count == 0){
-        bool __tmp0[2][4][1];
+        bool __tmp0[2][1][4];
         for (int V = 0; V < 2; V++) {
-            for (int N = 0; N < 4; N++) {
-                for (int K = 0; K < 1; K++) {
-                    __tmp0[V][N][K] = false;
+            for (int K = 0; K < 1; K++) {
+                for (int N = 0; N < 4; N++) {
+                    __tmp0[V][K][N] = false;
                 }
             }
         }
         for (int V = 0; V < 2; V++) {
-            for (int N = 0; N < 4; N++) {
-                for (int K = 0; K < 1; K++) {
-                    table[N][K][V] = __tmp0[V][N][K];
+            for (int K = 0; K < 1; K++) {
+                for (int N = 0; N < 4; N++) {
+                    table[N][K][V] = __tmp0[V][K][N];
                 }
             }
         }
-        bool __tmp1[2][4][1];
+        bool __tmp1[2][1][4];
         for (int V = 0; V < 2; V++) {
-            for (int N = 0; N < 4; N++) {
-                for (int K = 0; K < 1; K++) {
-                    __tmp1[V][N][K] = false;
+            for (int K = 0; K < 1; K++) {
+                for (int N = 0; N < 4; N++) {
+                    __tmp1[V][K][N] = false;
                 }
             }
         }
         for (int V = 0; V < 2; V++) {
-            for (int N = 0; N < 4; N++) {
-                for (int K = 0; K < 1; K++) {
-                    transfer_msg[N][K][V] = __tmp1[V][N][K];
+            for (int K = 0; K < 1; K++) {
+                for (int N = 0; N < 4; N++) {
+                    transfer_msg[N][K][V] = __tmp1[V][K][N];
                 }
             }
         }
@@ -656,8 +656,8 @@ void sharded_kv__node_4_key_1_value_2__finite::__init(){
         owner[3][0] = false;
     }
     else if (qrm_solution_count == 1){
-        owner[0][0] = true;
-        owner[1][0] = false;
+        owner[0][0] = false;
+        owner[1][0] = true;
         owner[2][0] = false;
         owner[3][0] = false;
     }
@@ -688,6 +688,16 @@ void sharded_kv__node_4_key_1_value_2__finite::ext__put(node n, key k, value v){
             table[n][k][V] = __tmp2[V];
         }
 }
+bool sharded_kv__node_4_key_1_value_2__finite::ext__get_owner(node n0, key k1){
+    bool qrm_result;
+    qrm_result = owner[n0][k1];
+    return qrm_result;
+}
+bool sharded_kv__node_4_key_1_value_2__finite::ext__get_bool_owner(node n0, key k1, bool result){
+    bool qrm_result;
+    qrm_result = (owner[n0][k1] == result);
+    return qrm_result;
+}
 bool sharded_kv__node_4_key_1_value_2__finite::ext__get_transfer_msg(node n0, key k1, value v2){
     bool qrm_result;
     qrm_result = transfer_msg[n0][k1][v2];
@@ -706,16 +716,6 @@ bool sharded_kv__node_4_key_1_value_2__finite::ext__get_table(node n0, key k1, v
 bool sharded_kv__node_4_key_1_value_2__finite::ext__get_bool_table(node n0, key k1, value v2, bool result){
     bool qrm_result;
     qrm_result = (table[n0][k1][v2] == result);
-    return qrm_result;
-}
-bool sharded_kv__node_4_key_1_value_2__finite::ext__get_owner(node n0, key k1){
-    bool qrm_result;
-    qrm_result = owner[n0][k1];
-    return qrm_result;
-}
-bool sharded_kv__node_4_key_1_value_2__finite::ext__get_bool_owner(node n0, key k1, bool result){
-    bool qrm_result;
-    qrm_result = (owner[n0][k1] == result);
     return qrm_result;
 }
 void sharded_kv__node_4_key_1_value_2__finite::__tick(int __timeout){

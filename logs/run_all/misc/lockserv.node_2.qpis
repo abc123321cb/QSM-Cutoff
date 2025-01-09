@@ -13,7 +13,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
 qcost : 4
 
 
@@ -31,7 +31,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -87,7 +87,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -113,7 +113,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+quantified form : forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -127,7 +127,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -139,6 +139,6 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | unlock_msg(NODE0) | server_holds_lock
+quantified form : exists NODE0. holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock | unlock_msg(NODE0)
 qcost : 5
 
