@@ -19,7 +19,7 @@ def usage ():
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
-    print('-k           enalbe quantifier inference (default: off)')
+    print('-k           enalbe sanity checks for quantifier inference and minimization (default: off)')
     print('-p 1|2|3     prime generation: 1. ilp, 2. binary search ilp 3. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
@@ -226,32 +226,33 @@ def run_all(ivy_name, args):
         rmin_result  = synthesize_Rmin_and_ivy_check(options, sys_args)
         num_solution = get_number_of_Rmin_solutions(options)
         sizes_str = []
-        sol_id = 0
-        if num_solution == 1:
-            reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args, increase_size=1)
-            if reach_result:
-                ivy_result = run_ivy_check(sol_id, options)
+        increase_size = 0   
+        while True:
+            increase_size += 1
+            pass_sol_ids = []
+            fail_sol_ids = []
+            for sol_id in range(num_solution):
+                reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args, increase_size)
+                if reach_result:
+                    pass_sol_ids.append(sol_id)
+                else:
+                    fail_sol_ids.append(sol_id)
+                    sizes_str.append(size_str)
+            if len(pass_sol_ids) == 1:
+                ivy_result = run_ivy_check(pass_sol_ids[0], options)
                 if ivy_result:
                     qrm_result = True
                     cutoff_size_str = size_str
                     Rmin_solutions.append(options.instance_name + '.' + options.instance_suffix + f'.{sol_id}'+ '.ivy')
+                    break
                 else:
                     vprint(options, '[QRM NOTE]: Reachability converge but Rmin not inductive')
                     vprint(options, '[QRM RESULT]: FAIL')
                     options.print_time()
                     sys.exit(1)
-            else:
-                sizes_str.append(size_str)
-        else:
-            has_fail_convergence = False
-            increase_size = 0 
-            while (not has_fail_convergence):
-                increase_size += 1
-                for sol_id in range(num_solution):
-                    reach_result, size_str = reachability_convergence_check(sol_id, options, sys_args, increase_size)
-                    if not reach_result:
-                        has_fail_convergence = True
-                        sizes_str.append(size_str)
+            elif len(fail_sol_ids) > 0:
+                break
+
         # reachability not converged yet
         if not qrm_result:
             next_size_str = get_min_next_size_str(sizes_str)
