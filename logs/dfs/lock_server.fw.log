@@ -1,0 +1,156 @@
+
+***********************************************************
+
+	[QRM]: ivybench/sym/ivy/lock_server.ivy
+
+***********************************************************
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+==============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server: server=2,client=4]
+
+==============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+ivy_to_cpp target=qrm lock_server.server_2_client_4.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_2_client_4.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_2_client_4.finite.cpp lock_server.server_2_client_4.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_2_client_4.finite.o lock_server.server_2_client_4.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[FW NOTE]: number of state atoms: 10
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: number of branching actions: 16
+
+[FW NOTE]: symmetric group order: 48
+
+[QRM NOTE]: Time elapsed since start: 6.729 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.729 seconds
+
+[QRM NOTE]: Peak memory: 1178488 bytes
+
+
+=====================================
+
+	Symmetric Quotient DFS
+
+=====================================
+
+[FW NOTE]: dfs max depth: 2
+
+[FW NOTE]: number of total reachable states:        25
+
+[FW NOTE]: number of dfs representative states:     4
+
+[FW NOTE]: number of dfs non-representative states: 21
+
+
+=====================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server: server=2,client=4]
+
+=====================================================================================================
+
+sort: client=['client0', 'client1', 'client2', 'client3']
+sort: server=['server0', 'server1']
+predicate: semaphore('server',)
+predicate: link('client', 'server')
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,server0)', 'link(client1,server1)', 'link(client2,server0)', 'link(client2,server1)', 'link(client3,server0)', 'link(client3,server1)', 'semaphore(server0)', 'semaphore(server1)']
+representative states : 3, 6, 12, 24
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 0000000011
+lex min decimal: 3
+states:
+0000000011
+
+
+
+
+=== State Orbit 1 =====================
+size : 8
+repr state: 1000000001
+lex min decimal: 6
+states:
+0000001001
+0010000001
+0000100001
+0100000010
+0001000010
+0000010010
+0000000110
+1000000001
+
+
+
+
+=== State Orbit 2 =====================
+size : 4
+repr state: 1100000000
+lex min decimal: 12
+states:
+0000001100
+0011000000
+1100000000
+0000110000
+
+
+
+
+=== State Orbit 3 =====================
+size : 12
+repr state: 1001000000
+lex min decimal: 24
+states:
+0001100000
+0000100100
+1001000000
+0001001000
+0000011000
+1000000100
+0010000100
+0100100000
+0110000000
+0010010000
+0100001000
+1000010000
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.825 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.096 seconds
+
+[QRM NOTE]: Peak memory: 1211061 bytes
+

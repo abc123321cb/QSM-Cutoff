@@ -1,0 +1,86 @@
+#lang ivy1.7
+
+# Source: https://raw.githubusercontent.com/VeriGu/DistAI/master/protocols/Ricart-Agrawala/Ricart-Agrawala.ivy
+
+type node = {node0, node1, node2}
+
+relation requested(N1: node, N2:node)
+relation replied(N1:node, N2:node)
+relation holds(N:node)
+
+after init {
+    requested(N1, N2) := false;
+    replied(N1, N2) := false;
+    holds(N) := false;
+}
+
+action request(requester: node, responder: node) = {
+    require ~requested(requester, responder);
+    require requester ~= responder;
+    requested(requester, responder) := true;
+}
+
+action reply(requester: node, responder: node) = {
+    require ~replied(requester, responder);
+    require ~holds(responder);
+    require ~replied(responder, requester);
+    require requested(requester, responder);
+    require requester ~= responder;
+    requested(requester, responder) := false;
+    replied(requester, responder) := true;
+}
+
+action enter(requester: node) = {
+    require N ~= requester -> replied(requester, N);
+    holds(requester) := true;
+}
+
+action leave(requester: node) = {
+    require holds(requester);
+    holds(requester) := false;
+    replied(requester, N) := false;
+}
+
+export request
+export reply
+export enter
+export leave
+
+# safety property
+invariant [1000000] holds(N1) & holds(N2) -> N1 = N2
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Access actions ##
+action get_holds(n0: node) returns(qrm_result: bool) = {
+    qrm_result := holds(n0)
+}
+export get_holds
+
+action get_bool_holds(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (holds(n0) = result)
+}
+export get_bool_holds
+
+action get_requested(n0: node, n1: node) returns(qrm_result: bool) = {
+    qrm_result := requested(n0, n1)
+}
+export get_requested
+
+action get_bool_requested(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (requested(n0, n1) = result)
+}
+export get_bool_requested
+
+action get_replied(n0: node, n1: node) returns(qrm_result: bool) = {
+    qrm_result := replied(n0, n1)
+}
+export get_replied
+
+action get_bool_replied(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (replied(n0, n1) = result)
+}
+export get_bool_replied
+
