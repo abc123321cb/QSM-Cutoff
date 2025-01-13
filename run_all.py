@@ -199,7 +199,7 @@ def get_number_of_Rmin_solutions(options : QrmOptions) -> int:
         ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{num}.ivy'
     return num
 
-def get_min_next_size_str(sizes_str : List[str]) -> str:
+def get_next_size_str(sizes_str : List[str]) -> str:
     next_sizes = {}
     for size_str in sizes_str:
         sort_sizes_str = size_str.split(',')
@@ -210,7 +210,7 @@ def get_min_next_size_str(sizes_str : List[str]) -> str:
             if not sort in next_sizes:
                 next_sizes[sort] = size
             else:
-                next_sizes[sort] = min(size, next_sizes[sort])
+                next_sizes[sort] = max(size, next_sizes[sort])
     return get_next_size_string(next_sizes)
 
 def run_all(ivy_name, args):
@@ -255,7 +255,7 @@ def run_all(ivy_name, args):
 
         # reachability not converged yet
         if not qrm_result:
-            next_size_str = get_min_next_size_str(sizes_str)
+            next_size_str = get_next_size_str(sizes_str)
             assert(options.size_str != next_size_str) 
             options = options.get_new_size_copy(next_size_str)
 
