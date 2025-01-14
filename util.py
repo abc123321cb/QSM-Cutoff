@@ -2,8 +2,10 @@ import datetime
 import tracemalloc
 from verbose import *
 from enum import Enum
-UseMC = Enum('UseMC', ['sat', 'mc'])
-PrimeGen = Enum('PrimeGen', ['ilp', 'binary', 'enumerate'])
+FlowMode    = Enum('FlowMode', ['Synthesize_Rmin', 'Check_Reachability', 'Check_Finite_Inductive'])
+ForwardMode = Enum('ForwardMode', ['Sym_DFS', 'BDD_Symbolic'])
+PrimeGen    = Enum('PrimeGen', ['ilp', 'binary', 'enumerate'])
+UseMC       = Enum('UseMC', ['sat', 'mc'])
 
 class QrmFail(Exception):
     pass
@@ -16,9 +18,10 @@ class QrmOptions():
         self.size_str      = ''
         self.sizes         = {} # sort name to size
         self.instance_suffix = ''
-        self.flow_mode     = 1
+        self.flow_mode     = FlowMode.Synthesize_Rmin 
+        self.forward_mode  = ForwardMode.Sym_DFS
+        self.prime_gen     = PrimeGen.ilp
         self.useMC = UseMC.sat
-        self.prime_gen = PrimeGen.ilp
         self.readReach         = False
         self.early_terminate_reach = False
         self.sanity_check      = False

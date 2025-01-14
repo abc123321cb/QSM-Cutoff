@@ -16,6 +16,7 @@ def usage ():
     print('')
     print('Options:')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
+    print('-b           use bdd-based symbolic image computation to compute reachable states (default: off)')
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
@@ -42,7 +43,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:artmkp:c:v:l:wh")
+        opts, args = getopt.getopt(args, "s:bartmkp:c:v:l:wh")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()

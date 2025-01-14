@@ -29,6 +29,7 @@ def usage ():
     print('')
     print('Options:')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
+    print('-b           use bdd-based symbolic image computation to compute reachable states (default: off)')
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
@@ -55,7 +56,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:f:rtamkp:c:v:l:whg")
+        opts, args = getopt.getopt(args, "s:bf:rtamkp:c:v:l:whg")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -67,11 +68,18 @@ def get_options(ivy_name, args):
         if optc == '-s':
             options.set_sizes(optv)
         elif optc == '-f':
-            options.flow_mode = int(optv)
-            if options.flow_mode < 0 or options.flow_mode > 3:
+            if optv == '1':
+                options.flow_mode = FlowMode.Synthesize_Rmin 
+            elif optv == '2':
+                options.flow_mode = FlowMode.Check_Reachability 
+            elif optv == '3':
+                options.flow_mode = FlowMode.Check_Finite_Inductive 
+            else:
                 usage_and_exit()
         elif optc == '-r':
             options.readReach = True
+        elif optc == '-b':
+            options.forward_mode = ForwardMode.BDD_Symbolic
         elif optc == '-t':
             options.early_terminate_reach = True
         elif optc == '-a':
@@ -141,7 +149,7 @@ def qrm(ivy_name, args):
     instance_start(options, ivy_name)
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
-    if options.flow_mode == 3: # finite ivy check 
+    if options.flow_mode == FlowMode.Check_Finite_Inductive: 
         options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
         finite_result = run_finite_ivy_check(options, tran_sys, instantiator) 
         options.step_end()
@@ -173,11 +181,11 @@ def qrm(ivy_name, args):
         options.step_end()
         protocol = fr_solver.protocol
 
-    if options.flow_mode == 2:
+    if options.flow_mode == FlowMode.Check_Reachability:
         # check reachability converges
         options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.instance_name}: {options.size_str}]')
-        reach_checker = ReachCheck(options, tran_sys, instantiator)
-        reach_result  = reach_checker.is_rmin_matching_reachability(protocol)
+        reach_checker = ReachCheck(options, tran_sys, instantiator, protocol)
+        reach_result  = reach_checker.is_rmin_matching_reachability()
         options.step_end()
         if options.convergence_check:
             try:
