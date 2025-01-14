@@ -213,7 +213,7 @@ class ReachCheck():
         self._init_definitions_formula()
         self._init_equal_atoms_constraints()
         self._init_invariants()
-        if self.options.flow_mode == ForwardMode.BDD_Symbolic:
+        if self.options.forward_mode == ForwardMode.BDD_Symbolic:
             self._init_reachable_states()
         self._push_clauses_into_solvers()
 
