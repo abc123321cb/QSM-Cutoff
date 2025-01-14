@@ -371,7 +371,7 @@ class CoverConstraints():
                 block_clause.append(atom_var)
         self.min_checker.add_clause(block_clause)
 
-    def _get_prime_clause(self, prime : Prime) -> List[int]:
+    def _get_prime_clause(self, prime : Prime):
         literals = []
         for (var_id, val) in enumerate(prime.values):
             lit  = self.instantiator.protocol_atoms_fmlas[var_id]
