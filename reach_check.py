@@ -160,10 +160,10 @@ class ReachCheck():
 
     def _init_invariants(self) -> None:
         invariants  = [ilu.resort_ast(invar, self.tran_sys.sort_inf2fin) for invar in self.tran_sys.safety_properties]
+        invariants  = [self.instantiator.instantiate_quantifier(invar) for invar in invariants]
         if self.options.forward_mode == ForwardMode.Sym_DFS:
             for invar in invariants: 
-                inst_invar = self.instantiator.instantiate_quantifier(invar)
-                invar_fmla_var = self._tseitin_encode(inst_invar)
+                invar_fmla_var = self._tseitin_encode(invar)
                 self.root_assume_clauses.append([invar_fmla_var])
             if len(invariants) == 0: # edge case
                 top_atom_var = self.atom_vars[-1]
