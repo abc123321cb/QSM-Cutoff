@@ -1,7 +1,7 @@
 from pysat.solvers import Cadical153 as SatSolver
 from typing import List, Dict
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from util import QrmOptions
+from util import QrmOptions, ForwardMode
 from verbose import *
 from transition_system import TransitionSystem, get_transition_system
 from forward_reach import ForwardReachability
@@ -12,10 +12,11 @@ from ivy import logic as lg
 from ivy import ivy_logic_utils as ilu
 
 class ReachCheck():
-    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator) -> None: 
+    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, protocol : Protocol) -> None: 
         self.options       = options
         self.tran_sys      = tran_sys
         self.instantiator  = instantiator 
+        self.protocol      = protocol
         self.sat_solver    = SatSolver() 
         self.top_var               = 0
         self.symbol2var_num        = {}
@@ -23,6 +24,9 @@ class ReachCheck():
         # axiom, definition
         self.root_assume_clauses   = [] 
         self.root_tseitin_clauses  = [] # axiom, definition
+        # when reach is computed with BDD-based symbolic image computation
+        self.rmin_var   = 0
+        self.reach_var  = 0
         # min_check or qinfer_check
         self.clauses               = []
 
@@ -156,13 +160,35 @@ class ReachCheck():
 
     def _init_invariants(self) -> None:
         invariants  = [ilu.resort_ast(invar, self.tran_sys.sort_inf2fin) for invar in self.tran_sys.safety_properties]
-        for invar in invariants: 
-            inst_invar = self.instantiator.instantiate_quantifier(invar)
-            invar_fmla_var = self._tseitin_encode(inst_invar)
-            self.root_assume_clauses.append([invar_fmla_var])
-        if len(invariants) == 0: # edge case
-            top_atom_var = self.atom_vars[-1]
-            self.sat_solver.add_clause([top_atom_var, -1*top_atom_var])
+        if self.options.forward_mode == ForwardMode.Sym_DFS:
+            for invar in invariants: 
+                inst_invar = self.instantiator.instantiate_quantifier(invar)
+                invar_fmla_var = self._tseitin_encode(inst_invar)
+                self.root_assume_clauses.append([invar_fmla_var])
+            if len(invariants) == 0: # edge case
+                top_atom_var = self.atom_vars[-1]
+                self.sat_solver.add_clause([top_atom_var, -1*top_atom_var])
+        else:
+            and_invars = il.And(*invariants)
+            self.rmin_var = self._tseitin_encode(and_invars) 
+
+    def _get_cube_fmla(self, cube):
+        literals = []
+        for (var_id, val) in enumerate(cube):
+            lit  = self.protocol.atoms_fmla[var_id]
+            if val == '1':
+                literals.append(lit) 
+            elif val == '0':
+                literals.append(il.Not(lit))
+        return il.And(*literals)
+
+    def _init_reachable_states(self) -> None:
+        cube_fmlas = []
+        for cube in self.protocol.reachable_states:
+            cube_fmla = self._get_cube_fmla(cube)
+            cube_fmlas.append(cube_fmla)
+        or_cubes = il.Or(*cube_fmlas)
+        self.reach_var  = self._tseitin_encode(or_cubes)
 
     def _push_clauses_into_solvers(self) -> None:
         for clause in self.root_assume_clauses:
@@ -171,6 +197,10 @@ class ReachCheck():
             self.sat_solver.add_clause(clause)
         for clause in self.clauses:
             self.sat_solver.add_clause(clause)
+        if self.options.forward_mode == ForwardMode.BDD_Symbolic:
+            # self.reach_var XOR self.rmin_var
+            self.sat_solver.add_clause([self.reach_var, self.rmin_var])
+            self.sat_solver.add_clause([-1*self.reach_var, -1*self.rmin_var])
 
     def _init_vars(self) -> None:
         for atom in self.instantiator.protocol_atoms:
@@ -183,6 +213,8 @@ class ReachCheck():
         self._init_definitions_formula()
         self._init_equal_atoms_constraints()
         self._init_invariants()
+        if self.options.flow_mode == ForwardMode.BDD_Symbolic:
+            self._init_reachable_states()
         self._push_clauses_into_solvers()
 
     def _get_model(self):
@@ -202,18 +234,18 @@ class ReachCheck():
                 block_clause.append(atom_var)
         self.sat_solver.add_clause(block_clause)
 
-    def is_rmin_matching_reachability(self, protocol : Protocol) -> bool:
+    def _compare_symmetry_quotient(self) -> bool:
         (result, values)  = self._get_model()
         model_repr_states = set()
         model_match = True
         while result:
             repr_int = int(''.join(values), 2)
-            for nvalues in protocol.all_permutations(values[:protocol.state_atom_num]): # only permute the mutable part
-                nvalues += values[protocol.state_atom_num:]
+            for nvalues in self.protocol.all_permutations(values[:self.protocol.state_atom_num]): # only permute the mutable part
+                nvalues += values[self.protocol.state_atom_num:]
                 repr_int = min(int(''.join(nvalues), 2), repr_int)
                 self._block_model(nvalues)
-            if not repr_int in protocol.repr_states:
-                bit_str = '{0:0{1}b}'.format(repr_int, protocol.atom_num)[:protocol.state_atom_num]
+            if not repr_int in self.protocol.repr_states:
+                bit_str = '{0:0{1}b}'.format(repr_int, self.protocol.atom_num)[:self.protocol.state_atom_num]
                 vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}')
                 model_match = False 
                 if self.options.early_terminate_reach:
@@ -222,7 +254,7 @@ class ReachCheck():
             model_repr_states.add(repr_int)
             (result, values) = self._get_model()
 
-        difference = protocol.repr_states - model_repr_states
+        difference = self.protocol.repr_states - model_repr_states
         if len(difference) > 0:
             vprint(self.options, 'Representatitive states in reachability not in Rmin')
             vprint(self.options, f'{difference}')
@@ -232,3 +264,19 @@ class ReachCheck():
         else:
             vprint(self.options, f'[REACH_CHECK RESULT]: FAIL')
         return model_match 
+
+    def _equivalence_checking(self) -> bool:
+        result = self.sat_solver.solve()
+        if result: # Non-equal
+            vprint(self.options, f'[REACH_CHECK RESULT]: FAIL')
+            return False
+        else:
+            vprint(self.options, f'[REACH_CHECK RESULT]: PASS')
+            return True
+
+    def is_rmin_matching_reachability(self) -> bool:
+        if self.options.forward_mode == ForwardMode.Sym_DFS:
+            return self._compare_symmetry_quotient()
+        else:
+            return self._equivalence_checking()
+
