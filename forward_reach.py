@@ -1,12 +1,45 @@
-from typing import Type, Set, List
-from util import QrmOptions
+from typing import Type, Set, List, Dict
+from util import QrmOptions, ForwardMode
 from transition_system import TransitionSystem
 from protocol import Protocol
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from finite_ivy_gen import FiniteIvyGenerator
 from finite_ivy_exec import FiniteIvyExecutor, IVY_ACTION_COMPLETE, IVY_ACTION_INCOMPLETE 
+from bdd import FormulaInitializer, Bdd
 from verbose import *
 from math import factorial as fact
+
+class ForwardReachability():
+    def __init__(self,  tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
+        self.tran_sys     = tran_sys
+        self.instantiator = instantiator 
+        self.options      = options
+        self.protocol     = None
+
+        self.setup()
+
+    def _init_protocol(self):
+        self.protocol = Protocol(self.options)                
+        self.protocol.init_sort(self.tran_sys)
+        self.protocol.init_dependent_sort(self.tran_sys)
+        self.protocol.init_predicate(self.tran_sys)
+        self.protocol.init_atoms(self.instantiator.protocol_state_atoms, self.instantiator.protocol_state_atoms_fmlas,
+                                 self.instantiator.protocol_interpreted_atoms, self.instantiator.protocol_interpreted_atoms_fmlas)
+        self.protocol.init_sorts_permutations(self.tran_sys)
+
+    def _print_protocol_basic_info(self) -> None:
+        sym_group_order = 1
+        for sort_id, constants in enumerate(self.protocol.sort_constants):
+            sort_name     = self.protocol.sorts[sort_id]
+            if not self.tran_sys.get_finite_sort_from_sort_name(sort_name) in self.tran_sys.dep_types:
+                sym_group_order *= fact(len(constants))
+        vprint(self.options, f'[FW NOTE]: number of state atoms: {self.protocol.state_atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: number of interpreted atoms (e.g. member,le): {self.protocol.interpreted_atom_num}', 2)
+        vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
+
+    def setup(self):
+        self._init_protocol()
+        self._print_protocol_basic_info()
 
 class DfsNode():
     def __init__(self, dfs_state, ivy_state):
@@ -31,17 +64,11 @@ class StateOrbit():
         lines += '\n'
         return lines
 
-class ForwardReachability():
-    #------------------------------------------------------------
-    # ForwardReachability: initializations
-    #------------------------------------------------------------
-    def __init__(self,  tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
-        self.tran_sys     = tran_sys
-        self.instantiator = instantiator 
-        self.options      = options
+class SymDFS(ForwardReachability):
+    def __init__(self, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
+        ForwardReachability.__init__(self, tran_sys, instantiator, options)
         # utils
         self.ivy_actions     = []
-        self.protocol        = None
         self.ivy_executor    = None
         # dfs data structures
         self.dfs_explored_states : Set[str]  = set()  # state is represented as bit string
@@ -50,18 +77,13 @@ class ForwardReachability():
         self.dfs_max_depth       = 0
         self.dfs_immutable_state = ''
 
-
+        self._initialize_dfs()
+    #------------------------------------------------------------
+    # SymDFS: initialization 
+    #------------------------------------------------------------
     def _init_ivy_actions(self):
         self.ivy_actions = self.instantiator.ivy_actions
-
-    def _init_protocol(self):
-        self.protocol = Protocol(self.options)                
-        self.protocol.init_sort(self.tran_sys)
-        self.protocol.init_dependent_sort(self.tran_sys)
-        self.protocol.init_predicate(self.tran_sys)
-        self.protocol.init_atoms(self.instantiator.protocol_state_atoms, self.instantiator.protocol_state_atoms_fmlas,
-                                 self.instantiator.protocol_interpreted_atoms, self.instantiator.protocol_interpreted_atoms_fmlas)
-        self.protocol.init_sorts_permutations(self.tran_sys)
+        vprint(self.options, f'[FW NOTE]: number of branching actions: {len(self.ivy_actions)}', 2)
 
     def _init_finite_ivy_generator(self):
         FiniteIvyGenerator.set_transition_system(self.tran_sys)
@@ -75,14 +97,13 @@ class ForwardReachability():
         FiniteIvyGenerator.compile_finite_ivy_to_cpp()
         FiniteIvyGenerator.build_ivy_exec_python_module()
 
-    def _initialize(self):
+    def _initialize_dfs(self):
         self._init_ivy_actions()
-        self._init_protocol()
         self._init_finite_ivy_generator() 
         self.ivy_executor = FiniteIvyExecutor(self.options, self.instantiator) 
 
     #------------------------------------------------------------
-    # ForwardReachability: core depth first search algorthm
+    # SymDFS: core depth first search algorthm
     #------------------------------------------------------------
     def _create_dfs_node(self):
         dfs_state = self.ivy_executor.get_dfs_state()
@@ -142,14 +163,14 @@ class ForwardReachability():
             self._symmetric_quotient_depth_first_search_recur_node(initial_node)
         
     #------------------------------------------------------------
-    # ForwardReachability: utils
+    # SymDFS: utils
     #------------------------------------------------------------
     def _clean(self):
         self.ivy_executor.execute_ivy_action('QRM_STOP_PROTOCOL')
         FiniteIvyGenerator.clean()
 
     #------------------------------------------------------------
-    # ForwardReachability: update protocol states
+    # SymDFS: update protocol states
     #------------------------------------------------------------
     def _update_protocol_states(self):
         # reachable states
@@ -159,19 +180,8 @@ class ForwardReachability():
         self.protocol.init_representative_states(self.dfs_repr_states)
 
     #------------------------------------------------------------
-    # ForwardReachability: print methods
+    # SymDFS: print methods
     #------------------------------------------------------------
-    def _print_protocol_basic_info(self) -> None:
-        sym_group_order = 1
-        for sort_id, constants in enumerate(self.protocol.sort_constants):
-            sort_name     = self.protocol.sorts[sort_id]
-            if not self.tran_sys.get_finite_sort_from_sort_name(sort_name) in self.tran_sys.dep_types:
-                sym_group_order *= fact(len(constants))
-        vprint(self.options, f'[FW NOTE]: number of state atoms: {self.protocol.state_atom_num}', 2)
-        vprint(self.options, f'[FW NOTE]: number of interpreted atoms (e.g. member,le): {self.protocol.interpreted_atom_num}', 2)
-        vprint(self.options, f'[FW NOTE]: number of branching actions: {len(self.ivy_actions)}', 2)
-        vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
-
     def _print_reachability(self) -> None:
         vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
         vprint(self.options, '\n'.join(self.protocol.header), 3)
@@ -185,13 +195,9 @@ class ForwardReachability():
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)-len(self.dfs_repr_states)}', 2)
 
     #------------------------------------------------------------
-    # ForwardReachability: public methods
+    # SymDFS: public methods
     #------------------------------------------------------------
-    def setup(self):
-        self._initialize()
-        self._print_protocol_basic_info()
-
-    def symmetric_quotient_depth_first_search_reachability(self):
+    def forward_reachability(self):
         self._symmetric_quotient_depth_first_search_reachability()
         self._update_protocol_states()
         self._clean()
@@ -199,3 +205,79 @@ class ForwardReachability():
         self._print_reachability()
         if (self.options.writeReach):
             self.protocol.write_reachability()
+
+class BddSymbolic(ForwardReachability):
+    def __init__(self, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
+        ForwardReachability.__init__(self, tran_sys, instantiator, options)
+        self.fmla  = FormulaInitializer(tran_sys, instantiator, options)
+        self.bdd   = Bdd(self.fmla)
+        self.reach = None
+        self.cubes = []
+        self.immutable_cube = ''
+
+    def _symbolic_image_computation(self):
+        reach = self.bdd.init_action
+        frontier = [self.bdd.init_action]
+        while (len(frontier) > 0):
+            front = frontier.pop()
+            if front == self.bdd.ddmanager.ReadLogicZero():
+                continue
+            not_reach = self.bdd.ddmanager.Not(reach)
+            successors = []
+            for action, action_bdds in self.bdd.exported_actions.items():
+                succ = self.ddmanager.Zero()
+                has_expanded = False
+                for action_bdd in action_bdds:
+                    image = self.ddmanager.AndAbstract(front, action_bdd, self.bdd.curr_atom_cube) # perform existential quantification on current atoms
+                    if image == self.ddmanager.ReadLogicZero(): 
+                        continue
+                    image = self.bdd.ddmanager.SwapVariables(image, self.bdd.curr_DdArray, self.bdd.next_DdArray, self.bdd.state_atom_num) 
+                    image = self.bdd.ddmanager.And(image, self.bdd.curr_axiom) 
+                    if image == self.bdd.ddmanager.ReadLogicZero(): 
+                        continue
+                    expanded = self.bdd.ddmanager.And(image, not_reach)   
+                    if expanded == self.bdd.ddmanager.ReadLogicZero(): 
+                        continue
+                    succ = self.ddmanager.Or(succ, expanded)
+                    has_expanded = True
+                if has_expanded:
+                    successors.append(succ)
+            
+            for succ in successors:
+                frontier.append(succ)
+                reach = self.bdd.ddmanager.Or(reach, succ)
+        self.reach = self.bdd.ddmanager.ExistAbstract(reach, self.bdd.next_atom_cube) # perform existential quantification on next atoms
+
+    def _update_protocol_states(self):
+        has_extract_immut_cube = False
+        self.immutable_cube = ''
+        immut_lits = ['']*self.protocol.interpreted_atom_num
+        for cudd_cube in repycudd.ForeachCubeIterator(self.bdd.ddmanager, self.reach):
+            state_lits = ['']*self.protocol.state_atom_num
+            for cudd_id, val in enumerate(cudd_cube):
+                if cudd_id in self.bdd.cudd_id2state_atom_id:
+                    atom_id = self.bdd.cudd_id2state_atom_id[cudd_id] 
+                    if val == 2:
+                        state_lits[atom_id] = '-'
+                    else:
+                        state_lits[atom_id] = str(val)
+                elif not has_extract_immut_cube and cudd_id in self.bdd.cudd_id2immut_atom_id:
+                    atom_id = self.bdd.cudd_id2immut_atom_id[cudd_id] 
+                    assert(val == 1 or val == 0)
+                    assert(immut_lits[atom_id] == '')
+                    immut_lits[atom_id] = str(val)
+            state_cube = ''.join(state_lits)
+            assert(len(state_cube) == self.protocol.state_atom_num)
+            self.cubes.append(state_cube)
+            if not has_extract_immut_cube:
+                self.immutable_cube = ''.join(immut_lits)
+                assert(len(self.immutable_cube) == self.protocol.interpreted_atom_num)
+                has_extract_immut_cube = True
+        self.protocol.init_reachable_states(self.immutable_cube, self.cubes)
+
+    def forward_reachability(self):
+        self._symbolic_image_computation()
+        self._update_protocol_states()
+        # TODO: repy_cudd submodule
+        # TODO: printing
+        # TODO: mimization

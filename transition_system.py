@@ -99,7 +99,9 @@ class TransitionSystem():
         # dependent sorts
         self.dep_types        = dict() # "quorum" to quorum meta data (e.g. "member", "node" ...) 
         # actions
-        self.exported_actions = []
+        self.exported_action_symbols = [] 
+        self.init_actions     = {} 
+        self.exported_actions = {} 
         # safety
         self.safety_properties= []
 
@@ -189,14 +191,20 @@ class TransitionSystem():
             else:
                 self.interpreted_symbols.add(symbol)
 
-    def _init_exported_actions(self):
+    def _init_actions(self):
         exports = set([str(export) for export in self.ivy_module.exports])
         for action_name, action in self.ivy_module.actions.items():
+            params      = [ilu.resort_symbol(param, self.sort_inf2fin) for param in action.formal_params]
+            param_sorts = [param.sort for param in params]
+            action_func_sort    = il.FunctionSort(*param_sorts, il.BooleanSort())
+            action_symbol       = il.Symbol(action_name, action_func_sort)
+            apply_action_symbol = il.App(action_symbol, *params)
+            finite_action = ilu.resort_ast(action, self.sort_inf2fin)
             if action_name in exports:
-                param_sorts = [ilu.resort_symbol(param, self.sort_inf2fin).sort for param in action.formal_params]
-                action_func_sort = il.FunctionSort(*param_sorts, il.BooleanSort())
-                action_symbol    = il.Symbol(action_name, action_func_sort)
-                self.exported_actions.append(action_symbol)
+                self.exported_action_symbols.append(action_symbol)
+                self.exported_actions[apply_action_symbol] = finite_action 
+            else:
+                self.init_actions[apply_action_symbol] = finite_action 
 
     def _init_safety_properties(self):
         self.safety_properties = [il.close_formula(conj.formula) for conj in self.ivy_module.labeled_conjs]
@@ -209,7 +217,7 @@ class TransitionSystem():
             self._init_definitions()
             self._init_axioms()
             self._init_state_symbols()
-            self._init_exported_actions()
+            self._init_actions()
             self._init_safety_properties()
 
     #------------------------------------------------------------

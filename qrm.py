@@ -7,7 +7,7 @@ import os
 from transition_system import get_transition_system
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from protocol import Protocol
-from forward_reach import ForwardReachability 
+from forward_reach import ForwardReachability, SymDFS, BddSymbolic
 from prime import PrimeOrbits
 from minimize import Minimizer
 from run_ivy import check_inductive_and_prove_property, run_finite_ivy_check
@@ -173,11 +173,10 @@ def qrm(ivy_name, args):
     else: # forward reachability
         options.step_start(f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
         options.step_start('Set up for forward reachability')
-        fr_solver    = ForwardReachability(tran_sys, instantiator, options)
-        fr_solver.setup()
+        fr_solver = SymDFS(tran_sys, instantiator, options) if options.forward_mode == ForwardMode.Sym_DFS else BddSymbolic(tran_sys, instantiator, options)
         options.step_end()
-        options.step_start('Symmetric Quotient DFS')
-        fr_solver.symmetric_quotient_depth_first_search_reachability()
+        options.step_start('Forward reachability')
+        fr_solver.forward_reachability()
         options.step_end()
         protocol = fr_solver.protocol
 
