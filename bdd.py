@@ -218,21 +218,20 @@ class Bdd():
             if isinstance(fmla, il.Not):
                 node = self._get_bdd_node(fmla.args[0])
                 return self.ddmanager.Not(node)
-            if len(fmla.args) == 1:
+            if len(fmla.args) == 0:
+                assert( isinstance(fmla, il.And) or isinstance(fmla, il.Or) )
+                return self.ddmanager.One() if isinstance(fmla, il.And) else self.ddmanager.Zero()
+            elif len(fmla.args) == 1:
                 assert( isinstance(fmla, il.And) or isinstance(fmla, il.Or) )
                 return self._get_bdd_node(fmla.args[0])
             assert(len(fmla.args) > 1) 
             args = [self._get_bdd_node(arg) for arg in fmla.args]
             if isinstance(fmla, il.And):
-                if len(args) == 0:
-                    return self.ddmanager.One()
                 res = args[0]
                 for a in args[1:]:
                     res = self.ddmanager.And(a, res)
                 return res
             elif isinstance(fmla, il.Or):
-                if len(args) == 0:
-                    return self.ddmanager.Zero()
                 res = args[0]
                 for a in args[1:]:
                     res = self.ddmanager.Or(res,a)
@@ -269,7 +268,7 @@ class Bdd():
             self.cudd_id2immut_atom_id[cudd_id] = atom_id
 
     def _init_initial_action(self, init_action_fmlas, curr_axiom_fmla):
-        assert(len(init_action_fmlas) == 0) 
+        assert(len(init_action_fmlas) == 1) 
         init_fmla = list(init_action_fmlas.values())[0]
         init_fmla = il.And(*[init_fmla, curr_axiom_fmla])
         self.init_action = self._get_bdd_node(init_fmla) 
@@ -299,8 +298,14 @@ class Bdd():
 
     def _initialize(self, fmla : FormulaInitializer):
         self._init_atoms(fmla.curr_atoms, fmla.next_atoms, fmla.immutable_atoms)
-        self._init_initial_states(fmla.init_action_fmlas, fmla.curr_axiom_fmla)
+        self._init_initial_action(fmla.init_action_fmlas, fmla.curr_axiom_fmla)
         self._init_axioms(fmla.curr_axiom_fmla)
         self._init_actions(fmla.exported_action_fmlas)
         self._init_abstraction(fmla.curr_atoms, fmla.next_atoms, fmla.immutable_atoms)
+
+    def clean(self):
+        del self.curr_DdArray
+        del self.next_DdArray
+        self.curr_DdArray = None
+        self.next_DdArray = None
 

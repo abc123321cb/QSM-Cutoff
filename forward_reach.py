@@ -8,6 +8,7 @@ from finite_ivy_exec import FiniteIvyExecutor, IVY_ACTION_COMPLETE, IVY_ACTION_I
 from bdd import FormulaInitializer, Bdd
 from verbose import *
 from math import factorial as fact
+import repycudd
 
 class ForwardReachability():
     def __init__(self,  tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
@@ -225,11 +226,11 @@ class BddSymbolic(ForwardReachability):
             not_reach = self.bdd.ddmanager.Not(reach)
             successors = []
             for action, action_bdds in self.bdd.exported_actions.items():
-                succ = self.ddmanager.Zero()
+                succ = self.bdd.ddmanager.Zero()
                 has_expanded = False
                 for action_bdd in action_bdds:
-                    image = self.ddmanager.AndAbstract(front, action_bdd, self.bdd.curr_atom_cube) # perform existential quantification on current atoms
-                    if image == self.ddmanager.ReadLogicZero(): 
+                    image = self.bdd.ddmanager.AndAbstract(front, action_bdd, self.bdd.curr_atom_cube) # perform existential quantification on current atoms
+                    if image == self.bdd.ddmanager.ReadLogicZero(): 
                         continue
                     image = self.bdd.ddmanager.SwapVariables(image, self.bdd.curr_DdArray, self.bdd.next_DdArray, self.bdd.state_atom_num) 
                     image = self.bdd.ddmanager.And(image, self.bdd.curr_axiom) 
@@ -238,7 +239,7 @@ class BddSymbolic(ForwardReachability):
                     expanded = self.bdd.ddmanager.And(image, not_reach)   
                     if expanded == self.bdd.ddmanager.ReadLogicZero(): 
                         continue
-                    succ = self.ddmanager.Or(succ, expanded)
+                    succ = self.bdd.ddmanager.Or(succ, expanded)
                     has_expanded = True
                 if has_expanded:
                     successors.append(succ)
@@ -275,9 +276,13 @@ class BddSymbolic(ForwardReachability):
                 has_extract_immut_cube = True
         self.protocol.init_reachable_states(self.immutable_cube, self.cubes)
 
+    def _clean(self):
+        self.bdd.clean()
+
     def forward_reachability(self):
         self._symbolic_image_computation()
         self._update_protocol_states()
-        # TODO: repy_cudd submodule
+        self._clean()
         # TODO: printing
         # TODO: mimization
+        # TODO: update README.md for repycudd

@@ -302,6 +302,8 @@ class FiniteIvyInstantiator():
                         return il.Or()
                 elif str(args[0]) in constants:
                     return il.Equals(args[1], args[0])
+                elif str(args[1]) in constants:
+                    return il.Equals(args[0], args[1])
                 else:
                     assert(0)
             formula = il.Equals(args[0], args[1])
