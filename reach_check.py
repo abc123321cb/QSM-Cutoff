@@ -169,8 +169,11 @@ class ReachCheck():
                 top_atom_var = self.atom_vars[-1]
                 self.sat_solver.add_clause([top_atom_var, -1*top_atom_var])
         else:
-            and_invars = il.And(*invariants)
-            self.rmin_var = self._tseitin_encode(and_invars) 
+            if len(invariants) == 0: # edge case
+                self.rmin_var = self.new_var()
+            else:
+                and_invars = il.And(*invariants)
+                self.rmin_var = self._tseitin_encode(and_invars) 
 
     def _get_cube_fmla(self, cube):
         literals = []
