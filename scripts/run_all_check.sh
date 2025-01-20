@@ -66,4 +66,4 @@ timeout ${Timeout} python3 run_all.py ${sym_quorum_path}naive_consensus.ivy     
 timeout ${Timeout} python3 run_all.py ${sym_quorum_path}toy_consensus_forall.ivy          -s node=2,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}toy_consensus_forall.check.log 
 timeout ${Timeout} python3 run_all.py ${sym_quorum_path}simple-election.ivy               -s acceptor=2,proposer=1               -t -k -v 5 -w -l ${sym_quorum_path}simple-election.check.log 
 timeout ${Timeout} python3 run_all.py ${sym_quorum_path}quorum-leader-election-wo-maj.ivy -s node=2                              -t -k -v 5 -w -l ${sym_quorum_path}quorum-leader-election-wo-maj.check.log
-timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=2,value=1                      -t -k -v 5 -w -l ${sym_quorum_path}consensus_epr.check.log 
+timeout ${Timeout} python3 run_all.py ${sym_quorum_path}consensus_epr.ivy                 -s node=2,value=1                   -b -t -k -v 5 -w -l ${sym_quorum_path}consensus_epr.check.log 
