@@ -295,5 +295,3 @@ class BddSymbolic(ForwardReachability):
         self._print_reachability()
         if (self.options.writeReach):
             self.protocol.write_reachability()
-        # TODO: mimization
-        # TODO: update README.md for repycudd
