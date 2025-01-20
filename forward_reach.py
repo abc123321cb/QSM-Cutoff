@@ -211,12 +211,12 @@ class BddSymbolic(ForwardReachability):
     def __init__(self, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
         ForwardReachability.__init__(self, tran_sys, instantiator, options)
         self.fmla  = FormulaInitializer(tran_sys, instantiator, options)
-        self.bdd   = Bdd(self.fmla)
         self.reach = None
         self.cubes = []
         self.immutable_cube = ''
 
     def _symbolic_image_computation(self):
+        self.bdd   = Bdd(self.fmla)
         reach = self.bdd.init_action
         frontier = [self.bdd.init_action]
         while (len(frontier) > 0):
@@ -279,10 +279,21 @@ class BddSymbolic(ForwardReachability):
     def _clean(self):
         self.bdd.clean()
 
+    def _print_reachability(self) -> None:
+        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint(self.options, '\n'.join(self.protocol.header), 3)
+        vprint(self.options, '\n'.join(self.cubes), 3)
+
+    def _print_bdd_statistics(self) -> None:
+        vprint(self.options, f'[FW NOTE]: number of reachable cubes: {len(self.cubes)}', 2)
+
     def forward_reachability(self):
         self._symbolic_image_computation()
         self._update_protocol_states()
         self._clean()
-        # TODO: printing
+        self._print_bdd_statistics()
+        self._print_reachability()
+        if (self.options.writeReach):
+            self.protocol.write_reachability()
         # TODO: mimization
         # TODO: update README.md for repycudd

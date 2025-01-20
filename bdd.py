@@ -33,7 +33,7 @@ class FormulaInitializer():
            return il.And(*action_fmlas)
         elif isinstance(action, ia.AssertAction) or isinstance(action, ia.AssumeAction):
             assert(hasattr(action, 'formula'))
-            return action.formula
+            return il.close_formula(action.formula)
         elif isinstance(action, ia.AssignAction):
             lhs = action.args[0]
             rhs = action.args[1]
@@ -50,6 +50,7 @@ class FormulaInitializer():
                 return fmla
             else:
                 consts    = ilu.used_constants_ast(lhs) 
+                consts    = consts.intersection(params)
                 var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
                 const2var = {c:v for v,c in var2const.items()}
                 lhs       = il.substitute(lhs, const2var)
@@ -58,7 +59,9 @@ class FormulaInitializer():
                 else_fmla = lhs 
                 next_lhs  = il.substitute(lhs, self.curr2next)
                 fmla = il.Equals(next_lhs, il.Ite(if_fmla, then_fmla, else_fmla))
-                fmla = il.ForAll(list(lhs_vars) + list(var2const.keys()), fmla)
+                all_vars = list(lhs_vars) + list(var2const.keys())
+                if len(all_vars) > 0:
+                    fmla = il.ForAll(all_vars, fmla)
                 return fmla 
         elif isinstance(action, ia.HavocAction):
             lhs = action.args[0]
@@ -68,6 +71,7 @@ class FormulaInitializer():
                 return il.And()
             else:
                 consts    = ilu.used_constants_ast(lhs) 
+                consts    = consts.intersection(params)
                 var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
                 const2var = {c:v for v,c in var2const.items()}
                 lhs       = il.substitute(lhs, const2var)
@@ -76,9 +80,11 @@ class FormulaInitializer():
                 fmlas = []
                 for v,c in var2const.items():
                     fmla = il.Implies(next_lhs, il.Or(lhs, il.Equals(v,c)))
-                    fmlas.append(il.ForAll(all_vars, fmla))
+                    fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
+                    fmlas.append(fmla)
                     fmla = il.Implies(lhs, il.Or(next_lhs, il.Equals(v,c)))
-                    fmlas.append(il.ForAll(all_vars, fmla))
+                    fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
+                    fmlas.append(fmla)
                 return il.And(*fmlas)
         else:
             assert(0)
@@ -104,7 +110,7 @@ class FormulaInitializer():
                 state_var   = state_symbol
                 output_sort = state_symbol.sort
                 argvars     = []
-                if il.is_function_sort(state_symbol):
+                if il.is_function_sort(state_symbol.sort):
                     argvars     = [il.Variable(f'{sort.name.upper()}{i}', sort) for i, sort in enumerate(state_symbol.sort.dom)] 
                     state_var   = il.App(state_symbol, *argvars)
                     output_sort = state_symbol.sort.rng
