@@ -4,7 +4,7 @@ from transition_system import TransitionSystem
 from prime import *
 from cover_constraints import CoverConstraints
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from util import QrmOptions
+from util import QrmOptions, ForwardMode
 from verbose import *
 
 class Rmin():
@@ -346,9 +346,9 @@ class Minimizer():
         self.print_rmin()
         self.write_ivy_files()
 
-    def _enumerate_models(self, sol_id, invariants, protocol : Protocol):
+    def _compare_symmetry_quotient(self, sol_id, invariants, protocol : Protocol):
         vprint(self.options, f'Minimization check for Solution {sol_id}')
-        self.cover.init_minimization_check_solver(invariants)
+        self.cover.init_minimization_check_solver(invariants, protocol)
         (result, values)  = self.cover.get_minimization_check_minterm()
         model_repr_states = set()
         model_match = True
@@ -376,10 +376,23 @@ class Minimizer():
             vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
         return model_match 
 
+    def _equivalence_checking(self, sol_id, invariants, protocol : Protocol) -> bool:
+        vprint(self.options, f'Minimization check for Solution {sol_id}')
+        self.cover.init_minimization_check_solver(invariants, protocol)
+        (result, _)  = self.cover.get_minimization_check_minterm()
+        if result: # Non-equal
+            vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
+            return False
+        else:
+            vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
+            return True
+
     def minimization_check(self, protocol : Protocol):
         self.cover.init_minimization_check_clauses()
         result = True
         for sol_id, solution in enumerate(self.optimal_solutions):
             invariants = [self.orbits[orbit_id].quantified_form for orbit_id in solution]
-            result = result and self._enumerate_models(sol_id, invariants, protocol)
-        return result
+            if self.options.forward_mode == ForwardMode.Sym_DFS:
+                result = result and self._compare_symmetry_quotient(sol_id, invariants, protocol)
+            else:
+                result = result and self._equivalence_checking(sol_id, invariants, protocol)

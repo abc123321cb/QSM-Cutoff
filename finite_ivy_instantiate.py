@@ -129,7 +129,7 @@ class FiniteIvyInstantiator():
         return instantiated_terms
 
     def _get_all_parameterized_actions(self):
-        actions = self._tran_sys.exported_actions
+        actions = self._tran_sys.exported_action_symbols
         parameterized_actions = []
         for action in actions:
             parameterized_actions += self._get_instantiated_functions(action, mode=InstantiateMode.vars)
@@ -259,9 +259,9 @@ class FiniteIvyInstantiator():
                 formula = il.Equals(args[0], args[1])
         return formula
 
-    def _recursive_simplify(self, formula):
+    def recursive_simplify(self, formula):
         assert(not il.is_quantifier(formula))
-        args = [self._recursive_simplify(arg) for arg in formula.args]
+        args = [self.recursive_simplify(arg) for arg in formula.args]
         if isinstance(formula, il.Not):
             if il.is_true(args[0]):
                  return il.Or()
@@ -293,18 +293,31 @@ class FiniteIvyInstantiator():
                 return il.And()
             formula = il.Implies(args[0], args[1])
         elif isinstance(formula, lg.Eq):
-            if (il.is_enumerated(args[0]) and il.is_enumerated(args[1])
-                and str(formula.args[0]) in set(formula.args[0].sort.extension)):  # lhs is one of constant
-                if args[0] == args[1]:
-                    return il.And()
+            if il.is_enumerated(args[0]) and il.is_enumerated(args[1]):
+                constants = set(args[0].sort.extension)
+                if str(args[0]) in constants and str(args[1]) in constants: 
+                    if args[0] == args[1]:
+                        return il.And()
+                    else:
+                        return il.Or()
+                elif str(args[0]) in constants:
+                    return il.Equals(args[1], args[0])
+                elif str(args[1]) in constants:
+                    return il.Equals(args[0], args[1])
                 else:
-                    return il.Or()
+                    assert(0)
             formula = il.Equals(args[0], args[1])
+        elif isinstance(formula, il.Ite):
+            if il.is_true(args[0]):
+                return args[1]
+            elif il.is_false(args[0]):
+                return args[2]
+            formula = il.Ite(args[0], args[1], args[2])
         return formula
 
     def instantiate_quantifier(self, formula):
         formula = self._recursive_instantiate_quantifier(formula)
-        formula = self._recursive_simplify(formula)
+        formula = self.recursive_simplify(formula)
         return formula
 
     def _set_definitions(self):
@@ -327,7 +340,7 @@ class FiniteIvyInstantiator():
             if not il.is_forall(axiom_fmla) and len(free_vars) > 0:
                 axiom_fmla = il.ForAll(free_vars, axiom_fmla)
             self.axiom_fmla = self.instantiate_quantifier(axiom_fmla)
-            
+
     def _set_pretty_instantiations(self):
         self._set_dfs_variables()
         self._set_protocol_atoms()
@@ -336,4 +349,3 @@ class FiniteIvyInstantiator():
         self._set_dependent_axioms()
         self._set_definitions()
         self._set_axioms()
- 

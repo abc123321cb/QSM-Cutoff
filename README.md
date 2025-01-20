@@ -32,7 +32,22 @@ make
 make install
 ```
 
-3. Install ivy
+3. Install repycudd
+```
+cd repycudd
+cd cudd-2.4.2
+make
+make libso
+cd..
+```
+
+change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X and add the compilation flag `-I[PATH TO Python.h]`
+```
+make
+export PYTHONPATH=$PYTHONPATH:[path to repycudd.py]
+```
+
+4. Install ivy
 ```
 apt-get install cmake
 cd ivy
@@ -40,6 +55,7 @@ python3 build_submodules.py
 python3 setup.py install
 python3 setup.py develop
 ```
+
 
 ### Issues with Installation
 If you don't have permission to `apt-get install` or `yum install`, try the following steps:

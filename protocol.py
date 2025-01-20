@@ -4,7 +4,7 @@ from itertools import permutations, product
 from ivy import ivy_logic as il
 from transition_system import TransitionSystem
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
+from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM, ForwardMode
 from verbose import *
 import numpy as np
 
@@ -283,11 +283,17 @@ class Protocol():
                         self.atom2equivs[atom_i] = []
                     self.atom2equivs[atom_i].append(atom_j)
                     self.remove_atom_ids.add(j)
-                elif int(''.join(state_array[:, i]), 2) + int(''.join(state_array[:, j]), 2) == int('1'*atom_num, 2):  # complement
-                    if not atom_i in self.atom2complements:
-                        self.atom2complements[atom_i] = []
-                    self.atom2complements[atom_i].append(atom_j)
-                    self.remove_atom_ids.add(j)
+                else: 
+                    str_i = ''.join(state_array[:, i])
+                    str_j = ''.join(state_array[:, j])
+                    if self.options.forward_mode == ForwardMode.BDD_Symbolic:
+                        if '-' in str_i or '-' in str_j:
+                            continue
+                    if int(str_i, 2) + int(str_j, 2) == int('1'*atom_num, 2):  # complement
+                        if not atom_i in self.atom2complements:
+                            self.atom2complements[atom_i] = []
+                        self.atom2complements[atom_i].append(atom_j)
+                        self.remove_atom_ids.add(j)
 
     def _set_quotient_reachabiliy(self, state_array):
         if len(self.remove_atom_ids) == 0:

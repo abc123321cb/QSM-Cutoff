@@ -8,7 +8,7 @@ from ivy import logic as lg
 from transition_system import TransitionSystem
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from prime import *
-from util import UseMC
+from util import UseMC, ForwardMode
 
 class CoverConstraints():
     def __init__(self, options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits : List[PrimeOrbit], useMC : UseMC) -> None:
@@ -30,6 +30,9 @@ class CoverConstraints():
         # axiom, definition
         self.root_assume_clauses   = [] 
         self.root_tseitin_clauses  = [] # axiom, definition
+        # when reach is computed with BDD-based symbolic image computation
+        self.rmin_var   = 0
+        self.reach_var  = 0
         # min_check or qinfer_check
         self.instantiated_orbit_assume_clauses    = [] 
         self.instantiated_orbit_tseitin_clauses   = [] 
@@ -330,19 +333,43 @@ class CoverConstraints():
             atom_eq_var = self.tseitin_encode(atom_eq, is_root=True)
             self.root_assume_clauses.append([atom_eq_var])
 
-    def init_minimization_check_solver(self, quantified_orbits):
+    def _get_cube_fmla(self, cube):
+        literals = []
+        for (var_id, val) in enumerate(cube):
+            lit  = self.instantiator.protocol_atoms_fmlas[var_id]
+            if val == '1':
+                literals.append(lit) 
+            elif val == '0':
+                literals.append(il.Not(lit))
+        return il.And(*literals)
+
+    def init_minimization_check_solver(self, quantified_orbits, protocol : Protocol):
         top_var = self.top_var
         self.min_checker = SatSolver()   
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
-        for qorbit in quantified_orbits: 
-            inst_orbit = self.instantiator.instantiate_quantifier(qorbit)
-            orbit_fmla_var = self.tseitin_encode(inst_orbit, is_root=False)
-            self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
-
-        if len(quantified_orbits) == 0: # edge case
-            top_atom_var = self.atom_vars[-1]
-            self.min_checker.add_clause([top_atom_var, -1*top_atom_var])
+        invariants = [self.instantiator.instantiate_quantifier(qorbit) for qorbit in quantified_orbits]
+        if self.options.forward_mode == ForwardMode.Sym_DFS:
+            for invar in invariants: 
+                orbit_fmla_var = self.tseitin_encode(invar, is_root=False)
+                self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
+            if len(quantified_orbits) == 0: # edge case
+                top_atom_var = self.atom_vars[-1]
+                self.min_checker.add_clause([top_atom_var, -1*top_atom_var])
+        else:
+            # invars
+            if len(invariants) == 0: # edge case
+                self.rmin_var = self.new_var()
+            else:
+                and_invars = il.And(*invariants)
+                self.rmin_var = self.tseitin_encode(and_invars, is_root=False) 
+            # reachable states
+            cube_fmlas = [self._get_cube_fmla(cube) for cube in protocol.reachable_states]
+            or_cubes = il.Or(*cube_fmlas)
+            self.reach_var  = self.tseitin_encode(or_cubes)
+            # self.reach_var XOR self.rmin_var
+            self.min_checker.add_clause([self.reach_var, self.rmin_var])
+            self.min_checker.add_clause([-1*self.reach_var, -1*self.rmin_var])
 
         for clause in self.root_assume_clauses:
             self.min_checker.add_clause(clause)
