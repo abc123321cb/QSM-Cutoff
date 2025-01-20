@@ -707,6 +707,16 @@ void quorum_leader_election_wo_maj__node_5__finite::ext__become_leader(node n, n
         isleader[n] = true;
         quorum = s;
 }
+bool quorum_leader_election_wo_maj__node_5__finite::ext__get_isleader(node n0){
+    bool qrm_result;
+    qrm_result = isleader[n0];
+    return qrm_result;
+}
+bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_isleader(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (isleader[n0] == result);
+    return qrm_result;
+}
 bool quorum_leader_election_wo_maj__node_5__finite::ext__get_voted(node n0, node n1){
     bool qrm_result;
     qrm_result = voted[n0][n1];
@@ -715,16 +725,6 @@ bool quorum_leader_election_wo_maj__node_5__finite::ext__get_voted(node n0, node
 bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_voted(node n0, node n1, bool result){
     bool qrm_result;
     qrm_result = (voted[n0][n1] == result);
-    return qrm_result;
-}
-bool quorum_leader_election_wo_maj__node_5__finite::ext__get_member(node n0, nset n1){
-    bool qrm_result;
-    qrm_result = member[n0][n1];
-    return qrm_result;
-}
-bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_member(node n0, nset n1, bool result){
-    bool qrm_result;
-    qrm_result = (member[n0][n1] == result);
     return qrm_result;
 }
 quorum_leader_election_wo_maj__node_5__finite::nset quorum_leader_election_wo_maj__node_5__finite::ext__get_quorum(){
@@ -737,14 +737,14 @@ bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_quorum(nset re
     qrm_result = (quorum == result);
     return qrm_result;
 }
-bool quorum_leader_election_wo_maj__node_5__finite::ext__get_isleader(node n0){
+bool quorum_leader_election_wo_maj__node_5__finite::ext__get_member(node n0, nset n1){
     bool qrm_result;
-    qrm_result = isleader[n0];
+    qrm_result = member[n0][n1];
     return qrm_result;
 }
-bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_isleader(node n0, bool result){
+bool quorum_leader_election_wo_maj__node_5__finite::ext__get_bool_member(node n0, nset n1, bool result){
     bool qrm_result;
-    qrm_result = (isleader[n0] == result);
+    qrm_result = (member[n0][n1] == result);
     return qrm_result;
 }
 void quorum_leader_election_wo_maj__node_5__finite::__tick(int __timeout){
