@@ -216,7 +216,8 @@ class BddSymbolic(ForwardReachability):
         self.immutable_cube = ''
 
     def _symbolic_image_computation(self):
-        self.bdd   = Bdd(self.fmla)
+        self.bdd   = Bdd(self.options, self.fmla)
+        vprint(self.options, 'start symbolic image computation', 5)
         reach = self.bdd.init_action
         frontier = [self.bdd.init_action]
         while (len(frontier) > 0):
@@ -250,6 +251,7 @@ class BddSymbolic(ForwardReachability):
         self.reach = self.bdd.ddmanager.ExistAbstract(reach, self.bdd.next_atom_cube) # perform existential quantification on next atoms
 
     def _update_protocol_states(self):
+        vprint(self.options, 'start extracting cubes', 5)
         has_extract_immut_cube = False
         self.immutable_cube = ''
         immut_lits = ['']*self.protocol.interpreted_atom_num

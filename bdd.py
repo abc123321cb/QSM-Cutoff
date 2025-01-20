@@ -199,9 +199,11 @@ class BddNode():
         return self.name
 
 class Bdd():
-    def __init__(self, fmla : FormulaInitializer):
+    def __init__(self, options: QrmOptions, fmla : FormulaInitializer):
+        self.options      = options
         self.ddmanager    = repycudd.DdManager()
         self.atom_nodes : Dict[str, BddNode]  = {}
+        self.bdd_nodes  : Dict[str, BddNode]  = {}
         self.cudd_id2state_atom_id : Dict[int, int] = {}
         self.cudd_id2immut_atom_id : Dict[int, int] = {}
         self.init_action            = None
@@ -217,6 +219,25 @@ class Bdd():
 
         self._initialize(fmla)
 
+    def canonicalize_formula(self, fmla):
+        args = [self.canonicalize_formula(a) for a in fmla.args]
+        if isinstance(fmla, il.Or): 
+            args = sorted(args, key=lambda x: str(x))
+            fmla = il.Or(*args)
+        elif isinstance(fmla, il.And):
+            args = sorted(args, key=lambda x: str(x))
+            fmla = il.And(*args)
+        elif isinstance(fmla, il.Implies):
+            assert(len(args) == 2)
+            fmla = il.Implies(args[0],args[1]) 
+        elif isinstance(fmla, il.Ite):
+            assert(len(args) == 3)
+            fmla = il.Ite(args[0], args[1], args[2]) 
+        elif isinstance(fmla, lg.Eq):
+            assert(len(args) == 2)
+            fmla = il.Equals(args[0], args[1]) # TODO
+        return fmla
+
     def _get_bdd_node(self, fmla):
         if str(fmla) in self.atom_nodes:
             return self.atom_nodes[str(fmla)].cudd_node
@@ -231,28 +252,32 @@ class Bdd():
                 assert( isinstance(fmla, il.And) or isinstance(fmla, il.Or) )
                 return self._get_bdd_node(fmla.args[0])
             assert(len(fmla.args) > 1) 
+            fmla = self.canonicalize_formula(fmla)
+            if str(fmla) in self.bdd_nodes:
+                return self.bdd_nodes[str(fmla)].cudd_node
             args = [self._get_bdd_node(arg) for arg in fmla.args]
             if isinstance(fmla, il.And):
                 res = args[0]
                 for a in args[1:]:
                     res = self.ddmanager.And(a, res)
-                return res
             elif isinstance(fmla, il.Or):
                 res = args[0]
                 for a in args[1:]:
                     res = self.ddmanager.Or(res,a)
-                return res
             elif isinstance(fmla, il.Implies):
                 assert(len(args) == 2)
-                return self.ddmanager.Or(self.ddmanager.Not(args[0]), args[1])
+                res = self.ddmanager.Or(self.ddmanager.Not(args[0]), args[1])
             elif isinstance(fmla, lg.Eq):
                 assert(len(args) == 2)
-                return self.ddmanager.Xnor(args[0], args[1])
+                res = self.ddmanager.Xnor(args[0], args[1])
             elif isinstance(fmla, il.Ite):
                 assert(len(args) == 3)
-                return self.ddmanager.Ite(fmla.cond, fmla.t_then, fmla.t_else)
+                res = self.ddmanager.Ite(fmla.cond, fmla.t_then, fmla.t_else)
             else:
                 assert(0)
+            bdd_node  = BddNode(str(fmla), res)
+            self.bdd_nodes[str(fmla)] = bdd_node
+            return res
 
     def _get_atoms_bdd_cube(self, atoms):
         indices = repycudd.IntArray(len(atoms))
@@ -262,8 +287,9 @@ class Bdd():
         return cube
 
     def _init_atoms(self, curr_atoms, next_atoms, immutable_atoms):
+        vprint(self.options, 'building bdd for atoms', 5)
         for atom in curr_atoms + next_atoms + immutable_atoms:
-            cudd_node = self.ddmanager.NewVar()
+            cudd_node = self.ddmanager.NewVarAtLevel(0)
             bdd_node  = BddNode(str(atom), cudd_node)
             self.atom_nodes[str(atom)] = bdd_node
         for atom_id, atom in enumerate(curr_atoms):
@@ -274,20 +300,25 @@ class Bdd():
             self.cudd_id2immut_atom_id[cudd_id] = atom_id
 
     def _init_initial_action(self, init_action_fmlas, curr_axiom_fmla):
+        vprint(self.options, 'building bdd for initial action', 5)
         assert(len(init_action_fmlas) == 1) 
         init_fmla = list(init_action_fmlas.values())[0]
         init_fmla = il.And(*[init_fmla, curr_axiom_fmla])
         self.init_action = self._get_bdd_node(init_fmla) 
 
     def _init_axioms(self, curr_axiom_fmla):
+        vprint(self.options, 'building bdd for axioms', 5)
         self.curr_axiom = self._get_bdd_node(curr_axiom_fmla)
 
     def _init_actions(self, exported_action_fmlas):
+        vprint(self.options, 'building bdd for actions', 5)
         for action_symbol, action_fmlas in exported_action_fmlas.items():
+            vprint(self.options, f'building bdd for action: {str(action_symbol)}', 5)
             action_bdds = [self._get_bdd_node(f) for f in action_fmlas]
             self.exported_actions[str(action_symbol)] = action_bdds
 
     def _init_abstraction(self, curr_atoms, next_atoms, immutable_atoms):
+        vprint(self.options, 'building bdd for abstractions', 5)
         self.curr_atom_cube = self._get_atoms_bdd_cube(curr_atoms)
         self.next_atom_cube = self._get_atoms_bdd_cube(next_atoms)
         self.all_but_curr_atom_cube = self._get_atoms_bdd_cube(next_atoms + immutable_atoms)
