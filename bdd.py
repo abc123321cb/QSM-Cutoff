@@ -235,7 +235,8 @@ class Bdd():
             fmla = il.Ite(args[0], args[1], args[2]) 
         elif isinstance(fmla, lg.Eq):
             assert(len(args) == 2)
-            fmla = il.Equals(args[0], args[1]) # TODO
+            args = sorted(args, key=lambda x: str(x))
+            fmla = il.Equals(args[0], args[1]) 
         return fmla
 
     def _get_bdd_node(self, fmla):
@@ -288,7 +289,16 @@ class Bdd():
 
     def _init_atoms(self, curr_atoms, next_atoms, immutable_atoms):
         vprint(self.options, 'building bdd for atoms', 5)
-        for atom in curr_atoms + next_atoms + immutable_atoms:
+        assert(len(curr_atoms) == len(next_atoms))
+        # declare curr and next atom consecutively in order is critical! 
+        for catom, natom in zip(curr_atoms, next_atoms):
+            cudd_node = self.ddmanager.NewVarAtLevel(0)
+            bdd_node  = BddNode(str(catom), cudd_node)
+            self.atom_nodes[str(catom)] = bdd_node
+            cudd_node = self.ddmanager.NewVarAtLevel(0)
+            bdd_node  = BddNode(str(natom), cudd_node)
+            self.atom_nodes[str(natom)] = bdd_node
+        for atom in immutable_atoms:
             cudd_node = self.ddmanager.NewVarAtLevel(0)
             bdd_node  = BddNode(str(atom), cudd_node)
             self.atom_nodes[str(atom)] = bdd_node
