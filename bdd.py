@@ -220,6 +220,8 @@ class Bdd():
         self._initialize(fmla)
 
     def canonicalize_formula(self, fmla):
+        if str(fmla) in self.atom_nodes:
+            return fmla
         args = [self.canonicalize_formula(a) for a in fmla.args]
         if isinstance(fmla, il.Or): 
             args = sorted(args, key=lambda x: str(x))
