@@ -54,15 +54,15 @@ invariant [1000000] holds(N1) & holds(N2) -> N1 = N2
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_holds(n0: node) returns(qrm_result: bool) = {
-    qrm_result := holds(n0)
+action get_replied(n0: node, n1: node) returns(qrm_result: bool) = {
+    qrm_result := replied(n0, n1)
 }
-export get_holds
+export get_replied
 
-action get_bool_holds(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (holds(n0) = result)
+action get_bool_replied(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (replied(n0, n1) = result)
 }
-export get_bool_holds
+export get_bool_replied
 
 action get_requested(n0: node, n1: node) returns(qrm_result: bool) = {
     qrm_result := requested(n0, n1)
@@ -74,13 +74,13 @@ action get_bool_requested(n0: node, n1: node, result: bool) returns(qrm_result: 
 }
 export get_bool_requested
 
-action get_replied(n0: node, n1: node) returns(qrm_result: bool) = {
-    qrm_result := replied(n0, n1)
+action get_holds(n0: node) returns(qrm_result: bool) = {
+    qrm_result := holds(n0)
 }
-export get_replied
+export get_holds
 
-action get_bool_replied(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (replied(n0, n1) = result)
+action get_bool_holds(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (holds(n0) = result)
 }
-export get_bool_replied
+export get_bool_holds
 

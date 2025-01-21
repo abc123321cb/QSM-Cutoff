@@ -74,6 +74,26 @@ axiom member(acceptor1,quorum__acceptor1_acceptor2)
 axiom member(acceptor2,quorum__acceptor1_acceptor2)
 
 ## Access actions ##
+action get_member(a0: acceptor, q1: quorum) returns(qrm_result: bool) = {
+    qrm_result := member(a0, q1)
+}
+export get_member
+
+action get_bool_member(a0: acceptor, q1: quorum, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (member(a0, q1) = result)
+}
+export get_bool_member
+
+action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
+    qrm_result := didNotPromise(a0)
+}
+export get_didNotPromise
+
+action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (didNotPromise(a0) = result)
+}
+export get_bool_didNotPromise
+
 action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
     qrm_result := promise(a0, p1)
 }
@@ -94,15 +114,15 @@ action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_leader
 
-action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
-    qrm_result := didNotPromise(a0)
+action get_start(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := start(p0)
 }
-export get_didNotPromise
+export get_start
 
-action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (didNotPromise(a0) = result)
+action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (start(p0) = result)
 }
-export get_bool_didNotPromise
+export get_bool_start
 
 action get_chosenAt(q0: quorum, p1: proposer) returns(qrm_result: bool) = {
     qrm_result := chosenAt(q0, p1)
@@ -113,24 +133,4 @@ action get_bool_chosenAt(q0: quorum, p1: proposer, result: bool) returns(qrm_res
     qrm_result := (chosenAt(q0, p1) = result)
 }
 export get_bool_chosenAt
-
-action get_member(a0: acceptor, q1: quorum) returns(qrm_result: bool) = {
-    qrm_result := member(a0, q1)
-}
-export get_member
-
-action get_bool_member(a0: acceptor, q1: quorum, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (member(a0, q1) = result)
-}
-export get_bool_member
-
-action get_start(p0: proposer) returns(qrm_result: bool) = {
-    qrm_result := start(p0)
-}
-export get_start
-
-action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (start(p0) = result)
-}
-export get_bool_start
 
