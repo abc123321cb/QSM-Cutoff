@@ -414,8 +414,10 @@ class CoverConstraints():
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
+        vprint(self.options, 'instantiate_quantifier', 5)
         inst_orbit     = self.instantiator.instantiate_quantifier(quantified_orbit)
         eq_term        = il.Equals(il.And(*primes_clauses), inst_orbit)
+        vprint(self.options, 'tseitin_encode', 5)
         eq_var         = self.tseitin_encode(eq_term, is_root=False)
         # assume neq
         self.instantiated_orbit_assume_clauses.append([-1*eq_var])
