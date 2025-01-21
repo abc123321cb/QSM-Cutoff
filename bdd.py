@@ -357,4 +357,5 @@ class Bdd():
         del self.next_DdArray
         self.curr_DdArray = None
         self.next_DdArray = None
+        # TODO: can I free the whole BDD?
 

@@ -461,12 +461,13 @@ class CoverConstraints():
         def_fmla       = self._get_definition_formula()
         axiom_fmla     = self._get_axiom_formula()
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
-        neq_term       = il.Not(il.Equals(il.And(*primes_clauses), quantified_orbit))
+        neq_term       = il.Not(il.Equals(il.And(*primes_clauses), quantified_orbit)) # do not instantiate qorbit, let SMT solver do it
         check_fmla     = il.And(*[def_fmla, axiom_fmla, neq_term])
         self.qinfer_checker  = slv.z3.Solver()
         self.qinfer_checker.add(slv.formula_to_z3(check_fmla))
     
     def quantifier_inference_check_smt(self):
+        # TODO: replace instantiate quantifier for SAT solving to SMT solving for all checks?
         res = self.qinfer_checker.check()
         assert(res == slv.z3.unsat or slv.z3.sat)
         return True if res == slv.z3.unsat else False
