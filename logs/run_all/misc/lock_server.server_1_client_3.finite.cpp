@@ -616,15 +616,15 @@ void lock_server__server_1_client_3__finite::__init(){
         for (int Y = 0; Y < 1; Y++) {
             semaphore[Y] = __tmp0[Y];
         }
-        bool __tmp1[1][3];
-        for (int Y = 0; Y < 1; Y++) {
-            for (int X = 0; X < 3; X++) {
-                __tmp1[Y][X] = false;
+        bool __tmp1[3][1];
+        for (int X = 0; X < 3; X++) {
+            for (int Y = 0; Y < 1; Y++) {
+                __tmp1[X][Y] = false;
             }
         }
-        for (int Y = 0; Y < 1; Y++) {
-            for (int X = 0; X < 3; X++) {
-                link[X][Y] = __tmp1[Y][X];
+        for (int X = 0; X < 3; X++) {
+            for (int Y = 0; Y < 1; Y++) {
+                link[X][Y] = __tmp1[X][Y];
             }
         }
 }
@@ -638,16 +638,6 @@ void lock_server__server_1_client_3__finite::ext__disconnect(client c, server s)
         link[c][s] = false;
         semaphore[s] = true;
 }
-bool lock_server__server_1_client_3__finite::ext__get_link(client c0, server s1){
-    bool qrm_result;
-    qrm_result = link[c0][s1];
-    return qrm_result;
-}
-bool lock_server__server_1_client_3__finite::ext__get_bool_link(client c0, server s1, bool result){
-    bool qrm_result;
-    qrm_result = (link[c0][s1] == result);
-    return qrm_result;
-}
 bool lock_server__server_1_client_3__finite::ext__get_semaphore(server s0){
     bool qrm_result;
     qrm_result = semaphore[s0];
@@ -656,6 +646,16 @@ bool lock_server__server_1_client_3__finite::ext__get_semaphore(server s0){
 bool lock_server__server_1_client_3__finite::ext__get_bool_semaphore(server s0, bool result){
     bool qrm_result;
     qrm_result = (semaphore[s0] == result);
+    return qrm_result;
+}
+bool lock_server__server_1_client_3__finite::ext__get_link(client c0, server s1){
+    bool qrm_result;
+    qrm_result = link[c0][s1];
+    return qrm_result;
+}
+bool lock_server__server_1_client_3__finite::ext__get_bool_link(client c0, server s1, bool result){
+    bool qrm_result;
+    qrm_result = (link[c0][s1] == result);
     return qrm_result;
 }
 void lock_server__server_1_client_3__finite::__tick(int __timeout){

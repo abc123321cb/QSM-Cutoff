@@ -43,7 +43,7 @@ export learn_value
 ##invariant [manual_2] decide(Q, V) -> (forall N. member(N, Q) -> vote(N, V))
 ##invariant [manual_3] decision(V) -> exists Q. decide(Q, V)
 
-invariant [invar_0] forall VALUE0,NODE0,QUORUM0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
+invariant [invar_0] forall VALUE0,QUORUM0,NODE0. vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) # qcost: 6
 invariant [invar_2] forall VALUE0,QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0) # qcost: 4
 
 ### For QRM DFS reachability ###
@@ -70,6 +70,16 @@ action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: b
 }
 export get_bool_member
 
+action get_decision(v0: value) returns(qrm_result: bool) = {
+    qrm_result := decision(v0)
+}
+export get_decision
+
+action get_bool_decision(v0: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (decision(v0) = result)
+}
+export get_bool_decision
+
 action get_decide(q0: quorum, v1: value) returns(qrm_result: bool) = {
     qrm_result := decide(q0, v1)
 }
@@ -89,14 +99,4 @@ action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool
     qrm_result := (vote(n0, v1) = result)
 }
 export get_bool_vote
-
-action get_decision(v0: value) returns(qrm_result: bool) = {
-    qrm_result := decision(v0)
-}
-export get_decision
-
-action get_bool_decision(v0: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (decision(v0) = result)
-}
-export get_bool_decision
 

@@ -116,15 +116,15 @@ invariant [eq_0] msg_commit = tm_committed # equivalence relation
 invariant [eq_1] msg_abort = tm_aborted # equivalence relation
 invariant [invar_1] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
 invariant [invar_6] forall RESOURCE_MANAGER0. ~tm_prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_8] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_8] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
 invariant [invar_9] ~tm_init | ~msg_abort # qcost: 2
-invariant [invar_10] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_10] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
 invariant [invar_18] ~msg_commit | ~tm_init # qcost: 2
 invariant [invar_19] ~msg_commit | ~msg_abort # qcost: 2
-invariant [invar_23] msg_commit | tm_init | msg_abort # qcost: 3
+invariant [invar_23] tm_init | msg_commit | msg_abort # qcost: 3
 invariant [invar_2] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) # qcost: 3
 invariant [invar_11] forall RESOURCE_MANAGER0. msg_commit | ~committed(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_17] forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | ~msg_commit # qcost: 3
-invariant [invar_35] forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) # qcost: 5
+invariant [invar_17] forall RESOURCE_MANAGER0. ~msg_commit | tm_prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_35] forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) # qcost: 5
 invariant [invar_24] forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | msg_abort | ~aborted(RESOURCE_MANAGER0) # qcost: 4
 invariant [invar_7] forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3

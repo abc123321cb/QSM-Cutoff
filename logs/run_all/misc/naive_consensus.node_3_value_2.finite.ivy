@@ -57,6 +57,16 @@ axiom member(node1,quorum__node1_node2)
 axiom member(node2,quorum__node1_node2)
 
 ## Access actions ##
+action get_vote(n0: node, v1: value) returns(qrm_result: bool) = {
+    qrm_result := vote(n0, v1)
+}
+export get_vote
+
+action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (vote(n0, v1) = result)
+}
+export get_bool_vote
+
 action get_decide(q0: quorum, v1: value) returns(qrm_result: bool) = {
     qrm_result := decide(q0, v1)
 }
@@ -76,16 +86,6 @@ action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: b
     qrm_result := (member(n0, q1) = result)
 }
 export get_bool_member
-
-action get_vote(n0: node, v1: value) returns(qrm_result: bool) = {
-    qrm_result := vote(n0, v1)
-}
-export get_vote
-
-action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (vote(n0, v1) = result)
-}
-export get_bool_vote
 
 action get_decision(v0: value) returns(qrm_result: bool) = {
     qrm_result := decision(v0)

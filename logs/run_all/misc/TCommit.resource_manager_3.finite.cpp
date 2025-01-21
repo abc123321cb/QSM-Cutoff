@@ -674,16 +674,6 @@ bool TCommit__resource_manager_3__finite::ext__get_bool_committed(resource_manag
     qrm_result = (committed[r0] == result);
     return qrm_result;
 }
-bool TCommit__resource_manager_3__finite::ext__get_aborted(resource_manager r0){
-    bool qrm_result;
-    qrm_result = aborted[r0];
-    return qrm_result;
-}
-bool TCommit__resource_manager_3__finite::ext__get_bool_aborted(resource_manager r0, bool result){
-    bool qrm_result;
-    qrm_result = (aborted[r0] == result);
-    return qrm_result;
-}
 bool TCommit__resource_manager_3__finite::ext__get_prepared(resource_manager r0){
     bool qrm_result;
     qrm_result = prepared[r0];
@@ -692,6 +682,16 @@ bool TCommit__resource_manager_3__finite::ext__get_prepared(resource_manager r0)
 bool TCommit__resource_manager_3__finite::ext__get_bool_prepared(resource_manager r0, bool result){
     bool qrm_result;
     qrm_result = (prepared[r0] == result);
+    return qrm_result;
+}
+bool TCommit__resource_manager_3__finite::ext__get_aborted(resource_manager r0){
+    bool qrm_result;
+    qrm_result = aborted[r0];
+    return qrm_result;
+}
+bool TCommit__resource_manager_3__finite::ext__get_bool_aborted(resource_manager r0, bool result){
+    bool qrm_result;
+    qrm_result = (aborted[r0] == result);
     return qrm_result;
 }
 bool TCommit__resource_manager_3__finite::ext__get_working(resource_manager r0){

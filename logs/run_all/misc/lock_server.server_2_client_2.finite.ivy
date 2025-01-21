@@ -38,23 +38,13 @@ export disconnect
 
 invariant [invar_0] forall SERVER0. (exists CLIENT0. ~link(CLIENT0,SERVER0)) # qcost: 3
 invariant [invar_1] forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
-invariant [invar_2] forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0)) # qcost: 4
+invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)) # qcost: 4
 
 ### For QRM DFS reachability ###
 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_semaphore(s0: server) returns(qrm_result: bool) = {
-    qrm_result := semaphore(s0)
-}
-export get_semaphore
-
-action get_bool_semaphore(s0: server, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (semaphore(s0) = result)
-}
-export get_bool_semaphore
-
 action get_link(c0: client, s1: server) returns(qrm_result: bool) = {
     qrm_result := link(c0, s1)
 }
@@ -64,4 +54,14 @@ action get_bool_link(c0: client, s1: server, result: bool) returns(qrm_result: b
     qrm_result := (link(c0, s1) = result)
 }
 export get_bool_link
+
+action get_semaphore(s0: server) returns(qrm_result: bool) = {
+    qrm_result := semaphore(s0)
+}
+export get_semaphore
+
+action get_bool_semaphore(s0: server, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (semaphore(s0) = result)
+}
+export get_bool_semaphore
 

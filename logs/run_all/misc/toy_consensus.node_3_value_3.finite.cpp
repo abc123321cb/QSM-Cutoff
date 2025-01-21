@@ -641,14 +641,14 @@ void toy_consensus__node_3_value_3__finite::__init(){
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
         bool __tmp2[3][3];
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 3; V++) {
-                __tmp2[N][V] = false;
+        for (int V = 0; V < 3; V++) {
+            for (int N = 0; N < 3; N++) {
+                __tmp2[V][N] = false;
             }
         }
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 3; V++) {
-                vote[N][V] = __tmp2[N][V];
+        for (int V = 0; V < 3; V++) {
+            for (int N = 0; N < 3; N++) {
+                vote[N][V] = __tmp2[V][N];
             }
         }
         bool __tmp3[3];
@@ -680,16 +680,6 @@ void toy_consensus__node_3_value_3__finite::ext__cast_vote(node n, value v){
 void toy_consensus__node_3_value_3__finite::ext__decide(value v, quorum q){
         ivy_assume(chosenAt(q,v), "toy_consensus.node_3_value_3.finite.ivy: line 29");
         decision[v] = true;
-}
-bool toy_consensus__node_3_value_3__finite::ext__get_decision(value v0){
-    bool qrm_result;
-    qrm_result = decision[v0];
-    return qrm_result;
-}
-bool toy_consensus__node_3_value_3__finite::ext__get_bool_decision(value v0, bool result){
-    bool qrm_result;
-    qrm_result = (decision[v0] == result);
-    return qrm_result;
 }
 bool toy_consensus__node_3_value_3__finite::ext__get_chosenAt(quorum q0, value v1){
     bool qrm_result;
@@ -729,6 +719,16 @@ bool toy_consensus__node_3_value_3__finite::ext__get_didNotVote(node n0){
 bool toy_consensus__node_3_value_3__finite::ext__get_bool_didNotVote(node n0, bool result){
     bool qrm_result;
     qrm_result = (didNotVote(n0) == result);
+    return qrm_result;
+}
+bool toy_consensus__node_3_value_3__finite::ext__get_decision(value v0){
+    bool qrm_result;
+    qrm_result = decision[v0];
+    return qrm_result;
+}
+bool toy_consensus__node_3_value_3__finite::ext__get_bool_decision(value v0, bool result){
+    bool qrm_result;
+    qrm_result = (decision[v0] == result);
     return qrm_result;
 }
 void toy_consensus__node_3_value_3__finite::__tick(int __timeout){

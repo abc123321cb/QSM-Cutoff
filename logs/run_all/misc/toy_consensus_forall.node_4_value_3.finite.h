@@ -643,6 +643,8 @@ class toy_consensus_forall__node_4_value_3__finite {
 void __init();
     virtual void ext__cast_vote(node n, value v);
     virtual void ext__decide(value v, quorum q);
+    virtual bool ext__get_decided(value v0);
+    virtual bool ext__get_bool_decided(value v0, bool result);
     virtual bool ext__get_member(node n0, quorum q1);
     virtual bool ext__get_bool_member(node n0, quorum q1, bool result);
     virtual bool ext__get_voted(node n0);
@@ -651,7 +653,5 @@ void __init();
     virtual bool ext__get_bool_voting_quorum(quorum result);
     virtual bool ext__get_vote(node n0, value v1);
     virtual bool ext__get_bool_vote(node n0, value v1, bool result);
-    virtual bool ext__get_decided(value v0);
-    virtual bool ext__get_bool_decided(value v0, bool result);
     void __tick(int timeout);
 };

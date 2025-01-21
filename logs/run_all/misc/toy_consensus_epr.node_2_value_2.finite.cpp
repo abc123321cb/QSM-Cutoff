@@ -672,16 +672,6 @@ void toy_consensus_epr__node_2_value_2__finite::ext__decide(value v, quorum q){
         ivy_assume(chosenAt(q,v), "toy_consensus_epr.node_2_value_2.finite.ivy: line 30");
         decided[v] = true;
 }
-bool toy_consensus_epr__node_2_value_2__finite::ext__get_chosenAt(quorum q0, value v1){
-    bool qrm_result;
-    qrm_result = chosenAt(q0,v1);
-    return qrm_result;
-}
-bool toy_consensus_epr__node_2_value_2__finite::ext__get_bool_chosenAt(quorum q0, value v1, bool result){
-    bool qrm_result;
-    qrm_result = (chosenAt(q0,v1) == result);
-    return qrm_result;
-}
 bool toy_consensus_epr__node_2_value_2__finite::ext__get_voted(node n0){
     bool qrm_result;
     qrm_result = voted[n0];
@@ -690,6 +680,16 @@ bool toy_consensus_epr__node_2_value_2__finite::ext__get_voted(node n0){
 bool toy_consensus_epr__node_2_value_2__finite::ext__get_bool_voted(node n0, bool result){
     bool qrm_result;
     qrm_result = (voted[n0] == result);
+    return qrm_result;
+}
+bool toy_consensus_epr__node_2_value_2__finite::ext__get_chosenAt(quorum q0, value v1){
+    bool qrm_result;
+    qrm_result = chosenAt(q0,v1);
+    return qrm_result;
+}
+bool toy_consensus_epr__node_2_value_2__finite::ext__get_bool_chosenAt(quorum q0, value v1, bool result){
+    bool qrm_result;
+    qrm_result = (chosenAt(q0,v1) == result);
     return qrm_result;
 }
 bool toy_consensus_epr__node_2_value_2__finite::ext__get_vote(node n0, value v1){

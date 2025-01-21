@@ -655,8 +655,8 @@ void sharded_kv__node_3_key_1_value_3__finite::__init(){
         owner[2][0] = false;
     }
     else if (qrm_solution_count == 1){
-        owner[0][0] = false;
-        owner[1][0] = true;
+        owner[0][0] = true;
+        owner[1][0] = false;
         owner[2][0] = false;
     }
     ++ qrm_solution_count;
@@ -686,16 +686,6 @@ void sharded_kv__node_3_key_1_value_3__finite::ext__put(node n, key k, value v){
             table[n][k][V] = __tmp2[V];
         }
 }
-bool sharded_kv__node_3_key_1_value_3__finite::ext__get_transfer_msg(node n0, key k1, value v2){
-    bool qrm_result;
-    qrm_result = transfer_msg[n0][k1][v2];
-    return qrm_result;
-}
-bool sharded_kv__node_3_key_1_value_3__finite::ext__get_bool_transfer_msg(node n0, key k1, value v2, bool result){
-    bool qrm_result;
-    qrm_result = (transfer_msg[n0][k1][v2] == result);
-    return qrm_result;
-}
 bool sharded_kv__node_3_key_1_value_3__finite::ext__get_table(node n0, key k1, value v2){
     bool qrm_result;
     qrm_result = table[n0][k1][v2];
@@ -704,6 +694,16 @@ bool sharded_kv__node_3_key_1_value_3__finite::ext__get_table(node n0, key k1, v
 bool sharded_kv__node_3_key_1_value_3__finite::ext__get_bool_table(node n0, key k1, value v2, bool result){
     bool qrm_result;
     qrm_result = (table[n0][k1][v2] == result);
+    return qrm_result;
+}
+bool sharded_kv__node_3_key_1_value_3__finite::ext__get_transfer_msg(node n0, key k1, value v2){
+    bool qrm_result;
+    qrm_result = transfer_msg[n0][k1][v2];
+    return qrm_result;
+}
+bool sharded_kv__node_3_key_1_value_3__finite::ext__get_bool_transfer_msg(node n0, key k1, value v2, bool result){
+    bool qrm_result;
+    qrm_result = (transfer_msg[n0][k1][v2] == result);
     return qrm_result;
 }
 bool sharded_kv__node_3_key_1_value_3__finite::ext__get_owner(node n0, key k1){

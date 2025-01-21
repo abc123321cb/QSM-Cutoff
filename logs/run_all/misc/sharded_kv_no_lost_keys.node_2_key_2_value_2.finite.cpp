@@ -698,16 +698,6 @@ bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_bool_transf
     qrm_result = (transfer_msg[n0][k1][v2] == result);
     return qrm_result;
 }
-bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_table(node n0, key k1, value v2){
-    bool qrm_result;
-    qrm_result = table[n0][k1][v2];
-    return qrm_result;
-}
-bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_bool_table(node n0, key k1, value v2, bool result){
-    bool qrm_result;
-    qrm_result = (table[n0][k1][v2] == result);
-    return qrm_result;
-}
 bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_owner(node n0, key k1){
     bool qrm_result;
     qrm_result = owner[n0][k1];
@@ -716,6 +706,16 @@ bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_owner(node 
 bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_bool_owner(node n0, key k1, bool result){
     bool qrm_result;
     qrm_result = (owner[n0][k1] == result);
+    return qrm_result;
+}
+bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_table(node n0, key k1, value v2){
+    bool qrm_result;
+    qrm_result = table[n0][k1][v2];
+    return qrm_result;
+}
+bool sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::ext__get_bool_table(node n0, key k1, value v2, bool result){
+    bool qrm_result;
+    qrm_result = (table[n0][k1][v2] == result);
     return qrm_result;
 }
 void sharded_kv_no_lost_keys__node_2_key_2_value_2__finite::__tick(int __timeout){

@@ -657,16 +657,6 @@ void lockserv_automaton__node_2__finite::ext__recv_unlock(node sender){
         unlock_msg[sender] = false;
         held = false;
 }
-bool lockserv_automaton__node_2__finite::ext__get_unlock_msg(node n0){
-    bool qrm_result;
-    qrm_result = unlock_msg[n0];
-    return qrm_result;
-}
-bool lockserv_automaton__node_2__finite::ext__get_bool_unlock_msg(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (unlock_msg[n0] == result);
-    return qrm_result;
-}
 bool lockserv_automaton__node_2__finite::ext__get_lock_msg(node n0){
     bool qrm_result;
     qrm_result = lock_msg[n0];
@@ -677,16 +667,6 @@ bool lockserv_automaton__node_2__finite::ext__get_bool_lock_msg(node n0, bool re
     qrm_result = (lock_msg[n0] == result);
     return qrm_result;
 }
-bool lockserv_automaton__node_2__finite::ext__get_grant_msg(node n0){
-    bool qrm_result;
-    qrm_result = grant_msg[n0];
-    return qrm_result;
-}
-bool lockserv_automaton__node_2__finite::ext__get_bool_grant_msg(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (grant_msg[n0] == result);
-    return qrm_result;
-}
 bool lockserv_automaton__node_2__finite::ext__get_held(){
     bool qrm_result;
     qrm_result = held;
@@ -695,6 +675,26 @@ bool lockserv_automaton__node_2__finite::ext__get_held(){
 bool lockserv_automaton__node_2__finite::ext__get_bool_held(bool result){
     bool qrm_result;
     qrm_result = (held == result);
+    return qrm_result;
+}
+bool lockserv_automaton__node_2__finite::ext__get_unlock_msg(node n0){
+    bool qrm_result;
+    qrm_result = unlock_msg[n0];
+    return qrm_result;
+}
+bool lockserv_automaton__node_2__finite::ext__get_bool_unlock_msg(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (unlock_msg[n0] == result);
+    return qrm_result;
+}
+bool lockserv_automaton__node_2__finite::ext__get_grant_msg(node n0){
+    bool qrm_result;
+    qrm_result = grant_msg[n0];
+    return qrm_result;
+}
+bool lockserv_automaton__node_2__finite::ext__get_bool_grant_msg(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (grant_msg[n0] == result);
     return qrm_result;
 }
 bool lockserv_automaton__node_2__finite::ext__get_holds_lock(node n0){
