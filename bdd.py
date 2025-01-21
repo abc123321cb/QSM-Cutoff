@@ -294,14 +294,14 @@ class Bdd():
         assert(len(curr_atoms) == len(next_atoms))
         # declare curr and next atom consecutively in order is critical! 
         for catom, natom in zip(curr_atoms, next_atoms):
-            cudd_node = self.ddmanager.NewVarAtLevel(0)
+            cudd_node = self.ddmanager.NewVar()
             bdd_node  = BddNode(str(catom), cudd_node)
             self.atom_nodes[str(catom)] = bdd_node
-            cudd_node = self.ddmanager.NewVarAtLevel(0)
+            cudd_node = self.ddmanager.NewVar()
             bdd_node  = BddNode(str(natom), cudd_node)
             self.atom_nodes[str(natom)] = bdd_node
         for atom in immutable_atoms:
-            cudd_node = self.ddmanager.NewVarAtLevel(0)
+            cudd_node = self.ddmanager.NewVar()
             bdd_node  = BddNode(str(atom), cudd_node)
             self.atom_nodes[str(atom)] = bdd_node
         for atom_id, atom in enumerate(curr_atoms):
