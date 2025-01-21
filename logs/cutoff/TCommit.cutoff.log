@@ -51,11 +51,11 @@ g++ -shared TCommit.resource_manager_2.finite.o TCommit.resource_manager_2.finit
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 7.109 seconds
+[QRM NOTE]: Time elapsed since start: 7.333 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.109 seconds
+[QRM NOTE]: Time elapsed since last: 7.333 seconds
 
-[QRM NOTE]: Peak memory: 1177262 bytes
+[QRM NOTE]: Peak memory: 1173991 bytes
 
 
 ===================================
@@ -81,9 +81,9 @@ g++ -shared TCommit.resource_manager_2.finite.o TCommit.resource_manager_2.finit
 
 sort: resource_manager=['resource_manager0', 'resource_manager1']
 predicate: aborted('resource_manager',)
-predicate: working('resource_manager',)
-predicate: committed('resource_manager',)
 predicate: prepared('resource_manager',)
+predicate: committed('resource_manager',)
+predicate: working('resource_manager',)
 interpreted atoms: {}
 state atoms: ['aborted(resource_manager0)', 'aborted(resource_manager1)', 'committed(resource_manager0)', 'committed(resource_manager1)', 'prepared(resource_manager0)', 'prepared(resource_manager1)', 'working(resource_manager0)', 'working(resource_manager1)']
 representative states : 3, 6, 12, 24, 48, 72, 192, 66
@@ -172,11 +172,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.191 seconds
+[QRM NOTE]: Time elapsed since start: 7.428 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.083 seconds
+[QRM NOTE]: Time elapsed since last: 0.095 seconds
 
-[QRM NOTE]: Peak memory: 1208344 bytes
+[QRM NOTE]: Peak memory: 1205031 bytes
 
 
 ======================================
@@ -191,11 +191,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 7.194 seconds
+[QRM NOTE]: Time elapsed since start: 7.430 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 159062 bytes
+[QRM NOTE]: Peak memory: 155795 bytes
 
 
 ==================================================================================================
@@ -213,12 +213,16 @@ states:
 
 
 === Prime Orbit 0 =====================
-size : 2
-num_suborbits: 1
-0 (*) : -1---1--
-0     : ['aborted(resource_manager1)', 'prepared(resource_manager1)']
-1     : 1---1---
-1     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
+size : 4
+num_suborbits: 2
+0 (*) : ---1---1
+0     : ['committed(resource_manager1)', 'working(resource_manager1)']
+1     : --1---1-
+1     : ['committed(resource_manager0)', 'working(resource_manager0)']
+4 (*) : --1----1
+4     : ['committed(resource_manager0)', 'working(resource_manager1)']
+5     : ---1--1-
+5     : ['committed(resource_manager1)', 'working(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -243,10 +247,10 @@ qcost : 0
 === Prime Orbit 2 =====================
 size : 2
 num_suborbits: 1
-4 (*) : ---1-1--
-4     : ['committed(resource_manager1)', 'prepared(resource_manager1)']
-5     : --1-1---
-5     : ['committed(resource_manager0)', 'prepared(resource_manager0)']
+6 (*) : -1-----1
+6     : ['aborted(resource_manager1)', 'working(resource_manager1)']
+7     : 1-----1-
+7     : ['aborted(resource_manager0)', 'working(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -255,16 +259,12 @@ qcost : 0
 
 
 === Prime Orbit 3 =====================
-size : 4
-num_suborbits: 2
-6 (*) : ---1---1
-6     : ['committed(resource_manager1)', 'working(resource_manager1)']
-7     : --1---1-
-7     : ['committed(resource_manager0)', 'working(resource_manager0)']
-12 (*) : ---1--1-
-12     : ['committed(resource_manager1)', 'working(resource_manager0)']
-13     : --1----1
-13     : ['committed(resource_manager0)', 'working(resource_manager1)']
+size : 2
+num_suborbits: 1
+8 (*) : -1---1--
+8     : ['aborted(resource_manager1)', 'prepared(resource_manager1)']
+9     : 1---1---
+9     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -275,14 +275,14 @@ qcost : 0
 === Prime Orbit 4 =====================
 size : 4
 num_suborbits: 2
-8 (*) : -1-1----
-8     : ['aborted(resource_manager1)', 'committed(resource_manager1)']
-9     : 1-1-----
-9     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
-10 (*) : 1--1----
-10     : ['aborted(resource_manager0)', 'committed(resource_manager1)']
-11     : -11-----
-11     : ['aborted(resource_manager1)', 'committed(resource_manager0)']
+10 (*) : -1-1----
+10     : ['aborted(resource_manager1)', 'committed(resource_manager1)']
+11     : 1-1-----
+11     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
+12 (*) : -11-----
+12     : ['aborted(resource_manager1)', 'committed(resource_manager0)']
+13     : 1--1----
+13     : ['aborted(resource_manager0)', 'committed(resource_manager1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -293,10 +293,10 @@ qcost : 0
 === Prime Orbit 5 =====================
 size : 2
 num_suborbits: 1
-14 (*) : -1-----1
-14     : ['aborted(resource_manager1)', 'working(resource_manager1)']
-15     : 1-----1-
-15     : ['aborted(resource_manager0)', 'working(resource_manager0)']
+14 (*) : ---1-1--
+14     : ['committed(resource_manager1)', 'prepared(resource_manager1)']
+15     : --1-1---
+15     : ['committed(resource_manager0)', 'prepared(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -307,10 +307,10 @@ qcost : 0
 === Prime Orbit 6 =====================
 size : 2
 num_suborbits: 1
-16 (*) : --10-0--
-16     : ['committed(resource_manager0)', '~committed(resource_manager1)', '~prepared(resource_manager1)']
-17     : --010---
-17     : ['committed(resource_manager1)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
+16 (*) : --010---
+16     : ['committed(resource_manager1)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
+17     : --10-0--
+17     : ['committed(resource_manager0)', '~committed(resource_manager1)', '~prepared(resource_manager1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -321,10 +321,10 @@ qcost : 0
 === Prime Orbit 7 =====================
 size : 2
 num_suborbits: 1
-18 (*) : -0-0-0-0
-18     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-19     : 0-0-0-0-
-19     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+18 (*) : 10---0-0
+18     : ['aborted(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+19     : 01--0-0-
+19     : ['aborted(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -335,10 +335,10 @@ qcost : 0
 === Prime Orbit 8 =====================
 size : 2
 num_suborbits: 1
-20 (*) : 0---0-01
-20     : ['working(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
-21     : -0---010
-21     : ['working(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+20 (*) : 0-0-0-0-
+20     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+21     : -0-0-0-0
+21     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -349,10 +349,10 @@ qcost : 0
 === Prime Orbit 9 =====================
 size : 2
 num_suborbits: 1
-22 (*) : 10---0-0
-22     : ['aborted(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-23     : 01--0-0-
-23     : ['aborted(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+22 (*) : -0---010
+22     : ['working(resource_manager0)', '~aborted(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+23     : 0---0-01
+23     : ['working(resource_manager1)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -381,11 +381,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 26
 
-[QRM NOTE]: Time elapsed since start: 7.207 seconds
+[QRM NOTE]: Time elapsed since start: 7.445 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.013 seconds
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
 
-[QRM NOTE]: Peak memory: 1255112 bytes
+[QRM NOTE]: Peak memory: 1254259 bytes
 
 
 =======================================================================================
@@ -406,29 +406,29 @@ Before reduction :
  pending  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
  solution : []
 
-Essensial at level 0 : {0, 1, 2, 3, 4, 5, 7}
+Essensial at level 0 : {0, 1, 2, 3, 4, 5, 8}
 
 Before removed
  coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1)]
 
 After removed
- coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, 0), (7, -1), (8, 0), (9, 0), (10, 0)]
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, 0), (7, 0), (8, -1), (9, 0), (10, 0)]
 
-Covered at level 0 : {8, 9, 10, 6}
+Covered at level 0 : {9, 10, 6, 7}
 
 After reduction : 
  pending  : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 
 Before reduction : 
  pending  : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 Essensial at level 0 : set()
 
 Before removed
- coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, 0), (7, -1), (8, 0), (9, 0), (10, 0)]
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, 0), (7, 0), (8, -1), (9, 0), (10, 0)]
 
 After removed
  coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1)]
@@ -437,13 +437,13 @@ Covered at level 0 : set()
 
 After reduction : 
  pending  : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
-[QRM NOTE]: Time elapsed since start: 7.209 seconds
+[QRM NOTE]: Time elapsed since start: 7.447 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 205309 bytes
+[QRM NOTE]: Peak memory: 204444 bytes
 
 
 ===========================================================================================
@@ -457,307 +457,16 @@ After reduction :
 
 
 === Prime Orbit 0 =====================
-size : 2
-num_suborbits: 1
-0 (*) : -1---1--
-0     : ['aborted(resource_manager1)', 'prepared(resource_manager1)']
-1     : 1---1---
-1     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
-num_forall :   0
-num_exists :   0
-num_literals : 0
-quantified form : None
-qcost : 0
-
-
-
-
----------- QPrime ----------
-
-
----------- ConstArgBinding ----------
-
-terms: ['aborted(resource_manager1)', 'prepared(resource_manager1)']
-
-sign_func_name2args: {'0$aborted': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
-
-const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$aborted$0$0, resource_manager$0$prepared$0$0]}
-
-sig2const: {'resource_manager$0$aborted$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
-
-
----------- ArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0]}
-
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0}
-
-part_sig: ('resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0',)
-
-
----------- SigGenerator ----------
-
-terms:  ['aborted(resource_manager1)', 'prepared(resource_manager1)']
-
-func_name2symbol:  {'aborted': Const('aborted', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
-
-func_name2args_sort:  {'aborted': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'prepared': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
-
-sign_func_name2count:  {'0$aborted': 1, '0$prepared': 1}
-
-
----------- ProductArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0]}
-
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0}
-
-	sort: resource_manager
-
-	identical_classes: {'resource_manager$0$aborted$0; resource_manager$0$prepared$0': [resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0]}
-
-	identical_single_classes: {'resource_manager$0$aborted$0; resource_manager$0$prepared$0': resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0}
-
-	identical_multi_classes: {}
-
-
----------- QInference: _set_sort_to_quantifier_mode ----------
-
-quantifier mode: resource_manager: QuantifierMode.forall
-
-
----------- QInference: _set_constraint_mode ----------
-
-constraint mode: ConstraintMode.no_merge
-
-
----------- QFormula: _set_qvars ----------
-
-forall_qvars: {Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
-
-exists_qvars: set()
-
-
----------- QFormula: _set_signed_func_name_to_args ----------
-
-signed_func_name2args: {'0$aborted': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$prepared': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
-
-
----------- QFormula: _set_qterms ----------
-
-qterms: ['prepared(RESOURCE_MANAGER0)', 'aborted(RESOURCE_MANAGER0)']
-
-
----------- QFormula: get_qclause ----------
-
-qclause: forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
-
-
-=== Prime Orbit 1 =====================
-size : 2
-num_suborbits: 1
-2 (*) : -----1-1
-2     : ['prepared(resource_manager1)', 'working(resource_manager1)']
-3     : ----1-1-
-3     : ['prepared(resource_manager0)', 'working(resource_manager0)']
-num_forall :   0
-num_exists :   0
-num_literals : 0
-quantified form : None
-qcost : 0
-
-
-
-
----------- QPrime ----------
-
-
----------- ConstArgBinding ----------
-
-terms: ['prepared(resource_manager1)', 'working(resource_manager1)']
-
-sign_func_name2args: {'0$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$working': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
-
-const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$prepared$0$0, resource_manager$0$working$0$0]}
-
-sig2const: {'resource_manager$0$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$working$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
-
-
----------- ArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$prepared$0$0; resource_manager$0$working$0$0]}
-
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$prepared$0$0; resource_manager$0$working$0$0}
-
-part_sig: ('resource_manager$0$prepared$0$0; resource_manager$0$working$0$0',)
-
-
----------- SigGenerator ----------
-
-terms:  ['prepared(resource_manager1)', 'working(resource_manager1)']
-
-func_name2symbol:  {'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'working': Const('working', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
-
-func_name2args_sort:  {'prepared': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'working': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
-
-sign_func_name2count:  {'0$prepared': 1, '0$working': 1}
-
-
----------- ProductArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$prepared$0$0; resource_manager$0$working$0$0]}
-
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$prepared$0$0; resource_manager$0$working$0$0}
-
-	sort: resource_manager
-
-	identical_classes: {'resource_manager$0$prepared$0; resource_manager$0$working$0': [resource_manager$0$prepared$0$0; resource_manager$0$working$0$0]}
-
-	identical_single_classes: {'resource_manager$0$prepared$0; resource_manager$0$working$0': resource_manager$0$prepared$0$0; resource_manager$0$working$0$0}
-
-	identical_multi_classes: {}
-
-
----------- QInference: _set_sort_to_quantifier_mode ----------
-
-quantifier mode: resource_manager: QuantifierMode.forall
-
-
----------- QInference: _set_constraint_mode ----------
-
-constraint mode: ConstraintMode.no_merge
-
-
----------- QFormula: _set_qvars ----------
-
-forall_qvars: {Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
-
-exists_qvars: set()
-
-
----------- QFormula: _set_signed_func_name_to_args ----------
-
-signed_func_name2args: {'0$prepared': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$working': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
-
-
----------- QFormula: _set_qterms ----------
-
-qterms: ['prepared(RESOURCE_MANAGER0)', 'working(RESOURCE_MANAGER0)']
-
-
----------- QFormula: get_qclause ----------
-
-qclause: forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
-
-
-=== Prime Orbit 2 =====================
-size : 2
-num_suborbits: 1
-4 (*) : ---1-1--
-4     : ['committed(resource_manager1)', 'prepared(resource_manager1)']
-5     : --1-1---
-5     : ['committed(resource_manager0)', 'prepared(resource_manager0)']
-num_forall :   0
-num_exists :   0
-num_literals : 0
-quantified form : None
-qcost : 0
-
-
-
-
----------- QPrime ----------
-
-
----------- ConstArgBinding ----------
-
-terms: ['committed(resource_manager1)', 'prepared(resource_manager1)']
-
-sign_func_name2args: {'0$committed': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
-
-const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$committed$0$0, resource_manager$0$prepared$0$0]}
-
-sig2const: {'resource_manager$0$committed$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
-
-
----------- ArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0]}
-
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0}
-
-part_sig: ('resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0',)
-
-
----------- SigGenerator ----------
-
-terms:  ['committed(resource_manager1)', 'prepared(resource_manager1)']
-
-func_name2symbol:  {'committed': Const('committed', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
-
-func_name2args_sort:  {'committed': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'prepared': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
-
-sign_func_name2count:  {'0$committed': 1, '0$prepared': 1}
-
-
----------- ProductArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0]}
-
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0}
-
-	sort: resource_manager
-
-	identical_classes: {'resource_manager$0$committed$0; resource_manager$0$prepared$0': [resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0]}
-
-	identical_single_classes: {'resource_manager$0$committed$0; resource_manager$0$prepared$0': resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0}
-
-	identical_multi_classes: {}
-
-
----------- QInference: _set_sort_to_quantifier_mode ----------
-
-quantifier mode: resource_manager: QuantifierMode.forall
-
-
----------- QInference: _set_constraint_mode ----------
-
-constraint mode: ConstraintMode.no_merge
-
-
----------- QFormula: _set_qvars ----------
-
-forall_qvars: {Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
-
-exists_qvars: set()
-
-
----------- QFormula: _set_signed_func_name_to_args ----------
-
-signed_func_name2args: {'0$committed': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$prepared': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
-
-
----------- QFormula: _set_qterms ----------
-
-qterms: ['committed(RESOURCE_MANAGER0)', 'prepared(RESOURCE_MANAGER0)']
-
-
----------- QFormula: get_qclause ----------
-
-qclause: forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
-
-
-=== Prime Orbit 3 =====================
 size : 4
 num_suborbits: 2
-6 (*) : ---1---1
-6     : ['committed(resource_manager1)', 'working(resource_manager1)']
-7     : --1---1-
-7     : ['committed(resource_manager0)', 'working(resource_manager0)']
-12 (*) : ---1--1-
-12     : ['committed(resource_manager1)', 'working(resource_manager0)']
-13     : --1----1
-13     : ['committed(resource_manager0)', 'working(resource_manager1)']
+0 (*) : ---1---1
+0     : ['committed(resource_manager1)', 'working(resource_manager1)']
+1     : --1---1-
+1     : ['committed(resource_manager0)', 'working(resource_manager0)']
+4 (*) : --1----1
+4     : ['committed(resource_manager0)', 'working(resource_manager1)']
+5     : ---1--1-
+5     : ['committed(resource_manager1)', 'working(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -795,13 +504,13 @@ part_sig: ('resource_manager$0$committed$0$0; resource_manager$0$working$0$0',)
 
 ---------- ConstArgBinding ----------
 
-terms: ['committed(resource_manager1)', 'working(resource_manager0)']
+terms: ['committed(resource_manager0)', 'working(resource_manager1)']
 
-sign_func_name2args: {'0$committed': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$working': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+sign_func_name2args: {'0$committed': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$working': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
 
-const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$committed$0$0], Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$working$0$0]}
+const2sigs: {Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$committed$0$0], Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$working$0$0]}
 
-sig2const: {'resource_manager$0$committed$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$working$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+sig2const: {'resource_manager$0$committed$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$working$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
 
 
 ---------- ArgPartition ----------
@@ -989,17 +698,308 @@ constraint: ['RESOURCE_MANAGER0:resource_manager ~= RESOURCE_MANAGER1']
 qclause: forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER1)
 
 
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : -----1-1
+2     : ['prepared(resource_manager1)', 'working(resource_manager1)']
+3     : ----1-1-
+3     : ['prepared(resource_manager0)', 'working(resource_manager0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['prepared(resource_manager1)', 'working(resource_manager1)']
+
+sign_func_name2args: {'0$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$working': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+
+const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$prepared$0$0, resource_manager$0$working$0$0]}
+
+sig2const: {'resource_manager$0$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$working$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$prepared$0$0; resource_manager$0$working$0$0]}
+
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$prepared$0$0; resource_manager$0$working$0$0}
+
+part_sig: ('resource_manager$0$prepared$0$0; resource_manager$0$working$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['prepared(resource_manager1)', 'working(resource_manager1)']
+
+func_name2symbol:  {'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'working': Const('working', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
+
+func_name2args_sort:  {'prepared': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'working': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
+
+sign_func_name2count:  {'0$prepared': 1, '0$working': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$prepared$0$0; resource_manager$0$working$0$0]}
+
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$prepared$0$0; resource_manager$0$working$0$0}
+
+	sort: resource_manager
+
+	identical_classes: {'resource_manager$0$prepared$0; resource_manager$0$working$0': [resource_manager$0$prepared$0$0; resource_manager$0$working$0$0]}
+
+	identical_single_classes: {'resource_manager$0$prepared$0; resource_manager$0$working$0': resource_manager$0$prepared$0$0; resource_manager$0$working$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: resource_manager: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$prepared': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$working': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['prepared(RESOURCE_MANAGER0)', 'working(RESOURCE_MANAGER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
+
+
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+6 (*) : -1-----1
+6     : ['aborted(resource_manager1)', 'working(resource_manager1)']
+7     : 1-----1-
+7     : ['aborted(resource_manager0)', 'working(resource_manager0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['aborted(resource_manager1)', 'working(resource_manager1)']
+
+sign_func_name2args: {'0$aborted': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$working': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+
+const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$aborted$0$0, resource_manager$0$working$0$0]}
+
+sig2const: {'resource_manager$0$aborted$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$working$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$working$0$0]}
+
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$working$0$0}
+
+part_sig: ('resource_manager$0$aborted$0$0; resource_manager$0$working$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['aborted(resource_manager1)', 'working(resource_manager1)']
+
+func_name2symbol:  {'aborted': Const('aborted', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'working': Const('working', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
+
+func_name2args_sort:  {'aborted': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'working': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
+
+sign_func_name2count:  {'0$aborted': 1, '0$working': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$working$0$0]}
+
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$working$0$0}
+
+	sort: resource_manager
+
+	identical_classes: {'resource_manager$0$aborted$0; resource_manager$0$working$0': [resource_manager$0$aborted$0$0; resource_manager$0$working$0$0]}
+
+	identical_single_classes: {'resource_manager$0$aborted$0; resource_manager$0$working$0': resource_manager$0$aborted$0$0; resource_manager$0$working$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: resource_manager: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$aborted': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$working': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['aborted(RESOURCE_MANAGER0)', 'working(RESOURCE_MANAGER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+8 (*) : -1---1--
+8     : ['aborted(resource_manager1)', 'prepared(resource_manager1)']
+9     : 1---1---
+9     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['aborted(resource_manager1)', 'prepared(resource_manager1)']
+
+sign_func_name2args: {'0$aborted': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+
+const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$aborted$0$0, resource_manager$0$prepared$0$0]}
+
+sig2const: {'resource_manager$0$aborted$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0]}
+
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0}
+
+part_sig: ('resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['aborted(resource_manager1)', 'prepared(resource_manager1)']
+
+func_name2symbol:  {'aborted': Const('aborted', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
+
+func_name2args_sort:  {'aborted': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'prepared': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
+
+sign_func_name2count:  {'0$aborted': 1, '0$prepared': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0]}
+
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0}
+
+	sort: resource_manager
+
+	identical_classes: {'resource_manager$0$aborted$0; resource_manager$0$prepared$0': [resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0]}
+
+	identical_single_classes: {'resource_manager$0$aborted$0; resource_manager$0$prepared$0': resource_manager$0$aborted$0$0; resource_manager$0$prepared$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: resource_manager: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$aborted': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$prepared': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['prepared(RESOURCE_MANAGER0)', 'aborted(RESOURCE_MANAGER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
+
+
 === Prime Orbit 4 =====================
 size : 4
 num_suborbits: 2
-8 (*) : -1-1----
-8     : ['aborted(resource_manager1)', 'committed(resource_manager1)']
-9     : 1-1-----
-9     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
-10 (*) : 1--1----
-10     : ['aborted(resource_manager0)', 'committed(resource_manager1)']
-11     : -11-----
-11     : ['aborted(resource_manager1)', 'committed(resource_manager0)']
+10 (*) : -1-1----
+10     : ['aborted(resource_manager1)', 'committed(resource_manager1)']
+11     : 1-1-----
+11     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
+12 (*) : -11-----
+12     : ['aborted(resource_manager1)', 'committed(resource_manager0)']
+13     : 1--1----
+13     : ['aborted(resource_manager0)', 'committed(resource_manager1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1037,13 +1037,13 @@ part_sig: ('resource_manager$0$aborted$0$0; resource_manager$0$committed$0$0',)
 
 ---------- ConstArgBinding ----------
 
-terms: ['aborted(resource_manager0)', 'committed(resource_manager1)']
+terms: ['aborted(resource_manager1)', 'committed(resource_manager0)']
 
-sign_func_name2args: {'0$aborted': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$committed': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+sign_func_name2args: {'0$aborted': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$committed': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
 
-const2sigs: {Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$aborted$0$0], Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$committed$0$0]}
+const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$aborted$0$0], Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$committed$0$0]}
 
-sig2const: {'resource_manager$0$aborted$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$committed$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+sig2const: {'resource_manager$0$aborted$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$committed$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
 
 
 ---------- ArgPartition ----------
@@ -1234,10 +1234,10 @@ qclause: forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER
 === Prime Orbit 5 =====================
 size : 2
 num_suborbits: 1
-14 (*) : -1-----1
-14     : ['aborted(resource_manager1)', 'working(resource_manager1)']
-15     : 1-----1-
-15     : ['aborted(resource_manager0)', 'working(resource_manager0)']
+14 (*) : ---1-1--
+14     : ['committed(resource_manager1)', 'prepared(resource_manager1)']
+15     : --1-1---
+15     : ['committed(resource_manager0)', 'prepared(resource_manager0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1252,46 +1252,46 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['aborted(resource_manager1)', 'working(resource_manager1)']
+terms: ['committed(resource_manager1)', 'prepared(resource_manager1)']
 
-sign_func_name2args: {'0$aborted': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$working': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+sign_func_name2args: {'0$committed': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '0$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
 
-const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$aborted$0$0, resource_manager$0$working$0$0]}
+const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$0$committed$0$0, resource_manager$0$prepared$0$0]}
 
-sig2const: {'resource_manager$0$aborted$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$working$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+sig2const: {'resource_manager$0$committed$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$0$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
 
 
 ---------- ArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$working$0$0]}
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0]}
 
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$working$0$0}
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0}
 
-part_sig: ('resource_manager$0$aborted$0$0; resource_manager$0$working$0$0',)
+part_sig: ('resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0',)
 
 
 ---------- SigGenerator ----------
 
-terms:  ['aborted(resource_manager1)', 'working(resource_manager1)']
+terms:  ['committed(resource_manager1)', 'prepared(resource_manager1)']
 
-func_name2symbol:  {'aborted': Const('aborted', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'working': Const('working', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
+func_name2symbol:  {'committed': Const('committed', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
 
-func_name2args_sort:  {'aborted': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'working': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
+func_name2args_sort:  {'committed': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),), 'prepared': (EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')),)}
 
-sign_func_name2count:  {'0$aborted': 1, '0$working': 1}
+sign_func_name2count:  {'0$committed': 1, '0$prepared': 1}
 
 
 ---------- ProductArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$aborted$0$0; resource_manager$0$working$0$0]}
+sort2class_sigs: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): [resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0]}
 
-sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$aborted$0$0; resource_manager$0$working$0$0}
+sort2part_sig: {EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')): resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0}
 
 	sort: resource_manager
 
-	identical_classes: {'resource_manager$0$aborted$0; resource_manager$0$working$0': [resource_manager$0$aborted$0$0; resource_manager$0$working$0$0]}
+	identical_classes: {'resource_manager$0$committed$0; resource_manager$0$prepared$0': [resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0]}
 
-	identical_single_classes: {'resource_manager$0$aborted$0; resource_manager$0$working$0': resource_manager$0$aborted$0$0; resource_manager$0$working$0$0}
+	identical_single_classes: {'resource_manager$0$committed$0; resource_manager$0$prepared$0': resource_manager$0$committed$0$0; resource_manager$0$prepared$0$0}
 
 	identical_multi_classes: {}
 
@@ -1315,26 +1315,26 @@ exists_qvars: set()
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
 
-signed_func_name2args: {'0$aborted': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$working': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
+signed_func_name2args: {'0$committed': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]], '0$prepared': [[Var('RESOURCE_MANAGER0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))]]}
 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['working(RESOURCE_MANAGER0)', 'aborted(RESOURCE_MANAGER0)']
+qterms: ['committed(RESOURCE_MANAGER0)', 'prepared(RESOURCE_MANAGER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
+qclause: forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
 
 
-=== Prime Orbit 7 =====================
+=== Prime Orbit 8 =====================
 size : 2
 num_suborbits: 1
-18 (*) : -0-0-0-0
-18     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-19     : 0-0-0-0-
-19     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+20 (*) : 0-0-0-0-
+20     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+21     : -0-0-0-0
+21     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1349,13 +1349,13 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+terms: ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 
-sign_func_name2args: {'1$aborted': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '1$committed': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '1$prepared': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '1$working': [(Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
+sign_func_name2args: {'1$aborted': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '1$committed': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '1$prepared': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)], '1$working': [(Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))),)]}
 
-const2sigs: {Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$1$aborted$0$0, resource_manager$1$committed$0$0, resource_manager$1$prepared$0$0, resource_manager$1$working$0$0]}
+const2sigs: {Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))): [resource_manager$1$aborted$0$0, resource_manager$1$committed$0$0, resource_manager$1$prepared$0$0, resource_manager$1$working$0$0]}
 
-sig2const: {'resource_manager$1$aborted$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$1$committed$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$1$prepared$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$1$working$0$0': Const('resource_manager1', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
+sig2const: {'resource_manager$1$aborted$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$1$committed$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$1$prepared$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1'))), 'resource_manager$1$working$0$0': Const('resource_manager0', EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')))}
 
 
 ---------- ArgPartition ----------
@@ -1369,7 +1369,7 @@ part_sig: ('resource_manager$1$aborted$0$0; resource_manager$1$committed$0$0; re
 
 ---------- SigGenerator ----------
 
-terms:  ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
+terms:  ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 
 func_name2symbol:  {'aborted': Const('aborted', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'committed': Const('committed', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'prepared': Const('prepared', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort())), 'working': Const('working', FunctionSort(EnumeratedSort('resource_manager', ('resource_manager0', 'resource_manager1')), BooleanSort()))}
 
@@ -1417,12 +1417,12 @@ signed_func_name2args: {'1$aborted': [[Var('RESOURCE_MANAGER0', EnumeratedSort('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~working(RESOURCE_MANAGER0)', '~aborted(RESOURCE_MANAGER0)', '~prepared(RESOURCE_MANAGER0)', '~committed(RESOURCE_MANAGER0)']
+qterms: ['~committed(RESOURCE_MANAGER0)', '~aborted(RESOURCE_MANAGER0)', '~working(RESOURCE_MANAGER0)', '~prepared(RESOURCE_MANAGER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall RESOURCE_MANAGER0. working(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0)
+qclause: forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
 
 
 =====================================================================================================
@@ -1433,17 +1433,21 @@ qclause: forall RESOURCE_MANAGER0. working(RESOURCE_MANAGER0) | aborted(RESOURCE
 
 
 === Prime Orbit 0 =====================
-size : 2
-num_suborbits: 1
-0 (*) : -1---1--
-0     : ['aborted(resource_manager1)', 'prepared(resource_manager1)']
-1     : 1---1---
-1     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
-num_forall :   1
+size : 4
+num_suborbits: 2
+0 (*) : ---1---1
+0     : ['committed(resource_manager1)', 'working(resource_manager1)']
+1     : --1---1-
+1     : ['committed(resource_manager0)', 'working(resource_manager0)']
+4 (*) : --1----1
+4     : ['committed(resource_manager0)', 'working(resource_manager1)']
+5     : ---1--1-
+5     : ['committed(resource_manager1)', 'working(resource_manager0)']
+num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
-qcost : 3
+quantified form : forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER1)
+qcost : 4
 
 
 
@@ -1467,35 +1471,31 @@ qcost : 3
 === Prime Orbit 2 =====================
 size : 2
 num_suborbits: 1
-4 (*) : ---1-1--
-4     : ['committed(resource_manager1)', 'prepared(resource_manager1)']
-5     : --1-1---
-5     : ['committed(resource_manager0)', 'prepared(resource_manager0)']
+6 (*) : -1-----1
+6     : ['aborted(resource_manager1)', 'working(resource_manager1)']
+7     : 1-----1-
+7     : ['aborted(resource_manager0)', 'working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
 qcost : 3
 
 
 
 
 === Prime Orbit 3 =====================
-size : 4
-num_suborbits: 2
-6 (*) : ---1---1
-6     : ['committed(resource_manager1)', 'working(resource_manager1)']
-7     : --1---1-
-7     : ['committed(resource_manager0)', 'working(resource_manager0)']
-12 (*) : ---1--1-
-12     : ['committed(resource_manager1)', 'working(resource_manager0)']
-13     : --1----1
-13     : ['committed(resource_manager0)', 'working(resource_manager1)']
-num_forall :   2
+size : 2
+num_suborbits: 1
+8 (*) : -1---1--
+8     : ['aborted(resource_manager1)', 'prepared(resource_manager1)']
+9     : 1---1---
+9     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
+num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER1)
-qcost : 4
+quantified form : forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
+qcost : 3
 
 
 
@@ -1503,14 +1503,14 @@ qcost : 4
 === Prime Orbit 4 =====================
 size : 4
 num_suborbits: 2
-8 (*) : -1-1----
-8     : ['aborted(resource_manager1)', 'committed(resource_manager1)']
-9     : 1-1-----
-9     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
-10 (*) : 1--1----
-10     : ['aborted(resource_manager0)', 'committed(resource_manager1)']
-11     : -11-----
-11     : ['aborted(resource_manager1)', 'committed(resource_manager0)']
+10 (*) : -1-1----
+10     : ['aborted(resource_manager1)', 'committed(resource_manager1)']
+11     : 1-1-----
+11     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
+12 (*) : -11-----
+12     : ['aborted(resource_manager1)', 'committed(resource_manager0)']
+13     : 1--1----
+13     : ['aborted(resource_manager0)', 'committed(resource_manager1)']
 num_forall :   2
 num_exists :   0
 num_literals : 2
@@ -1523,39 +1523,39 @@ qcost : 4
 === Prime Orbit 5 =====================
 size : 2
 num_suborbits: 1
-14 (*) : -1-----1
-14     : ['aborted(resource_manager1)', 'working(resource_manager1)']
-15     : 1-----1-
-15     : ['aborted(resource_manager0)', 'working(resource_manager0)']
+14 (*) : ---1-1--
+14     : ['committed(resource_manager1)', 'prepared(resource_manager1)']
+15     : --1-1---
+15     : ['committed(resource_manager0)', 'prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
 qcost : 3
 
 
 
 
-=== Prime Orbit 7 =====================
+=== Prime Orbit 8 =====================
 size : 2
 num_suborbits: 1
-18 (*) : -0-0-0-0
-18     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
-19     : 0-0-0-0-
-19     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+20 (*) : 0-0-0-0-
+20     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+21     : -0-0-0-0
+21     : ['~aborted(resource_manager1)', '~committed(resource_manager1)', '~prepared(resource_manager1)', '~working(resource_manager1)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. working(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.357 seconds
+[QRM NOTE]: Time elapsed since start: 7.556 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.148 seconds
+[QRM NOTE]: Time elapsed since last: 0.109 seconds
 
-[QRM NOTE]: Peak memory: 1907155 bytes
+[QRM NOTE]: Peak memory: 1902124 bytes
 
 
 ====================================================================================
@@ -1567,12 +1567,12 @@ qcost : 5
 
 New level: 1
  pending : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 
 Before reduction : 
  pending  : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 Essensial at level 1 : set()
 
@@ -1586,19 +1586,19 @@ Covered at level 1 : set()
 
 After reduction : 
  pending  : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 
-Solution : [0, 1, 2, 3, 4, 5, 7] has cost 25.
+Solution : [0, 1, 2, 3, 4, 5, 8] has cost 25.
 
 
 Before backtrack at level 1
  pending : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 After backtrack at level 1
  pending : []
- solution : [0, 1, 2, 3, 4, 5, 7]
+ solution : [0, 1, 2, 3, 4, 5, 8]
 
 
 ===================================================================================================
@@ -1617,30 +1617,30 @@ Definitions (length=0)
 
 Equality Relations (length=0)
 
-Solution 0 : [0, 1, 2, 3, 4, 5, 7] (length = 7)
+Solution 0 : [0, 1, 2, 3, 4, 5, 8] (length = 7)
 
-invariant [invar_0] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_0] forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER1) # qcost: 4
 
 invariant [invar_1] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0) # qcost: 3
 
-invariant [invar_2] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_2] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0) # qcost: 3
 
-invariant [invar_3] forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER1) # qcost: 4
+invariant [invar_3] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
 
 invariant [invar_4] forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER1) | ~aborted(RESOURCE_MANAGER0) # qcost: 4
 
-invariant [invar_5] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_5] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
 
-invariant [invar_7] forall RESOURCE_MANAGER0. working(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) # qcost: 5
-
-
+invariant [invar_8] forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) # qcost: 5
 
 
-[QRM NOTE]: Time elapsed since start: 7.397 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.040 seconds
 
-[QRM NOTE]: Peak memory: 1893062 bytes
+[QRM NOTE]: Time elapsed since start: 7.601 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.045 seconds
+
+[QRM NOTE]: Peak memory: 1887959 bytes
 
 
 =======================================================================================
@@ -1661,7 +1661,7 @@ Isolate this:
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 56: invar_3
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 57: invar_4
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 58: invar_5
-        ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_7
+        ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_8
 
     The following action implementations are present:
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 34: implementation of decide_abort
@@ -1678,7 +1678,7 @@ Isolate this:
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 56: invar_3 ... PASS
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 57: invar_4 ... PASS
         ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 58: invar_5 ... PASS
-        ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_7 ... PASS
+        ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_8 ... PASS
 
     The following set of external actions must preserve the invariant:
         (internal) ext:decide_abort
@@ -1688,7 +1688,7 @@ Isolate this:
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 56: invar_3 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 57: invar_4 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 58: invar_5 ... PASS
-            ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_7 ... PASS
+            ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_8 ... PASS
         (internal) ext:decide_commit
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 53: invar_0 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 54: invar_1 ... PASS
@@ -1696,7 +1696,7 @@ Isolate this:
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 56: invar_3 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 57: invar_4 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 58: invar_5 ... PASS
-            ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_7 ... PASS
+            ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_8 ... PASS
         (internal) ext:prepare
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 53: invar_0 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 54: invar_1 ... PASS
@@ -1704,7 +1704,7 @@ Isolate this:
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 56: invar_3 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 57: invar_4 ... PASS
             ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 58: invar_5 ... PASS
-            ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_7 ... PASS
+            ivybench/sym/ivy/TCommit.resource_manager_2.0.ivy: line 59: invar_8 ... PASS
 
     The following program assertions are treated as assumptions:
         in action prepare when called from the environment:
@@ -1723,11 +1723,11 @@ OK
 
 [UNSAT CORE]: ((forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER1) | ~aborted(RESOURCE_MANAGER0)))
 
-[QRM NOTE]: Time elapsed since start: 9.506 seconds
+[QRM NOTE]: Time elapsed since start: 9.611 seconds
 
-[QRM NOTE]: Time elapsed since last: 2.109 seconds
+[QRM NOTE]: Time elapsed since last: 2.010 seconds
 
-[QRM NOTE]: Peak memory: 893404 bytes
+[QRM NOTE]: Peak memory: 888123 bytes
 
 
 *******************************************************

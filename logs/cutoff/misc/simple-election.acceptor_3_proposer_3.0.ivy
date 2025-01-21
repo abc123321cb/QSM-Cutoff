@@ -62,6 +62,6 @@ export decide
 
 invariant [def_didNotPromise] didNotPromise(A) = forall P. ~promise(A,P) # definition
 invariant [def_chosenAt] chosenAt(Q,P) = forall A. member(A,Q) -> promise(A,P) # definition
-invariant [invar_0] forall PROPOSER1,PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | PROPOSER0 = PROPOSER1 # qcost: 6
-invariant [invar_28] forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0)) # qcost: 4
-invariant [invar_3] forall PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER0) | start(PROPOSER0) # qcost: 4
+invariant [invar_9] forall ACCEPTOR0,PROPOSER0,PROPOSER1. ~promise(ACCEPTOR0,PROPOSER1) | ~promise(ACCEPTOR0,PROPOSER0) | PROPOSER0 = PROPOSER1 # qcost: 6
+invariant [invar_27] forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0)) # qcost: 4
+invariant [invar_10] forall ACCEPTOR0,PROPOSER0. start(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER0) # qcost: 4

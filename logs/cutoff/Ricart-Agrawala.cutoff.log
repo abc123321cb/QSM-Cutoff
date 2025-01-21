@@ -51,11 +51,11 @@ g++ -shared Ricart-Agrawala.node_2.finite.o Ricart-Agrawala.node_2.finite_wrap.o
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 7.148 seconds
+[QRM NOTE]: Time elapsed since start: 7.460 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.148 seconds
+[QRM NOTE]: Time elapsed since last: 7.460 seconds
 
-[QRM NOTE]: Peak memory: 1178883 bytes
+[QRM NOTE]: Peak memory: 1175449 bytes
 
 
 ===================================
@@ -103,8 +103,8 @@ size : 2
 repr state: 0000000100
 lex min decimal: 2
 states:
-0000000010
 0000000100
+0000000010
 
 
 
@@ -124,8 +124,8 @@ size : 2
 repr state: 0001000010
 lex min decimal: 36
 states:
-0000100100
 0001000010
+0000100100
 
 
 
@@ -146,8 +146,8 @@ size : 2
 repr state: 1001000110
 lex min decimal: 294
 states:
-1001000110
 0100100110
+1001000110
 
 
 
@@ -168,8 +168,8 @@ size : 2
 repr state: 0001000000
 lex min decimal: 32
 states:
-0000100000
 0001000000
+0000100000
 
 
 
@@ -179,8 +179,8 @@ size : 2
 repr state: 0001000100
 lex min decimal: 34
 states:
-0000100010
 0001000100
+0000100010
 
 
 
@@ -201,16 +201,16 @@ size : 2
 repr state: 1001000000
 lex min decimal: 288
 states:
-1001000000
 0100100000
+1001000000
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.235 seconds
+[QRM NOTE]: Time elapsed since start: 7.549 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.087 seconds
+[QRM NOTE]: Time elapsed since last: 0.089 seconds
 
-[QRM NOTE]: Peak memory: 1211737 bytes
+[QRM NOTE]: Peak memory: 1210692 bytes
 
 
 ======================================
@@ -229,11 +229,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: {9, 6}
 
-[QRM NOTE]: Time elapsed since start: 7.238 seconds
+[QRM NOTE]: Time elapsed since start: 7.551 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 167513 bytes
+[QRM NOTE]: Peak memory: 166418 bytes
 
 
 ==============================================================================================
@@ -265,10 +265,12 @@ qcost : 0
 
 
 === Prime Orbit 1 =====================
-size : 1
+size : 2
 num_suborbits: 1
-2 (*) : ---11-----
-2     : ['replied(node0,node1)', 'replied(node1,node0)']
+2 (*) : 1--0------
+2     : ['holds(node0)', '~replied(node0,node1)']
+3     : -1--0-----
+3     : ['holds(node1)', '~replied(node1,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -279,10 +281,10 @@ qcost : 0
 === Prime Orbit 2 =====================
 size : 2
 num_suborbits: 1
-3 (*) : -1-1------
-3     : ['holds(node1)', 'replied(node0,node1)']
-4     : 1---1-----
-4     : ['holds(node0)', 'replied(node1,node0)']
+4 (*) : -1-1------
+4     : ['holds(node1)', 'replied(node0,node1)']
+5     : 1---1-----
+5     : ['holds(node0)', 'replied(node1,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -291,12 +293,10 @@ qcost : 0
 
 
 === Prime Orbit 3 =====================
-size : 2
+size : 1
 num_suborbits: 1
-5 (*) : 1--0------
-5     : ['holds(node0)', '~replied(node0,node1)']
-6     : -1--0-----
-6     : ['holds(node1)', '~replied(node1,node0)']
+6 (*) : 11--------
+6     : ['holds(node0)', 'holds(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -307,8 +307,8 @@ qcost : 0
 === Prime Orbit 4 =====================
 size : 1
 num_suborbits: 1
-7 (*) : 11--------
-7     : ['holds(node0)', 'holds(node1)']
+7 (*) : ---11-----
+7     : ['replied(node0,node1)', 'replied(node1,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -323,11 +323,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 8
 
-[QRM NOTE]: Time elapsed since start: 7.247 seconds
+[QRM NOTE]: Time elapsed since start: 7.562 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.009 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
-[QRM NOTE]: Peak memory: 1258506 bytes
+[QRM NOTE]: Peak memory: 1257288 bytes
 
 
 ===================================================================================
@@ -348,29 +348,29 @@ Before reduction :
  pending  : [0, 1, 2, 3, 4]
  solution : []
 
-Essensial at level 0 : {0, 1, 3}
+Essensial at level 0 : {0, 1, 4}
 
 Before removed
  coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1)]
 
 After removed
- coverage : [(0, -1), (1, -1), (2, 0), (3, -1), (4, 0)]
+ coverage : [(0, -1), (1, -1), (2, 0), (3, 0), (4, -1)]
 
-Covered at level 0 : {2, 4}
+Covered at level 0 : {2, 3}
 
 After reduction : 
  pending  : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 
 Before reduction : 
  pending  : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 Essensial at level 0 : set()
 
 Before removed
- coverage : [(0, -1), (1, -1), (2, 0), (3, -1), (4, 0)]
+ coverage : [(0, -1), (1, -1), (2, 0), (3, 0), (4, -1)]
 
 After removed
  coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1)]
@@ -379,13 +379,13 @@ Covered at level 0 : set()
 
 After reduction : 
  pending  : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
-[QRM NOTE]: Time elapsed since start: 7.248 seconds
+[QRM NOTE]: Time elapsed since start: 7.563 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 211156 bytes
+[QRM NOTE]: Peak memory: 210040 bytes
 
 
 =======================================================================================
@@ -496,107 +496,12 @@ qclause: forall NODE0. ~replied(NODE0,NODE0)
 
 
 === Prime Orbit 1 =====================
-size : 1
-num_suborbits: 1
-2 (*) : ---11-----
-2     : ['replied(node0,node1)', 'replied(node1,node0)']
-num_forall :   0
-num_exists :   0
-num_literals : 0
-quantified form : None
-qcost : 0
-
-
-
-
----------- QPrime ----------
-
-
----------- ConstArgBinding ----------
-
-terms: ['replied(node0,node1)', 'replied(node1,node0)']
-
-sign_func_name2args: {'0$replied': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))), Const('node1', EnumeratedSort('node', ('node0', 'node1')))), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))), Const('node0', EnumeratedSort('node', ('node0', 'node1'))))]}
-
-const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$0$0, node$0$replied$1$1], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$1$0, node$0$replied$0$1]}
-
-sig2const: {'node$0$replied$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$1': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
-
-
----------- ArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
-
-sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0}
-
-part_sig: ('node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0',)
-
-
----------- SigGenerator ----------
-
-terms:  ['replied(node0,node1)', 'replied(node1,node0)']
-
-func_name2symbol:  {'replied': Const('replied', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
-
-func_name2args_sort:  {'replied': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')))}
-
-sign_func_name2count:  {'0$replied': 2}
-
-
----------- ProductArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
-
-sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0}
-
-	sort: node
-
-	identical_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
-
-	identical_single_classes: {}
-
-	identical_multi_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0, node$0$replied$1$1, node$0$replied$0$1, node$0$replied$1$0]}
-
-
----------- QInference: _set_sort_to_quantifier_mode ----------
-
-quantifier mode: node: QuantifierMode.forall
-
-
----------- QInference: _set_constraint_mode ----------
-
-constraint mode: ConstraintMode.no_merge
-
-
----------- QFormula: _set_qvars ----------
-
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
-
-exists_qvars: set()
-
-
----------- QFormula: _set_signed_func_name_to_args ----------
-
-signed_func_name2args: {'0$replied': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
-
-
----------- QFormula: _set_qterms ----------
-
-qterms: ['replied(NODE0,NODE1)', 'replied(NODE1,NODE0)']
-
-
----------- QFormula: get_qclause ----------
-
-qclause: forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1
-
-
-=== Prime Orbit 3 =====================
 size : 2
 num_suborbits: 1
-5 (*) : 1--0------
-5     : ['holds(node0)', '~replied(node0,node1)']
-6     : -1--0-----
-6     : ['holds(node1)', '~replied(node1,node0)']
+2 (*) : 1--0------
+2     : ['holds(node0)', '~replied(node0,node1)']
+3     : -1--0-----
+3     : ['holds(node1)', '~replied(node1,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -667,7 +572,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -679,12 +584,107 @@ signed_func_name2args: {'0$holds': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~replied(NODE0,NODE1)', 'holds(NODE0)']
+qterms: ['holds(NODE0)', '~replied(NODE0,NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1
+qclause: forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+7 (*) : ---11-----
+7     : ['replied(node0,node1)', 'replied(node1,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['replied(node0,node1)', 'replied(node1,node0)']
+
+sign_func_name2args: {'0$replied': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))), Const('node1', EnumeratedSort('node', ('node0', 'node1')))), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))), Const('node0', EnumeratedSort('node', ('node0', 'node1'))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$0$0, node$0$replied$1$1], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$1$0, node$0$replied$0$1]}
+
+sig2const: {'node$0$replied$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$1': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0}
+
+part_sig: ('node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['replied(node0,node1)', 'replied(node1,node0)']
+
+func_name2symbol:  {'replied': Const('replied', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'replied': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')))}
+
+sign_func_name2count:  {'0$replied': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0, node$0$replied$1$1, node$0$replied$0$1, node$0$replied$1$0]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$replied': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['replied(NODE0,NODE1)', 'replied(NODE1,NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1
 
 
 =================================================================================================
@@ -711,10 +711,26 @@ qcost : 2
 
 
 === Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1--0------
+2     : ['holds(node0)', '~replied(node0,node1)']
+3     : -1--0-----
+3     : ['holds(node1)', '~replied(node1,node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 4 =====================
 size : 1
 num_suborbits: 1
-2 (*) : ---11-----
-2     : ['replied(node0,node1)', 'replied(node1,node0)']
+7 (*) : ---11-----
+7     : ['replied(node0,node1)', 'replied(node1,node0)']
 num_forall :   2
 num_exists :   0
 num_literals : 3
@@ -723,27 +739,11 @@ qcost : 5
 
 
 
+[QRM NOTE]: Time elapsed since start: 7.627 seconds
 
-=== Prime Orbit 3 =====================
-size : 2
-num_suborbits: 1
-5 (*) : 1--0------
-5     : ['holds(node0)', '~replied(node0,node1)']
-6     : -1--0-----
-6     : ['holds(node1)', '~replied(node1,node0)']
-num_forall :   2
-num_exists :   0
-num_literals : 3
-quantified form : forall NODE1,NODE0. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1
-qcost : 5
+[QRM NOTE]: Time elapsed since last: 0.064 seconds
 
-
-
-[QRM NOTE]: Time elapsed since start: 7.347 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.098 seconds
-
-[QRM NOTE]: Peak memory: 1877155 bytes
+[QRM NOTE]: Peak memory: 1875284 bytes
 
 
 ================================================================================
@@ -755,12 +755,12 @@ qcost : 5
 
 New level: 1
  pending : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 
 Before reduction : 
  pending  : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 Essensial at level 1 : set()
 
@@ -774,19 +774,19 @@ Covered at level 1 : set()
 
 After reduction : 
  pending  : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 
-Solution : [0, 1, 3] has cost 12.
+Solution : [0, 1, 4] has cost 12.
 
 
 Before backtrack at level 1
  pending : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 After backtrack at level 1
  pending : []
- solution : [0, 1, 3]
+ solution : [0, 1, 4]
 
 
 ===============================================================================================
@@ -807,22 +807,22 @@ Equality Relations (length=1)
 
 invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation
 
-Solution 0 : [0, 1, 3] (length = 3)
+Solution 0 : [0, 1, 4] (length = 3)
 
 invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
 
-invariant [invar_1] forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_1] forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
 
-invariant [invar_3] forall NODE1,NODE0. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1 # qcost: 5
-
-
+invariant [invar_4] forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1 # qcost: 5
 
 
-[QRM NOTE]: Time elapsed since start: 7.390 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.043 seconds
 
-[QRM NOTE]: Peak memory: 1866990 bytes
+[QRM NOTE]: Time elapsed since start: 7.668 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.041 seconds
+
+[QRM NOTE]: Peak memory: 1864112 bytes
 
 
 ===================================================================================
@@ -840,7 +840,7 @@ Isolate this:
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1
-        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_3
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4
 
     The following action implementations are present:
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 33: implementation of enter
@@ -855,29 +855,29 @@ Isolate this:
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
         ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
-        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_3 ... PASS
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
 
     The following set of external actions must preserve the invariant:
         (internal) ext:enter
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
-            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_3 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
         (internal) ext:leave
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
-            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_3 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
         (internal) ext:reply
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
-            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_3 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
         (internal) ext:request
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
             ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
-            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_3 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
 
     The following program assertions are treated as assumptions:
         in action request when called from the environment:
@@ -899,13 +899,13 @@ OK
 
 [R Implies P]: True
 
-[UNSAT CORE]: ((forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1) & (forall NODE1,NODE0. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1))
+[UNSAT CORE]: ((forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1) & (forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1))
 
-[QRM NOTE]: Time elapsed since start: 10.555 seconds
+[QRM NOTE]: Time elapsed since start: 9.572 seconds
 
-[QRM NOTE]: Time elapsed since last: 3.166 seconds
+[QRM NOTE]: Time elapsed since last: 1.905 seconds
 
-[QRM NOTE]: Peak memory: 868415 bytes
+[QRM NOTE]: Peak memory: 865359 bytes
 
 
 ***************************************************************

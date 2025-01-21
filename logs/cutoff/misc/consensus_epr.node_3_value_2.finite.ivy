@@ -107,25 +107,15 @@ action get_bool_votes(n0: node, n1: node, result: bool) returns(qrm_result: bool
 }
 export get_bool_votes
 
-action get_vote_request_msg(n0: node, n1: node) returns(qrm_result: bool) = {
-    qrm_result := vote_request_msg(n0, n1)
+action get_voted(n0: node) returns(qrm_result: bool) = {
+    qrm_result := voted(n0)
 }
-export get_vote_request_msg
+export get_voted
 
-action get_bool_vote_request_msg(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (vote_request_msg(n0, n1) = result)
+action get_bool_voted(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (voted(n0) = result)
 }
-export get_bool_vote_request_msg
-
-action get_decided(n0: node, v1: value) returns(qrm_result: bool) = {
-    qrm_result := decided(n0, v1)
-}
-export get_decided
-
-action get_bool_decided(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (decided(n0, v1) = result)
-}
-export get_bool_decided
+export get_bool_voted
 
 action get_member(n0: node, q1: quorum) returns(qrm_result: bool) = {
     qrm_result := member(n0, q1)
@@ -137,16 +127,6 @@ action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: b
 }
 export get_bool_member
 
-action get_leader(n0: node) returns(qrm_result: bool) = {
-    qrm_result := leader(n0)
-}
-export get_leader
-
-action get_bool_leader(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (leader(n0) = result)
-}
-export get_bool_leader
-
 action get_chosen(n0: node) returns(qrm_result: bool) = {
     qrm_result := chosen(n0)
 }
@@ -157,13 +137,33 @@ action get_bool_chosen(n0: node, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_chosen
 
-action get_voted(n0: node) returns(qrm_result: bool) = {
-    qrm_result := voted(n0)
+action get_vote_request_msg(n0: node, n1: node) returns(qrm_result: bool) = {
+    qrm_result := vote_request_msg(n0, n1)
 }
-export get_voted
+export get_vote_request_msg
 
-action get_bool_voted(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (voted(n0) = result)
+action get_bool_vote_request_msg(n0: node, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (vote_request_msg(n0, n1) = result)
 }
-export get_bool_voted
+export get_bool_vote_request_msg
+
+action get_leader(n0: node) returns(qrm_result: bool) = {
+    qrm_result := leader(n0)
+}
+export get_leader
+
+action get_bool_leader(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (leader(n0) = result)
+}
+export get_bool_leader
+
+action get_decided(n0: node, v1: value) returns(qrm_result: bool) = {
+    qrm_result := decided(n0, v1)
+}
+export get_decided
+
+action get_bool_decided(n0: node, v1: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (decided(n0, v1) = result)
+}
+export get_bool_decided
 

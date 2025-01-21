@@ -41,16 +41,6 @@ invariant X ~= Y -> ~(has_lock(X) & has_lock(Y))
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_start_node returns(qrm_result: node) = {
-    qrm_result := start_node
-}
-export get_start_node
-
-action get_bool_start_node(result: node) returns(qrm_result: bool) = {
-    qrm_result := (start_node = result)
-}
-export get_bool_start_node
-
 action get_has_lock(n0: node) returns(qrm_result: bool) = {
     qrm_result := has_lock(n0)
 }
@@ -70,4 +60,14 @@ action get_bool_message(n0: node, n1: node, result: bool) returns(qrm_result: bo
     qrm_result := (message(n0, n1) = result)
 }
 export get_bool_message
+
+action get_start_node returns(qrm_result: node) = {
+    qrm_result := start_node
+}
+export get_start_node
+
+action get_bool_start_node(result: node) returns(qrm_result: bool) = {
+    qrm_result := (start_node = result)
+}
+export get_bool_start_node
 
