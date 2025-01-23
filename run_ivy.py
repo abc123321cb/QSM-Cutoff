@@ -93,7 +93,9 @@ def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
     hard_clauses = ilu.Clauses(hard_fmlas)
 
     next_safety_fmlas = [il.substitute(f, tran_sys.curr2next) for f in safety_fmlas]
-    next_defns        = [il.substitute(f, tran_sys.curr2next) for f in defns]
+    for defn in defns:
+        defn.args = [il.substitute(a, tran_sys.curr2next) for a in defn.args]
+    next_defns        = defns 
     next_R_fmlas      = [il.substitute(f, tran_sys.curr2next) for f in R_fmlas]
     imply_fmlas       = next_safety_fmlas + next_R_fmlas
     implies           = ilu.Clauses(imply_fmlas, next_defns) 
