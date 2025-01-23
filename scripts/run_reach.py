@@ -18,7 +18,7 @@ def run_reach():
         for size_str in sizes:
             vprint(options, f'[QRM]: [{instance_name}: {size_str}]')
             log_name      = f'{instance_name}.{size_str.replace('=', '_')}.reach.log'
-            qrm_args      = ['./runlim' f'--time-limit={timeout}', f'--real-time-limit={timeout}', f'--space-limit={memout}']
+            qrm_args      = ['./runlim', f'--time-limit={timeout}', f'--real-time-limit={timeout}', f'--space-limit={memout}']
             qrm_args     += ['python3', 'qrm.py', ivy_name, '-s', size_str, '-f', '2', '-w', '-r', '-v', '5', '-l', log_name]
             vprint(options, ' '.join(qrm_args))
             if instance_name == 'consensus_epr':
