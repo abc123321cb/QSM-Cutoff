@@ -8,7 +8,7 @@ def run_reach():
     yaml_name = 'yamls/all.yaml'
     instances = get_instances_from_yaml(yaml_name)
     options   = QrmOptions()
-    timeout   = 5 
+    timeout   = 6000
     memout    = 15000 #15GB
     for ivy_name, sizes in instances.items():
         instance_name = ivy_name.split('.')[0]
@@ -17,8 +17,10 @@ def run_reach():
         options.open_log()
         for size_str in sizes:
             vprint(options, f'[QRM]: [{instance_name}: {size_str}]')
-            #qrm_args     = ['./runlim' f'--time-limit={timeout}', f'--real-time-limit={timeout}', f'--space-limit={memout}']
-            qrm_args      = ['python3', 'qrm.py', ivy_name, '-s', size_str, '-f', '2', '-w', '-r', '-v', '5', '-l', f'{instance_name}.{size_str}.reach.log']
+            log_name      = f'{instance_name}.{size_str.replace('=', '_')}.reach.log'
+            qrm_args      = ['./runlim' f'--time-limit={timeout}', f'--real-time-limit={timeout}', f'--space-limit={memout}']
+            qrm_args     += ['python3', 'qrm.py', ivy_name, '-s', size_str, '-f', '2', '-w', '-r', '-v', '5', '-l', log_name]
+            vprint(options, ' '.join(qrm_args))
             if instance_name == 'consensus_epr':
                 qrm_args.append('-b')
             try:
