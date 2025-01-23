@@ -207,7 +207,108 @@ class TransitionSystem():
                 self.init_actions[apply_action_symbol] = finite_action 
 
     def _init_safety_properties(self):
-        self.safety_properties = [il.close_formula(conj.formula) for conj in self.ivy_module.labeled_conjs]
+        self.safety_properties = [ilu.resort_ast(il.close_formula(conj.formula), self.sort_inf2fin) for conj in self.ivy_module.labeled_conjs]
+
+    def _get_action_formula_recur(self, action, params=set()):
+        if isinstance(action, ia.Sequence):
+           action_fmlas = [self._get_action_formula_recur(a, params) for a in action.args] 
+           return il.And(*action_fmlas)
+        elif isinstance(action, ia.AssertAction) or isinstance(action, ia.AssumeAction):
+            assert(hasattr(action, 'formula'))
+            return il.close_formula(action.formula)
+        elif isinstance(action, ia.AssignAction):
+            lhs = action.args[0]
+            rhs = action.args[1]
+            lhs_vars = ilu.used_variables_ast(lhs)            
+            consts    = ilu.used_constants_ast(lhs) 
+            consts    = consts.intersection(params)
+            var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
+            const2var = {c:v for v,c in var2const.items()}
+            lhs       = il.substitute(lhs, const2var)
+            if_fmla   = il.And(*[il.Equals(v,c) for v,c in var2const.items()])
+            then_fmla = rhs
+            else_fmla = lhs 
+            next_lhs  = il.substitute(lhs, self.curr2next)
+            fmla = il.Equals(next_lhs, il.Ite(if_fmla, then_fmla, else_fmla))
+            all_vars = list(lhs_vars) + list(var2const.keys())
+            if len(all_vars) > 0:
+                fmla = il.ForAll(all_vars, fmla)
+            return fmla 
+        elif isinstance(action, ia.HavocAction):
+            lhs = action.args[0]
+            lhs_vars = ilu.used_variables_ast(lhs)            
+            consts    = ilu.used_constants_ast(lhs) 
+            consts    = consts.intersection(params)
+            var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
+            const2var = {c:v for v,c in var2const.items()}
+            lhs       = il.substitute(lhs, const2var)
+            next_lhs  = il.substitute(lhs, self.curr2next)
+            all_vars  = list(lhs_vars) + list(var2const.keys())
+            fmlas = []
+            for v,c in var2const.items():
+                fmla = il.Implies(next_lhs, il.Or(lhs, il.Equals(v,c)))
+                fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
+                fmlas.append(fmla)
+                fmla = il.Implies(lhs, il.Or(next_lhs, il.Equals(v,c)))
+                fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
+                fmlas.append(fmla)
+            return il.And(*fmlas)
+        else:
+            assert(0)
+
+    def _get_action_assign_symbols(self, action):
+        if isinstance(action, ia.Sequence):
+            lhs = set() 
+            for a in action.args:
+                lhs.update(self._get_action_assign_symbols(a))
+            return lhs
+        elif isinstance(action, ia.AssignAction):
+            return ilu.used_symbols_ast(action.args[0])
+        elif isinstance(action, ia.HavocAction):
+            return ilu.used_symbols_ast(action.args[0])
+        else:
+            return set()
+
+    def _update_action_non_changing_fmlas(self, action, action_fmla):
+        assign_symbols = self._get_action_assign_symbols(action)
+        fmlas = [action_fmla]
+        for state_symbol in self.state_symbols:
+            if state_symbol not in assign_symbols and state_symbol not in self.definitions: 
+                state_var   = state_symbol
+                output_sort = state_symbol.sort
+                argvars     = []
+                if il.is_function_sort(state_symbol.sort):
+                    argvars     = [il.Variable(f'{sort.name.upper()}{i}', sort) for i, sort in enumerate(state_symbol.sort.dom)] 
+                    state_var   = il.App(state_symbol, *argvars)
+                    output_sort = state_symbol.sort.rng
+                if il.is_boolean_sort(output_sort):
+                    next_state_var = il.substitute(state_var, self.curr2next)
+                    fmla = il.Equals(next_state_var, state_var)
+                    if len(argvars) > 0:
+                        fmla = il.ForAll(argvars, fmla) 
+                    fmlas.append(fmla)
+                else:
+                    for const in output_sort.constructors:
+                        eq_var   = il.Equals(state_var, const)
+                        next_eq_var = il.substitute(eq_var, self.curr2next)
+                        fmla = il.Equals(next_eq_var, eq_var)
+                        if len(argvars) > 0:
+                            fmla = il.ForAll(argvars, fmla)
+                        fmlas.append(fmla)
+        return il.And(*fmlas) 
+
+    def _init_transition_relation(self):
+        self.curr2next = {symb:il.Symbol('next_'+symb.name, symb.sort) for symb in self.state_symbols} 
+        action_fmlas = []
+        for action_symbol, action in self.exported_actions.items():
+            action_fmla   = self._get_action_formula_recur(action, params=set(action_symbol.args))
+            action_fmla   = self._update_action_non_changing_fmlas(action, action_fmla)
+            const2var     = {const:il.Variable(f'F{const.sort.name.upper()}{i}', const.sort) for i,const in enumerate(action_symbol.args)}
+            action_fmla   = il.substitute(action_fmla, const2var)
+            if len(const2var.values()) > 0:
+                action_fmla   = il.Exists(list(const2var.values()), action_fmla)
+            action_fmlas.append(action_fmla)
+        self.transition_relation = il.Or(*action_fmlas)
 
     def _initialize(self):
         with self.ivy_module.theory_context():
@@ -219,6 +320,7 @@ class TransitionSystem():
             self._init_state_symbols()
             self._init_actions()
             self._init_safety_properties()
+            self._init_transition_relation()
 
     #------------------------------------------------------------
     # TransitionSystem: public access methods

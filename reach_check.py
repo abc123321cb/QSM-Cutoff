@@ -159,7 +159,7 @@ class ReachCheck():
                     self.root_assume_clauses.append(at_most_one)
 
     def _init_invariants(self) -> None:
-        invariants  = [ilu.resort_ast(invar, self.tran_sys.sort_inf2fin) for invar in self.tran_sys.safety_properties]
+        invariants  = [invar for invar in self.tran_sys.safety_properties]
         invariants  = [self.instantiator.instantiate_quantifier(invar) for invar in invariants]
         if self.options.forward_mode == ForwardMode.Sym_DFS:
             for invar in invariants: 

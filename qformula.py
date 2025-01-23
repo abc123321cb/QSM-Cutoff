@@ -336,10 +336,12 @@ class QFormula():
         if present_cost <= absent_cost:
             cterm = self._get_constraint_term(present_constraints)
             self.qterms.append(cterm)
+            vprint(self.options, 'use present constraint', 5)
         else:
             absent_constraints  = self._get_constraints(self.constraint_sigs.get_reduced_absent_signatures()) 
             cterm = il.Not(self._get_constraint_term(absent_constraints))
             self.qterms.append(cterm)
+            vprint(self.options, 'use absent constraint', 5)
 
     def _set_forall_constraint(self):
         neq_terms = set()
