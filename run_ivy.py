@@ -81,24 +81,34 @@ def run_ivy_check(rmin_id : int, options : QrmOptions):
     return True
 
 def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
-    defns        =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in Rmin.definitions.values()]
-    R_fmlas      =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in Rmin.eq_relations]
-    R_fmlas     +=  [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in rmin_invars]
-    soft_clauses =  ilu.Clauses(R_fmlas, defns)
-
-    safety_fmlas     = [ilu.resort_ast(p, tran_sys.sort_fin2inf) for p in tran_sys.safety_properties]
-    axiom_fmlas      = [ilu.resort_ast(tran_sys.axiom_fmla, tran_sys.sort_fin2inf)]
-    transition_fmlas = [ilu.resort_ast(tran_sys.transition_relation, tran_sys.sort_fin2inf)] 
-    hard_fmlas       = safety_fmlas + axiom_fmlas + transition_fmlas
-    hard_clauses = ilu.Clauses(hard_fmlas)
-
-    next_safety_fmlas = [il.substitute(f, tran_sys.curr2next) for f in safety_fmlas]
+    defns        =  [defn for defn  in Rmin.definitions.values()]
+    next_defns   =  []
     for defn in defns:
-        defn.args = [il.substitute(a, tran_sys.curr2next) for a in defn.args]
-    next_defns        = defns 
-    next_R_fmlas      = [il.substitute(f, tran_sys.curr2next) for f in R_fmlas]
-    imply_fmlas       = next_safety_fmlas + next_R_fmlas
-    implies           = ilu.Clauses(imply_fmlas, next_defns) 
+        args = [il.substitute(a, tran_sys.curr2next) for a in defn.args]
+        new_defn = il.Definition(*args)
+        next_defns.append(new_defn)
+    defns         = [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in defns]
+    next_defns    = [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in next_defns]
+
+    R_fmlas      = [equiv for equiv in Rmin.eq_relations]
+    R_fmlas     += [invar for invar in rmin_invars]
+    next_R_fmlas = [il.substitute(f, tran_sys.curr2next) for f in R_fmlas]
+    R_fmlas      = [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in R_fmlas]
+    next_R_fmlas = [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in next_R_fmlas]
+
+    safety_fmlas      = [p for p in tran_sys.safety_properties]
+    next_safety_fmlas = [il.substitute(f, tran_sys.curr2next) for f in safety_fmlas]
+    safety_fmlas      = [ilu.resort_ast(f, tran_sys.sort_fin2inf) for f in safety_fmlas]
+    next_safety_fmlas = [ilu.resort_ast(f, tran_sys.sort_fin2inf) for f in next_safety_fmlas]
+
+    axiom_fmlas       = [ilu.resort_ast(tran_sys.axiom_fmla, tran_sys.sort_fin2inf)]
+    transition_fmlas  = [ilu.resort_ast(tran_sys.transition_relation, tran_sys.sort_fin2inf)] 
+
+    soft_clauses =  ilu.Clauses(R_fmlas, defns)
+    hard_fmlas   = safety_fmlas + axiom_fmlas + transition_fmlas
+    hard_clauses = ilu.Clauses(hard_fmlas)
+    imply_fmlas  = next_safety_fmlas + next_R_fmlas
+    implies      = ilu.Clauses(imply_fmlas, next_defns) 
 
     slv.clear() # changing from finite signature (qpi) to uninterpreted signature
     unsat_core    = slv.unsat_core(soft_clauses, hard_clauses, implies=implies, unlikely=lambda x:True)
