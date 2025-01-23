@@ -18,12 +18,12 @@ qcost : 0
 === Prime Orbit 1 =====================
 size : 3
 num_suborbits: 1
-3 (*) : -1--1----------
-3     : ['allowed_in(node1)', 'internal(node1)']
-4     : --1--1---------
-4     : ['allowed_in(node2)', 'internal(node2)']
-5     : 1--1-----------
-5     : ['allowed_in(node0)', 'internal(node0)']
+3 (*) : 1--1-----------
+3     : ['allowed_in(node0)', 'internal(node0)']
+4     : -1--1----------
+4     : ['allowed_in(node1)', 'internal(node1)']
+5     : --1--1---------
+5     : ['allowed_in(node2)', 'internal(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -32,20 +32,14 @@ qcost : 0
 
 
 === Prime Orbit 2 =====================
-size : 6
+size : 3
 num_suborbits: 1
-6 (*) : -00----------1-
-6     : ['sent(node2,node1)', '~allowed_in(node1)', '~allowed_in(node2)']
-7     : -00--------1---
-7     : ['sent(node1,node2)', '~allowed_in(node1)', '~allowed_in(node2)']
-8     : 0-0---------1--
-8     : ['sent(node2,node0)', '~allowed_in(node0)', '~allowed_in(node2)']
-9     : 0-0-----1------
-9     : ['sent(node0,node2)', '~allowed_in(node0)', '~allowed_in(node2)']
-10     : 00-------1-----
-10     : ['sent(node1,node0)', '~allowed_in(node0)', '~allowed_in(node1)']
-11     : 00-----1-------
-11     : ['sent(node0,node1)', '~allowed_in(node0)', '~allowed_in(node1)']
+6 (*) : -1-----0-----0-
+6     : ['allowed_in(node1)', '~sent(node0,node1)', '~sent(node2,node1)']
+7     : --1-----0--0---
+7     : ['allowed_in(node2)', '~sent(node0,node2)', '~sent(node1,node2)']
+8     : 1--------0--0--
+8     : ['allowed_in(node0)', '~sent(node1,node0)', '~sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -54,32 +48,20 @@ qcost : 0
 
 
 === Prime Orbit 3 =====================
-size : 12
-num_suborbits: 2
-12 (*) : -0---1-------1-
-12     : ['internal(node2)', 'sent(node2,node1)', '~allowed_in(node1)']
-13     : --0-1------1---
-13     : ['internal(node1)', 'sent(node1,node2)', '~allowed_in(node2)']
-14     : 0----1------1--
-14     : ['internal(node2)', 'sent(node2,node0)', '~allowed_in(node0)']
-15     : --01----1------
-15     : ['internal(node0)', 'sent(node0,node2)', '~allowed_in(node2)']
-16     : 0---1----1-----
-16     : ['internal(node1)', 'sent(node1,node0)', '~allowed_in(node0)']
-17     : -0-1---1-------
-17     : ['internal(node0)', 'sent(node0,node1)', '~allowed_in(node1)']
-38 (*) : --0-1--------1-
-38     : ['internal(node1)', 'sent(node2,node1)', '~allowed_in(node2)']
-39     : -0---1-----1---
-39     : ['internal(node2)', 'sent(node1,node2)', '~allowed_in(node1)']
-40     : --01--------1--
-40     : ['internal(node0)', 'sent(node2,node0)', '~allowed_in(node2)']
-41     : 0----1--1------
-41     : ['internal(node2)', 'sent(node0,node2)', '~allowed_in(node0)']
-42     : -0-1-----1-----
-42     : ['internal(node0)', 'sent(node1,node0)', '~allowed_in(node1)']
-43     : 0---1--1-------
-43     : ['internal(node1)', 'sent(node0,node1)', '~allowed_in(node0)']
+size : 6
+num_suborbits: 1
+9 (*) : 11-----------0-
+9     : ['allowed_in(node0)', 'allowed_in(node1)', '~sent(node2,node1)']
+10     : 1-1--------0---
+10     : ['allowed_in(node0)', 'allowed_in(node2)', '~sent(node1,node2)']
+11     : 11----------0--
+11     : ['allowed_in(node0)', 'allowed_in(node1)', '~sent(node2,node0)']
+12     : -11-----0------
+12     : ['allowed_in(node1)', 'allowed_in(node2)', '~sent(node0,node2)']
+13     : 1-1------0-----
+13     : ['allowed_in(node0)', 'allowed_in(node2)', '~sent(node1,node0)']
+14     : -11----0-------
+14     : ['allowed_in(node1)', 'allowed_in(node2)', '~sent(node0,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -88,24 +70,20 @@ qcost : 0
 
 
 === Prime Orbit 4 =====================
-size : 8
-num_suborbits: 2
-18 (*) : -------11----1-
-18     : ['sent(node0,node1)', 'sent(node0,node2)', 'sent(node2,node1)']
-19     : -------11--1---
-19     : ['sent(node0,node1)', 'sent(node0,node2)', 'sent(node1,node2)']
-20     : ---------1-11--
-20     : ['sent(node1,node0)', 'sent(node1,node2)', 'sent(node2,node0)']
-21     : --------11-1---
-21     : ['sent(node0,node2)', 'sent(node1,node0)', 'sent(node1,node2)']
-22     : ---------1--11-
-22     : ['sent(node1,node0)', 'sent(node2,node0)', 'sent(node2,node1)']
-23     : -------1----11-
-23     : ['sent(node0,node1)', 'sent(node2,node0)', 'sent(node2,node1)']
-24 (*) : --------11---1-
-24     : ['sent(node0,node2)', 'sent(node1,node0)', 'sent(node2,node1)']
-25     : -------1---11--
-25     : ['sent(node0,node1)', 'sent(node1,node2)', 'sent(node2,node0)']
+size : 6
+num_suborbits: 1
+15 (*) : -1-0---------0-
+15     : ['allowed_in(node1)', '~internal(node0)', '~sent(node2,node1)']
+16     : --10-------0---
+16     : ['allowed_in(node2)', '~internal(node0)', '~sent(node1,node2)']
+17     : 1---0-------0--
+17     : ['allowed_in(node0)', '~internal(node1)', '~sent(node2,node0)']
+18     : --1-0---0------
+18     : ['allowed_in(node2)', '~internal(node1)', '~sent(node0,node2)']
+19     : 1----0---0-----
+19     : ['allowed_in(node0)', '~internal(node2)', '~sent(node1,node0)']
+20     : -1---0-0-------
+20     : ['allowed_in(node1)', '~internal(node2)', '~sent(node0,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -114,20 +92,32 @@ qcost : 0
 
 
 === Prime Orbit 5 =====================
-size : 6
-num_suborbits: 1
-26 (*) : ----11-------1-
-26     : ['internal(node1)', 'internal(node2)', 'sent(node2,node1)']
-27     : ----11-----1---
-27     : ['internal(node1)', 'internal(node2)', 'sent(node1,node2)']
-28     : ---1-1------1--
-28     : ['internal(node0)', 'internal(node2)', 'sent(node2,node0)']
-29     : ---1-1--1------
-29     : ['internal(node0)', 'internal(node2)', 'sent(node0,node2)']
-30     : ---11----1-----
-30     : ['internal(node0)', 'internal(node1)', 'sent(node1,node0)']
-31     : ---11--1-------
-31     : ['internal(node0)', 'internal(node1)', 'sent(node0,node1)']
+size : 12
+num_suborbits: 2
+21 (*) : --01----1------
+21     : ['internal(node0)', 'sent(node0,node2)', '~allowed_in(node2)']
+22     : -0-1---1-------
+22     : ['internal(node0)', 'sent(node0,node1)', '~allowed_in(node1)']
+23     : --0-1------1---
+23     : ['internal(node1)', 'sent(node1,node2)', '~allowed_in(node2)']
+24     : 0---1----1-----
+24     : ['internal(node1)', 'sent(node1,node0)', '~allowed_in(node0)']
+25     : -0---1-------1-
+25     : ['internal(node2)', 'sent(node2,node1)', '~allowed_in(node1)']
+26     : 0----1------1--
+26     : ['internal(node2)', 'sent(node2,node0)', '~allowed_in(node0)']
+45 (*) : 0----1--1------
+45     : ['internal(node2)', 'sent(node0,node2)', '~allowed_in(node0)']
+46     : 0---1--1-------
+46     : ['internal(node1)', 'sent(node0,node1)', '~allowed_in(node0)']
+47     : -0---1-----1---
+47     : ['internal(node2)', 'sent(node1,node2)', '~allowed_in(node1)']
+48     : -0-1-----1-----
+48     : ['internal(node0)', 'sent(node1,node0)', '~allowed_in(node1)']
+49     : --0-1--------1-
+49     : ['internal(node1)', 'sent(node2,node1)', '~allowed_in(node2)']
+50     : --01--------1--
+50     : ['internal(node0)', 'sent(node2,node0)', '~allowed_in(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -138,18 +128,18 @@ qcost : 0
 === Prime Orbit 6 =====================
 size : 6
 num_suborbits: 1
-32 (*) : ----00-------1-
-32     : ['sent(node2,node1)', '~internal(node1)', '~internal(node2)']
-33     : ----00-----1---
-33     : ['sent(node1,node2)', '~internal(node1)', '~internal(node2)']
-34     : ---0-0------1--
-34     : ['sent(node2,node0)', '~internal(node0)', '~internal(node2)']
-35     : ---0-0--1------
-35     : ['sent(node0,node2)', '~internal(node0)', '~internal(node2)']
-36     : ---00----1-----
-36     : ['sent(node1,node0)', '~internal(node0)', '~internal(node1)']
-37     : ---00--1-------
-37     : ['sent(node0,node1)', '~internal(node0)', '~internal(node1)']
+27 (*) : ---1-1--1------
+27     : ['internal(node0)', 'internal(node2)', 'sent(node0,node2)']
+28     : ---11--1-------
+28     : ['internal(node0)', 'internal(node1)', 'sent(node0,node1)']
+29     : ----11-----1---
+29     : ['internal(node1)', 'internal(node2)', 'sent(node1,node2)']
+30     : ---11----1-----
+30     : ['internal(node0)', 'internal(node1)', 'sent(node1,node0)']
+31     : ----11-------1-
+31     : ['internal(node1)', 'internal(node2)', 'sent(node2,node1)']
+32     : ---1-1------1--
+32     : ['internal(node0)', 'internal(node2)', 'sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -160,30 +150,30 @@ qcost : 0
 === Prime Orbit 7 =====================
 size : 12
 num_suborbits: 2
-44 (*) : --1-0--------1-
-44     : ['allowed_in(node2)', 'sent(node2,node1)', '~internal(node1)']
-45     : -1---0-----1---
-45     : ['allowed_in(node1)', 'sent(node1,node2)', '~internal(node2)']
-46     : --10--------1--
-46     : ['allowed_in(node2)', 'sent(node2,node0)', '~internal(node0)']
-47     : 1----0--1------
-47     : ['allowed_in(node0)', 'sent(node0,node2)', '~internal(node2)']
-48     : -1-0-----1-----
-48     : ['allowed_in(node1)', 'sent(node1,node0)', '~internal(node0)']
-49     : 1---0--1-------
-49     : ['allowed_in(node0)', 'sent(node0,node1)', '~internal(node1)']
-62 (*) : -1---0-------1-
-62     : ['allowed_in(node1)', 'sent(node2,node1)', '~internal(node2)']
-63     : --1-0------1---
-63     : ['allowed_in(node2)', 'sent(node1,node2)', '~internal(node1)']
-64     : 1----0------1--
-64     : ['allowed_in(node0)', 'sent(node2,node0)', '~internal(node2)']
-65     : --10----1------
-65     : ['allowed_in(node2)', 'sent(node0,node2)', '~internal(node0)']
-66     : 1---0----1-----
-66     : ['allowed_in(node0)', 'sent(node1,node0)', '~internal(node1)']
-67     : -1-0---1-------
-67     : ['allowed_in(node1)', 'sent(node0,node1)', '~internal(node0)']
+33 (*) : --10----1------
+33     : ['allowed_in(node2)', 'sent(node0,node2)', '~internal(node0)']
+34     : -1-0---1-------
+34     : ['allowed_in(node1)', 'sent(node0,node1)', '~internal(node0)']
+35     : --1-0------1---
+35     : ['allowed_in(node2)', 'sent(node1,node2)', '~internal(node1)']
+36     : 1---0----1-----
+36     : ['allowed_in(node0)', 'sent(node1,node0)', '~internal(node1)']
+37     : -1---0-------1-
+37     : ['allowed_in(node1)', 'sent(node2,node1)', '~internal(node2)']
+38     : 1----0------1--
+38     : ['allowed_in(node0)', 'sent(node2,node0)', '~internal(node2)']
+75 (*) : 1----0--1------
+75     : ['allowed_in(node0)', 'sent(node0,node2)', '~internal(node2)']
+76     : 1---0--1-------
+76     : ['allowed_in(node0)', 'sent(node0,node1)', '~internal(node1)']
+77     : -1---0-----1---
+77     : ['allowed_in(node1)', 'sent(node1,node2)', '~internal(node2)']
+78     : -1-0-----1-----
+78     : ['allowed_in(node1)', 'sent(node1,node0)', '~internal(node0)']
+79     : --1-0--------1-
+79     : ['allowed_in(node2)', 'sent(node2,node1)', '~internal(node1)']
+80     : --10--------1--
+80     : ['allowed_in(node2)', 'sent(node2,node0)', '~internal(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -194,18 +184,18 @@ qcost : 0
 === Prime Orbit 8 =====================
 size : 6
 num_suborbits: 1
-50 (*) : -11----------1-
-50     : ['allowed_in(node1)', 'allowed_in(node2)', 'sent(node2,node1)']
-51     : -11--------1---
-51     : ['allowed_in(node1)', 'allowed_in(node2)', 'sent(node1,node2)']
-52     : 1-1---------1--
-52     : ['allowed_in(node0)', 'allowed_in(node2)', 'sent(node2,node0)']
-53     : 1-1-----1------
-53     : ['allowed_in(node0)', 'allowed_in(node2)', 'sent(node0,node2)']
-54     : 11-------1-----
-54     : ['allowed_in(node0)', 'allowed_in(node1)', 'sent(node1,node0)']
-55     : 11-----1-------
-55     : ['allowed_in(node0)', 'allowed_in(node1)', 'sent(node0,node1)']
+39 (*) : 1-1-----1------
+39     : ['allowed_in(node0)', 'allowed_in(node2)', 'sent(node0,node2)']
+40     : 11-----1-------
+40     : ['allowed_in(node0)', 'allowed_in(node1)', 'sent(node0,node1)']
+41     : -11--------1---
+41     : ['allowed_in(node1)', 'allowed_in(node2)', 'sent(node1,node2)']
+42     : 11-------1-----
+42     : ['allowed_in(node0)', 'allowed_in(node1)', 'sent(node1,node0)']
+43     : -11----------1-
+43     : ['allowed_in(node1)', 'allowed_in(node2)', 'sent(node2,node1)']
+44     : 1-1---------1--
+44     : ['allowed_in(node0)', 'allowed_in(node2)', 'sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -214,32 +204,20 @@ qcost : 0
 
 
 === Prime Orbit 9 =====================
-size : 12
-num_suborbits: 2
-56 (*) : -0--0--------1-
-56     : ['sent(node2,node1)', '~allowed_in(node1)', '~internal(node1)']
-57     : --0--0-----1---
-57     : ['sent(node1,node2)', '~allowed_in(node2)', '~internal(node2)']
-58     : 0--0--------1--
-58     : ['sent(node2,node0)', '~allowed_in(node0)', '~internal(node0)']
-59     : --0--0--1------
-59     : ['sent(node0,node2)', '~allowed_in(node2)', '~internal(node2)']
-60     : 0--0-----1-----
-60     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node0)']
-61     : -0--0--1-------
-61     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node1)']
-68 (*) : --0--0-------1-
-68     : ['sent(node2,node1)', '~allowed_in(node2)', '~internal(node2)']
-69     : -0--0------1---
-69     : ['sent(node1,node2)', '~allowed_in(node1)', '~internal(node1)']
-70     : --0--0------1--
-70     : ['sent(node2,node0)', '~allowed_in(node2)', '~internal(node2)']
-71     : 0--0----1------
-71     : ['sent(node0,node2)', '~allowed_in(node0)', '~internal(node0)']
-72     : -0--0----1-----
-72     : ['sent(node1,node0)', '~allowed_in(node1)', '~internal(node1)']
-73     : 0--0---1-------
-73     : ['sent(node0,node1)', '~allowed_in(node0)', '~internal(node0)']
+size : 6
+num_suborbits: 1
+51 (*) : 0-0-----1------
+51     : ['sent(node0,node2)', '~allowed_in(node0)', '~allowed_in(node2)']
+52     : 00-----1-------
+52     : ['sent(node0,node1)', '~allowed_in(node0)', '~allowed_in(node1)']
+53     : -00--------1---
+53     : ['sent(node1,node2)', '~allowed_in(node1)', '~allowed_in(node2)']
+54     : 00-------1-----
+54     : ['sent(node1,node0)', '~allowed_in(node0)', '~allowed_in(node1)']
+55     : -00----------1-
+55     : ['sent(node2,node1)', '~allowed_in(node1)', '~allowed_in(node2)']
+56     : 0-0---------1--
+56     : ['sent(node2,node0)', '~allowed_in(node0)', '~allowed_in(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -248,20 +226,32 @@ qcost : 0
 
 
 === Prime Orbit 10 =====================
-size : 6
-num_suborbits: 1
-74 (*) : 11-----------0-
-74     : ['allowed_in(node0)', 'allowed_in(node1)', '~sent(node2,node1)']
-75     : 1-1--------0---
-75     : ['allowed_in(node0)', 'allowed_in(node2)', '~sent(node1,node2)']
-76     : 11----------0--
-76     : ['allowed_in(node0)', 'allowed_in(node1)', '~sent(node2,node0)']
-77     : -11-----0------
-77     : ['allowed_in(node1)', 'allowed_in(node2)', '~sent(node0,node2)']
-78     : 1-1------0-----
-78     : ['allowed_in(node0)', 'allowed_in(node2)', '~sent(node1,node0)']
-79     : -11----0-------
-79     : ['allowed_in(node1)', 'allowed_in(node2)', '~sent(node0,node1)']
+size : 12
+num_suborbits: 2
+57 (*) : 0--0----1------
+57     : ['sent(node0,node2)', '~allowed_in(node0)', '~internal(node0)']
+58     : 0--0---1-------
+58     : ['sent(node0,node1)', '~allowed_in(node0)', '~internal(node0)']
+59     : -0--0------1---
+59     : ['sent(node1,node2)', '~allowed_in(node1)', '~internal(node1)']
+60     : -0--0----1-----
+60     : ['sent(node1,node0)', '~allowed_in(node1)', '~internal(node1)']
+61     : --0--0-------1-
+61     : ['sent(node2,node1)', '~allowed_in(node2)', '~internal(node2)']
+62     : --0--0------1--
+62     : ['sent(node2,node0)', '~allowed_in(node2)', '~internal(node2)']
+63 (*) : --0--0--1------
+63     : ['sent(node0,node2)', '~allowed_in(node2)', '~internal(node2)']
+64     : -0--0--1-------
+64     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node1)']
+65     : --0--0-----1---
+65     : ['sent(node1,node2)', '~allowed_in(node2)', '~internal(node2)']
+66     : 0--0-----1-----
+66     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node0)']
+67     : -0--0--------1-
+67     : ['sent(node2,node1)', '~allowed_in(node1)', '~internal(node1)']
+68     : 0--0--------1--
+68     : ['sent(node2,node0)', '~allowed_in(node0)', '~internal(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -270,14 +260,20 @@ qcost : 0
 
 
 === Prime Orbit 11 =====================
-size : 3
+size : 6
 num_suborbits: 1
-80 (*) : -1-----0-----0-
-80     : ['allowed_in(node1)', '~sent(node0,node1)', '~sent(node2,node1)']
-81     : --1-----0--0---
-81     : ['allowed_in(node2)', '~sent(node0,node2)', '~sent(node1,node2)']
-82     : 1--------0--0--
-82     : ['allowed_in(node0)', '~sent(node1,node0)', '~sent(node2,node0)']
+69 (*) : ---0-0--1------
+69     : ['sent(node0,node2)', '~internal(node0)', '~internal(node2)']
+70     : ---00--1-------
+70     : ['sent(node0,node1)', '~internal(node0)', '~internal(node1)']
+71     : ----00-----1---
+71     : ['sent(node1,node2)', '~internal(node1)', '~internal(node2)']
+72     : ---00----1-----
+72     : ['sent(node1,node0)', '~internal(node0)', '~internal(node1)']
+73     : ----00-------1-
+73     : ['sent(node2,node1)', '~internal(node1)', '~internal(node2)']
+74     : ---0-0------1--
+74     : ['sent(node2,node0)', '~internal(node0)', '~internal(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -286,20 +282,24 @@ qcost : 0
 
 
 === Prime Orbit 12 =====================
-size : 6
-num_suborbits: 1
-83 (*) : --1-0---0------
-83     : ['allowed_in(node2)', '~internal(node1)', '~sent(node0,node2)']
-84     : -1---0-0-------
-84     : ['allowed_in(node1)', '~internal(node2)', '~sent(node0,node1)']
-85     : --10-------0---
-85     : ['allowed_in(node2)', '~internal(node0)', '~sent(node1,node2)']
-86     : 1----0---0-----
-86     : ['allowed_in(node0)', '~internal(node2)', '~sent(node1,node0)']
-87     : -1-0---------0-
-87     : ['allowed_in(node1)', '~internal(node0)', '~sent(node2,node1)']
-88     : 1---0-------0--
-88     : ['allowed_in(node0)', '~internal(node1)', '~sent(node2,node0)']
+size : 8
+num_suborbits: 2
+81 (*) : --------11-1---
+81     : ['sent(node0,node2)', 'sent(node1,node0)', 'sent(node1,node2)']
+82     : -------1----11-
+82     : ['sent(node0,node1)', 'sent(node2,node0)', 'sent(node2,node1)']
+83     : -------11--1---
+83     : ['sent(node0,node1)', 'sent(node0,node2)', 'sent(node1,node2)']
+84     : ---------1--11-
+84     : ['sent(node1,node0)', 'sent(node2,node0)', 'sent(node2,node1)']
+85     : -------11----1-
+85     : ['sent(node0,node1)', 'sent(node0,node2)', 'sent(node2,node1)']
+86     : ---------1-11--
+86     : ['sent(node1,node0)', 'sent(node1,node2)', 'sent(node2,node0)']
+87 (*) : --------11---1-
+87     : ['sent(node0,node2)', 'sent(node1,node0)', 'sent(node2,node1)']
+88     : -------1---11--
+88     : ['sent(node0,node1)', 'sent(node1,node2)', 'sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -308,10 +308,14 @@ qcost : 0
 
 
 === Prime Orbit 13 =====================
-size : 1
+size : 3
 num_suborbits: 1
-89 (*) : 111------------
-89     : ['allowed_in(node0)', 'allowed_in(node1)', 'allowed_in(node2)']
+89 (*) : -1-0-0---------
+89     : ['allowed_in(node1)', '~internal(node0)', '~internal(node2)']
+90     : --100----------
+90     : ['allowed_in(node2)', '~internal(node0)', '~internal(node1)']
+91     : 1---00---------
+91     : ['allowed_in(node0)', '~internal(node1)', '~internal(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -322,12 +326,12 @@ qcost : 0
 === Prime Orbit 14 =====================
 size : 3
 num_suborbits: 1
-90 (*) : 1-1-0----------
-90     : ['allowed_in(node0)', 'allowed_in(node2)', '~internal(node1)']
-91     : 11---0---------
-91     : ['allowed_in(node0)', 'allowed_in(node1)', '~internal(node2)']
-92     : -110-----------
+92 (*) : -110-----------
 92     : ['allowed_in(node1)', 'allowed_in(node2)', '~internal(node0)']
+93     : 1-1-0----------
+93     : ['allowed_in(node0)', 'allowed_in(node2)', '~internal(node1)']
+94     : 11---0---------
+94     : ['allowed_in(node0)', 'allowed_in(node1)', '~internal(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -336,14 +340,10 @@ qcost : 0
 
 
 === Prime Orbit 15 =====================
-size : 3
+size : 1
 num_suborbits: 1
-93 (*) : --100----------
-93     : ['allowed_in(node2)', '~internal(node0)', '~internal(node1)']
-94     : -1-0-0---------
-94     : ['allowed_in(node1)', '~internal(node0)', '~internal(node2)']
-95     : 1---00---------
-95     : ['allowed_in(node0)', '~internal(node1)', '~internal(node2)']
+95 (*) : 111------------
+95     : ['allowed_in(node0)', 'allowed_in(node1)', 'allowed_in(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -352,20 +352,56 @@ qcost : 0
 
 
 === Prime Orbit 16 =====================
-size : 6
-num_suborbits: 1
-96 (*) : --1-0--0-1-----
-96     : ['allowed_in(node2)', 'sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)']
-97     : -1---0--0---1--
-97     : ['allowed_in(node1)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)']
-98     : --10---1-0-----
-98     : ['allowed_in(node2)', 'sent(node0,node1)', '~internal(node0)', '~sent(node1,node0)']
-99     : 1----0-----0-1-
-99     : ['allowed_in(node0)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node2)']
-100     : -1-0----1---0--
-100     : ['allowed_in(node1)', 'sent(node0,node2)', '~internal(node0)', '~sent(node2,node0)']
-101     : 1---0------1-0-
-101     : ['allowed_in(node0)', 'sent(node1,node2)', '~internal(node1)', '~sent(node2,node1)']
+size : 24
+num_suborbits: 4
+96 (*) : 1-0----1-----1-
+96     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node2)']
+97     : 10------1--1---
+97     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node1)']
+98     : -10------1--1--
+98     : ['allowed_in(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node2)']
+99     : 01------1--1---
+99     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node0)']
+100     : -01------1--1--
+100     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node1)']
+101     : 0-1----1-----1-
+101     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node0)']
+114 (*) : 1-0----1---1---
+114     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node2)']
+115     : 10------1----1-
+115     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node1)']
+116     : -10-----11-----
+116     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node2)']
+117     : 01---------11--
+117     : ['allowed_in(node1)', 'sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node0)']
+118     : -01----1----1--
+118     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node1)']
+119     : 0-1------1---1-
+119     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node0)']
+300 (*) : 0-1----1---1---
+300     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node0)']
+301     : 01------1----1-
+301     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node0)']
+302     : -01-----11-----
+302     : ['allowed_in(node2)', 'sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node1)']
+303     : 10---------11--
+303     : ['allowed_in(node0)', 'sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node1)']
+304     : -10----1----1--
+304     : ['allowed_in(node1)', 'sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node2)']
+305     : 1-0------1---1-
+305     : ['allowed_in(node0)', 'sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node2)']
+342 (*) : -01----11------
+342     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node1)']
+343     : -10----11------
+343     : ['allowed_in(node1)', 'sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node2)']
+344     : 0-1------1-1---
+344     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node0)']
+345     : 1-0------1-1---
+345     : ['allowed_in(node0)', 'sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node2)']
+346     : 01----------11-
+346     : ['allowed_in(node1)', 'sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node0)']
+347     : 10----------11-
+347     : ['allowed_in(node0)', 'sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -376,54 +412,54 @@ qcost : 0
 === Prime Orbit 17 =====================
 size : 24
 num_suborbits: 4
-102 (*) : --00-----1---1-
-102     : ['sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node2)', '~internal(node0)']
-103     : -0-0-------11--
-103     : ['sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node1)', '~internal(node0)']
-104     : --0-0--1----1--
-104     : ['sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node2)', '~internal(node1)']
-105     : 0---0---1----1-
-105     : ['sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node1)']
-106     : -0---0--11-----
-106     : ['sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node1)', '~internal(node2)']
-107     : 0----0-1---1---
-107     : ['sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node0)', '~internal(node2)']
-108 (*) : --00-----1-1---
-108     : ['sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node2)', '~internal(node0)']
-109     : -0-0--------11-
-109     : ['sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~internal(node0)']
-110     : --0-0--11------
-110     : ['sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node2)', '~internal(node1)']
-111     : 0---0-------11-
-111     : ['sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node1)']
-112     : -0---0-11------
-112     : ['sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node1)', '~internal(node2)']
-113     : 0----0---1-1---
-113     : ['sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node0)', '~internal(node2)']
-198 (*) : 0----0---1---1-
-198     : ['sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node2)']
-199     : 0---0------11--
-199     : ['sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node0)', '~internal(node1)']
-200     : -0---0-1----1--
-200     : ['sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node1)', '~internal(node2)']
-201     : -0-0----1----1-
-201     : ['sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node1)', '~internal(node0)']
-202     : --0-0---11-----
-202     : ['sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node2)', '~internal(node1)']
-203     : --00---1---1---
-203     : ['sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node2)', '~internal(node0)']
-312 (*) : --0-0----1--1--
-312     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node2)', '~internal(node1)']
-313     : -0---0---1--1--
-313     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node1)', '~internal(node2)']
-314     : --00---1-----1-
-314     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node2)', '~internal(node0)']
-315     : 0----0-1-----1-
-315     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node2)']
-316     : -0-0----1--1---
-316     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node1)', '~internal(node0)']
-317     : 0---0---1--1---
-317     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node0)', '~internal(node1)']
+102 (*) : --00---1-----1-
+102     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node2)', '~internal(node0)']
+103     : -0-0----1--1---
+103     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node1)', '~internal(node0)']
+104     : --0-0----1--1--
+104     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node2)', '~internal(node1)']
+105     : 0---0---1--1---
+105     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node0)', '~internal(node1)']
+106     : -0---0---1--1--
+106     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node1)', '~internal(node2)']
+107     : 0----0-1-----1-
+107     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node2)']
+108 (*) : --00---1---1---
+108     : ['sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node2)', '~internal(node0)']
+109     : -0-0----1----1-
+109     : ['sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node1)', '~internal(node0)']
+110     : --0-0---11-----
+110     : ['sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node2)', '~internal(node1)']
+111     : 0---0------11--
+111     : ['sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node0)', '~internal(node1)']
+112     : -0---0-1----1--
+112     : ['sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node1)', '~internal(node2)']
+113     : 0----0---1---1-
+113     : ['sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node2)']
+276 (*) : --0-0--1----1--
+276     : ['sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node2)', '~internal(node1)']
+277     : -0---0--11-----
+277     : ['sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node1)', '~internal(node2)']
+278     : --00-----1---1-
+278     : ['sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node2)', '~internal(node0)']
+279     : 0----0-1---1---
+279     : ['sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node0)', '~internal(node2)']
+280     : -0-0-------11--
+280     : ['sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node1)', '~internal(node0)']
+281     : 0---0---1----1-
+281     : ['sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node1)']
+324 (*) : -0---0-11------
+324     : ['sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node1)', '~internal(node2)']
+325     : --0-0--11------
+325     : ['sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node2)', '~internal(node1)']
+326     : 0----0---1-1---
+326     : ['sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node0)', '~internal(node2)']
+327     : --00-----1-1---
+327     : ['sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node2)', '~internal(node0)']
+328     : 0---0-------11-
+328     : ['sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node0)', '~internal(node1)']
+329     : -0-0--------11-
+329     : ['sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~internal(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -434,54 +470,54 @@ qcost : 0
 === Prime Orbit 18 =====================
 size : 24
 num_suborbits: 4
-114 (*) : 1-0------1---1-
-114     : ['allowed_in(node0)', 'sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node2)']
-115     : 10---------11--
-115     : ['allowed_in(node0)', 'sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node1)']
-116     : -10----1----1--
-116     : ['allowed_in(node1)', 'sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node2)']
-117     : 01------1----1-
-117     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node0)']
-118     : -01-----11-----
-118     : ['allowed_in(node2)', 'sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node1)']
-119     : 0-1----1---1---
-119     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node0)']
-120 (*) : 1-0------1-1---
-120     : ['allowed_in(node0)', 'sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node2)']
-121     : 10----------11-
-121     : ['allowed_in(node0)', 'sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node1)']
-122     : -10----11------
-122     : ['allowed_in(node1)', 'sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node2)']
-123     : 01----------11-
-123     : ['allowed_in(node1)', 'sent(node2,node0)', 'sent(node2,node1)', '~allowed_in(node0)']
-124     : -01----11------
-124     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node0,node2)', '~allowed_in(node1)']
-125     : 0-1------1-1---
-125     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node1,node2)', '~allowed_in(node0)']
-138 (*) : 0-1------1---1-
-138     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node0)']
-139     : 01---------11--
-139     : ['allowed_in(node1)', 'sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node0)']
-140     : -01----1----1--
-140     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node1)']
-141     : 10------1----1-
-141     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node1)']
-142     : -10-----11-----
-142     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node2)']
-143     : 1-0----1---1---
-143     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node2)']
-300 (*) : -01------1--1--
-300     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node1)']
-301     : -10------1--1--
-301     : ['allowed_in(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node2)']
-302     : 0-1----1-----1-
-302     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node0)']
-303     : 1-0----1-----1-
-303     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node2)']
-304     : 01------1--1---
-304     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node0)']
-305     : 10------1--1---
-305     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node1)']
+120 (*) : ---0-1-1---1---
+120     : ['internal(node2)', 'sent(node0,node1)', 'sent(node1,node2)', '~internal(node0)']
+121     : ---01---1----1-
+121     : ['internal(node1)', 'sent(node0,node2)', 'sent(node2,node1)', '~internal(node0)']
+122     : ----01--11-----
+122     : ['internal(node2)', 'sent(node0,node2)', 'sent(node1,node0)', '~internal(node1)']
+123     : ---10------11--
+123     : ['internal(node0)', 'sent(node1,node2)', 'sent(node2,node0)', '~internal(node1)']
+124     : ----10-1----1--
+124     : ['internal(node1)', 'sent(node0,node1)', 'sent(node2,node0)', '~internal(node2)']
+125     : ---1-0---1---1-
+125     : ['internal(node0)', 'sent(node1,node0)', 'sent(node2,node1)', '~internal(node2)']
+132 (*) : ---0-1-1-----1-
+132     : ['internal(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~internal(node0)']
+133     : ---01---1--1---
+133     : ['internal(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~internal(node0)']
+134     : ----01---1--1--
+134     : ['internal(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~internal(node1)']
+135     : ---10---1--1---
+135     : ['internal(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~internal(node1)']
+136     : ----10---1--1--
+136     : ['internal(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~internal(node2)']
+137     : ---1-0-1-----1-
+137     : ['internal(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~internal(node2)']
+282 (*) : ----01-1----1--
+282     : ['internal(node2)', 'sent(node0,node1)', 'sent(node2,node0)', '~internal(node1)']
+283     : ----10--11-----
+283     : ['internal(node1)', 'sent(node0,node2)', 'sent(node1,node0)', '~internal(node2)']
+284     : ---0-1---1---1-
+284     : ['internal(node2)', 'sent(node1,node0)', 'sent(node2,node1)', '~internal(node0)']
+285     : ---1-0-1---1---
+285     : ['internal(node0)', 'sent(node0,node1)', 'sent(node1,node2)', '~internal(node2)']
+286     : ---01------11--
+286     : ['internal(node1)', 'sent(node1,node2)', 'sent(node2,node0)', '~internal(node0)']
+287     : ---10---1----1-
+287     : ['internal(node0)', 'sent(node0,node2)', 'sent(node2,node1)', '~internal(node1)']
+330 (*) : ----10-11------
+330     : ['internal(node1)', 'sent(node0,node1)', 'sent(node0,node2)', '~internal(node2)']
+331     : ----01-11------
+331     : ['internal(node2)', 'sent(node0,node1)', 'sent(node0,node2)', '~internal(node1)']
+332     : ---1-0---1-1---
+332     : ['internal(node0)', 'sent(node1,node0)', 'sent(node1,node2)', '~internal(node2)']
+333     : ---0-1---1-1---
+333     : ['internal(node2)', 'sent(node1,node0)', 'sent(node1,node2)', '~internal(node0)']
+334     : ---10-------11-
+334     : ['internal(node0)', 'sent(node2,node0)', 'sent(node2,node1)', '~internal(node1)']
+335     : ---01-------11-
+335     : ['internal(node1)', 'sent(node2,node0)', 'sent(node2,node1)', '~internal(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -490,44 +526,56 @@ qcost : 0
 
 
 === Prime Orbit 19 =====================
-size : 18
-num_suborbits: 3
-126 (*) : 0-1-----01-----
-126     : ['allowed_in(node2)', 'sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
-127     : 01-----0----1--
-127     : ['allowed_in(node1)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
-128     : -01----1---0---
-128     : ['allowed_in(node2)', 'sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
-129     : 10-------0---1-
-129     : ['allowed_in(node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
-130     : -10-----1----0-
-130     : ['allowed_in(node1)', 'sent(node0,node2)', '~allowed_in(node2)', '~sent(node2,node1)']
-131     : 1-0--------10--
-131     : ['allowed_in(node0)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node0)']
-132 (*) : 0-1----0-1-----
-132     : ['allowed_in(node2)', 'sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
-133     : 01------0---1--
-133     : ['allowed_in(node1)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
-134     : -01----1-0-----
-134     : ['allowed_in(node2)', 'sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
-135     : 10---------0-1-
-135     : ['allowed_in(node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
-136     : -10-----1---0--
-136     : ['allowed_in(node1)', 'sent(node0,node2)', '~allowed_in(node2)', '~sent(node2,node0)']
-137     : 1-0--------1-0-
-137     : ['allowed_in(node0)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node1)']
-228 (*) : -01------1-0---
-228     : ['allowed_in(node2)', 'sent(node1,node0)', '~allowed_in(node1)', '~sent(node1,node2)']
-229     : -10---------10-
-229     : ['allowed_in(node1)', 'sent(node2,node0)', '~allowed_in(node2)', '~sent(node2,node1)']
-230     : 0-1----10------
-230     : ['allowed_in(node2)', 'sent(node0,node1)', '~allowed_in(node0)', '~sent(node0,node2)']
-231     : 1-0---------01-
-231     : ['allowed_in(node0)', 'sent(node2,node1)', '~allowed_in(node2)', '~sent(node2,node0)']
-232     : 01-----01------
-232     : ['allowed_in(node1)', 'sent(node0,node2)', '~allowed_in(node0)', '~sent(node0,node1)']
-233     : 10-------0-1---
-233     : ['allowed_in(node0)', 'sent(node1,node2)', '~allowed_in(node1)', '~sent(node1,node0)']
+size : 24
+num_suborbits: 4
+126 (*) : 1----1-1---1---
+126     : ['allowed_in(node0)', 'internal(node2)', 'sent(node0,node1)', 'sent(node1,node2)']
+127     : 1---1---1----1-
+127     : ['allowed_in(node0)', 'internal(node1)', 'sent(node0,node2)', 'sent(node2,node1)']
+128     : -1---1--11-----
+128     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node2)', 'sent(node1,node0)']
+129     : -1-1-------11--
+129     : ['allowed_in(node1)', 'internal(node0)', 'sent(node1,node2)', 'sent(node2,node0)']
+130     : --1-1--1----1--
+130     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', 'sent(node2,node0)']
+131     : --11-----1---1-
+131     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', 'sent(node2,node1)']
+138 (*) : 1----1-1-----1-
+138     : ['allowed_in(node0)', 'internal(node2)', 'sent(node0,node1)', 'sent(node2,node1)']
+139     : 1---1---1--1---
+139     : ['allowed_in(node0)', 'internal(node1)', 'sent(node0,node2)', 'sent(node1,node2)']
+140     : -1---1---1--1--
+140     : ['allowed_in(node1)', 'internal(node2)', 'sent(node1,node0)', 'sent(node2,node0)']
+141     : -1-1----1--1---
+141     : ['allowed_in(node1)', 'internal(node0)', 'sent(node0,node2)', 'sent(node1,node2)']
+142     : --1-1----1--1--
+142     : ['allowed_in(node2)', 'internal(node1)', 'sent(node1,node0)', 'sent(node2,node0)']
+143     : --11---1-----1-
+143     : ['allowed_in(node2)', 'internal(node0)', 'sent(node0,node1)', 'sent(node2,node1)']
+318 (*) : --11---1---1---
+318     : ['allowed_in(node2)', 'internal(node0)', 'sent(node0,node1)', 'sent(node1,node2)']
+319     : -1-1----1----1-
+319     : ['allowed_in(node1)', 'internal(node0)', 'sent(node0,node2)', 'sent(node2,node1)']
+320     : --1-1---11-----
+320     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node2)', 'sent(node1,node0)']
+321     : 1---1------11--
+321     : ['allowed_in(node0)', 'internal(node1)', 'sent(node1,node2)', 'sent(node2,node0)']
+322     : -1---1-1----1--
+322     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node1)', 'sent(node2,node0)']
+323     : 1----1---1---1-
+323     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node0)', 'sent(node2,node1)']
+336 (*) : --1-1--11------
+336     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', 'sent(node0,node2)']
+337     : -1---1-11------
+337     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node1)', 'sent(node0,node2)']
+338     : --11-----1-1---
+338     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', 'sent(node1,node2)']
+339     : 1----1---1-1---
+339     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node0)', 'sent(node1,node2)']
+340     : -1-1--------11-
+340     : ['allowed_in(node1)', 'internal(node0)', 'sent(node2,node0)', 'sent(node2,node1)']
+341     : 1---1-------11-
+341     : ['allowed_in(node0)', 'internal(node1)', 'sent(node2,node0)', 'sent(node2,node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -536,44 +584,56 @@ qcost : 0
 
 
 === Prime Orbit 20 =====================
-size : 18
-num_suborbits: 3
-144 (*) : --11----01-----
-144     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', '~sent(node0,node2)']
-145     : -1-1---0----1--
-145     : ['allowed_in(node1)', 'internal(node0)', 'sent(node2,node0)', '~sent(node0,node1)']
-146     : --1-1--1---0---
-146     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', '~sent(node1,node2)']
-147     : 1---1----0---1-
-147     : ['allowed_in(node0)', 'internal(node1)', 'sent(node2,node1)', '~sent(node1,node0)']
-148     : -1---1--1----0-
-148     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node2)', '~sent(node2,node1)']
-149     : 1----1-----10--
-149     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node2)', '~sent(node2,node0)']
-150 (*) : --11---0-1-----
-150     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)']
-151     : -1-1----0---1--
-151     : ['allowed_in(node1)', 'internal(node0)', 'sent(node2,node0)', '~sent(node0,node2)']
-152     : --1-1--1-0-----
-152     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)']
-153     : 1---1------0-1-
-153     : ['allowed_in(node0)', 'internal(node1)', 'sent(node2,node1)', '~sent(node1,node2)']
-154     : -1---1--1---0--
-154     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node2)', '~sent(node2,node0)']
-155     : 1----1-----1-0-
-155     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node2)', '~sent(node2,node1)']
-270 (*) : --1-1----1-0---
-270     : ['allowed_in(node2)', 'internal(node1)', 'sent(node1,node0)', '~sent(node1,node2)']
-271     : -1---1------10-
-271     : ['allowed_in(node1)', 'internal(node2)', 'sent(node2,node0)', '~sent(node2,node1)']
-272     : --11---10------
-272     : ['allowed_in(node2)', 'internal(node0)', 'sent(node0,node1)', '~sent(node0,node2)']
-273     : 1----1------01-
-273     : ['allowed_in(node0)', 'internal(node2)', 'sent(node2,node1)', '~sent(node2,node0)']
-274     : -1-1---01------
-274     : ['allowed_in(node1)', 'internal(node0)', 'sent(node0,node2)', '~sent(node0,node1)']
-275     : 1---1----0-1---
-275     : ['allowed_in(node0)', 'internal(node1)', 'sent(node1,node2)', '~sent(node1,node0)']
+size : 24
+num_suborbits: 4
+144 (*) : -----0-10---1--
+144     : ['sent(node0,node1)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)']
+145     : ----0--011-----
+145     : ['sent(node0,node2)', 'sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)']
+146     : -----0---1-0-1-
+146     : ['sent(node1,node0)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node2)']
+147     : ---0---1-0-1---
+147     : ['sent(node0,node1)', 'sent(node1,node2)', '~internal(node0)', '~sent(node1,node0)']
+148     : ----0------110-
+148     : ['sent(node1,node2)', 'sent(node2,node0)', '~internal(node1)', '~sent(node2,node1)']
+149     : ---0----1---01-
+149     : ['sent(node0,node2)', 'sent(node2,node1)', '~internal(node0)', '~sent(node2,node0)']
+156 (*) : -----0-1-0-1---
+156     : ['sent(node0,node1)', 'sent(node1,node2)', '~internal(node2)', '~sent(node1,node0)']
+157     : ----0---1---01-
+157     : ['sent(node0,node2)', 'sent(node2,node1)', '~internal(node1)', '~sent(node2,node0)']
+158     : -----0-011-----
+158     : ['sent(node0,node2)', 'sent(node1,node0)', '~internal(node2)', '~sent(node0,node1)']
+159     : ---0-------110-
+159     : ['sent(node1,node2)', 'sent(node2,node0)', '~internal(node0)', '~sent(node2,node1)']
+160     : ----0--10---1--
+160     : ['sent(node0,node1)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node2)']
+161     : ---0-----1-0-1-
+161     : ['sent(node1,node0)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node2)']
+246 (*) : -----0-1-0---1-
+246     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node0)']
+247     : ----0---1--10--
+247     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node1)', '~sent(node2,node0)']
+248     : -----0-0-1--1--
+248     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node1)']
+249     : ---0----1--1-0-
+249     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node0)', '~sent(node2,node1)']
+250     : ----0---01--1--
+250     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node2)']
+251     : ---0---1---0-1-
+251     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node2)']
+252 (*) : ---0---1-0---1-
+252     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node0)']
+253     : ---0----1--10--
+253     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node0)', '~sent(node2,node0)']
+254     : ----0--0-1--1--
+254     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node1)']
+255     : ----0---1--1-0-
+255     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node1)', '~sent(node2,node1)']
+256     : -----0--01--1--
+256     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)']
+257     : -----0-1---0-1-
+257     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -584,54 +644,54 @@ qcost : 0
 === Prime Orbit 21 =====================
 size : 24
 num_suborbits: 4
-156 (*) : --11-----1---1-
-156     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', 'sent(node2,node1)']
-157     : -1-1-------11--
-157     : ['allowed_in(node1)', 'internal(node0)', 'sent(node1,node2)', 'sent(node2,node0)']
-158     : --1-1--1----1--
-158     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', 'sent(node2,node0)']
-159     : 1---1---1----1-
-159     : ['allowed_in(node0)', 'internal(node1)', 'sent(node0,node2)', 'sent(node2,node1)']
-160     : -1---1--11-----
-160     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node2)', 'sent(node1,node0)']
-161     : 1----1-1---1---
-161     : ['allowed_in(node0)', 'internal(node2)', 'sent(node0,node1)', 'sent(node1,node2)']
-162 (*) : --11-----1-1---
-162     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', 'sent(node1,node2)']
-163     : -1-1--------11-
-163     : ['allowed_in(node1)', 'internal(node0)', 'sent(node2,node0)', 'sent(node2,node1)']
-164     : --1-1--11------
-164     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', 'sent(node0,node2)']
-165     : 1---1-------11-
-165     : ['allowed_in(node0)', 'internal(node1)', 'sent(node2,node0)', 'sent(node2,node1)']
-166     : -1---1-11------
-166     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node1)', 'sent(node0,node2)']
-167     : 1----1---1-1---
-167     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node0)', 'sent(node1,node2)']
-282 (*) : --1-1---11-----
-282     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node2)', 'sent(node1,node0)']
-283     : -1---1-1----1--
-283     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node1)', 'sent(node2,node0)']
-284     : --11---1---1---
-284     : ['allowed_in(node2)', 'internal(node0)', 'sent(node0,node1)', 'sent(node1,node2)']
-285     : 1----1---1---1-
-285     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node0)', 'sent(node2,node1)']
-286     : -1-1----1----1-
-286     : ['allowed_in(node1)', 'internal(node0)', 'sent(node0,node2)', 'sent(node2,node1)']
-287     : 1---1------11--
-287     : ['allowed_in(node0)', 'internal(node1)', 'sent(node1,node2)', 'sent(node2,node0)']
-294 (*) : -1---1---1--1--
-294     : ['allowed_in(node1)', 'internal(node2)', 'sent(node1,node0)', 'sent(node2,node0)']
-295     : --1-1----1--1--
-295     : ['allowed_in(node2)', 'internal(node1)', 'sent(node1,node0)', 'sent(node2,node0)']
-296     : 1----1-1-----1-
-296     : ['allowed_in(node0)', 'internal(node2)', 'sent(node0,node1)', 'sent(node2,node1)']
-297     : --11---1-----1-
-297     : ['allowed_in(node2)', 'internal(node0)', 'sent(node0,node1)', 'sent(node2,node1)']
-298     : 1---1---1--1---
-298     : ['allowed_in(node0)', 'internal(node1)', 'sent(node0,node2)', 'sent(node1,node2)']
-299     : -1-1----1--1---
-299     : ['allowed_in(node1)', 'internal(node0)', 'sent(node0,node2)', 'sent(node1,node2)']
+150 (*) : --1----10---1--
+150     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node0)', '~sent(node0,node2)']
+151     : -1-----011-----
+151     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node0)', '~sent(node0,node1)']
+152     : --1------1-0-1-
+152     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node1)', '~sent(node1,node2)']
+153     : 1------1-0-1---
+153     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node1,node2)', '~sent(node1,node0)']
+154     : -1---------110-
+154     : ['allowed_in(node1)', 'sent(node1,node2)', 'sent(node2,node0)', '~sent(node2,node1)']
+155     : 1-------1---01-
+155     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node2,node1)', '~sent(node2,node0)']
+216 (*) : --1----1-0-1---
+216     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node1,node2)', '~sent(node1,node0)']
+217     : -1------1---01-
+217     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node2,node1)', '~sent(node2,node0)']
+218     : --1----011-----
+218     : ['allowed_in(node2)', 'sent(node0,node2)', 'sent(node1,node0)', '~sent(node0,node1)']
+219     : 1----------110-
+219     : ['allowed_in(node0)', 'sent(node1,node2)', 'sent(node2,node0)', '~sent(node2,node1)']
+220     : -1-----10---1--
+220     : ['allowed_in(node1)', 'sent(node0,node1)', 'sent(node2,node0)', '~sent(node0,node2)']
+221     : 1--------1-0-1-
+221     : ['allowed_in(node0)', 'sent(node1,node0)', 'sent(node2,node1)', '~sent(node1,node2)']
+240 (*) : --1----1-0---1-
+240     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node0)']
+241     : -1------1--10--
+241     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node0)']
+242     : --1----0-1--1--
+242     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node1)']
+243     : 1-------1--1-0-
+243     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node1)']
+244     : -1------01--1--
+244     : ['allowed_in(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node2)']
+245     : 1------1---0-1-
+245     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node2)']
+270 (*) : 1------1-0---1-
+270     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node0)']
+271     : 1-------1--10--
+271     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node0)']
+272     : -1-----0-1--1--
+272     : ['allowed_in(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node1)']
+273     : -1------1--1-0-
+273     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node1)']
+274     : --1-----01--1--
+274     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node2)']
+275     : --1----1---0-1-
+275     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -642,18 +702,18 @@ qcost : 0
 === Prime Orbit 22 =====================
 size : 6
 num_suborbits: 1
-168 (*) : ---1-0-0-1-----
-168     : ['internal(node0)', 'sent(node1,node0)', '~internal(node2)', '~sent(node0,node1)']
-169     : ---10---0---1--
-169     : ['internal(node0)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node2)']
-170     : ----10-1-0-----
-170     : ['internal(node1)', 'sent(node0,node1)', '~internal(node2)', '~sent(node1,node0)']
-171     : ---01------0-1-
-171     : ['internal(node1)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node2)']
-172     : ----01--1---0--
-172     : ['internal(node2)', 'sent(node0,node2)', '~internal(node1)', '~sent(node2,node0)']
-173     : ---0-1-----1-0-
-173     : ['internal(node2)', 'sent(node1,node2)', '~internal(node0)', '~sent(node2,node1)']
+162 (*) : ---0-0-1-0-----
+162     : ['sent(node0,node1)', '~internal(node0)', '~internal(node2)', '~sent(node1,node0)']
+163     : ---00---1---0--
+163     : ['sent(node0,node2)', '~internal(node0)', '~internal(node1)', '~sent(node2,node0)']
+164     : ----00-0-1-----
+164     : ['sent(node1,node0)', '~internal(node1)', '~internal(node2)', '~sent(node0,node1)']
+165     : ---00------1-0-
+165     : ['sent(node1,node2)', '~internal(node0)', '~internal(node1)', '~sent(node2,node1)']
+166     : ----00--0---1--
+166     : ['sent(node2,node0)', '~internal(node1)', '~internal(node2)', '~sent(node0,node2)']
+167     : ---0-0-----0-1-
+167     : ['sent(node2,node1)', '~internal(node0)', '~internal(node2)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -664,18 +724,18 @@ qcost : 0
 === Prime Orbit 23 =====================
 size : 6
 num_suborbits: 1
-174 (*) : ---1---0-1---0-
-174     : ['internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)', '~sent(node2,node1)']
-175     : ---1----0--01--
-175     : ['internal(node0)', 'sent(node2,node0)', '~sent(node0,node2)', '~sent(node1,node2)']
-176     : ----1--1-0--0--
-176     : ['internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)', '~sent(node2,node0)']
-177     : ----1---0--0-1-
-177     : ['internal(node1)', 'sent(node2,node1)', '~sent(node0,node2)', '~sent(node1,node2)']
-178     : -----1--10--0--
-178     : ['internal(node2)', 'sent(node0,node2)', '~sent(node1,node0)', '~sent(node2,node0)']
-179     : -----1-0---1-0-
-179     : ['internal(node2)', 'sent(node1,node2)', '~sent(node0,node1)', '~sent(node2,node1)']
+168 (*) : ---0---1-0--0--
+168     : ['sent(node0,node1)', '~internal(node0)', '~sent(node1,node0)', '~sent(node2,node0)']
+169     : ---0----10--0--
+169     : ['sent(node0,node2)', '~internal(node0)', '~sent(node1,node0)', '~sent(node2,node0)']
+170     : ----0--0-1---0-
+170     : ['sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)', '~sent(node2,node1)']
+171     : ----0--0---1-0-
+171     : ['sent(node1,node2)', '~internal(node1)', '~sent(node0,node1)', '~sent(node2,node1)']
+172     : -----0--0--01--
+172     : ['sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)', '~sent(node1,node2)']
+173     : -----0--0--0-1-
+173     : ['sent(node2,node1)', '~internal(node2)', '~sent(node0,node2)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -684,32 +744,20 @@ qcost : 0
 
 
 === Prime Orbit 24 =====================
-size : 12
-num_suborbits: 2
-180 (*) : ---1---011-----
-180     : ['internal(node0)', 'sent(node0,node2)', 'sent(node1,node0)', '~sent(node0,node1)']
-181     : ---1---10---1--
-181     : ['internal(node0)', 'sent(node0,node1)', 'sent(node2,node0)', '~sent(node0,node2)']
-182     : ----1--1-0-1---
-182     : ['internal(node1)', 'sent(node0,node1)', 'sent(node1,node2)', '~sent(node1,node0)']
-183     : ----1----1-0-1-
-183     : ['internal(node1)', 'sent(node1,node0)', 'sent(node2,node1)', '~sent(node1,node2)']
-184     : -----1--1---01-
-184     : ['internal(node2)', 'sent(node0,node2)', 'sent(node2,node1)', '~sent(node2,node0)']
-185     : -----1-----110-
-185     : ['internal(node2)', 'sent(node1,node2)', 'sent(node2,node0)', '~sent(node2,node1)']
-336 (*) : ---1----01--1--
-336     : ['internal(node0)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node2)']
-337     : ---1---0-1--1--
-337     : ['internal(node0)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node1)']
-338     : ----1--1---0-1-
-338     : ['internal(node1)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node2)']
-339     : ----1--1-0---1-
-339     : ['internal(node1)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node0)']
-340     : -----1--1--1-0-
-340     : ['internal(node2)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node1)']
-341     : -----1--1--10--
-341     : ['internal(node2)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node0)']
+size : 6
+num_suborbits: 1
+174 (*) : ----1--1-0--0--
+174     : ['internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)', '~sent(node2,node0)']
+175     : -----1--10--0--
+175     : ['internal(node2)', 'sent(node0,node2)', '~sent(node1,node0)', '~sent(node2,node0)']
+176     : ---1---0-1---0-
+176     : ['internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)', '~sent(node2,node1)']
+177     : -----1-0---1-0-
+177     : ['internal(node2)', 'sent(node1,node2)', '~sent(node0,node1)', '~sent(node2,node1)']
+178     : ---1----0--01--
+178     : ['internal(node0)', 'sent(node2,node0)', '~sent(node0,node2)', '~sent(node1,node2)']
+179     : ----1---0--0-1-
+179     : ['internal(node1)', 'sent(node2,node1)', '~sent(node0,node2)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -718,56 +766,20 @@ qcost : 0
 
 
 === Prime Orbit 25 =====================
-size : 24
-num_suborbits: 4
-186 (*) : ---1-0---1---1-
-186     : ['internal(node0)', 'sent(node1,node0)', 'sent(node2,node1)', '~internal(node2)']
-187     : ---10------11--
-187     : ['internal(node0)', 'sent(node1,node2)', 'sent(node2,node0)', '~internal(node1)']
-188     : ----10-1----1--
-188     : ['internal(node1)', 'sent(node0,node1)', 'sent(node2,node0)', '~internal(node2)']
-189     : ---01---1----1-
-189     : ['internal(node1)', 'sent(node0,node2)', 'sent(node2,node1)', '~internal(node0)']
-190     : ----01--11-----
-190     : ['internal(node2)', 'sent(node0,node2)', 'sent(node1,node0)', '~internal(node1)']
-191     : ---0-1-1---1---
-191     : ['internal(node2)', 'sent(node0,node1)', 'sent(node1,node2)', '~internal(node0)']
-192 (*) : ---1-0---1-1---
-192     : ['internal(node0)', 'sent(node1,node0)', 'sent(node1,node2)', '~internal(node2)']
-193     : ---10-------11-
-193     : ['internal(node0)', 'sent(node2,node0)', 'sent(node2,node1)', '~internal(node1)']
-194     : ----10-11------
-194     : ['internal(node1)', 'sent(node0,node1)', 'sent(node0,node2)', '~internal(node2)']
-195     : ---01-------11-
-195     : ['internal(node1)', 'sent(node2,node0)', 'sent(node2,node1)', '~internal(node0)']
-196     : ----01-11------
-196     : ['internal(node2)', 'sent(node0,node1)', 'sent(node0,node2)', '~internal(node1)']
-197     : ---0-1---1-1---
-197     : ['internal(node2)', 'sent(node1,node0)', 'sent(node1,node2)', '~internal(node0)']
-276 (*) : ----10--11-----
-276     : ['internal(node1)', 'sent(node0,node2)', 'sent(node1,node0)', '~internal(node2)']
-277     : ----01-1----1--
-277     : ['internal(node2)', 'sent(node0,node1)', 'sent(node2,node0)', '~internal(node1)']
-278     : ---1-0-1---1---
-278     : ['internal(node0)', 'sent(node0,node1)', 'sent(node1,node2)', '~internal(node2)']
-279     : ---0-1---1---1-
-279     : ['internal(node2)', 'sent(node1,node0)', 'sent(node2,node1)', '~internal(node0)']
-280     : ---10---1----1-
-280     : ['internal(node0)', 'sent(node0,node2)', 'sent(node2,node1)', '~internal(node1)']
-281     : ---01------11--
-281     : ['internal(node1)', 'sent(node1,node2)', 'sent(node2,node0)', '~internal(node0)']
-288 (*) : ----01---1--1--
-288     : ['internal(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~internal(node1)']
-289     : ----10---1--1--
-289     : ['internal(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~internal(node2)']
-290     : ---0-1-1-----1-
-290     : ['internal(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~internal(node0)']
-291     : ---1-0-1-----1-
-291     : ['internal(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~internal(node2)']
-292     : ---01---1--1---
-292     : ['internal(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~internal(node0)']
-293     : ---10---1--1---
-293     : ['internal(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~internal(node1)']
+size : 6
+num_suborbits: 1
+180 (*) : ----10-1-0-----
+180     : ['internal(node1)', 'sent(node0,node1)', '~internal(node2)', '~sent(node1,node0)']
+181     : ----01--1---0--
+181     : ['internal(node2)', 'sent(node0,node2)', '~internal(node1)', '~sent(node2,node0)']
+182     : ---1-0-0-1-----
+182     : ['internal(node0)', 'sent(node1,node0)', '~internal(node2)', '~sent(node0,node1)']
+183     : ---0-1-----1-0-
+183     : ['internal(node2)', 'sent(node1,node2)', '~internal(node0)', '~sent(node2,node1)']
+184     : ---10---0---1--
+184     : ['internal(node0)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node2)']
+185     : ---01------0-1-
+185     : ['internal(node1)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -776,56 +788,32 @@ qcost : 0
 
 
 === Prime Orbit 26 =====================
-size : 24
-num_suborbits: 4
-204 (*) : 1--------1-0-1-
-204     : ['allowed_in(node0)', 'sent(node1,node0)', 'sent(node2,node1)', '~sent(node1,node2)']
-205     : 1----------110-
-205     : ['allowed_in(node0)', 'sent(node1,node2)', 'sent(node2,node0)', '~sent(node2,node1)']
-206     : -1-----10---1--
-206     : ['allowed_in(node1)', 'sent(node0,node1)', 'sent(node2,node0)', '~sent(node0,node2)']
-207     : -1------1---01-
-207     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node2,node1)', '~sent(node2,node0)']
-208     : --1----011-----
-208     : ['allowed_in(node2)', 'sent(node0,node2)', 'sent(node1,node0)', '~sent(node0,node1)']
-209     : --1----1-0-1---
-209     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node1,node2)', '~sent(node1,node0)']
-234 (*) : --1------1-0-1-
-234     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node1)', '~sent(node1,node2)']
-235     : -1---------110-
-235     : ['allowed_in(node1)', 'sent(node1,node2)', 'sent(node2,node0)', '~sent(node2,node1)']
-236     : --1----10---1--
-236     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node0)', '~sent(node0,node2)']
-237     : 1-------1---01-
-237     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node2,node1)', '~sent(node2,node0)']
-238     : -1-----011-----
-238     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node0)', '~sent(node0,node1)']
-239     : 1------1-0-1---
-239     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node1,node2)', '~sent(node1,node0)']
-306 (*) : --1-----01--1--
-306     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node2)']
-307     : -1-----0-1--1--
-307     : ['allowed_in(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node1)']
-308     : --1----1---0-1-
-308     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node2)']
-309     : 1------1-0---1-
-309     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node0)']
-310     : -1------1--1-0-
-310     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node1)']
-311     : 1-------1--10--
-311     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node0)']
-330 (*) : -1------01--1--
-330     : ['allowed_in(node1)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node2)']
-331     : --1----0-1--1--
-331     : ['allowed_in(node2)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node1)']
-332     : 1------1---0-1-
-332     : ['allowed_in(node0)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node2)']
-333     : --1----1-0---1-
-333     : ['allowed_in(node2)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node0)']
-334     : 1-------1--1-0-
-334     : ['allowed_in(node0)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node1)']
-335     : -1------1--10--
-335     : ['allowed_in(node1)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node0)']
+size : 12
+num_suborbits: 2
+186 (*) : ----1--1-0-1---
+186     : ['internal(node1)', 'sent(node0,node1)', 'sent(node1,node2)', '~sent(node1,node0)']
+187     : -----1--1---01-
+187     : ['internal(node2)', 'sent(node0,node2)', 'sent(node2,node1)', '~sent(node2,node0)']
+188     : ---1---011-----
+188     : ['internal(node0)', 'sent(node0,node2)', 'sent(node1,node0)', '~sent(node0,node1)']
+189     : -----1-----110-
+189     : ['internal(node2)', 'sent(node1,node2)', 'sent(node2,node0)', '~sent(node2,node1)']
+190     : ---1---10---1--
+190     : ['internal(node0)', 'sent(node0,node1)', 'sent(node2,node0)', '~sent(node0,node2)']
+191     : ----1----1-0-1-
+191     : ['internal(node1)', 'sent(node1,node0)', 'sent(node2,node1)', '~sent(node1,node2)']
+258 (*) : ----1--1-0---1-
+258     : ['internal(node1)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node0)']
+259     : -----1--1--10--
+259     : ['internal(node2)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node0)']
+260     : ---1---0-1--1--
+260     : ['internal(node0)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node1)']
+261     : -----1--1--1-0-
+261     : ['internal(node2)', 'sent(node0,node2)', 'sent(node1,node2)', '~sent(node2,node1)']
+262     : ---1----01--1--
+262     : ['internal(node0)', 'sent(node1,node0)', 'sent(node2,node0)', '~sent(node0,node2)']
+263     : ----1--1---0-1-
+263     : ['internal(node1)', 'sent(node0,node1)', 'sent(node2,node1)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -834,56 +822,20 @@ qcost : 0
 
 
 === Prime Orbit 27 =====================
-size : 24
-num_suborbits: 4
-210 (*) : -----0---1-0-1-
-210     : ['sent(node1,node0)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node2)']
-211     : ----0------110-
-211     : ['sent(node1,node2)', 'sent(node2,node0)', '~internal(node1)', '~sent(node2,node1)']
-212     : -----0-10---1--
-212     : ['sent(node0,node1)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)']
-213     : ---0----1---01-
-213     : ['sent(node0,node2)', 'sent(node2,node1)', '~internal(node0)', '~sent(node2,node0)']
-214     : ----0--011-----
-214     : ['sent(node0,node2)', 'sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)']
-215     : ---0---1-0-1---
-215     : ['sent(node0,node1)', 'sent(node1,node2)', '~internal(node0)', '~sent(node1,node0)']
-216 (*) : ---0-----1-0-1-
-216     : ['sent(node1,node0)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node2)']
-217     : ---0-------110-
-217     : ['sent(node1,node2)', 'sent(node2,node0)', '~internal(node0)', '~sent(node2,node1)']
-218     : ----0--10---1--
-218     : ['sent(node0,node1)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node2)']
-219     : ----0---1---01-
-219     : ['sent(node0,node2)', 'sent(node2,node1)', '~internal(node1)', '~sent(node2,node0)']
-220     : -----0-011-----
-220     : ['sent(node0,node2)', 'sent(node1,node0)', '~internal(node2)', '~sent(node0,node1)']
-221     : -----0-1-0-1---
-221     : ['sent(node0,node1)', 'sent(node1,node2)', '~internal(node2)', '~sent(node1,node0)']
-324 (*) : ----0---01--1--
-324     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node2)']
-325     : -----0-0-1--1--
-325     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node1)']
-326     : ---0---1---0-1-
-326     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node2)']
-327     : -----0-1-0---1-
-327     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node0)']
-328     : ---0----1--1-0-
-328     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node0)', '~sent(node2,node1)']
-329     : ----0---1--10--
-329     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node1)', '~sent(node2,node0)']
-342 (*) : -----0--01--1--
-342     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)']
-343     : ----0--0-1--1--
-343     : ['sent(node1,node0)', 'sent(node2,node0)', '~internal(node1)', '~sent(node0,node1)']
-344     : -----0-1---0-1-
-344     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node2)']
-345     : ---0---1-0---1-
-345     : ['sent(node0,node1)', 'sent(node2,node1)', '~internal(node0)', '~sent(node1,node0)']
-346     : ----0---1--1-0-
-346     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node1)', '~sent(node2,node1)']
-347     : ---0----1--10--
-347     : ['sent(node0,node2)', 'sent(node1,node2)', '~internal(node0)', '~sent(node2,node0)']
+size : 6
+num_suborbits: 1
+192 (*) : -0-----1-0--0--
+192     : ['sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)', '~sent(node2,node0)']
+193     : --0-----10--0--
+193     : ['sent(node0,node2)', '~allowed_in(node2)', '~sent(node1,node0)', '~sent(node2,node0)']
+194     : 0------0-1---0-
+194     : ['sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)', '~sent(node2,node1)']
+195     : --0----0---1-0-
+195     : ['sent(node1,node2)', '~allowed_in(node2)', '~sent(node0,node1)', '~sent(node2,node1)']
+196     : 0-------0--01--
+196     : ['sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)', '~sent(node1,node2)']
+197     : -0------0--0-1-
+197     : ['sent(node2,node1)', '~allowed_in(node1)', '~sent(node0,node2)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -892,32 +844,20 @@ qcost : 0
 
 
 === Prime Orbit 28 =====================
-size : 12
-num_suborbits: 2
-222 (*) : -0-------1-0-1-
-222     : ['sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
-223     : --0--------110-
-223     : ['sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node2)', '~sent(node2,node1)']
-224     : 0------10---1--
-224     : ['sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
-225     : --0-----1---01-
-225     : ['sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node2)', '~sent(node2,node0)']
-226     : 0------011-----
-226     : ['sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
-227     : -0-----1-0-1---
-227     : ['sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node1)', '~sent(node1,node0)']
-318 (*) : 0-------01--1--
-318     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
-319     : 0------0-1--1--
-319     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
-320     : -0-----1---0-1-
-320     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
-321     : -0-----1-0---1-
-321     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
-322     : --0-----1--1-0-
-322     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node1)']
-323     : --0-----1--10--
-323     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node0)']
+size : 6
+num_suborbits: 1
+198 (*) : -0---0-1-0-----
+198     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node2)', '~sent(node1,node0)']
+199     : --0-0---1---0--
+199     : ['sent(node0,node2)', '~allowed_in(node2)', '~internal(node1)', '~sent(node2,node0)']
+200     : 0----0-0-1-----
+200     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node2)', '~sent(node0,node1)']
+201     : --00-------1-0-
+201     : ['sent(node1,node2)', '~allowed_in(node2)', '~internal(node0)', '~sent(node2,node1)']
+202     : 0---0---0---1--
+202     : ['sent(node2,node0)', '~allowed_in(node0)', '~internal(node1)', '~sent(node0,node2)']
+203     : -0-0-------0-1-
+203     : ['sent(node2,node1)', '~allowed_in(node1)', '~internal(node0)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -926,20 +866,32 @@ qcost : 0
 
 
 === Prime Orbit 29 =====================
-size : 6
-num_suborbits: 1
-240 (*) : 0------0-1---0-
-240     : ['sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)', '~sent(node2,node1)']
-241     : 0-------0--01--
-241     : ['sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)', '~sent(node1,node2)']
-242     : -0-----1-0--0--
-242     : ['sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)', '~sent(node2,node0)']
-243     : -0------0--0-1-
-243     : ['sent(node2,node1)', '~allowed_in(node1)', '~sent(node0,node2)', '~sent(node1,node2)']
-244     : --0-----10--0--
-244     : ['sent(node0,node2)', '~allowed_in(node2)', '~sent(node1,node0)', '~sent(node2,node0)']
-245     : --0----0---1-0-
-245     : ['sent(node1,node2)', '~allowed_in(node2)', '~sent(node0,node1)', '~sent(node2,node1)']
+size : 12
+num_suborbits: 2
+204 (*) : -0-----1-0-1---
+204     : ['sent(node0,node1)', 'sent(node1,node2)', '~allowed_in(node1)', '~sent(node1,node0)']
+205     : --0-----1---01-
+205     : ['sent(node0,node2)', 'sent(node2,node1)', '~allowed_in(node2)', '~sent(node2,node0)']
+206     : 0------011-----
+206     : ['sent(node0,node2)', 'sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
+207     : --0--------110-
+207     : ['sent(node1,node2)', 'sent(node2,node0)', '~allowed_in(node2)', '~sent(node2,node1)']
+208     : 0------10---1--
+208     : ['sent(node0,node1)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
+209     : -0-------1-0-1-
+209     : ['sent(node1,node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
+264 (*) : -0-----1-0---1-
+264     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
+265     : --0-----1--10--
+265     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node0)']
+266     : 0------0-1--1--
+266     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
+267     : --0-----1--1-0-
+267     : ['sent(node0,node2)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node1)']
+268     : 0-------01--1--
+268     : ['sent(node1,node0)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
+269     : -0-----1---0-1-
+269     : ['sent(node0,node1)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -950,18 +902,18 @@ qcost : 0
 === Prime Orbit 30 =====================
 size : 6
 num_suborbits: 1
-246 (*) : ----0--0-1---0-
-246     : ['sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)', '~sent(node2,node1)']
-247     : -----0--0--01--
-247     : ['sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)', '~sent(node1,node2)']
-248     : ---0---1-0--0--
-248     : ['sent(node0,node1)', '~internal(node0)', '~sent(node1,node0)', '~sent(node2,node0)']
-249     : -----0--0--0-1-
-249     : ['sent(node2,node1)', '~internal(node2)', '~sent(node0,node2)', '~sent(node1,node2)']
-250     : ---0----10--0--
-250     : ['sent(node0,node2)', '~internal(node0)', '~sent(node1,node0)', '~sent(node2,node0)']
-251     : ----0--0---1-0-
-251     : ['sent(node1,node2)', '~internal(node1)', '~sent(node0,node1)', '~sent(node2,node1)']
+210 (*) : --1----100-----
+210     : ['allowed_in(node2)', 'sent(node0,node1)', '~sent(node0,node2)', '~sent(node1,node0)']
+211     : -1-----01---0--
+211     : ['allowed_in(node1)', 'sent(node0,node2)', '~sent(node0,node1)', '~sent(node2,node0)']
+212     : --1----0-1-0---
+212     : ['allowed_in(node2)', 'sent(node1,node0)', '~sent(node0,node1)', '~sent(node1,node2)']
+213     : 1--------0-1-0-
+213     : ['allowed_in(node0)', 'sent(node1,node2)', '~sent(node1,node0)', '~sent(node2,node1)']
+214     : -1------0---10-
+214     : ['allowed_in(node1)', 'sent(node2,node0)', '~sent(node0,node2)', '~sent(node2,node1)']
+215     : 1----------001-
+215     : ['allowed_in(node0)', 'sent(node2,node1)', '~sent(node1,node2)', '~sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -972,18 +924,18 @@ qcost : 0
 === Prime Orbit 31 =====================
 size : 6
 num_suborbits: 1
-252 (*) : ----00-0-1-----
-252     : ['sent(node1,node0)', '~internal(node1)', '~internal(node2)', '~sent(node0,node1)']
-253     : ----00--0---1--
-253     : ['sent(node2,node0)', '~internal(node1)', '~internal(node2)', '~sent(node0,node2)']
-254     : ---0-0-1-0-----
-254     : ['sent(node0,node1)', '~internal(node0)', '~internal(node2)', '~sent(node1,node0)']
-255     : ---0-0-----0-1-
-255     : ['sent(node2,node1)', '~internal(node0)', '~internal(node2)', '~sent(node1,node2)']
-256     : ---00---1---0--
-256     : ['sent(node0,node2)', '~internal(node0)', '~internal(node1)', '~sent(node2,node0)']
-257     : ---00------1-0-
-257     : ['sent(node1,node2)', '~internal(node0)', '~internal(node1)', '~sent(node2,node1)']
+222 (*) : --10---1-0-----
+222     : ['allowed_in(node2)', 'sent(node0,node1)', '~internal(node0)', '~sent(node1,node0)']
+223     : -1-0----1---0--
+223     : ['allowed_in(node1)', 'sent(node0,node2)', '~internal(node0)', '~sent(node2,node0)']
+224     : --1-0--0-1-----
+224     : ['allowed_in(node2)', 'sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)']
+225     : 1---0------1-0-
+225     : ['allowed_in(node0)', 'sent(node1,node2)', '~internal(node1)', '~sent(node2,node1)']
+226     : -1---0--0---1--
+226     : ['allowed_in(node1)', 'sent(node2,node0)', '~internal(node2)', '~sent(node0,node2)']
+227     : 1----0-----0-1-
+227     : ['allowed_in(node0)', 'sent(node2,node1)', '~internal(node2)', '~sent(node1,node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -992,20 +944,44 @@ qcost : 0
 
 
 === Prime Orbit 32 =====================
-size : 6
-num_suborbits: 1
-258 (*) : 0----0-0-1-----
-258     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node2)', '~sent(node0,node1)']
-259     : 0---0---0---1--
-259     : ['sent(node2,node0)', '~allowed_in(node0)', '~internal(node1)', '~sent(node0,node2)']
-260     : -0---0-1-0-----
-260     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node2)', '~sent(node1,node0)']
-261     : -0-0-------0-1-
-261     : ['sent(node2,node1)', '~allowed_in(node1)', '~internal(node0)', '~sent(node1,node2)']
-262     : --0-0---1---0--
-262     : ['sent(node0,node2)', '~allowed_in(node2)', '~internal(node1)', '~sent(node2,node0)']
-263     : --00-------1-0-
-263     : ['sent(node1,node2)', '~allowed_in(node2)', '~internal(node0)', '~sent(node2,node1)']
+size : 18
+num_suborbits: 3
+228 (*) : --1-1--1-0-----
+228     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)']
+229     : -1---1--1---0--
+229     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node2)', '~sent(node2,node0)']
+230     : --11---0-1-----
+230     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)']
+231     : 1----1-----1-0-
+231     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node2)', '~sent(node2,node1)']
+232     : -1-1----0---1--
+232     : ['allowed_in(node1)', 'internal(node0)', 'sent(node2,node0)', '~sent(node0,node2)']
+233     : 1---1------0-1-
+233     : ['allowed_in(node0)', 'internal(node1)', 'sent(node2,node1)', '~sent(node1,node2)']
+288 (*) : --1-1--1---0---
+288     : ['allowed_in(node2)', 'internal(node1)', 'sent(node0,node1)', '~sent(node1,node2)']
+289     : -1---1--1----0-
+289     : ['allowed_in(node1)', 'internal(node2)', 'sent(node0,node2)', '~sent(node2,node1)']
+290     : --11----01-----
+290     : ['allowed_in(node2)', 'internal(node0)', 'sent(node1,node0)', '~sent(node0,node2)']
+291     : 1----1-----10--
+291     : ['allowed_in(node0)', 'internal(node2)', 'sent(node1,node2)', '~sent(node2,node0)']
+292     : -1-1---0----1--
+292     : ['allowed_in(node1)', 'internal(node0)', 'sent(node2,node0)', '~sent(node0,node1)']
+293     : 1---1----0---1-
+293     : ['allowed_in(node0)', 'internal(node1)', 'sent(node2,node1)', '~sent(node1,node0)']
+312 (*) : --11---10------
+312     : ['allowed_in(node2)', 'internal(node0)', 'sent(node0,node1)', '~sent(node0,node2)']
+313     : -1-1---01------
+313     : ['allowed_in(node1)', 'internal(node0)', 'sent(node0,node2)', '~sent(node0,node1)']
+314     : --1-1----1-0---
+314     : ['allowed_in(node2)', 'internal(node1)', 'sent(node1,node0)', '~sent(node1,node2)']
+315     : 1---1----0-1---
+315     : ['allowed_in(node0)', 'internal(node1)', 'sent(node1,node2)', '~sent(node1,node0)']
+316     : -1---1------10-
+316     : ['allowed_in(node1)', 'internal(node2)', 'sent(node2,node0)', '~sent(node2,node1)']
+317     : 1----1------01-
+317     : ['allowed_in(node0)', 'internal(node2)', 'sent(node2,node1)', '~sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1014,20 +990,44 @@ qcost : 0
 
 
 === Prime Orbit 33 =====================
-size : 6
-num_suborbits: 1
-264 (*) : --1----0-1-0---
-264     : ['allowed_in(node2)', 'sent(node1,node0)', '~sent(node0,node1)', '~sent(node1,node2)']
-265     : -1------0---10-
-265     : ['allowed_in(node1)', 'sent(node2,node0)', '~sent(node0,node2)', '~sent(node2,node1)']
-266     : --1----100-----
-266     : ['allowed_in(node2)', 'sent(node0,node1)', '~sent(node0,node2)', '~sent(node1,node0)']
-267     : 1----------001-
-267     : ['allowed_in(node0)', 'sent(node2,node1)', '~sent(node1,node2)', '~sent(node2,node0)']
-268     : -1-----01---0--
-268     : ['allowed_in(node1)', 'sent(node0,node2)', '~sent(node0,node1)', '~sent(node2,node0)']
-269     : 1--------0-1-0-
-269     : ['allowed_in(node0)', 'sent(node1,node2)', '~sent(node1,node0)', '~sent(node2,node1)']
+size : 18
+num_suborbits: 3
+234 (*) : -01----1-0-----
+234     : ['allowed_in(node2)', 'sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
+235     : -10-----1---0--
+235     : ['allowed_in(node1)', 'sent(node0,node2)', '~allowed_in(node2)', '~sent(node2,node0)']
+236     : 0-1----0-1-----
+236     : ['allowed_in(node2)', 'sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
+237     : 1-0--------1-0-
+237     : ['allowed_in(node0)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node1)']
+238     : 01------0---1--
+238     : ['allowed_in(node1)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
+239     : 10---------0-1-
+239     : ['allowed_in(node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
+294 (*) : -01----1---0---
+294     : ['allowed_in(node2)', 'sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node2)']
+295     : -10-----1----0-
+295     : ['allowed_in(node1)', 'sent(node0,node2)', '~allowed_in(node2)', '~sent(node2,node1)']
+296     : 0-1-----01-----
+296     : ['allowed_in(node2)', 'sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node2)']
+297     : 1-0--------10--
+297     : ['allowed_in(node0)', 'sent(node1,node2)', '~allowed_in(node2)', '~sent(node2,node0)']
+298     : 01-----0----1--
+298     : ['allowed_in(node1)', 'sent(node2,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
+299     : 10-------0---1-
+299     : ['allowed_in(node0)', 'sent(node2,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
+306 (*) : 0-1----10------
+306     : ['allowed_in(node2)', 'sent(node0,node1)', '~allowed_in(node0)', '~sent(node0,node2)']
+307     : 01-----01------
+307     : ['allowed_in(node1)', 'sent(node0,node2)', '~allowed_in(node0)', '~sent(node0,node1)']
+308     : -01------1-0---
+308     : ['allowed_in(node2)', 'sent(node1,node0)', '~allowed_in(node1)', '~sent(node1,node2)']
+309     : 10-------0-1---
+309     : ['allowed_in(node0)', 'sent(node1,node2)', '~allowed_in(node1)', '~sent(node1,node0)']
+310     : -10---------10-
+310     : ['allowed_in(node1)', 'sent(node2,node0)', '~allowed_in(node2)', '~sent(node2,node1)']
+311     : 1-0---------01-
+311     : ['allowed_in(node0)', 'sent(node2,node1)', '~allowed_in(node2)', '~sent(node2,node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0

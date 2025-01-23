@@ -631,36 +631,36 @@ void client_server_ae__node_1_request_1_response_1__finite::__init(){
     const int max_qrm_solution_count = 2;
     if (qrm_solution_count == 0){
         bool __tmp1[1][1];
-        for (int N = 0; N < 1; N++) {
-            for (int R = 0; R < 1; R++) {
-                __tmp1[N][R] = false;
+        for (int R = 0; R < 1; R++) {
+            for (int N = 0; N < 1; N++) {
+                __tmp1[R][N] = false;
             }
         }
-        for (int N = 0; N < 1; N++) {
-            for (int R = 0; R < 1; R++) {
-                request_sent[N][R] = __tmp1[N][R];
+        for (int R = 0; R < 1; R++) {
+            for (int N = 0; N < 1; N++) {
+                request_sent[N][R] = __tmp1[R][N];
             }
         }
         bool __tmp2[1][1];
-        for (int N = 0; N < 1; N++) {
-            for (int P = 0; P < 1; P++) {
-                __tmp2[N][P] = false;
+        for (int P = 0; P < 1; P++) {
+            for (int N = 0; N < 1; N++) {
+                __tmp2[P][N] = false;
             }
         }
-        for (int N = 0; N < 1; N++) {
-            for (int P = 0; P < 1; P++) {
-                response_sent[N][P] = __tmp2[N][P];
+        for (int P = 0; P < 1; P++) {
+            for (int N = 0; N < 1; N++) {
+                response_sent[N][P] = __tmp2[P][N];
             }
         }
         bool __tmp3[1][1];
-        for (int N = 0; N < 1; N++) {
-            for (int P = 0; P < 1; P++) {
-                __tmp3[N][P] = false;
+        for (int P = 0; P < 1; P++) {
+            for (int N = 0; N < 1; N++) {
+                __tmp3[P][N] = false;
             }
         }
-        for (int N = 0; N < 1; N++) {
-            for (int P = 0; P < 1; P++) {
-                response_received[N][P] = __tmp3[N][P];
+        for (int P = 0; P < 1; P++) {
+            for (int N = 0; N < 1; N++) {
+                response_received[N][P] = __tmp3[P][N];
             }
         }
         match[0][0] = false;
@@ -715,16 +715,6 @@ bool client_server_ae__node_1_request_1_response_1__finite::ext__get_bool_respon
     qrm_result = (responseMatched(n0,r1) == result);
     return qrm_result;
 }
-bool client_server_ae__node_1_request_1_response_1__finite::ext__get_response_received(node n0, response r1){
-    bool qrm_result;
-    qrm_result = response_received[n0][r1];
-    return qrm_result;
-}
-bool client_server_ae__node_1_request_1_response_1__finite::ext__get_bool_response_received(node n0, response r1, bool result){
-    bool qrm_result;
-    qrm_result = (response_received[n0][r1] == result);
-    return qrm_result;
-}
 bool client_server_ae__node_1_request_1_response_1__finite::ext__get_request_sent(node n0, request r1){
     bool qrm_result;
     qrm_result = request_sent[n0][r1];
@@ -733,6 +723,16 @@ bool client_server_ae__node_1_request_1_response_1__finite::ext__get_request_sen
 bool client_server_ae__node_1_request_1_response_1__finite::ext__get_bool_request_sent(node n0, request r1, bool result){
     bool qrm_result;
     qrm_result = (request_sent[n0][r1] == result);
+    return qrm_result;
+}
+bool client_server_ae__node_1_request_1_response_1__finite::ext__get_response_received(node n0, response r1){
+    bool qrm_result;
+    qrm_result = response_received[n0][r1];
+    return qrm_result;
+}
+bool client_server_ae__node_1_request_1_response_1__finite::ext__get_bool_response_received(node n0, response r1, bool result){
+    bool qrm_result;
+    qrm_result = (response_received[n0][r1] == result);
     return qrm_result;
 }
 void client_server_ae__node_1_request_1_response_1__finite::__tick(int __timeout){

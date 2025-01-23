@@ -2,24 +2,24 @@
 === Prime Orbit 0 =====================
 size : 9
 num_suborbits: 2
-0 (*) : ------1----1-
-0     : ['holds_lock(node2)', 'unlock_msg(node1)']
-1     : -----1------1
-1     : ['holds_lock(node1)', 'unlock_msg(node2)']
-2     : ------1---1--
-2     : ['holds_lock(node2)', 'unlock_msg(node0)']
-3     : ----1-------1
-3     : ['holds_lock(node0)', 'unlock_msg(node2)']
-4     : -----1----1--
-4     : ['holds_lock(node1)', 'unlock_msg(node0)']
-5     : ----1------1-
-5     : ['holds_lock(node0)', 'unlock_msg(node1)']
-39 (*) : -----1-----1-
-39     : ['holds_lock(node1)', 'unlock_msg(node1)']
-40     : ------1-----1
-40     : ['holds_lock(node2)', 'unlock_msg(node2)']
-41     : ----1-----1--
-41     : ['holds_lock(node0)', 'unlock_msg(node0)']
+0 (*) : 1-----1------
+0     : ['grant_msg(node0)', 'holds_lock(node2)']
+1     : 1----1-------
+1     : ['grant_msg(node0)', 'holds_lock(node1)']
+2     : -1----1------
+2     : ['grant_msg(node1)', 'holds_lock(node2)']
+3     : -1--1--------
+3     : ['grant_msg(node1)', 'holds_lock(node0)']
+4     : --1--1-------
+4     : ['grant_msg(node2)', 'holds_lock(node1)']
+5     : --1-1--------
+5     : ['grant_msg(node2)', 'holds_lock(node0)']
+15 (*) : --1---1------
+15     : ['grant_msg(node2)', 'holds_lock(node2)']
+16     : -1---1-------
+16     : ['grant_msg(node1)', 'holds_lock(node1)']
+17     : 1---1--------
+17     : ['grant_msg(node0)', 'holds_lock(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -28,26 +28,14 @@ qcost : 0
 
 
 === Prime Orbit 1 =====================
-size : 9
-num_suborbits: 2
-6 (*) : 1-----1------
-6     : ['grant_msg(node0)', 'holds_lock(node2)']
-7     : 1----1-------
-7     : ['grant_msg(node0)', 'holds_lock(node1)']
-8     : -1----1------
-8     : ['grant_msg(node1)', 'holds_lock(node2)']
-9     : -1--1--------
-9     : ['grant_msg(node1)', 'holds_lock(node0)']
-10     : --1--1-------
-10     : ['grant_msg(node2)', 'holds_lock(node1)']
-11     : --1-1--------
-11     : ['grant_msg(node2)', 'holds_lock(node0)']
-12 (*) : --1---1------
-12     : ['grant_msg(node2)', 'holds_lock(node2)']
-13     : -1---1-------
-13     : ['grant_msg(node1)', 'holds_lock(node1)']
-14     : 1---1--------
-14     : ['grant_msg(node0)', 'holds_lock(node0)']
+size : 3
+num_suborbits: 1
+6 (*) : -----11------
+6     : ['holds_lock(node1)', 'holds_lock(node2)']
+7     : ----1-1------
+7     : ['holds_lock(node0)', 'holds_lock(node2)']
+8     : ----11-------
+8     : ['holds_lock(node0)', 'holds_lock(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -56,14 +44,26 @@ qcost : 0
 
 
 === Prime Orbit 2 =====================
-size : 3
-num_suborbits: 1
-15 (*) : ---0--1------
-15     : ['holds_lock(node2)', '~held()']
-16     : ---0-1-------
-16     : ['holds_lock(node1)', '~held()']
-17     : ---01--------
-17     : ['holds_lock(node0)', '~held()']
+size : 9
+num_suborbits: 2
+9 (*) : ------1----1-
+9     : ['holds_lock(node2)', 'unlock_msg(node1)']
+10     : -----1------1
+10     : ['holds_lock(node1)', 'unlock_msg(node2)']
+11     : ------1---1--
+11     : ['holds_lock(node2)', 'unlock_msg(node0)']
+12     : ----1-------1
+12     : ['holds_lock(node0)', 'unlock_msg(node2)']
+13     : -----1----1--
+13     : ['holds_lock(node1)', 'unlock_msg(node0)']
+14     : ----1------1-
+14     : ['holds_lock(node0)', 'unlock_msg(node1)']
+30 (*) : -----1-----1-
+30     : ['holds_lock(node1)', 'unlock_msg(node1)']
+31     : ------1-----1
+31     : ['holds_lock(node2)', 'unlock_msg(node2)']
+32     : ----1-----1--
+32     : ['holds_lock(node0)', 'unlock_msg(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -74,12 +74,12 @@ qcost : 0
 === Prime Orbit 3 =====================
 size : 3
 num_suborbits: 1
-18 (*) : ----1-1------
-18     : ['holds_lock(node0)', 'holds_lock(node2)']
-19     : ----11-------
-19     : ['holds_lock(node0)', 'holds_lock(node1)']
-20     : -----11------
-20     : ['holds_lock(node1)', 'holds_lock(node2)']
+18 (*) : ---0--1------
+18     : ['holds_lock(node2)', '~held()']
+19     : ---0-1-------
+19     : ['holds_lock(node1)', '~held()']
+20     : ---01--------
+20     : ['holds_lock(node0)', '~held()']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -88,26 +88,14 @@ qcost : 0
 
 
 === Prime Orbit 4 =====================
-size : 9
-num_suborbits: 2
-21 (*) : 1----------1-
-21     : ['grant_msg(node0)', 'unlock_msg(node1)']
-22     : 1-----------1
-22     : ['grant_msg(node0)', 'unlock_msg(node2)']
-23     : -1--------1--
-23     : ['grant_msg(node1)', 'unlock_msg(node0)']
-24     : -1----------1
-24     : ['grant_msg(node1)', 'unlock_msg(node2)']
-25     : --1-------1--
-25     : ['grant_msg(node2)', 'unlock_msg(node0)']
-26     : --1--------1-
-26     : ['grant_msg(node2)', 'unlock_msg(node1)']
-30 (*) : -1---------1-
-30     : ['grant_msg(node1)', 'unlock_msg(node1)']
-31     : --1---------1
-31     : ['grant_msg(node2)', 'unlock_msg(node2)']
-32     : 1---------1--
-32     : ['grant_msg(node0)', 'unlock_msg(node0)']
+size : 3
+num_suborbits: 1
+21 (*) : 11-----------
+21     : ['grant_msg(node0)', 'grant_msg(node1)']
+22     : 1-1----------
+22     : ['grant_msg(node0)', 'grant_msg(node2)']
+23     : -11----------
+23     : ['grant_msg(node1)', 'grant_msg(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -116,14 +104,26 @@ qcost : 0
 
 
 === Prime Orbit 5 =====================
-size : 3
-num_suborbits: 1
-27 (*) : 11-----------
-27     : ['grant_msg(node0)', 'grant_msg(node1)']
-28     : 1-1----------
-28     : ['grant_msg(node0)', 'grant_msg(node2)']
-29     : -11----------
-29     : ['grant_msg(node1)', 'grant_msg(node2)']
+size : 9
+num_suborbits: 2
+24 (*) : 1----------1-
+24     : ['grant_msg(node0)', 'unlock_msg(node1)']
+25     : 1-----------1
+25     : ['grant_msg(node0)', 'unlock_msg(node2)']
+26     : -1--------1--
+26     : ['grant_msg(node1)', 'unlock_msg(node0)']
+27     : -1----------1
+27     : ['grant_msg(node1)', 'unlock_msg(node2)']
+28     : --1-------1--
+28     : ['grant_msg(node2)', 'unlock_msg(node0)']
+29     : --1--------1-
+29     : ['grant_msg(node2)', 'unlock_msg(node1)']
+33 (*) : -1---------1-
+33     : ['grant_msg(node1)', 'unlock_msg(node1)']
+34     : --1---------1
+34     : ['grant_msg(node2)', 'unlock_msg(node2)']
+35     : 1---------1--
+35     : ['grant_msg(node0)', 'unlock_msg(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -134,12 +134,12 @@ qcost : 0
 === Prime Orbit 6 =====================
 size : 3
 num_suborbits: 1
-33 (*) : --10---------
-33     : ['grant_msg(node2)', '~held()']
-34     : -1-0---------
-34     : ['grant_msg(node1)', '~held()']
-35     : 1--0---------
-35     : ['grant_msg(node0)', '~held()']
+36 (*) : --10---------
+36     : ['grant_msg(node2)', '~held()']
+37     : -1-0---------
+37     : ['grant_msg(node1)', '~held()']
+38     : 1--0---------
+38     : ['grant_msg(node0)', '~held()']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -150,12 +150,12 @@ qcost : 0
 === Prime Orbit 7 =====================
 size : 3
 num_suborbits: 1
-36 (*) : ---0-------1-
-36     : ['unlock_msg(node1)', '~held()']
-37     : ---0--------1
-37     : ['unlock_msg(node2)', '~held()']
-38     : ---0------1--
-38     : ['unlock_msg(node0)', '~held()']
+39 (*) : ---0-------1-
+39     : ['unlock_msg(node1)', '~held()']
+40     : ---0--------1
+40     : ['unlock_msg(node2)', '~held()']
+41     : ---0------1--
+41     : ['unlock_msg(node0)', '~held()']
 num_forall :   0
 num_exists :   0
 num_literals : 0

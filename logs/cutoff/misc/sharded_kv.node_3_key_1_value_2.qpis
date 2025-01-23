@@ -41,7 +41,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0,KEY0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0)
 qcost : 6
 
 
@@ -81,7 +81,7 @@ num_suborbits: 3
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE1,NODE0,VALUE1,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
+quantified form : forall VALUE0,NODE0,NODE1,VALUE1,KEY0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 & VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -97,7 +97,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,KEY0,NODE0. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+quantified form : forall NODE0,KEY0,NODE1. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -119,7 +119,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -159,6 +159,6 @@ num_suborbits: 3
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE1,NODE0,VALUE1,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
+quantified form : forall VALUE0,NODE0,NODE1,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
 qcost : 9
 
