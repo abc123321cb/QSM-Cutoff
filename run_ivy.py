@@ -81,21 +81,31 @@ def run_ivy_check(rmin_id : int, options : QrmOptions):
     return True
 
 def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
-    defns =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in Rmin.definitions.values()]
-    fmlas =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in Rmin.eq_relations]
-    fmlas += [ilu.resort_ast(tran_sys.axiom_fmla, tran_sys.sort_fin2inf)]
-    fmlas += [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in rmin_invars]
-    clauses1      = ilu.Clauses(fmlas, defns)
-    empty_clauses = ilu.Clauses([])
-    clauses2      = ilu.Clauses(tran_sys.safety_properties)
+    defns        =  [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in Rmin.definitions.values()]
+    R_fmlas      =  [ilu.resort_ast(equiv, tran_sys.sort_fin2inf) for equiv in Rmin.eq_relations]
+    R_fmlas     +=  [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in rmin_invars]
+    soft_clauses =  ilu.Clauses(R_fmlas, defns)
+
+    safety_fmlas     = [ilu.resort_ast(p, tran_sys.sort_fin2inf) for p in tran_sys.safety_properties]
+    axiom_fmlas      = [ilu.resort_ast(tran_sys.axiom_fmla, tran_sys.sort_fin2inf)]
+    transition_fmlas = [ilu.resort_ast(tran_sys.transition_relation, tran_sys.sort_fin2inf)] 
+    hard_fmlas       = safety_fmlas + axiom_fmlas + transition_fmlas
+    hard_clauses = ilu.Clauses(hard_fmlas)
+
+    next_safety_fmlas = [il.substitute(f, tran_sys.curr2next) for f in safety_fmlas]
+    next_defns        = [il.substitute(f, tran_sys.curr2next) for f in defns]
+    next_R_fmlas      = [il.substitute(f, tran_sys.curr2next) for f in R_fmlas]
+    imply_fmlas       = next_safety_fmlas + next_R_fmlas
+    implies           = ilu.Clauses(imply_fmlas, next_defns) 
+
     slv.clear() # changing from finite signature (qpi) to uninterpreted signature
-    unsat_core    = slv.unsat_core(clauses1, empty_clauses, implies=clauses2, unlikely=lambda x:True)
+    unsat_core    = slv.unsat_core(soft_clauses, hard_clauses, implies=implies, unlikely=lambda x:True)
     if unsat_core == None:
-        vprint(options, f'[R Implies P]: False')
+        vprint(options, f'[(R & P) & T & ~(R\' & P\')]: satifiable')
     else:
         core_invar    = unsat_core.to_formula()
-        vprint(options, f'[R Implies P]: True')
-        vprint(options, f'[UNSAT CORE]: {str(core_invar)}')
+        vprint(options, f'[(R & P) & T & ~(R\' & P\')]: unsatisfiable')
+        vprint(options, f'[Strengthening Assertion]: {str(core_invar)}')
 
 def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : Minimizer, options: QrmOptions) -> bool:
     rmins    = minimizer.rmin
