@@ -159,8 +159,11 @@ class ReachCheck():
                     self.root_assume_clauses.append(at_most_one)
 
     def _init_invariants(self) -> None:
-        invariants  = [invar for invar in self.tran_sys.safety_properties]
-        invariants  = [self.instantiator.instantiate_quantifier(invar) for invar in invariants]
+        invariants  = []
+        for invar in self.tran_sys.safety_properties:
+            invar = self.instantiator.instantiate_quantifier(invar)
+            if invar != il.And():
+                invariants.append(invar)
         if self.options.forward_mode == ForwardMode.Sym_DFS:
             for invar in invariants: 
                 invar_fmla_var = self._tseitin_encode(invar)
