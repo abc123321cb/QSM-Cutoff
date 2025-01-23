@@ -223,3 +223,24 @@ class FormulaUtility():
             if isinstance(g, il.Exists):
                 return il.ForAll(prefix, negate_matrix)
         return il.Not(g)
+
+def get_instances_from_yaml(yaml_name):
+    import yaml
+    import itertools
+    instances  = {}
+    yaml_file  = open(yaml_name, 'r')
+    yaml_input = yaml.safe_load(yaml_file)
+    for data in yaml_input.values():
+        sizes = []
+        sorts = []
+        for sort, interval in data['size'].items(): #stable
+            size_tuple = tuple(range(interval['from'],interval['to']+1))
+            sizes.append(size_tuple)
+            sorts.append(sort)
+        ivy_name = data['path']
+        instances[ivy_name] = []
+        for size in itertools.product(*sizes):
+            size_list = list(size)
+            size_str = ','.join([f'{k}={v}' for (k,v) in zip(sorts,size_list)])
+            instances[ivy_name].append(size_str)
+    return instances
