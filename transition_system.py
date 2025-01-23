@@ -275,26 +275,15 @@ class TransitionSystem():
         for state_symbol in self.state_symbols:
             if state_symbol not in assign_symbols and state_symbol not in self.definitions: 
                 state_var   = state_symbol
-                output_sort = state_symbol.sort
                 argvars     = []
                 if il.is_function_sort(state_symbol.sort):
                     argvars     = [il.Variable(f'{sort.name.upper()}{i}', sort) for i, sort in enumerate(state_symbol.sort.dom)] 
                     state_var   = il.App(state_symbol, *argvars)
-                    output_sort = state_symbol.sort.rng
-                if il.is_boolean_sort(output_sort):
-                    next_state_var = il.substitute(state_var, self.curr2next)
-                    fmla = il.Equals(next_state_var, state_var)
-                    if len(argvars) > 0:
-                        fmla = il.ForAll(argvars, fmla) 
-                    fmlas.append(fmla)
-                else:
-                    for const in output_sort.constructors:
-                        eq_var   = il.Equals(state_var, const)
-                        next_eq_var = il.substitute(eq_var, self.curr2next)
-                        fmla = il.Equals(next_eq_var, eq_var)
-                        if len(argvars) > 0:
-                            fmla = il.ForAll(argvars, fmla)
-                        fmlas.append(fmla)
+                next_state_var = il.substitute(state_var, self.curr2next)
+                fmla = il.Equals(next_state_var, state_var)
+                if len(argvars) > 0:
+                    fmla = il.ForAll(argvars, fmla) 
+                fmlas.append(fmla)
         return il.And(*fmlas) 
 
     def _init_transition_relation(self):
