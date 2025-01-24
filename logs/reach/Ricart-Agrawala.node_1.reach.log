@@ -1,0 +1,130 @@
+
+******************************************************************
+
+	[QRM]: logs/reach/Ricart-Agrawala.node_2.0.ivy
+
+******************************************************************
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=================================================================================
+
+	[FW]: Forward Reachability on [logs/reach/Ricart-Agrawala: node=1]
+
+=================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 3
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[FW NOTE]: number of branching actions: 4
+
+ivy_to_cpp target=qrm Ricart-Agrawala.node_1.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o Ricart-Agrawala.node_1.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 Ricart-Agrawala.node_1.finite.cpp Ricart-Agrawala.node_1.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared Ricart-Agrawala.node_1.finite.o Ricart-Agrawala.node_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 8.463 seconds
+
+[QRM NOTE]: Time elapsed since last: 8.463 seconds
+
+[QRM NOTE]: Peak memory: 1176061 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        2
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 0
+
+
+========================================================================================
+
+	[FW RESULT]: Forward Reachability on [logs/reach/Ricart-Agrawala: node=1]
+
+========================================================================================
+
+sort: node=['node0']
+predicate: holds('node',)
+predicate: replied('node', 'node')
+predicate: requested('node', 'node')
+interpreted atoms: {}
+state atoms: ['holds(node0)', 'replied(node0,node0)', 'requested(node0,node0)']
+representative states : 0, 4
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 000
+lex min decimal: 0
+states:
+000
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 100
+lex min decimal: 4
+states:
+100
+
+
+
+[QRM NOTE]: Time elapsed since start: 8.552 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.089 seconds
+
+[QRM NOTE]: Peak memory: 1197942 bytes
+
+
+=============================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [logs/reach/Ricart-Agrawala: node=1]
+
+=============================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 8.555 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
+
+[QRM NOTE]: Peak memory: 151813 bytes
+

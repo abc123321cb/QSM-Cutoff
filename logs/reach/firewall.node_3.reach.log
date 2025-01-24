@@ -1,0 +1,322 @@
+
+***********************************************************
+
+	[QRM]: logs/reach/firewall.node_3.0.ivy
+
+***********************************************************
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+==========================================================================
+
+	[FW]: Forward Reachability on [logs/reach/firewall: node=3]
+
+==========================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 15
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 6
+
+[FW NOTE]: number of branching actions: 18
+
+ivy_to_cpp target=qrm firewall.node_3.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o firewall.node_3.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 firewall.node_3.finite.cpp firewall.node_3.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared firewall.node_3.finite.o firewall.node_3.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 8.432 seconds
+
+[QRM NOTE]: Time elapsed since last: 8.432 seconds
+
+[QRM NOTE]: Peak memory: 1180043 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 4
+
+[FW NOTE]: number of total reachable states:        68
+
+[FW NOTE]: number of dfs representative states:     16
+
+[FW NOTE]: number of dfs non-representative states: 52
+
+
+=================================================================================
+
+	[FW RESULT]: Forward Reachability on [logs/reach/firewall: node=3]
+
+=================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+predicate: allowed_in('node',)
+predicate: internal('node',)
+predicate: sent('node', 'node')
+interpreted atoms: {}
+state atoms: ['allowed_in(node0)', 'allowed_in(node1)', 'allowed_in(node2)', 'internal(node0)', 'internal(node1)', 'internal(node2)', 'sent(node0,node0)', 'sent(node0,node1)', 'sent(node0,node2)', 'sent(node1,node0)', 'sent(node1,node1)', 'sent(node1,node2)', 'sent(node2,node0)', 'sent(node2,node1)', 'sent(node2,node2)']
+representative states : 0, 3584, 1536, 512, 7176, 7240, 7242, 7246, 7178, 7182, 7180, 5128, 14528, 14532, 14564, 5130
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 000000000000000
+lex min decimal: 0
+states:
+000000000000000
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 000111000000000
+lex min decimal: 3584
+states:
+000111000000000
+
+
+
+
+=== State Orbit 2 =====================
+size : 3
+repr state: 000110000000000
+lex min decimal: 1536
+states:
+000110000000000
+000101000000000
+000011000000000
+
+
+
+
+=== State Orbit 3 =====================
+size : 3
+repr state: 000100000000000
+lex min decimal: 512
+states:
+000001000000000
+000100000000000
+000010000000000
+
+
+
+
+=== State Orbit 4 =====================
+size : 6
+repr state: 001110001000000
+lex min decimal: 7176
+states:
+001110001000000
+010101010000000
+100011000000100
+001110000001000
+100011000100000
+010101000000010
+
+
+
+
+=== State Orbit 5 =====================
+size : 3
+repr state: 001110001001000
+lex min decimal: 7240
+states:
+010101010000010
+001110001001000
+100011000100100
+
+
+
+
+=== State Orbit 6 =====================
+size : 6
+repr state: 001110001001100
+lex min decimal: 7242
+states:
+010101010001010
+100011001100100
+001110001001010
+001110001001100
+100011010100100
+010101010100010
+
+
+
+
+=== State Orbit 7 =====================
+size : 3
+repr state: 001110001001110
+lex min decimal: 7246
+states:
+100011011100100
+010101010101010
+001110001001110
+
+
+
+
+=== State Orbit 8 =====================
+size : 6
+repr state: 001110001000100
+lex min decimal: 7178
+states:
+010101010100000
+100011001000100
+001110000001010
+100011010100000
+001110001000100
+010101000001010
+
+
+
+
+=== State Orbit 9 =====================
+size : 6
+repr state: 001110001000110
+lex min decimal: 7182
+states:
+100011011100000
+010101010101000
+100011011000100
+001110001000110
+010101000101010
+001110000001110
+
+
+
+
+=== State Orbit 10 =====================
+size : 6
+repr state: 001110001000010
+lex min decimal: 7180
+states:
+010101010001000
+001110001000010
+001110000001100
+010101000100010
+100011010000100
+100011001100000
+
+
+
+
+=== State Orbit 11 =====================
+size : 6
+repr state: 010100010000000
+lex min decimal: 5128
+states:
+001100001000000
+100010000100000
+010001000000010
+010100010000000
+100001000000100
+001010000001000
+
+
+
+
+=== State Orbit 12 =====================
+size : 3
+repr state: 011100011000000
+lex min decimal: 14528
+states:
+011100011000000
+110001000000110
+101010000101000
+
+
+
+
+=== State Orbit 13 =====================
+size : 6
+repr state: 011100011100000
+lex min decimal: 14532
+states:
+110001000001110
+101010010101000
+110001001000110
+011100011000100
+011100011100000
+101010000101010
+
+
+
+
+=== State Orbit 14 =====================
+size : 3
+repr state: 011100011100100
+lex min decimal: 14564
+states:
+101010010101010
+110001001001110
+011100011100100
+
+
+
+
+=== State Orbit 15 =====================
+size : 6
+repr state: 010100010100000
+lex min decimal: 5130
+states:
+100001001000100
+001100001000100
+010100010100000
+001010000001010
+010001000001010
+100010010100000
+
+
+
+[QRM NOTE]: Time elapsed since start: 8.550 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.119 seconds
+
+[QRM NOTE]: Peak memory: 1227721 bytes
+
+
+======================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [logs/reach/firewall: node=3]
+
+======================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 8.600 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.050 seconds
+
+[QRM NOTE]: Peak memory: 200348 bytes
+

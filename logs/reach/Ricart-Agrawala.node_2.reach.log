@@ -1,0 +1,229 @@
+
+******************************************************************
+
+	[QRM]: logs/reach/Ricart-Agrawala.node_2.0.ivy
+
+******************************************************************
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=================================================================================
+
+	[FW]: Forward Reachability on [logs/reach/Ricart-Agrawala: node=2]
+
+=================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 10
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[FW NOTE]: number of branching actions: 12
+
+ivy_to_cpp target=qrm Ricart-Agrawala.node_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o Ricart-Agrawala.node_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 Ricart-Agrawala.node_2.finite.cpp Ricart-Agrawala.node_2.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared Ricart-Agrawala.node_2.finite.o Ricart-Agrawala.node_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 7.466 seconds
+
+[QRM NOTE]: Time elapsed since last: 7.466 seconds
+
+[QRM NOTE]: Peak memory: 1179118 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 5
+
+[FW NOTE]: number of total reachable states:        20
+
+[FW NOTE]: number of dfs representative states:     11
+
+[FW NOTE]: number of dfs non-representative states: 9
+
+
+========================================================================================
+
+	[FW RESULT]: Forward Reachability on [logs/reach/Ricart-Agrawala: node=2]
+
+========================================================================================
+
+sort: node=['node0', 'node1']
+predicate: requested('node', 'node')
+predicate: holds('node',)
+predicate: replied('node', 'node')
+interpreted atoms: {}
+state atoms: ['holds(node0)', 'holds(node1)', 'replied(node0,node0)', 'replied(node0,node1)', 'replied(node1,node0)', 'replied(node1,node1)', 'requested(node0,node0)', 'requested(node0,node1)', 'requested(node1,node0)', 'requested(node1,node1)']
+representative states : 0, 2, 6, 36, 38, 294, 292, 32, 34, 290, 288
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 0000000000
+lex min decimal: 0
+states:
+0000000000
+
+
+
+
+=== State Orbit 1 =====================
+size : 2
+repr state: 0000000100
+lex min decimal: 2
+states:
+0000000010
+0000000100
+
+
+
+
+=== State Orbit 2 =====================
+size : 1
+repr state: 0000000110
+lex min decimal: 6
+states:
+0000000110
+
+
+
+
+=== State Orbit 3 =====================
+size : 2
+repr state: 0001000010
+lex min decimal: 36
+states:
+0001000010
+0000100100
+
+
+
+
+=== State Orbit 4 =====================
+size : 2
+repr state: 0001000110
+lex min decimal: 38
+states:
+0000100110
+0001000110
+
+
+
+
+=== State Orbit 5 =====================
+size : 2
+repr state: 1001000110
+lex min decimal: 294
+states:
+0100100110
+1001000110
+
+
+
+
+=== State Orbit 6 =====================
+size : 2
+repr state: 1001000010
+lex min decimal: 292
+states:
+1001000010
+0100100100
+
+
+
+
+=== State Orbit 7 =====================
+size : 2
+repr state: 0001000000
+lex min decimal: 32
+states:
+0000100000
+0001000000
+
+
+
+
+=== State Orbit 8 =====================
+size : 2
+repr state: 0001000100
+lex min decimal: 34
+states:
+0001000100
+0000100010
+
+
+
+
+=== State Orbit 9 =====================
+size : 2
+repr state: 1001000100
+lex min decimal: 290
+states:
+0100100010
+1001000100
+
+
+
+
+=== State Orbit 10 =====================
+size : 2
+repr state: 1001000000
+lex min decimal: 288
+states:
+1001000000
+0100100000
+
+
+
+[QRM NOTE]: Time elapsed since start: 7.578 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.112 seconds
+
+[QRM NOTE]: Peak memory: 1214271 bytes
+
+
+=============================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [logs/reach/Ricart-Agrawala: node=2]
+
+=============================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 7.592 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
+
+[QRM NOTE]: Peak memory: 170903 bytes
+

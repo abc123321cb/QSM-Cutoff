@@ -1,0 +1,238 @@
+
+***********************************************************************
+
+	[QRM]: logs/reach/TwoPhase.resource_manager_1.0.ivy
+
+***********************************************************************
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================
+
+	[FW]: Forward Reachability on [logs/reach/TwoPhase: resource_manager=1]
+
+======================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 11
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[FW NOTE]: number of branching actions: 7
+
+ivy_to_cpp target=qrm TwoPhase.resource_manager_1.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o TwoPhase.resource_manager_1.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 TwoPhase.resource_manager_1.finite.cpp TwoPhase.resource_manager_1.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared TwoPhase.resource_manager_1.finite.o TwoPhase.resource_manager_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 7.615 seconds
+
+[QRM NOTE]: Time elapsed since last: 7.615 seconds
+
+[QRM NOTE]: Peak memory: 1199462 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 4
+
+[FW NOTE]: number of total reachable states:        12
+
+[FW NOTE]: number of dfs representative states:     12
+
+[FW NOTE]: number of dfs non-representative states: 0
+
+
+=============================================================================================
+
+	[FW RESULT]: Forward Reachability on [logs/reach/TwoPhase: resource_manager=1]
+
+=============================================================================================
+
+sort: resource_manager=['resource_manager0']
+predicate: msg_commit()
+predicate: committed('resource_manager',)
+predicate: tm_init()
+predicate: tm_prepared('resource_manager',)
+predicate: msg_prepared('resource_manager',)
+predicate: prepared('resource_manager',)
+predicate: tm_committed()
+predicate: aborted('resource_manager',)
+predicate: msg_abort()
+predicate: tm_aborted()
+predicate: working('resource_manager',)
+interpreted atoms: {}
+state atoms: ['aborted(resource_manager0)', 'committed(resource_manager0)', 'msg_abort()', 'msg_commit()', 'msg_prepared(resource_manager0)', 'prepared(resource_manager0)', 'tm_aborted()', 'tm_committed()', 'tm_init()', 'tm_prepared(resource_manager0)', 'working(resource_manager0)']
+representative states : 5, 273, 368, 1360, 1296, 100, 102, 234, 714, 370, 1362, 1028
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 00000000101
+lex min decimal: 5
+states:
+00000000101
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 00100010001
+lex min decimal: 273
+states:
+00100010001
+
+
+
+
+=== State Orbit 2 =====================
+size : 1
+repr state: 00101110000
+lex min decimal: 368
+states:
+00101110000
+
+
+
+
+=== State Orbit 3 =====================
+size : 1
+repr state: 10101010000
+lex min decimal: 1360
+states:
+10101010000
+
+
+
+
+=== State Orbit 4 =====================
+size : 1
+repr state: 10100010000
+lex min decimal: 1296
+states:
+10100010000
+
+
+
+
+=== State Orbit 5 =====================
+size : 1
+repr state: 00001100100
+lex min decimal: 100
+states:
+00001100100
+
+
+
+
+=== State Orbit 6 =====================
+size : 1
+repr state: 00001100110
+lex min decimal: 102
+states:
+00001100110
+
+
+
+
+=== State Orbit 7 =====================
+size : 1
+repr state: 00011101010
+lex min decimal: 234
+states:
+00011101010
+
+
+
+
+=== State Orbit 8 =====================
+size : 1
+repr state: 01011001010
+lex min decimal: 714
+states:
+01011001010
+
+
+
+
+=== State Orbit 9 =====================
+size : 1
+repr state: 00101110010
+lex min decimal: 370
+states:
+00101110010
+
+
+
+
+=== State Orbit 10 =====================
+size : 1
+repr state: 10101010010
+lex min decimal: 1362
+states:
+10101010010
+
+
+
+
+=== State Orbit 11 =====================
+size : 1
+repr state: 10000000100
+lex min decimal: 1028
+states:
+10000000100
+
+
+
+[QRM NOTE]: Time elapsed since start: 7.708 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.092 seconds
+
+[QRM NOTE]: Peak memory: 1233900 bytes
+
+
+==================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [logs/reach/TwoPhase: resource_manager=1]
+
+==================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 7.724 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.016 seconds
+
+[QRM NOTE]: Peak memory: 192049 bytes
+
