@@ -41,4 +41,4 @@ export decide
 
 invariant [def_didNotVote] didNotVote(N) = forall V. ~vote(N,V) # definition
 invariant [def_chosenAt] chosenAt(Q,V) = forall N. member(N,Q) -> vote(N,V) # definition
-invariant [invar_3] forall QUORUM0,VALUE0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0) # qcost: 4
+invariant [invar_3] forall QUORUM0,VALUE0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0) # qcost: 4

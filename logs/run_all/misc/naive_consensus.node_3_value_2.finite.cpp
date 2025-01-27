@@ -620,15 +620,15 @@ void naive_consensus__node_3_value_2__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
-        bool __tmp0[3][2];
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 2; V++) {
-                __tmp0[N][V] = false;
+        bool __tmp0[2][3];
+        for (int V = 0; V < 2; V++) {
+            for (int N = 0; N < 3; N++) {
+                __tmp0[V][N] = false;
             }
         }
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 2; V++) {
-                vote[N][V] = __tmp0[N][V];
+        for (int V = 0; V < 2; V++) {
+            for (int N = 0; N < 3; N++) {
+                vote[N][V] = __tmp0[V][N];
             }
         }
         bool __tmp1[2][3];

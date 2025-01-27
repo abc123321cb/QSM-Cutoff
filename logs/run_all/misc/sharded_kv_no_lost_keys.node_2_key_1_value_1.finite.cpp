@@ -620,33 +620,33 @@ void sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
-        bool __tmp0[1][1][2];
+        bool __tmp0[1][2][1];
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 1; V++) {
-                for (int N = 0; N < 2; N++) {
-                    __tmp0[K][V][N] = false;
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 1; V++) {
+                    __tmp0[K][N][V] = false;
                 }
             }
         }
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 1; V++) {
-                for (int N = 0; N < 2; N++) {
-                    table[N][K][V] = __tmp0[K][V][N];
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 1; V++) {
+                    table[N][K][V] = __tmp0[K][N][V];
                 }
             }
         }
-        bool __tmp1[1][1][2];
+        bool __tmp1[1][2][1];
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 1; V++) {
-                for (int N = 0; N < 2; N++) {
-                    __tmp1[K][V][N] = false;
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 1; V++) {
+                    __tmp1[K][N][V] = false;
                 }
             }
         }
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 1; V++) {
-                for (int N = 0; N < 2; N++) {
-                    transfer_msg[N][K][V] = __tmp1[K][V][N];
+            for (int N = 0; N < 2; N++) {
+                for (int V = 0; V < 1; V++) {
+                    transfer_msg[N][K][V] = __tmp1[K][N][V];
                 }
             }
         }
@@ -680,16 +680,6 @@ void sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__put(node n, key
             table[n][k][V] = __tmp2[V];
         }
 }
-bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_transfer_msg(node n0, key k1, value v2){
-    bool qrm_result;
-    qrm_result = transfer_msg[n0][k1][v2];
-    return qrm_result;
-}
-bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_bool_transfer_msg(node n0, key k1, value v2, bool result){
-    bool qrm_result;
-    qrm_result = (transfer_msg[n0][k1][v2] == result);
-    return qrm_result;
-}
 bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_table(node n0, key k1, value v2){
     bool qrm_result;
     qrm_result = table[n0][k1][v2];
@@ -698,6 +688,16 @@ bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_table(node 
 bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_bool_table(node n0, key k1, value v2, bool result){
     bool qrm_result;
     qrm_result = (table[n0][k1][v2] == result);
+    return qrm_result;
+}
+bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_transfer_msg(node n0, key k1, value v2){
+    bool qrm_result;
+    qrm_result = transfer_msg[n0][k1][v2];
+    return qrm_result;
+}
+bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_bool_transfer_msg(node n0, key k1, value v2, bool result){
+    bool qrm_result;
+    qrm_result = (transfer_msg[n0][k1][v2] == result);
     return qrm_result;
 }
 bool sharded_kv_no_lost_keys__node_2_key_1_value_1__finite::ext__get_owner(node n0, key k1){

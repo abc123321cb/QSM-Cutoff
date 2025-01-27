@@ -607,14 +607,14 @@ void firewall__node_3__finite::__init(){
     const int max_qrm_solution_count = 4;
     if (qrm_solution_count == 0){
         bool __tmp0[3][3];
-        for (int D = 0; D < 3; D++) {
-            for (int S = 0; S < 3; S++) {
-                __tmp0[D][S] = false;
+        for (int S = 0; S < 3; S++) {
+            for (int D = 0; D < 3; D++) {
+                __tmp0[S][D] = false;
             }
         }
-        for (int D = 0; D < 3; D++) {
-            for (int S = 0; S < 3; S++) {
-                sent[S][D] = __tmp0[D][S];
+        for (int S = 0; S < 3; S++) {
+            for (int D = 0; D < 3; D++) {
+                sent[S][D] = __tmp0[S][D];
             }
         }
         bool __tmp1[3];
@@ -634,14 +634,14 @@ void firewall__node_3__finite::__init(){
         internal[2] = true;
     }
     else if (qrm_solution_count == 2){
-        internal[0] = true;
-        internal[1] = false;
+        internal[0] = false;
+        internal[1] = true;
         internal[2] = true;
     }
     else if (qrm_solution_count == 3){
         internal[0] = false;
-        internal[1] = false;
-        internal[2] = true;
+        internal[1] = true;
+        internal[2] = false;
     }
     ++ qrm_solution_count;
     if (qrm_solution_count != max_qrm_solution_count)

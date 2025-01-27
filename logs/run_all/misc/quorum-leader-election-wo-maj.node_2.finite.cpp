@@ -669,16 +669,6 @@ bool quorum_leader_election_wo_maj__node_2__finite::ext__get_bool_member(node n0
     qrm_result = (member[n0][n1] == result);
     return qrm_result;
 }
-bool quorum_leader_election_wo_maj__node_2__finite::ext__get_voted(node n0, node n1){
-    bool qrm_result;
-    qrm_result = voted[n0][n1];
-    return qrm_result;
-}
-bool quorum_leader_election_wo_maj__node_2__finite::ext__get_bool_voted(node n0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (voted[n0][n1] == result);
-    return qrm_result;
-}
 quorum_leader_election_wo_maj__node_2__finite::nset quorum_leader_election_wo_maj__node_2__finite::ext__get_quorum(){
     quorum_leader_election_wo_maj__node_2__finite::nset qrm_result;
     qrm_result = quorum;
@@ -687,6 +677,16 @@ quorum_leader_election_wo_maj__node_2__finite::nset quorum_leader_election_wo_ma
 bool quorum_leader_election_wo_maj__node_2__finite::ext__get_bool_quorum(nset result){
     bool qrm_result;
     qrm_result = (quorum == result);
+    return qrm_result;
+}
+bool quorum_leader_election_wo_maj__node_2__finite::ext__get_voted(node n0, node n1){
+    bool qrm_result;
+    qrm_result = voted[n0][n1];
+    return qrm_result;
+}
+bool quorum_leader_election_wo_maj__node_2__finite::ext__get_bool_voted(node n0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (voted[n0][n1] == result);
     return qrm_result;
 }
 bool quorum_leader_election_wo_maj__node_2__finite::ext__get_isleader(node n0){

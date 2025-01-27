@@ -45,25 +45,15 @@ export put
 
 ##invariant [manual_1] forall K. (exists N. owner(N, K)) | (exists N, V. transfer_msg(N, K, V))
 
-invariant [invar_1] forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
-invariant [invar_3] forall NODE0,VALUE0,KEY0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
-invariant [invar_0] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_1] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
+invariant [invar_3] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_0] forall VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
 
 ### For QRM DFS reachability ###
 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_owner(n0: node, k1: key) returns(qrm_result: bool) = {
-    qrm_result := owner(n0, k1)
-}
-export get_owner
-
-action get_bool_owner(n0: node, k1: key, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (owner(n0, k1) = result)
-}
-export get_bool_owner
-
 action get_transfer_msg(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
     qrm_result := transfer_msg(n0, k1, v2)
 }
@@ -73,6 +63,16 @@ action get_bool_transfer_msg(n0: node, k1: key, v2: value, result: bool) returns
     qrm_result := (transfer_msg(n0, k1, v2) = result)
 }
 export get_bool_transfer_msg
+
+action get_owner(n0: node, k1: key) returns(qrm_result: bool) = {
+    qrm_result := owner(n0, k1)
+}
+export get_owner
+
+action get_bool_owner(n0: node, k1: key, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (owner(n0, k1) = result)
+}
+export get_bool_owner
 
 action get_table(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
     qrm_result := table(n0, k1, v2)

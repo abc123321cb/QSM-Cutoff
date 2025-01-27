@@ -23,7 +23,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. ~vote_msg(NODE0,NODE2) | ~vote_msg(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~vote_msg(NODE0,NODE2) | ~vote_msg(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 9
 
 
@@ -51,7 +51,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. voted(NODE0) | ~vote_msg(NODE0,NODE1)
+quantified form : forall NODE0,NODE1. voted(NODE0) | ~vote_msg(NODE0,NODE1)
 qcost : 4
 
 
@@ -73,7 +73,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,NODE0. leader(NODE0) | ~decided(NODE0,VALUE0)
+quantified form : forall NODE0,VALUE0. ~decided(NODE0,VALUE0) | leader(NODE0)
 qcost : 4
 
 
@@ -113,7 +113,7 @@ num_suborbits: 3
 num_forall :   4
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE1,VALUE0,NODE1,NODE0. ~decided(NODE1,VALUE1) | ~decided(NODE0,VALUE0) | (NODE0 = NODE1 & VALUE0 = VALUE1)
+quantified form : forall NODE0,NODE1,VALUE1,VALUE0. ~decided(NODE1,VALUE1) | ~decided(NODE0,VALUE0) | (NODE0 = NODE1 & VALUE0 = VALUE1)
 qcost : 8
 
 
@@ -157,7 +157,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. ~votes(NODE0,NODE2) | ~votes(NODE1,NODE2) | ((NODE0 = NODE1 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~votes(NODE1,NODE2) | ~votes(NODE0,NODE2) | ((NODE0 = NODE1 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 9
 
 
@@ -185,7 +185,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. voted(NODE1) | ~votes(NODE0,NODE1)
+quantified form : forall NODE0,NODE1. ~votes(NODE0,NODE1) | voted(NODE1)
 qcost : 4
 
 
@@ -213,7 +213,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~votes(NODE0,NODE1) | vote_msg(NODE1,NODE0)
+quantified form : forall NODE0,NODE1. ~votes(NODE0,NODE1) | vote_msg(NODE1,NODE0)
 qcost : 4
 
 
@@ -259,7 +259,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. ~votes(NODE2,NODE0) | ~vote_msg(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~votes(NODE2,NODE0) | ~vote_msg(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 9
 
 
@@ -293,7 +293,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,NODE1,NODE0. ~chosen(NODE0) | ~decided(NODE1,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1,VALUE0. ~chosen(NODE0) | ~decided(NODE1,VALUE0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -315,7 +315,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,NODE0. ~decided(NODE0,VALUE0) | chosen(NODE0)
+quantified form : forall NODE0,VALUE0. ~decided(NODE0,VALUE0) | chosen(NODE0)
 qcost : 4
 
 
@@ -349,7 +349,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,NODE1,NODE0. ~leader(NODE1) | ~decided(NODE0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1,VALUE0. ~decided(NODE0,VALUE0) | ~leader(NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -387,7 +387,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~leader(NODE1) | ~chosen(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~chosen(NODE0) | ~leader(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -403,7 +403,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~chosen(NODE1) | ~chosen(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~chosen(NODE0) | ~chosen(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -419,7 +419,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~leader(NODE1) | ~leader(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~leader(NODE0) | ~leader(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -573,7 +573,7 @@ num_suborbits: 6
 num_forall :   5
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,VALUE0,NODE0,NODE3,NODE1. ~decided(NODE0,VALUE0) | vote_msg(NODE3,NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,VALUE0,NODE1,NODE3. ~decided(NODE0,VALUE0) | vote_msg(NODE3,NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 30
 
 
@@ -655,7 +655,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~leader(NODE0) | vote_msg(NODE3,NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~leader(NODE0) | vote_msg(NODE3,NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -737,7 +737,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~chosen(NODE0) | vote_msg(NODE3,NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~chosen(NODE0) | vote_msg(NODE3,NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -759,7 +759,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_msg(NODE0,NODE1) | ~votes(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~votes(NODE0,NODE1) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -781,7 +781,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~votes(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~votes(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -803,7 +803,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | voted(NODE0) | ~votes(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~votes(NODE0,NODE1) | voted(NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -861,7 +861,7 @@ num_suborbits: 4
 num_forall :   5
 num_exists :   0
 num_literals : 23
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~leader(NODE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~leader(NODE0) | vote_request_msg(NODE3,NODE4) | ~votes(NODE1,NODE2) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 28
 
 
@@ -919,7 +919,7 @@ num_suborbits: 4
 num_forall :   5
 num_exists :   0
 num_literals : 23
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~chosen(NODE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~chosen(NODE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 28
 
 
@@ -1025,7 +1025,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 23
-quantified form : forall NODE2,VALUE0,NODE4,NODE0,NODE3,NODE1. ~decided(NODE0,VALUE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,VALUE0,NODE4,NODE1,NODE3. ~decided(NODE0,VALUE0) | vote_request_msg(NODE3,NODE4) | ~votes(NODE1,NODE2) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 29
 
 
@@ -1323,7 +1323,7 @@ num_suborbits: 12
 num_forall :   6
 num_exists :   0
 num_literals : 61
-quantified form : forall NODE2,VALUE0,NODE4,NODE0,NODE3,NODE1. ~decided(NODE0,VALUE0) | ~vote_msg(NODE1,NODE2) | ~votes(NODE3,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,VALUE0,NODE4,NODE1,NODE3. ~decided(NODE0,VALUE0) | ~votes(NODE3,NODE4) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 67
 
 
@@ -1477,7 +1477,7 @@ num_suborbits: 6
 num_forall :   5
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,VALUE0,NODE0,NODE3,NODE1. voted(NODE3) | ~decided(NODE0,VALUE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,VALUE0,NODE1,NODE3. ~decided(NODE0,VALUE0) | voted(NODE3) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 30
 
 
@@ -1631,7 +1631,7 @@ num_suborbits: 12
 num_forall :   5
 num_exists :   0
 num_literals : 61
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~leader(NODE0) | ~vote_msg(NODE1,NODE2) | ~votes(NODE3,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~leader(NODE0) | ~votes(NODE3,NODE4) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 66
 
 
@@ -1785,7 +1785,7 @@ num_suborbits: 12
 num_forall :   5
 num_exists :   0
 num_literals : 61
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~chosen(NODE0) | ~vote_msg(NODE1,NODE2) | ~votes(NODE3,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~chosen(NODE0) | ~votes(NODE3,NODE4) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 66
 
 
@@ -1867,7 +1867,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. voted(NODE3) | ~leader(NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~leader(NODE0) | voted(NODE3) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -1949,7 +1949,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. voted(NODE3) | ~chosen(NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~chosen(NODE0) | ~votes(NODE1,NODE2) | voted(NODE3) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -2031,7 +2031,7 @@ num_suborbits: 7
 num_forall :   5
 num_exists :   0
 num_literals : 37
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~votes(NODE2,NODE4) | ~leader(NODE0) | ~votes(NODE1,NODE3) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~votes(NODE1,NODE3) | ~leader(NODE0) | ~votes(NODE2,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 42
 
 
@@ -2113,7 +2113,7 @@ num_suborbits: 7
 num_forall :   5
 num_exists :   0
 num_literals : 37
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~votes(NODE2,NODE4) | ~chosen(NODE0) | ~votes(NODE1,NODE3) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~chosen(NODE0) | ~votes(NODE1,NODE3) | ~votes(NODE2,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 42
 
 
@@ -2267,7 +2267,7 @@ num_suborbits: 7
 num_forall :   6
 num_exists :   0
 num_literals : 37
-quantified form : forall NODE2,VALUE0,NODE4,NODE0,NODE3,NODE1. ~votes(NODE2,NODE4) | ~decided(NODE0,VALUE0) | ~votes(NODE1,NODE3) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE4 | NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,VALUE0,NODE4,NODE1,NODE3. ~votes(NODE1,NODE3) | ~decided(NODE0,VALUE0) | ~votes(NODE2,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 43
 
 
@@ -2301,7 +2301,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE1,NODE2) | ~votes(NODE1,NODE2) | ~votes(NODE0,NODE1) | ((NODE0 ~= NODE1 | NODE0 = NODE2) & (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1. ~votes(NODE0,NODE1) | ~votes(NODE1,NODE2) | vote_request_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE0 = NODE2) & (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 11
 
 
@@ -2323,7 +2323,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   1
 num_literals : 3
-quantified form : forall VALUE0,NODE1. ~decided(NODE1,VALUE0) | (exists NODE0. (vote_request_msg(NODE1,NODE0) & NODE0 ~= NODE1))
+quantified form : forall NODE1,VALUE0. ~decided(NODE1,VALUE0) | (exists NODE0. (vote_request_msg(NODE1,NODE0) & NODE0 ~= NODE1))
 qcost : 6
 
 
@@ -2357,7 +2357,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~decided(NODE0,VALUE0) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -2463,7 +2463,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 23
-quantified form : forall NODE2,VALUE0,NODE4,NODE0,NODE3,NODE1. ~decided(NODE0,VALUE0) | ~vote_msg(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,VALUE0,NODE4,NODE1,NODE3. ~decided(NODE0,VALUE0) | vote_request_msg(NODE3,NODE4) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 29
 
 
@@ -2521,7 +2521,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | voted(NODE2) | ~decided(NODE0,VALUE0) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | voted(NODE2) | vote_request_msg(NODE0,NODE1) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 12
 
 
@@ -2675,7 +2675,7 @@ num_suborbits: 7
 num_forall :   6
 num_exists :   0
 num_literals : 37
-quantified form : forall NODE2,VALUE0,NODE4,NODE0,NODE3,NODE1. ~vote_msg(NODE2,NODE4) | ~decided(NODE0,VALUE0) | ~vote_msg(NODE1,NODE3) | ((NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,VALUE0,NODE4,NODE1,NODE3. ~decided(NODE0,VALUE0) | ~vote_msg(NODE1,NODE3) | ~vote_msg(NODE2,NODE4) | ((NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 43
 
 
@@ -2829,7 +2829,7 @@ num_suborbits: 6
 num_forall :   5
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,VALUE0,NODE0,NODE3,NODE1. ~decided(NODE0,VALUE0) | vote_msg(NODE3,NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3))
+quantified form : forall NODE0,NODE2,VALUE0,NODE1,NODE3. ~decided(NODE0,VALUE0) | vote_msg(NODE3,NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2))
 qcost : 30
 
 
@@ -2983,7 +2983,7 @@ num_suborbits: 6
 num_forall :   5
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,VALUE0,NODE0,NODE3,NODE1. voted(NODE3) | ~decided(NODE0,VALUE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,VALUE0,NODE1,NODE3. ~decided(NODE0,VALUE0) | voted(NODE3) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 30
 
 
@@ -3065,7 +3065,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. voted(NODE3) | ~chosen(NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~chosen(NODE0) | voted(NODE3) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -3099,7 +3099,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | voted(NODE2) | ~chosen(NODE0) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | voted(NODE2) | vote_request_msg(NODE0,NODE1) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 11
 
 
@@ -3181,7 +3181,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. voted(NODE3) | ~leader(NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~leader(NODE0) | voted(NODE3) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -3215,7 +3215,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | voted(NODE2) | ~leader(NODE0) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | voted(NODE2) | vote_request_msg(NODE0,NODE1) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 11
 
 
@@ -3237,7 +3237,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | voted(NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~vote_msg(NODE0,NODE1) | voted(NODE1) | vote_request_msg(NODE1,NODE0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -3259,7 +3259,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. ~chosen(NODE0) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -3297,7 +3297,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -3355,7 +3355,7 @@ num_suborbits: 4
 num_forall :   5
 num_exists :   0
 num_literals : 23
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~leader(NODE0) | ~vote_msg(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~leader(NODE0) | vote_request_msg(NODE3,NODE4) | ~vote_msg(NODE1,NODE2) | ((NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 28
 
 
@@ -3413,7 +3413,7 @@ num_suborbits: 4
 num_forall :   5
 num_exists :   0
 num_literals : 23
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~chosen(NODE0) | ~vote_msg(NODE1,NODE2) | vote_request_msg(NODE3,NODE4) | ((NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~chosen(NODE0) | vote_request_msg(NODE3,NODE4) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 28
 
 
@@ -3441,7 +3441,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. voted(NODE2) | voted(NODE1) | ~leader(NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | voted(NODE2) | voted(NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -3469,7 +3469,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. voted(NODE2) | voted(NODE1) | ~chosen(NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | voted(NODE2) | voted(NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -3515,7 +3515,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. voted(NODE2) | voted(NODE1) | ~decided(NODE0,VALUE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | voted(NODE2) | voted(NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 11
 
 
@@ -3561,7 +3561,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. voted(NODE2) | ~leader(NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | voted(NODE2) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -3607,7 +3607,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. voted(NODE2) | ~chosen(NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | voted(NODE2) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -3689,7 +3689,7 @@ num_suborbits: 3
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. voted(NODE2) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | voted(NODE2) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 11
 
 
@@ -3735,7 +3735,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. voted(NODE1) | ~leader(NODE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | voted(NODE1) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -3781,7 +3781,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. voted(NODE1) | ~chosen(NODE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | voted(NODE1) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -3863,7 +3863,7 @@ num_suborbits: 3
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. voted(NODE1) | ~decided(NODE0,VALUE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | voted(NODE1) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 11
 
 
@@ -3909,7 +3909,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~decided(NODE0,VALUE0) | votes(NODE0,NODE2) | votes(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. votes(NODE0,NODE1) | ~decided(NODE0,VALUE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 11
 
 
@@ -3991,7 +3991,7 @@ num_suborbits: 3
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~decided(NODE0,VALUE0) | votes(NODE0,NODE2) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 11
 
 
@@ -4037,7 +4037,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~decided(NODE0,VALUE0) | vote_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | vote_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 11
 
 
@@ -4071,7 +4071,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | votes(NODE0,NODE2) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | votes(NODE0,NODE2) | vote_request_msg(NODE0,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -4225,7 +4225,7 @@ num_suborbits: 6
 num_forall :   5
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,VALUE0,NODE0,NODE3,NODE1. ~decided(NODE0,VALUE0) | votes(NODE0,NODE3) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3))
+quantified form : forall NODE0,NODE2,VALUE0,NODE1,NODE3. ~decided(NODE0,VALUE0) | ~vote_msg(NODE1,NODE2) | votes(NODE0,NODE3) | ((NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2))
 qcost : 30
 
 
@@ -4379,7 +4379,7 @@ num_suborbits: 6
 num_forall :   5
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,VALUE0,NODE0,NODE3,NODE1. votes(NODE0,NODE3) | ~decided(NODE0,VALUE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,VALUE0,NODE1,NODE3. ~decided(NODE0,VALUE0) | ~votes(NODE1,NODE2) | votes(NODE0,NODE3) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 30
 
 
@@ -4437,7 +4437,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE4,NODE0,NODE5,NODE3,NODE1. ~votes(NODE2,NODE3) | vote_request_msg(NODE4,NODE5) | ~vote_msg(NODE0,NODE1) | ((NODE0 ~= NODE4 | NODE0 ~= NODE2 | NODE0 ~= NODE1 | NODE3 ~= NODE5 | NODE0 = NODE3) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE0 ~= NODE2 | NODE3 ~= NODE5 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE5,NODE1,NODE3. ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE4,NODE5) | ~votes(NODE2,NODE3) | ((NODE0 ~= NODE2 | NODE0 ~= NODE4 | NODE0 ~= NODE1 | NODE3 ~= NODE5 | NODE0 = NODE3) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE0 ~= NODE2 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 31
 
 
@@ -4519,7 +4519,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. votes(NODE0,NODE3) | ~chosen(NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~chosen(NODE0) | ~votes(NODE1,NODE2) | votes(NODE0,NODE3) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -4601,7 +4601,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. votes(NODE0,NODE3) | ~leader(NODE0) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~leader(NODE0) | ~votes(NODE1,NODE2) | votes(NODE0,NODE3) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -4683,7 +4683,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~chosen(NODE0) | vote_msg(NODE3,NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~chosen(NODE0) | vote_msg(NODE3,NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -4765,7 +4765,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~chosen(NODE0) | votes(NODE0,NODE3) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~chosen(NODE0) | ~vote_msg(NODE1,NODE2) | votes(NODE0,NODE3) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -4847,7 +4847,7 @@ num_suborbits: 7
 num_forall :   5
 num_exists :   0
 num_literals : 37
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~vote_msg(NODE2,NODE4) | ~chosen(NODE0) | ~vote_msg(NODE1,NODE3) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~chosen(NODE0) | ~vote_msg(NODE1,NODE3) | ~vote_msg(NODE2,NODE4) | ((NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 42
 
 
@@ -4929,7 +4929,7 @@ num_suborbits: 7
 num_forall :   5
 num_exists :   0
 num_literals : 37
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~vote_msg(NODE2,NODE4) | ~leader(NODE0) | ~vote_msg(NODE1,NODE3) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~leader(NODE0) | ~vote_msg(NODE1,NODE3) | ~vote_msg(NODE2,NODE4) | ((NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 42
 
 
@@ -5011,7 +5011,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~leader(NODE0) | vote_msg(NODE3,NODE0) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~leader(NODE0) | ~vote_msg(NODE1,NODE2) | vote_msg(NODE3,NODE0) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -5093,7 +5093,7 @@ num_suborbits: 6
 num_forall :   4
 num_exists :   0
 num_literals : 25
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~leader(NODE0) | votes(NODE0,NODE3) | ~vote_msg(NODE1,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~leader(NODE0) | ~vote_msg(NODE1,NODE2) | votes(NODE0,NODE3) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 29
 
 
@@ -5127,7 +5127,7 @@ num_suborbits: 2
 num_forall :   5
 num_exists :   0
 num_literals : 12
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~vote_msg(NODE0,NODE2) | vote_request_msg(NODE3,NODE4) | ~vote_msg(NODE1,NODE3) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~vote_msg(NODE0,NODE2) | ~vote_msg(NODE1,NODE3) | vote_request_msg(NODE3,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 17
 
 
@@ -5149,7 +5149,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | vote_msg(NODE1,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~vote_msg(NODE0,NODE1) | vote_msg(NODE1,NODE0) | vote_request_msg(NODE1,NODE0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -5171,7 +5171,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~leader(NODE0) | votes(NODE0,NODE2) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | votes(NODE0,NODE2) | vote_request_msg(NODE0,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -5193,7 +5193,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -5239,7 +5239,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | votes(NODE0,NODE2) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_msg(NODE1,NODE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -5267,7 +5267,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -5295,7 +5295,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | votes(NODE0,NODE2) | votes(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. votes(NODE0,NODE1) | ~leader(NODE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -5357,7 +5357,7 @@ num_suborbits: 3
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. ~chosen(NODE0) | votes(NODE0,NODE2) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_msg(NODE1,NODE0) | votes(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -5379,7 +5379,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | votes(NODE0,NODE2) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | votes(NODE0,NODE2) | vote_request_msg(NODE0,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -5407,7 +5407,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. ~chosen(NODE0) | vote_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1))
 qcost : 10
 
 
@@ -5441,7 +5441,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | votes(NODE0,NODE0) | ~decided(NODE0,VALUE0) | vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1,VALUE0. ~decided(NODE0,VALUE0) | vote_msg(NODE0,NODE1) | votes(NODE0,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 8
 
 
@@ -5475,7 +5475,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~decided(NODE0,VALUE0) | votes(NODE0,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1,VALUE0. ~decided(NODE0,VALUE0) | votes(NODE0,NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 8
 
 
@@ -5533,7 +5533,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~decided(NODE0,VALUE0) | votes(NODE0,NODE1) | ~vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | ((NODE0 ~= NODE1 | NODE0 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. votes(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_request_msg(NODE0,NODE2) | ~vote_msg(NODE1,NODE0) | ((NODE0 ~= NODE1 | NODE0 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE1))
 qcost : 12
 
 
@@ -5567,7 +5567,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE0,NODE0) | vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1,VALUE0. vote_msg(NODE0,NODE0) | ~decided(NODE0,VALUE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 8
 
 
@@ -5601,7 +5601,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~decided(NODE0,VALUE0) | vote_msg(NODE0,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1,VALUE0. vote_msg(NODE0,NODE0) | ~decided(NODE0,VALUE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 8
 
 
@@ -5623,7 +5623,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE1,NODE2) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | ~votes(NODE1,NODE2) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~votes(NODE1,NODE2) | ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE1,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -5639,7 +5639,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 3
-quantified form : forall NODE1. (exists NODE0. ((vote_request_msg(NODE1,NODE0) | ~votes(NODE1,NODE0)) & NODE0 ~= NODE1))
+quantified form : forall NODE1. (exists NODE0. ((~votes(NODE1,NODE0) | vote_request_msg(NODE1,NODE0)) & NODE0 ~= NODE1))
 qcost : 5
 
 
@@ -5673,7 +5673,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~chosen(NODE0) | votes(NODE0,NODE1) | ~vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | votes(NODE0,NODE1) | vote_request_msg(NODE0,NODE2) | ~vote_msg(NODE1,NODE0) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE2))
 qcost : 11
 
 
@@ -5707,7 +5707,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | votes(NODE0,NODE1) | ~vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1. votes(NODE0,NODE1) | ~leader(NODE0) | vote_request_msg(NODE0,NODE2) | ~vote_msg(NODE1,NODE0) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE2))
 qcost : 11
 
 
@@ -5723,7 +5723,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 3
-quantified form : forall NODE1. (exists NODE0. ((vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1)) & NODE0 ~= NODE1))
+quantified form : forall NODE1. (exists NODE0. ((~vote_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0)) & NODE0 ~= NODE1))
 qcost : 5
 
 
@@ -5745,7 +5745,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~leader(NODE0) | vote_msg(NODE0,NODE0) | vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. vote_msg(NODE0,NODE0) | ~leader(NODE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5767,7 +5767,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | votes(NODE0,NODE0) | ~leader(NODE0) | vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~leader(NODE0) | vote_msg(NODE0,NODE1) | votes(NODE0,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5789,7 +5789,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~leader(NODE0) | votes(NODE0,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~leader(NODE0) | votes(NODE0,NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5811,7 +5811,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~leader(NODE0) | vote_msg(NODE0,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. vote_msg(NODE0,NODE0) | ~leader(NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5833,7 +5833,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~chosen(NODE0) | votes(NODE0,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~chosen(NODE0) | votes(NODE0,NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5855,7 +5855,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~chosen(NODE0) | vote_msg(NODE0,NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~chosen(NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5877,7 +5877,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE0,NODE0) | vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~chosen(NODE0) | vote_msg(NODE0,NODE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5899,7 +5899,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | votes(NODE0,NODE0) | ~chosen(NODE0) | vote_msg(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~chosen(NODE0) | vote_msg(NODE0,NODE1) | votes(NODE0,NODE0) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5921,7 +5921,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_msg(NODE0,NODE1) | voted(NODE2) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_msg(NODE0,NODE1) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | voted(NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 11
 
 
@@ -5955,7 +5955,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. ~decided(NODE0,VALUE0) | vote_request_msg(NODE2,NODE1) | vote_msg(NODE1,NODE0) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -5989,7 +5989,7 @@ num_suborbits: 2
 num_forall :   5
 num_exists :   0
 num_literals : 15
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~voted(NODE0) | vote_msg(NODE0,NODE3) | vote_request_msg(NODE2,NODE0) | vote_msg(NODE0,NODE4) | ~votes(NODE1,NODE2) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~voted(NODE0) | ~votes(NODE1,NODE2) | vote_msg(NODE0,NODE4) | vote_request_msg(NODE2,NODE0) | vote_msg(NODE0,NODE3) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 20
 
 
@@ -6023,7 +6023,7 @@ num_suborbits: 2
 num_forall :   5
 num_exists :   0
 num_literals : 15
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. vote_msg(NODE2,NODE4) | ~voted(NODE2) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE2,NODE3) | ~vote_msg(NODE0,NODE1) | ((NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. vote_msg(NODE2,NODE3) | vote_request_msg(NODE0,NODE2) | ~voted(NODE2) | ~vote_msg(NODE0,NODE1) | vote_msg(NODE2,NODE4) | ((NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2))
 qcost : 20
 
 
@@ -6045,7 +6045,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_msg(NODE0,NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_msg(NODE0,NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 11
 
 
@@ -6067,7 +6067,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_msg(NODE0,NODE1) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE0,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 11
 
 
@@ -6089,7 +6089,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_request_msg(NODE2,NODE1) | vote_msg(NODE1,NODE0) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 11
 
 
@@ -6111,7 +6111,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 8
-quantified form : forall NODE2,NODE1,NODE0. ~chosen(NODE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_request_msg(NODE2,NODE1) | vote_msg(NODE1,NODE0) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 11
 
 
@@ -6133,7 +6133,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE1,NODE1) | ~votes(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_request_msg(NODE0,NODE1) | ~votes(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6155,7 +6155,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. vote_request_msg(NODE1,NODE0) | ~chosen(NODE0) | vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6177,7 +6177,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | votes(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | votes(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6193,7 +6193,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   2
 num_literals : 6
-quantified form : forall NODE2. ~voted(NODE2) | vote_msg(NODE2,NODE2) | (exists NODE1,NODE0. ((vote_request_msg(NODE2,NODE1) | vote_request_msg(NODE0,NODE2)) & (NODE0 ~= NODE2 & NODE1 ~= NODE2)))
+quantified form : forall NODE2. ~voted(NODE2) | vote_msg(NODE2,NODE2) | (exists NODE0,NODE1. ((vote_request_msg(NODE2,NODE1) | vote_request_msg(NODE0,NODE2)) & (NODE1 ~= NODE2 & NODE0 ~= NODE2)))
 qcost : 9
 
 
@@ -6239,7 +6239,7 @@ num_suborbits: 3
 num_forall :   7
 num_exists :   0
 num_literals : 27
-quantified form : forall NODE2,NODE4,NODE0,NODE5,NODE6,NODE3,NODE1. ~voted(NODE0) | vote_msg(NODE0,NODE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE1,NODE5) | vote_request_msg(NODE4,NODE6) | vote_request_msg(NODE3,NODE0) | ((NODE0 ~= NODE5 | NODE0 ~= NODE4 | NODE1 ~= NODE6 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE5 | NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE6 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE6 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE6,NODE4,NODE5,NODE1,NODE3. ~voted(NODE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE0) | vote_request_msg(NODE1,NODE5) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE4,NODE6) | ((NODE0 ~= NODE5 | NODE0 ~= NODE4 | NODE1 ~= NODE6 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE5 | NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE6 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE6 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 34
 
 
@@ -6273,7 +6273,7 @@ num_suborbits: 3
 num_forall :   6
 num_exists :   0
 num_literals : 24
-quantified form : forall NODE2,NODE4,NODE0,NODE5,NODE3,NODE1. ~voted(NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | ~votes(NODE2,NODE4) | vote_request_msg(NODE5,NODE0) | ~votes(NODE1,NODE3) | ((NODE1 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE5 | NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE5 | NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE5,NODE1,NODE3. ~votes(NODE1,NODE3) | ~voted(NODE0) | vote_msg(NODE0,NODE0) | ~votes(NODE2,NODE4) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE5,NODE0) | ((NODE1 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE1 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 30
 
 
@@ -6307,7 +6307,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 13
 
 
@@ -6341,7 +6341,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | votes(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. votes(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 13
 
 
@@ -6375,7 +6375,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | ~votes(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | ~votes(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 13
 
 
@@ -6409,7 +6409,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 14
-quantified form : forall NODE2,NODE3,NODE1,NODE0. ~voted(NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | voted(NODE3) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE0) | ((NODE1 ~= NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~voted(NODE0) | ~votes(NODE1,NODE2) | vote_request_msg(NODE3,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | voted(NODE3) | ((NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 18
 
 
@@ -6431,7 +6431,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE0,NODE2) | voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | voted(NODE1) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE0,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6469,7 +6469,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE1,NODE0) | ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6491,7 +6491,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | ~votes(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | ~votes(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6513,7 +6513,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | votes(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | votes(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6547,7 +6547,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 13
 
 
@@ -6581,7 +6581,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. vote_msg(NODE1,NODE2) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | ~voted(NODE1) | votes(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. votes(NODE0,NODE1) | vote_msg(NODE1,NODE2) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 13
 
 
@@ -6627,7 +6627,7 @@ num_suborbits: 3
 num_forall :   7
 num_exists :   0
 num_literals : 27
-quantified form : forall NODE2,NODE4,NODE0,NODE5,NODE6,NODE3,NODE1. vote_request_msg(NODE6,NODE4) | ~voted(NODE0) | vote_msg(NODE0,NODE4) | vote_request_msg(NODE5,NODE0) | ~votes(NODE1,NODE2) | vote_msg(NODE3,NODE0) | ((NODE0 ~= NODE4 | NODE1 ~= NODE5 | NODE1 ~= NODE3 | NODE2 ~= NODE6 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE6 | NODE1 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE4 | NODE1 ~= NODE6 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE6,NODE4,NODE5,NODE1,NODE3. vote_msg(NODE3,NODE0) | ~voted(NODE0) | vote_request_msg(NODE6,NODE4) | ~votes(NODE1,NODE2) | vote_msg(NODE0,NODE4) | vote_request_msg(NODE5,NODE0) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE1 ~= NODE5 | NODE2 ~= NODE6 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE6 | NODE1 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE6 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1))
 qcost : 34
 
 
@@ -6685,7 +6685,7 @@ num_suborbits: 4
 num_forall :   5
 num_exists :   0
 num_literals : 26
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. vote_msg(NODE2,NODE2) | ~voted(NODE2) | vote_request_msg(NODE0,NODE2) | vote_request_msg(NODE4,NODE2) | ~vote_msg(NODE0,NODE1) | ~votes(NODE3,NODE4) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~voted(NODE2) | ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE4,NODE2) | ~votes(NODE3,NODE4) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE2,NODE2) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 ~= NODE1 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE1 | NODE3 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 31
 
 
@@ -6731,7 +6731,7 @@ num_suborbits: 3
 num_forall :   7
 num_exists :   0
 num_literals : 27
-quantified form : forall NODE2,NODE4,NODE0,NODE5,NODE6,NODE3,NODE1. vote_msg(NODE2,NODE2) | ~voted(NODE2) | vote_request_msg(NODE0,NODE2) | vote_request_msg(NODE4,NODE6) | ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE3,NODE5) | ((NODE0 ~= NODE1 | NODE2 ~= NODE5 | NODE2 ~= NODE4 | NODE3 ~= NODE6 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE2 ~= NODE6 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE1 ~= NODE6 | NODE1 ~= NODE3 | NODE2 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE6,NODE4,NODE5,NODE1,NODE3. ~voted(NODE2) | ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE3,NODE5) | vote_request_msg(NODE4,NODE6) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE2,NODE2) | ((NODE0 ~= NODE1 | NODE2 ~= NODE5 | NODE2 ~= NODE4 | NODE3 ~= NODE6 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE1 ~= NODE3 | NODE2 ~= NODE6 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 ~= NODE6 | NODE2 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 34
 
 
@@ -6765,7 +6765,7 @@ num_suborbits: 3
 num_forall :   5
 num_exists :   0
 num_literals : 21
-quantified form : forall NODE2,NODE0,NODE4,NODE3,NODE1. ~vote_msg(NODE0,NODE2) | vote_msg(NODE4,NODE4) | vote_request_msg(NODE0,NODE4) | vote_request_msg(NODE1,NODE4) | ~voted(NODE4) | ~vote_msg(NODE1,NODE3) | ((NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
+quantified form : forall NODE0,NODE2,NODE4,NODE1,NODE3. ~vote_msg(NODE0,NODE2) | vote_request_msg(NODE1,NODE4) | vote_msg(NODE4,NODE4) | vote_request_msg(NODE0,NODE4) | ~vote_msg(NODE1,NODE3) | ~voted(NODE4) | ((NODE0 ~= NODE3 | NODE0 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4))
 qcost : 26
 
 
@@ -6787,7 +6787,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~vote_msg(NODE0,NODE0) | ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | ~vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6809,7 +6809,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~vote_msg(NODE0,NODE0) | vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_request_msg(NODE0,NODE1) | ~vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6843,7 +6843,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 14
-quantified form : forall NODE2,NODE3,NODE1,NODE0. vote_msg(NODE2,NODE2) | ~voted(NODE2) | voted(NODE3) | vote_request_msg(NODE3,NODE2) | vote_request_msg(NODE0,NODE2) | ~vote_msg(NODE0,NODE1) | ((NODE0 ~= NODE1 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE3) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE1,NODE3. ~voted(NODE2) | ~vote_msg(NODE0,NODE1) | voted(NODE3) | vote_request_msg(NODE3,NODE2) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE2,NODE2) | ((NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE3 | NODE0 = NODE2) & (NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 18
 
 
@@ -6865,7 +6865,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_msg(NODE1,NODE2) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | ~voted(NODE1) | votes(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | votes(NODE0,NODE1) | vote_msg(NODE1,NODE2) | vote_request_msg(NODE0,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6887,7 +6887,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~leader(NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~leader(NODE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6909,7 +6909,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE0,NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6955,7 +6955,7 @@ num_suborbits: 3
 num_forall :   8
 num_exists :   0
 num_literals : 30
-quantified form : forall NODE2,NODE7,NODE0,NODE4,NODE5,NODE6,NODE3,NODE1. vote_request_msg(NODE6,NODE5) | vote_request_msg(NODE7,NODE2) | ~voted(NODE2) | vote_msg(NODE4,NODE2) | vote_msg(NODE3,NODE5) | ~vote_msg(NODE0,NODE1) | ((NODE0 ~= NODE7 | NODE1 ~= NODE6 | NODE1 ~= NODE3 | NODE2 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) & (NODE0 ~= NODE7 | NODE0 ~= NODE1 | NODE2 ~= NODE5 | NODE2 ~= NODE3 | NODE4 ~= NODE6 | NODE0 = NODE2 | NODE2 = NODE4 | NODE0 = NODE4) & (NODE0 ~= NODE5 | NODE1 ~= NODE7 | NODE1 ~= NODE6 | NODE2 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2))
+quantified form : forall NODE0,NODE2,NODE7,NODE5,NODE4,NODE6,NODE1,NODE3. vote_msg(NODE4,NODE2) | vote_request_msg(NODE7,NODE2) | vote_request_msg(NODE6,NODE5) | ~voted(NODE2) | vote_msg(NODE3,NODE5) | ~vote_msg(NODE0,NODE1) | ((NODE0 ~= NODE7 | NODE1 ~= NODE3 | NODE1 ~= NODE6 | NODE2 ~= NODE5 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE7 | NODE0 ~= NODE1 | NODE2 ~= NODE5 | NODE2 ~= NODE3 | NODE4 ~= NODE6 | NODE2 = NODE4 | NODE0 = NODE2 | NODE0 = NODE4) & (NODE0 ~= NODE5 | NODE1 ~= NODE7 | NODE1 ~= NODE6 | NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 38
 
 
@@ -6977,7 +6977,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE1,NODE1) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -6999,7 +6999,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. vote_msg(NODE1,NODE2) | vote_request_msg(NODE0,NODE1) | ~chosen(NODE0) | vote_msg(NODE1,NODE1) | ~voted(NODE1) | votes(NODE0,NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~chosen(NODE0) | votes(NODE0,NODE1) | vote_msg(NODE1,NODE2) | vote_request_msg(NODE0,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -7021,7 +7021,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | voted(NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | voted(NODE2) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 12
 
 
@@ -7055,7 +7055,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,VALUE0,NODE1,NODE0. ~vote_msg(NODE0,NODE0) | vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1,VALUE0. vote_request_msg(NODE0,NODE1) | ~decided(NODE0,VALUE0) | ~vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 13
 
 
@@ -7087,7 +7087,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   2
 num_literals : 5
-quantified form : forall NODE2. (exists NODE1,NODE0. ((~voted(NODE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE0)) & (NODE0 ~= NODE2 & NODE1 ~= NODE2)))
+quantified form : forall NODE2. (exists NODE0,NODE1. ((~voted(NODE0) | vote_msg(NODE0,NODE1) | vote_request_msg(NODE2,NODE0)) & (NODE1 ~= NODE2 & NODE0 ~= NODE2)))
 qcost : 8
 
 
@@ -7109,7 +7109,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 11
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE0) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE2,NODE1) | vote_msg(NODE1,NODE0) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 14
 
 
@@ -7125,6 +7125,6 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 11
-quantified form : forall NODE2,NODE1,NODE0. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE1,NODE1) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~voted(NODE0) | vote_request_msg(NODE1,NODE0) | vote_request_msg(NODE0,NODE1) | vote_msg(NODE0,NODE0) | vote_request_msg(NODE2,NODE0) | vote_request_msg(NODE2,NODE1) | ~voted(NODE1) | vote_msg(NODE1,NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 14
 

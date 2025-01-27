@@ -79,6 +79,6 @@ invariant [invar_21] forall NODE0,VALUE0. ~decided(NODE0,VALUE0) | leader(NODE0)
 invariant [invar_4] forall NODE0,NODE1. ~vote_msg(NODE0,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
 invariant [invar_5] forall NODE0,NODE1. voted(NODE0) | ~vote_msg(NODE0,NODE1) # qcost: 4
 invariant [invar_2] forall NODE0,NODE1. vote_msg(NODE1,NODE0) | ~votes(NODE0,NODE1) # qcost: 4
-invariant [invar_12] forall NODE0. chosen(NODE0) | ~leader(NODE0) # qcost: 3
-invariant [invar_38] forall NODE0,NODE1. vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
+invariant [invar_12] forall NODE0. ~leader(NODE0) | chosen(NODE0) # qcost: 3
+invariant [invar_38] forall NODE0,NODE1. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
 invariant [invar_39] forall NODE0,NODE1. vote_msg(NODE1,NODE0) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6

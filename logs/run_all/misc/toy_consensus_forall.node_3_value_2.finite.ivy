@@ -55,25 +55,15 @@ axiom member(node1,quorum__node1_node2)
 axiom member(node2,quorum__node1_node2)
 
 ## Access actions ##
-action get_voted(n0: node) returns(qrm_result: bool) = {
-    qrm_result := voted(n0)
+action get_voting_quorum returns(qrm_result: quorum) = {
+    qrm_result := voting_quorum
 }
-export get_voted
+export get_voting_quorum
 
-action get_bool_voted(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (voted(n0) = result)
+action get_bool_voting_quorum(result: quorum) returns(qrm_result: bool) = {
+    qrm_result := (voting_quorum = result)
 }
-export get_bool_voted
-
-action get_member(n0: node, q1: quorum) returns(qrm_result: bool) = {
-    qrm_result := member(n0, q1)
-}
-export get_member
-
-action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (member(n0, q1) = result)
-}
-export get_bool_member
+export get_bool_voting_quorum
 
 action get_decided(v0: value) returns(qrm_result: bool) = {
     qrm_result := decided(v0)
@@ -95,13 +85,23 @@ action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool
 }
 export get_bool_vote
 
-action get_voting_quorum returns(qrm_result: quorum) = {
-    qrm_result := voting_quorum
+action get_member(n0: node, q1: quorum) returns(qrm_result: bool) = {
+    qrm_result := member(n0, q1)
 }
-export get_voting_quorum
+export get_member
 
-action get_bool_voting_quorum(result: quorum) returns(qrm_result: bool) = {
-    qrm_result := (voting_quorum = result)
+action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (member(n0, q1) = result)
 }
-export get_bool_voting_quorum
+export get_bool_member
+
+action get_voted(n0: node) returns(qrm_result: bool) = {
+    qrm_result := voted(n0)
+}
+export get_voted
+
+action get_bool_voted(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (voted(n0) = result)
+}
+export get_bool_voted
 

@@ -13,17 +13,17 @@ quantified form : forall NODE0. ~sent(NODE0,NODE0)
 qcost : 2
 
 
-=== Prime Orbit 2 =====================
+=== Prime Orbit 3 =====================
 size : 2
 num_suborbits: 1
-4 (*) : 1-----0-
-4     : ['allowed_in(node0)', '~sent(node1,node0)']
-5     : -1---0--
-5     : ['allowed_in(node1)', '~sent(node0,node1)']
+6 (*) : 1-----0-
+6     : ['allowed_in(node0)', '~sent(node1,node0)']
+7     : -1---0--
+7     : ['allowed_in(node1)', '~sent(node0,node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,NODE1. ~allowed_in(NODE0) | sent(NODE1,NODE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. sent(NODE1,NODE0) | ~allowed_in(NODE0) | NODE0 = NODE1
 qcost : 5
 
 
@@ -37,15 +37,29 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~allowed_in(NODE0) | ~internal(NODE0)
+quantified form : forall NODE0. ~internal(NODE0) | ~allowed_in(NODE0)
 qcost : 3
 
 
-=== Prime Orbit 3 =====================
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+4 (*) : 1--0----
+4     : ['allowed_in(node0)', '~internal(node1)']
+5     : -10-----
+5     : ['allowed_in(node1)', '~internal(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. internal(NODE1) | ~allowed_in(NODE0) | NODE0 = NODE1
+qcost : 5
+
+
+=== Prime Orbit 4 =====================
 size : 1
 num_suborbits: 1
-6 (*) : 11------
-6     : ['allowed_in(node0)', 'allowed_in(node1)']
+8 (*) : 11------
+8     : ['allowed_in(node0)', 'allowed_in(node1)']
 num_forall :   0
 num_exists :   1
 num_literals : 1
@@ -53,136 +67,122 @@ quantified form : exists NODE0. ~allowed_in(NODE0)
 qcost : 2
 
 
-=== Prime Orbit 4 =====================
-size : 2
-num_suborbits: 1
-7 (*) : 1--0----
-7     : ['allowed_in(node0)', '~internal(node1)']
-8     : -10-----
-8     : ['allowed_in(node1)', '~internal(node0)']
-num_forall :   2
-num_exists :   0
-num_literals : 3
-quantified form : forall NODE0,NODE1. ~allowed_in(NODE0) | internal(NODE1) | NODE0 = NODE1
-qcost : 5
-
-
 === Prime Orbit 5 =====================
 size : 2
 num_suborbits: 1
-9 (*) : -0---10-
-9     : ['sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
-10     : 0----01-
-10     : ['sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
+9 (*) : --11--1-
+9     : ['internal(node0)', 'internal(node1)', 'sent(node1,node0)']
+10     : --11-1--
+10     : ['internal(node0)', 'internal(node1)', 'sent(node0,node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. sent(NODE1,NODE0) | allowed_in(NODE1) | ~sent(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. ~internal(NODE1) | ~sent(NODE1,NODE0) | ~internal(NODE0) | NODE0 = NODE1
 qcost : 6
 
 
 === Prime Orbit 6 =====================
-size : 2
-num_suborbits: 1
-11 (*) : --0--10-
-11     : ['sent(node0,node1)', '~internal(node0)', '~sent(node1,node0)']
-12     : ---0-01-
-12     : ['sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)']
-num_forall :   2
+size : 4
+num_suborbits: 2
+11 (*) : 0--1--1-
+11     : ['internal(node1)', 'sent(node1,node0)', '~allowed_in(node0)']
+12     : -01--1--
+12     : ['internal(node0)', 'sent(node0,node1)', '~allowed_in(node1)']
+13 (*) : 0--1-1--
+13     : ['internal(node1)', 'sent(node0,node1)', '~allowed_in(node0)']
+14     : -01---1-
+14     : ['internal(node0)', 'sent(node1,node0)', '~allowed_in(node1)']
+num_forall :   4
 num_exists :   0
-num_literals : 4
-quantified form : forall NODE0,NODE1. sent(NODE1,NODE0) | internal(NODE0) | ~sent(NODE0,NODE1) | NODE0 = NODE1
-qcost : 6
+num_literals : 9
+quantified form : forall NODE2,NODE3,NODE1,NODE0. ~sent(NODE1,NODE2) | allowed_in(NODE3) | ~internal(NODE0) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1))
+qcost : 13
 
 
 === Prime Orbit 7 =====================
 size : 2
 num_suborbits: 1
-13 (*) : 00---1--
-13     : ['sent(node0,node1)', '~allowed_in(node0)', '~allowed_in(node1)']
-14     : 00----1-
-14     : ['sent(node1,node0)', '~allowed_in(node0)', '~allowed_in(node1)']
+15 (*) : ---1-10-
+15     : ['internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)']
+16     : --1--01-
+16     : ['internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. allowed_in(NODE1) | ~sent(NODE0,NODE1) | allowed_in(NODE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. sent(NODE0,NODE1) | ~sent(NODE1,NODE0) | ~internal(NODE0) | NODE0 = NODE1
 qcost : 6
 
 
 === Prime Orbit 8 =====================
-size : 4
-num_suborbits: 2
-15 (*) : -01--1--
-15     : ['internal(node0)', 'sent(node0,node1)', '~allowed_in(node1)']
-16     : 0--1--1-
-16     : ['internal(node1)', 'sent(node1,node0)', '~allowed_in(node0)']
-23 (*) : -01---1-
-23     : ['internal(node0)', 'sent(node1,node0)', '~allowed_in(node1)']
-24     : 0--1-1--
-24     : ['internal(node1)', 'sent(node0,node1)', '~allowed_in(node0)']
-num_forall :   4
+size : 2
+num_suborbits: 1
+17 (*) : 00---1--
+17     : ['sent(node0,node1)', '~allowed_in(node0)', '~allowed_in(node1)']
+18     : 00----1-
+18     : ['sent(node1,node0)', '~allowed_in(node0)', '~allowed_in(node1)']
+num_forall :   2
 num_exists :   0
-num_literals : 9
-quantified form : forall NODE2,NODE0,NODE1,NODE3. allowed_in(NODE3) | ~sent(NODE1,NODE2) | ~internal(NODE0) | ((NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1))
-qcost : 13
+num_literals : 4
+quantified form : forall NODE1,NODE0. ~sent(NODE0,NODE1) | allowed_in(NODE1) | allowed_in(NODE0) | NODE0 = NODE1
+qcost : 6
 
 
 === Prime Orbit 9 =====================
 size : 4
 num_suborbits: 2
-17 (*) : -0-0-1--
-17     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node1)']
-18     : 0-0---1-
-18     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node0)']
 19 (*) : 0-0--1--
 19     : ['sent(node0,node1)', '~allowed_in(node0)', '~internal(node0)']
 20     : -0-0--1-
 20     : ['sent(node1,node0)', '~allowed_in(node1)', '~internal(node1)']
+25 (*) : -0-0-1--
+25     : ['sent(node0,node1)', '~allowed_in(node1)', '~internal(node1)']
+26     : 0-0---1-
+26     : ['sent(node1,node0)', '~allowed_in(node0)', '~internal(node0)']
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. allowed_in(NODE2) | internal(NODE2) | ~sent(NODE0,NODE1) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE0 = NODE1))
+quantified form : forall NODE2,NODE1,NODE0. internal(NODE2) | ~sent(NODE0,NODE1) | allowed_in(NODE2) | ((NODE0 ~= NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE1))
 qcost : 10
 
 
 === Prime Orbit 10 =====================
 size : 2
 num_suborbits: 1
-21 (*) : --00-1--
-21     : ['sent(node0,node1)', '~internal(node0)', '~internal(node1)']
-22     : --00--1-
-22     : ['sent(node1,node0)', '~internal(node0)', '~internal(node1)']
+21 (*) : -0---10-
+21     : ['sent(node0,node1)', '~allowed_in(node1)', '~sent(node1,node0)']
+22     : 0----01-
+22     : ['sent(node1,node0)', '~allowed_in(node0)', '~sent(node0,node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. internal(NODE0) | ~sent(NODE0,NODE1) | internal(NODE1) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. ~sent(NODE0,NODE1) | allowed_in(NODE1) | sent(NODE1,NODE0) | NODE0 = NODE1
 qcost : 6
 
 
 === Prime Orbit 11 =====================
 size : 2
 num_suborbits: 1
-25 (*) : --1--01-
-25     : ['internal(node0)', 'sent(node1,node0)', '~sent(node0,node1)']
-26     : ---1-10-
-26     : ['internal(node1)', 'sent(node0,node1)', '~sent(node1,node0)']
+23 (*) : --0--10-
+23     : ['sent(node0,node1)', '~internal(node0)', '~sent(node1,node0)']
+24     : ---0-01-
+24     : ['sent(node1,node0)', '~internal(node1)', '~sent(node0,node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. ~sent(NODE1,NODE0) | sent(NODE0,NODE1) | ~internal(NODE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. ~sent(NODE0,NODE1) | sent(NODE1,NODE0) | internal(NODE0) | NODE0 = NODE1
 qcost : 6
 
 
 === Prime Orbit 12 =====================
 size : 2
 num_suborbits: 1
-27 (*) : --11--1-
-27     : ['internal(node0)', 'internal(node1)', 'sent(node1,node0)']
-28     : --11-1--
-28     : ['internal(node0)', 'internal(node1)', 'sent(node0,node1)']
+27 (*) : --00-1--
+27     : ['sent(node0,node1)', '~internal(node0)', '~internal(node1)']
+28     : --00--1-
+28     : ['sent(node1,node0)', '~internal(node0)', '~internal(node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. ~sent(NODE1,NODE0) | ~internal(NODE1) | ~internal(NODE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. internal(NODE1) | ~sent(NODE0,NODE1) | internal(NODE0) | NODE0 = NODE1
 qcost : 6
 

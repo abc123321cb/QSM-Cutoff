@@ -639,9 +639,9 @@ class lock_server__server_1_client_4__finite {
 void __init();
     virtual void ext__connect(client c, server s);
     virtual void ext__disconnect(client c, server s);
-    virtual bool ext__get_semaphore(server s0);
-    virtual bool ext__get_bool_semaphore(server s0, bool result);
     virtual bool ext__get_link(client c0, server s1);
     virtual bool ext__get_bool_link(client c0, server s1, bool result);
+    virtual bool ext__get_semaphore(server s0);
+    virtual bool ext__get_bool_semaphore(server s0, bool result);
     void __tick(int timeout);
 };

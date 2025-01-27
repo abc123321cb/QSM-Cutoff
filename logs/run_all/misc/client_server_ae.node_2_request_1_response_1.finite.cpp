@@ -630,15 +630,15 @@ void client_server_ae__node_2_request_1_response_1__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 2;
     if (qrm_solution_count == 0){
-        bool __tmp1[1][2];
-        for (int R = 0; R < 1; R++) {
-            for (int N = 0; N < 2; N++) {
-                __tmp1[R][N] = false;
+        bool __tmp1[2][1];
+        for (int N = 0; N < 2; N++) {
+            for (int R = 0; R < 1; R++) {
+                __tmp1[N][R] = false;
             }
         }
-        for (int R = 0; R < 1; R++) {
-            for (int N = 0; N < 2; N++) {
-                request_sent[N][R] = __tmp1[R][N];
+        for (int N = 0; N < 2; N++) {
+            for (int R = 0; R < 1; R++) {
+                request_sent[N][R] = __tmp1[N][R];
             }
         }
         bool __tmp2[1][2];
@@ -685,14 +685,14 @@ void client_server_ae__node_2_request_1_response_1__finite::ext__receive_respons
         ivy_assume(response_sent[n][p], "client_server_ae.node_2_request_1_response_1.finite.ivy: line 41");
         response_received[n][p] = true;
 }
-bool client_server_ae__node_2_request_1_response_1__finite::ext__get_response_received(node n0, response r1){
+bool client_server_ae__node_2_request_1_response_1__finite::ext__get_match(request r0, response r1){
     bool qrm_result;
-    qrm_result = response_received[n0][r1];
+    qrm_result = match[r0][r1];
     return qrm_result;
 }
-bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_response_received(node n0, response r1, bool result){
+bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_match(request r0, response r1, bool result){
     bool qrm_result;
-    qrm_result = (response_received[n0][r1] == result);
+    qrm_result = (match[r0][r1] == result);
     return qrm_result;
 }
 bool client_server_ae__node_2_request_1_response_1__finite::ext__get_responseMatched(node n0, response r1){
@@ -705,14 +705,14 @@ bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_respon
     qrm_result = (responseMatched(n0,r1) == result);
     return qrm_result;
 }
-bool client_server_ae__node_2_request_1_response_1__finite::ext__get_match(request r0, response r1){
+bool client_server_ae__node_2_request_1_response_1__finite::ext__get_request_sent(node n0, request r1){
     bool qrm_result;
-    qrm_result = match[r0][r1];
+    qrm_result = request_sent[n0][r1];
     return qrm_result;
 }
-bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_match(request r0, response r1, bool result){
+bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_request_sent(node n0, request r1, bool result){
     bool qrm_result;
-    qrm_result = (match[r0][r1] == result);
+    qrm_result = (request_sent[n0][r1] == result);
     return qrm_result;
 }
 bool client_server_ae__node_2_request_1_response_1__finite::ext__get_response_sent(node n0, response r1){
@@ -725,14 +725,14 @@ bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_respon
     qrm_result = (response_sent[n0][r1] == result);
     return qrm_result;
 }
-bool client_server_ae__node_2_request_1_response_1__finite::ext__get_request_sent(node n0, request r1){
+bool client_server_ae__node_2_request_1_response_1__finite::ext__get_response_received(node n0, response r1){
     bool qrm_result;
-    qrm_result = request_sent[n0][r1];
+    qrm_result = response_received[n0][r1];
     return qrm_result;
 }
-bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_request_sent(node n0, request r1, bool result){
+bool client_server_ae__node_2_request_1_response_1__finite::ext__get_bool_response_received(node n0, response r1, bool result){
     bool qrm_result;
-    qrm_result = (request_sent[n0][r1] == result);
+    qrm_result = (response_received[n0][r1] == result);
     return qrm_result;
 }
 void client_server_ae__node_2_request_1_response_1__finite::__tick(int __timeout){

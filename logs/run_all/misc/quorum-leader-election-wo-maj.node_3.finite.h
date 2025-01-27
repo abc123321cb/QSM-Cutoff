@@ -641,13 +641,13 @@ class quorum_leader_election_wo_maj__node_3__finite {
 void __init();
     virtual void ext__vote(node v, node n);
     virtual void ext__become_leader(node n, nset s);
-    virtual bool ext__get_isleader(node n0);
-    virtual bool ext__get_bool_isleader(node n0, bool result);
     virtual nset ext__get_quorum();
     virtual bool ext__get_bool_quorum(nset result);
-    virtual bool ext__get_member(node n0, nset n1);
-    virtual bool ext__get_bool_member(node n0, nset n1, bool result);
     virtual bool ext__get_voted(node n0, node n1);
     virtual bool ext__get_bool_voted(node n0, node n1, bool result);
+    virtual bool ext__get_isleader(node n0);
+    virtual bool ext__get_bool_isleader(node n0, bool result);
+    virtual bool ext__get_member(node n0, nset n1);
+    virtual bool ext__get_bool_member(node n0, nset n1, bool result);
     void __tick(int timeout);
 };
