@@ -1,0 +1,108 @@
+./Consensus.cutoff.log:[Strengthening Assertion]: true
+./Ricart-Agrawala.cutoff.log:[Strengthening Assertion]: 
+((forall NODE. replied(NODE,NODE) = requested(NODE,NODE)) & 
+(forall NODE0. ~replied(NODE0,NODE0)) & 
+(forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1) & 
+(forall NODE1,NODE0. ~replied(NODE1,NODE0) | ~replied(NODE0,NODE1) | NODE0 = NODE1))
+./TCommit.cutoff.log:[Strengthening Assertion]: 
+((forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0,RESOURCE_MANAGER1. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER1)) & 
+(forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0)))
+./TwoPhase.cutoff.log:[Strengthening Assertion]: 
+(msg_commit = tm_committed & 
+msg_abort = tm_aborted & 
+(forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. ~tm_prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)) & 
+(~tm_init | ~msg_abort) & 
+(forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)) & 
+(~tm_init | ~msg_commit) & 
+(~msg_commit | ~msg_abort) & 
+(msg_commit | tm_init | msg_abort) & 
+(forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. msg_commit | ~committed(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | ~msg_commit) & 
+(forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)) & 
+(forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | msg_abort) & 
+(forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0)))
+./client_server_ae.cutoff.log:[Strengthening Assertion]: 
+((forall N,P. responseMatched(N,P) <-> (exists R. (request_sent(N,R) & match(R,P)))) & 
+(forall RESPONSE0,NODE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)) & 
+(forall RESPONSE0,NODE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)))
+./consensus_epr.cutoff.log:[Strengthening Assertion]: ((forall N. chosen(N) <-> (exists Q. (forall Nv. member(Nv,Q) -> votes(N,Nv)))) & (forall NODE1,NODE0. voted(NODE0) | ~vote_msg(NODE0,NODE1)) & (forall VALUE0,NODE0. leader(NODE0) | ~decided(NODE0,VALUE0)) & (forall NODE1,NODE0,NODE2. ~vote_msg(NODE0,NODE1) | ~vote_msg(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE1 & NODE0 = NODE2))) & (forall NODE1. ~voted(NODE1) | vote_msg(NODE1,NODE1) | (exists NODE0. (vote_msg(NODE1,NODE0) & NODE0 ~= NODE1))) & (forall NODE1,NODE0. vote_msg(NODE1,NODE0) | ~votes(NODE0,NODE1)) & (forall NODE0. ~leader(NODE0) | chosen(NODE0)) & (forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1) & (forall NODE1,NODE0. vote_msg(NODE1,NODE0) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1))
+./firewal.cutoff.log:[Strengthening Assertion]: 
+((forall NODE0. ~sent(NODE0,NODE0)) & 
+(forall NODE1. ~allowed_in(NODE1) | (exists NODE0. (sent(NODE0,NODE1) & NODE0 ~= NODE1))) & 
+(forall NODE0. ~allowed_in(NODE0) | ~internal(NODE0)) & 
+(forall NODE0,NODE1. ~sent(NODE0,NODE1) | internal(NODE1) | internal(NODE0) | NODE0 = NODE1) & 
+(forall NODE0,NODE1. ~sent(NODE0,NODE1) | allowed_in(NODE0) | allowed_in(NODE1) | NODE0 = NODE1))
+./lock_server.cutoff.log:[Strengthening Assertion]: 
+((forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)) & 
+(forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))))
+./lockserv.cutoff.log:[Strengthening Assertion]: 
+((forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)) & 
+(forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)) & 
+(forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock) & 
+(forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)) & 
+(forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)) & 
+(forall NODE0,NODE1. ~grant_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1) & 
+(forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0)) & 
+(forall NODE0,NODE1. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1) & 
+(exists NODE0. grant_msg(NODE0) | server_holds_lock | holds_lock(NODE0) | unlock_msg(NODE0)))
+./lockserv_automaton.cutoff.log:[Strengthening Assertion]: 
+((forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1)) & 
+(forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1)) & 
+(forall NODE0. ~holds_lock(NODE0) | held) & 
+(forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1) & 
+(forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)) & 
+(forall NODE0. ~grant_msg(NODE0) | held) & 
+(forall NODE0. held | ~unlock_msg(NODE0)) & 
+(forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1) & 
+(exists NODE0. ~held | unlock_msg(NODE0) | holds_lock(NODE0) | grant_msg(NODE0)))
+./naive_consensus.cutoff.log:[Strengthening Assertion]: 
+((forall NODE0,VALUE0,VALUE1. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1) & 
+(forall NODE0,VALUE0,QUORUM0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0)) & 
+(forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0))))
+./quorum-leader-election-wo-maj.cutoff.log:[Strengthening Assertion]: 
+((forall NODE2,NODE0,NODE1. ~voted(NODE0,NODE2) | ~voted(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE1 & NODE0 = NODE2))) & 
+(forall NSET0,NODE0,NODE1. quorum ~= NSET0 | ~isleader(NODE0) | voted(NODE1,NODE0) | ((NODE0 ~= NODE1 | ~member(NODE0,NSET0)) & (NODE0 = NODE1 | ~member(NODE1,NSET0) | member(NODE0,NSET0)) & (NODE0 = NODE1 | ~member(NODE0,NSET0) | ~member(NODE1,NSET0)))))
+./sharded_kv.cutoff.log:[Strengthening Assertion]: 
+((forall VALUE0,NODE0,NODE1,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0)) & 
+(forall VALUE0,NODE0,NODE1,VALUE1,KEY0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 & VALUE0 = VALUE1)) & 
+(forall NODE0,NODE1,KEY0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1) & 
+(forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)))
+./sharded_kv_no_lost_keys.cutoff.log:[Strengthening Assertion]: 
+((forall NODE0,KEY0,NODE1,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0)) & 
+(forall VALUE1,NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)) & 
+(forall KEY0,NODE1,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1) & 
+(forall VALUE1,NODE1,KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)) & 
+(forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))) & 
+(forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)))
+./simple-decentralized-lock.cutoff.log:[Strengthening Assertion]: 
+((forall NODE0,NODE2,NODE1. ~has_lock(NODE0) | ~message(NODE1,NODE2)) & 
+(forall NODE3,NODE2,NODE0,NODE1. ~message(NODE1,NODE3) | ~message(NODE0,NODE2) | ((NODE0 = NODE1 & NODE2 = NODE3 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE3 & NODE0 = NODE1))))
+./simple-election.cutoff.log:[Strengthening Assertion]: 
+((forall A. didNotPromise(A) <-> (forall P. ~promise(A,P))) & 
+(forall P,Q. chosenAt(Q,P) <-> (forall A. member(A,Q) -> promise(A,P))) & 
+(forall PROPOSER1,PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER1) | ~promise(ACCEPTOR0,PROPOSER0) | PROPOSER0 = PROPOSER1) & 
+(forall PROPOSER0. (exists QUORUM0. chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0))) & 
+(forall PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER0) | start(PROPOSER0)))
+./toy_consensus.cutoff.log:[Strengthening Assertion]: 
+((forall N. didNotVote(N) <-> (forall V. ~vote(N,V))) & 
+(forall Q,V. chosenAt(Q,V) <-> (forall N. member(N,Q) -> vote(N,V))) & 
+(forall VALUE1,VALUE0,NODE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1) & 
+(forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0))))
+./toy_consensus_epr.cutoff.log:[Strengthening Assertion]: 
+((forall Q,V. chosenAt(Q,V) <-> (forall N. member(N,Q) -> vote(N,V))) & 
+(forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1) & 
+(forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0)) & 
+(forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0))) & 
+(forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0))))
+./toy_consensus_forall.cutoff.log:[Strengthening Assertion]: 
+((forall NODE0,VALUE0. voted(NODE0) | ~vote(NODE0,VALUE0)) & 
+(forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0))) & 
+(forall VALUE1,NODE0,VALUE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1) & 
+(forall NODE0,VALUE0,QUORUM0. voting_quorum ~= QUORUM0 | vote(NODE0,VALUE0) | ~decided(VALUE0) | ~member(NODE0,QUORUM0)))
