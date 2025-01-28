@@ -1,0 +1,36 @@
+#lang ivy1.7
+
+type value = {value0, value1, value2, value3}
+
+relation chosen(V:value)
+
+after init {
+	chosen(V) := false;
+}
+
+action choose(v:value) = {
+	require forall V. ~chosen(V);
+	chosen(v) := true;
+}
+
+export choose
+
+#invariant [safety] (forall V1, V2. (chosen(V1) & chosen(V2)) -> (V1 = V2) )
+
+invariant [invar_0] forall VALUE1,VALUE0. ~chosen(VALUE1) | ~chosen(VALUE0) | VALUE0 = VALUE1 # qcost: 5
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Access actions ##
+action get_chosen(v0: value) returns(qrm_result: bool) = {
+    qrm_result := chosen(v0)
+}
+export get_chosen
+
+action get_bool_chosen(v0: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (chosen(v0) = result)
+}
+export get_bool_chosen
+

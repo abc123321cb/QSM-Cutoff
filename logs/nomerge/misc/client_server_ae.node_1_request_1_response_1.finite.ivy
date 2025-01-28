@@ -1,0 +1,108 @@
+#lang ivy1.7
+
+#
+# This is an elaborated verion of client_server_ae.ivy from the code examples of:
+#
+# Bounded Quantifier Instantiation for Checking Inductive Invariants
+# Yotam M. Y. Feldman, Oded Padon, Neil Immerman, Mooly Sagiv, and Sharon Shoham. TACAS 2017, LMCS 2019.
+#
+# 
+
+type node = {node0}
+type request = {request0}
+type response = {response0}
+
+relation match(R:request, P:response)
+
+relation request_sent(N:node, R:request)
+relation response_sent(N:node, P:response)
+relation response_received(N:node, P:response)	
+
+relation responseMatched(N:node, P:response) = exists R. request_sent(N,R) & match(R,P)
+
+after init  {
+	request_sent(N,R) := false;
+	response_sent(N,P) := false;
+	response_received(N,P) := false;
+}
+
+action new_request(n:node, r:request) = {
+  request_sent(n,r) := true;
+}
+
+action respond(n:node, r:request, p:response) = {
+  require request_sent(n,r);
+  require match(r,p);
+  
+  response_sent(n,p) := true;
+}
+
+action receive_response(n:node, p:response) = {
+  require response_sent(n,p);
+  
+  response_received(n,p) := true;
+}
+
+export new_request
+export respond
+export receive_response
+
+invariant [safety] forall N,P. response_received(N,P) -> responseMatched(N, P)
+
+#invariant [manual_1] forall N,P. response_sent(N,P) -> exists R. request_sent(N,R) & match(R,P)
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Access actions ##
+action get_responseMatched(n0: node, r1: response) returns(qrm_result: bool) = {
+    qrm_result := responseMatched(n0, r1)
+}
+export get_responseMatched
+
+action get_bool_responseMatched(n0: node, r1: response, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (responseMatched(n0, r1) = result)
+}
+export get_bool_responseMatched
+
+action get_request_sent(n0: node, r1: request) returns(qrm_result: bool) = {
+    qrm_result := request_sent(n0, r1)
+}
+export get_request_sent
+
+action get_bool_request_sent(n0: node, r1: request, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (request_sent(n0, r1) = result)
+}
+export get_bool_request_sent
+
+action get_response_sent(n0: node, r1: response) returns(qrm_result: bool) = {
+    qrm_result := response_sent(n0, r1)
+}
+export get_response_sent
+
+action get_bool_response_sent(n0: node, r1: response, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (response_sent(n0, r1) = result)
+}
+export get_bool_response_sent
+
+action get_response_received(n0: node, r1: response) returns(qrm_result: bool) = {
+    qrm_result := response_received(n0, r1)
+}
+export get_response_received
+
+action get_bool_response_received(n0: node, r1: response, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (response_received(n0, r1) = result)
+}
+export get_bool_response_received
+
+action get_match(r0: request, r1: response) returns(qrm_result: bool) = {
+    qrm_result := match(r0, r1)
+}
+export get_match
+
+action get_bool_match(r0: request, r1: response, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (match(r0, r1) = result)
+}
+export get_bool_match
+
