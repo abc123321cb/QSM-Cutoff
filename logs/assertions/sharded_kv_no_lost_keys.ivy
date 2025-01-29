@@ -45,9 +45,9 @@ invariant [safety] (exists N,K,V. transfer_msg(N,K,V)) | (forall K. exists N. ow
 
 #invariant [manual_1] forall K. (exists N. owner(N, K)) | (exists N, V. transfer_msg(N, K, V))
 
-invariant [core_1] forall NODE0,KEY0,NODE1,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0)
-invariant [core_2] forall VALUE1,NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
-invariant [core_3] forall KEY0,NODE1,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
-invariant [core_4] forall VALUE1,NODE1,KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
+#invariant [core_1] forall NODE0,KEY0,NODE1,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0)
+#invariant [core_2] forall VALUE1,NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
+#invariant [core_3] forall KEY0,NODE1,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
+#invariant [core_4] forall VALUE1,NODE1,KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1)
 invariant [core_5] forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
-invariant [core_6] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+#invariant [core_6] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
