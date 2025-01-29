@@ -23,7 +23,8 @@ def usage ():
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Flow modes:')
-    print('-f 1|2|3     flow: 1. Synthesize Rmin and ivy_check (default)')
+    print('-f 0|1|2|3   flow: 0. Synthesize Rmin and ivy_check (default)')
+    print('                   1. Synthesize Rmin')               
     print('                   2. Read Rmin from invariants and do reachability check')               
     print('                   3. Read Rmin from invariants and do finite ivy check')               
     print('')
@@ -68,7 +69,9 @@ def get_options(ivy_name, args):
         if optc == '-s':
             options.set_sizes(optv)
         elif optc == '-f':
-            if optv == '1':
+            if optv == '0':
+                options.flow_mode = FlowMode.Rmin_Ivy # Synthesize_Rmin + ivy_check 
+            elif optv == '1':
                 options.flow_mode = FlowMode.Synthesize_Rmin 
             elif optv == '2':
                 options.flow_mode = FlowMode.Check_Reachability 
@@ -145,13 +148,13 @@ def can_skip_forward_reachability(options) -> bool:
 def qrm(ivy_name, args):
     # start
     options    = get_options(ivy_name, args)
-    qrm_result = False
+    qrm_result = True
     instance_start(options, ivy_name)
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
     if options.flow_mode == FlowMode.Check_Finite_Inductive: 
         options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
-        finite_result = run_finite_ivy_check(options, tran_sys, instantiator) 
+        finite_result = check_inductive_and_prove_property(tran_sys, options)
         options.step_end()
         if options.convergence_check:
             try:
@@ -228,15 +231,18 @@ def qrm(ivy_name, args):
     if options.sanity_check:
         options.step_start(f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
         sanity_result = minimizer.minimization_check(protocol)
+        qrm_result    = qrm_result and sanity_result
         options.step_end()
 
     # ivy_check
-    options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
-    ivy_result = check_inductive_and_prove_property(tran_sys, minimizer, options)
-    options.step_end()
+    if options.flow_mode == FlowMode.Rmin_Ivy:
+        options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
+        ivy_result = check_inductive_and_prove_property(tran_sys, minimizer, options)
+        qrm_result = qrm_result and ivy_result 
+        options.step_end()
 
     # end
-    instance_end(options, ivy_name, ivy_result)
+    instance_end(options, ivy_name, qrm_result)
     if options.convergence_check:
         try:
             if qrm_result:
