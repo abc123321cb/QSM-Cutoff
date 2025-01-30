@@ -67,16 +67,6 @@ axiom member(acceptor0,quorum__acceptor0_acceptor1)
 axiom member(acceptor1,quorum__acceptor0_acceptor1)
 
 ## Access actions ##
-action get_leader(p0: proposer) returns(qrm_result: bool) = {
-    qrm_result := leader(p0)
-}
-export get_leader
-
-action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (leader(p0) = result)
-}
-export get_bool_leader
-
 action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
     qrm_result := didNotPromise(a0)
 }
@@ -86,16 +76,6 @@ action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bo
     qrm_result := (didNotPromise(a0) = result)
 }
 export get_bool_didNotPromise
-
-action get_start(p0: proposer) returns(qrm_result: bool) = {
-    qrm_result := start(p0)
-}
-export get_start
-
-action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (start(p0) = result)
-}
-export get_bool_start
 
 action get_member(a0: acceptor, q1: quorum) returns(qrm_result: bool) = {
     qrm_result := member(a0, q1)
@@ -107,6 +87,26 @@ action get_bool_member(a0: acceptor, q1: quorum, result: bool) returns(qrm_resul
 }
 export get_bool_member
 
+action get_chosenAt(q0: quorum, p1: proposer) returns(qrm_result: bool) = {
+    qrm_result := chosenAt(q0, p1)
+}
+export get_chosenAt
+
+action get_bool_chosenAt(q0: quorum, p1: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (chosenAt(q0, p1) = result)
+}
+export get_bool_chosenAt
+
+action get_leader(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := leader(p0)
+}
+export get_leader
+
+action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (leader(p0) = result)
+}
+export get_bool_leader
+
 action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
     qrm_result := promise(a0, p1)
 }
@@ -117,13 +117,13 @@ action get_bool_promise(a0: acceptor, p1: proposer, result: bool) returns(qrm_re
 }
 export get_bool_promise
 
-action get_chosenAt(q0: quorum, p1: proposer) returns(qrm_result: bool) = {
-    qrm_result := chosenAt(q0, p1)
+action get_start(p0: proposer) returns(qrm_result: bool) = {
+    qrm_result := start(p0)
 }
-export get_chosenAt
+export get_start
 
-action get_bool_chosenAt(q0: quorum, p1: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (chosenAt(q0, p1) = result)
+action get_bool_start(p0: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (start(p0) = result)
 }
-export get_bool_chosenAt
+export get_bool_start
 

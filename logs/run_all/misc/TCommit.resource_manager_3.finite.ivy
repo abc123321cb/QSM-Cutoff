@@ -50,13 +50,13 @@ export decide_abort
 
 ##invariant [manual_ic3po2]	(forall R0 . (aborted(R0) -> ~prepared(R0)))
 
-invariant [invar_0] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_1] forall RESOURCE_MANAGER0,RESOURCE_MANAGER1. ~working(RESOURCE_MANAGER1) | ~committed(RESOURCE_MANAGER0) # qcost: 4
-invariant [invar_2] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_3] forall RESOURCE_MANAGER0,RESOURCE_MANAGER1. ~aborted(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER1) # qcost: 4
-invariant [invar_4] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_5] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_7] forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) # qcost: 5
+invariant [invar_0] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_1] forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER1) | ~committed(RESOURCE_MANAGER0) # qcost: 4
+invariant [invar_2] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_3] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_4] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_5] forall RESOURCE_MANAGER1,RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER1) # qcost: 4
+invariant [invar_7] forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) # qcost: 5
 
 ### For QRM DFS reachability ###
 
@@ -73,15 +73,15 @@ action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: 
 }
 export get_bool_working
 
-action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := committed(r0)
+action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := prepared(r0)
 }
-export get_committed
+export get_prepared
 
-action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (committed(r0) = result)
+action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (prepared(r0) = result)
 }
-export get_bool_committed
+export get_bool_prepared
 
 action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := aborted(r0)
@@ -93,13 +93,13 @@ action get_bool_aborted(r0: resource_manager, result: bool) returns(qrm_result: 
 }
 export get_bool_aborted
 
-action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := prepared(r0)
+action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := committed(r0)
 }
-export get_prepared
+export get_committed
 
-action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (prepared(r0) = result)
+action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (committed(r0) = result)
 }
-export get_bool_prepared
+export get_bool_committed
 

@@ -23,7 +23,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -51,7 +51,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
 qcost : 4
 
 
@@ -67,7 +67,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. held | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | held
 qcost : 3
 
 
@@ -83,52 +83,52 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1
 qcost : 5
 
 
 === Prime Orbit 4 =====================
-size : 3
-num_suborbits: 1
-21 (*) : 11-----------
-21     : ['grant_msg(node0)', 'grant_msg(node1)']
-22     : 1-1----------
-22     : ['grant_msg(node0)', 'grant_msg(node2)']
-23     : -11----------
-23     : ['grant_msg(node1)', 'grant_msg(node2)']
-num_forall :   2
-num_exists :   0
-num_literals : 3
-quantified form : forall NODE1,NODE0. ~grant_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
-qcost : 5
-
-
-=== Prime Orbit 5 =====================
 size : 9
 num_suborbits: 2
-24 (*) : 1----------1-
-24     : ['grant_msg(node0)', 'unlock_msg(node1)']
-25     : 1-----------1
-25     : ['grant_msg(node0)', 'unlock_msg(node2)']
-26     : -1--------1--
-26     : ['grant_msg(node1)', 'unlock_msg(node0)']
-27     : -1----------1
-27     : ['grant_msg(node1)', 'unlock_msg(node2)']
-28     : --1-------1--
-28     : ['grant_msg(node2)', 'unlock_msg(node0)']
-29     : --1--------1-
-29     : ['grant_msg(node2)', 'unlock_msg(node1)']
-30 (*) : -1---------1-
-30     : ['grant_msg(node1)', 'unlock_msg(node1)']
-31     : --1---------1
-31     : ['grant_msg(node2)', 'unlock_msg(node2)']
-32     : 1---------1--
-32     : ['grant_msg(node0)', 'unlock_msg(node0)']
+21 (*) : -1---------1-
+21     : ['grant_msg(node1)', 'unlock_msg(node1)']
+22     : --1---------1
+22     : ['grant_msg(node2)', 'unlock_msg(node2)']
+23     : 1---------1--
+23     : ['grant_msg(node0)', 'unlock_msg(node0)']
+27 (*) : 1----------1-
+27     : ['grant_msg(node0)', 'unlock_msg(node1)']
+28     : 1-----------1
+28     : ['grant_msg(node0)', 'unlock_msg(node2)']
+29     : -1--------1--
+29     : ['grant_msg(node1)', 'unlock_msg(node0)']
+30     : -1----------1
+30     : ['grant_msg(node1)', 'unlock_msg(node2)']
+31     : --1-------1--
+31     : ['grant_msg(node2)', 'unlock_msg(node0)']
+32     : --1--------1-
+32     : ['grant_msg(node2)', 'unlock_msg(node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE0,NODE1. ~grant_msg(NODE0) | ~unlock_msg(NODE1)
 qcost : 4
+
+
+=== Prime Orbit 5 =====================
+size : 3
+num_suborbits: 1
+24 (*) : 11-----------
+24     : ['grant_msg(node0)', 'grant_msg(node1)']
+25     : 1-1----------
+25     : ['grant_msg(node0)', 'grant_msg(node2)']
+26     : -11----------
+26     : ['grant_msg(node1)', 'grant_msg(node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0,NODE1. ~grant_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
+qcost : 5
 
 
 === Prime Orbit 6 =====================
@@ -143,7 +143,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. held | ~grant_msg(NODE0)
+quantified form : forall NODE0. ~grant_msg(NODE0) | held
 qcost : 3
 
 
@@ -159,7 +159,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. held | ~unlock_msg(NODE0)
+quantified form : forall NODE0. ~unlock_msg(NODE0) | held
 qcost : 3
 
 
@@ -175,7 +175,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -187,6 +187,6 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | holds_lock(NODE0) | ~held
+quantified form : exists NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | grant_msg(NODE0) | ~held
 qcost : 5
 

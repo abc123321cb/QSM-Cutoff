@@ -631,6 +631,16 @@ void simple_decentralized_lock__node_4__finite::ext__recv(node src, node dst){
         message[src][dst] = false;
         has_lock[dst] = true;
 }
+bool simple_decentralized_lock__node_4__finite::ext__get_has_lock(node n0){
+    bool qrm_result;
+    qrm_result = has_lock[n0];
+    return qrm_result;
+}
+bool simple_decentralized_lock__node_4__finite::ext__get_bool_has_lock(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (has_lock[n0] == result);
+    return qrm_result;
+}
 bool simple_decentralized_lock__node_4__finite::ext__get_message(node n0, node n1){
     bool qrm_result;
     qrm_result = message[n0][n1];
@@ -649,16 +659,6 @@ simple_decentralized_lock__node_4__finite::node simple_decentralized_lock__node_
 bool simple_decentralized_lock__node_4__finite::ext__get_bool_start_node(node result){
     bool qrm_result;
     qrm_result = (start_node == result);
-    return qrm_result;
-}
-bool simple_decentralized_lock__node_4__finite::ext__get_has_lock(node n0){
-    bool qrm_result;
-    qrm_result = has_lock[n0];
-    return qrm_result;
-}
-bool simple_decentralized_lock__node_4__finite::ext__get_bool_has_lock(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (has_lock[n0] == result);
     return qrm_result;
 }
 void simple_decentralized_lock__node_4__finite::__tick(int __timeout){

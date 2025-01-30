@@ -60,11 +60,11 @@ g++ -shared lockserv.node_1.finite.o lockserv.node_1.finite_wrap.o -o _ivy_exec.
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 7.537 seconds
+[QRM NOTE]: Time elapsed since start: 7.304 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.537 seconds
+[QRM NOTE]: Time elapsed since last: 7.304 seconds
 
-[QRM NOTE]: Peak memory: 1179519 bytes
+[QRM NOTE]: Peak memory: 1179611 bytes
 
 
 ===================================
@@ -89,11 +89,11 @@ g++ -shared lockserv.node_1.finite.o lockserv.node_1.finite_wrap.o -o _ivy_exec.
 =======================================================================================
 
 sort: node=['node0']
-predicate: server_holds_lock()
-predicate: lock_msg('node',)
-predicate: unlock_msg('node',)
 predicate: holds_lock('node',)
 predicate: grant_msg('node',)
+predicate: server_holds_lock()
+predicate: unlock_msg('node',)
+predicate: lock_msg('node',)
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'holds_lock(node0)', 'lock_msg(node0)', 'server_holds_lock()', 'unlock_msg(node0)']
 representative states : 2, 6, 16, 20, 12, 5, 8, 1
@@ -178,11 +178,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.639 seconds
+[QRM NOTE]: Time elapsed since start: 7.382 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.102 seconds
+[QRM NOTE]: Time elapsed since last: 0.078 seconds
 
-[QRM NOTE]: Peak memory: 1209515 bytes
+[QRM NOTE]: Peak memory: 1209487 bytes
 
 
 ======================================
@@ -197,11 +197,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 7.643 seconds
+[QRM NOTE]: Time elapsed since start: 7.387 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.004 seconds
 
-[QRM NOTE]: Peak memory: 160023 bytes
+[QRM NOTE]: Peak memory: 159995 bytes
 
 
 =======================================================================================
@@ -309,11 +309,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 7
 
-[QRM NOTE]: Time elapsed since start: 7.655 seconds
+[QRM NOTE]: Time elapsed since start: 7.396 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.012 seconds
+[QRM NOTE]: Time elapsed since last: 0.010 seconds
 
-[QRM NOTE]: Peak memory: 1228560 bytes
+[QRM NOTE]: Peak memory: 1228532 bytes
 
 
 ============================================================================
@@ -367,11 +367,11 @@ After reduction :
  pending  : []
  solution : [0, 1, 2, 3, 4, 5, 6]
 
-[QRM NOTE]: Time elapsed since start: 7.657 seconds
+[QRM NOTE]: Time elapsed since start: 7.397 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 180944 bytes
+[QRM NOTE]: Peak memory: 180916 bytes
 
 
 ================================================================================
@@ -566,12 +566,12 @@ signed_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [[Var('NODE
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['server_holds_lock', 'unlock_msg(NODE0)']
+qterms: ['unlock_msg(NODE0)', 'server_holds_lock']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0)
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
 
 
 === Prime Orbit 2 =====================
@@ -851,12 +851,12 @@ signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['server_holds_lock', 'holds_lock(NODE0)']
+qterms: ['holds_lock(NODE0)', 'server_holds_lock']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+qclause: forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
 
 
 === Prime Orbit 5 =====================
@@ -1041,12 +1041,12 @@ signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~unlock_msg(NODE0)', '~grant_msg(NODE0)', '~holds_lock(NODE0)', '~server_holds_lock']
+qterms: ['~holds_lock(NODE0)', '~unlock_msg(NODE0)', '~grant_msg(NODE0)', '~server_holds_lock']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock
+qclause: forall NODE0. holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0) | server_holds_lock
 
 
 ==========================================================================================
@@ -1078,7 +1078,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0)
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -1120,7 +1120,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -1148,16 +1148,16 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock
+quantified form : forall NODE0. holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0) | server_holds_lock
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.765 seconds
+[QRM NOTE]: Time elapsed since start: 7.489 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.108 seconds
+[QRM NOTE]: Time elapsed since last: 0.092 seconds
 
-[QRM NOTE]: Peak memory: 1850173 bytes
+[QRM NOTE]: Peak memory: 1850130 bytes
 
 
 =========================================================================
@@ -1223,128 +1223,26 @@ Solution 0 : [0, 1, 2, 3, 4, 5, 6] (length = 7)
 
 invariant [invar_0] forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0) # qcost: 3
 
-invariant [invar_1] forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0) # qcost: 3
+invariant [invar_1] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
 
 invariant [invar_2] forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0) # qcost: 3
 
 invariant [invar_3] forall NODE0. ~server_holds_lock | ~grant_msg(NODE0) # qcost: 3
 
-invariant [invar_4] forall NODE0. ~server_holds_lock | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_4] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
 
 invariant [invar_5] forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0) # qcost: 3
 
-invariant [invar_6] forall NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock # qcost: 5
+invariant [invar_6] forall NODE0. holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0) | server_holds_lock # qcost: 5
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.808 seconds
+[QRM NOTE]: Time elapsed since start: 7.527 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.043 seconds
+[QRM NOTE]: Time elapsed since last: 0.037 seconds
 
-[QRM NOTE]: Peak memory: 1839619 bytes
-
-
-============================================================================
-
-	[IVY_CHECK]: Ivy Check on [ivybench/sym/ivy/lockserv: node=1]
-
-============================================================================
-
-ivy_check complete=fo ivybench/sym/ivy/lockserv.node_1.0.ivy
-
-
-Isolate this:
-
-    The inductive invariant consists of the following conjectures:
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6
-
-    The following action implementations are present:
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 32: implementation of recv_grant
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 23: implementation of recv_lock
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 46: implementation of recv_unlock
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 20: implementation of send_lock
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 39: implementation of unlock
-
-    The following initializers are present:
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 11: init[after1]
-
-    Initialization must establish the invariant
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0 ... PASS
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1 ... PASS
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2 ... PASS
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3 ... PASS
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4 ... PASS
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5 ... PASS
-        ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6 ... PASS
-
-    The following set of external actions must preserve the invariant:
-        (internal) ext:recv_grant
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6 ... PASS
-        (internal) ext:recv_lock
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6 ... FAIL
-        (internal) ext:recv_unlock
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1 ... FAIL
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3 ... FAIL
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4 ... FAIL
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6 ... PASS
-        (internal) ext:send_lock
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6 ... PASS
-        (internal) ext:unlock
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 76: invar_6 ... PASS
-
-    The following program assertions are treated as assumptions:
-        in action recv_lock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 24: assumption
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 25: assumption
-        in action recv_grant when called from the environment:
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 33: assumption
-        in action unlock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 40: assumption
-        in action recv_unlock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_1.0.ivy: line 47: assumption
-
-error: failed checks: 4
-[IVY_CHECK RESULT]: FAIL ... exit with return code 1
-
-[QRM NOTE]: Time elapsed since start: 10.695 seconds
-
-[QRM NOTE]: Time elapsed since last: 2.887 seconds
-
-[QRM NOTE]: Peak memory: 840486 bytes
+[QRM NOTE]: Peak memory: 1839576 bytes
 
 
 ***************************************************************************************
@@ -1401,11 +1299,11 @@ g++ -shared lockserv.node_2.finite.o lockserv.node_2.finite_wrap.o -o _ivy_exec.
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.934 seconds
+[QRM NOTE]: Time elapsed since start: 6.770 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.934 seconds
+[QRM NOTE]: Time elapsed since last: 6.770 seconds
 
-[QRM NOTE]: Peak memory: 1181355 bytes
+[QRM NOTE]: Peak memory: 1181297 bytes
 
 
 ===================================
@@ -1431,10 +1329,10 @@ g++ -shared lockserv.node_2.finite.o lockserv.node_2.finite_wrap.o -o _ivy_exec.
 
 sort: node=['node0', 'node1']
 predicate: unlock_msg('node',)
-predicate: grant_msg('node',)
-predicate: server_holds_lock()
-predicate: lock_msg('node',)
 predicate: holds_lock('node',)
+predicate: grant_msg('node',)
+predicate: lock_msg('node',)
+predicate: server_holds_lock()
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'holds_lock(node0)', 'holds_lock(node1)', 'lock_msg(node0)', 'lock_msg(node1)', 'server_holds_lock()', 'unlock_msg(node0)', 'unlock_msg(node1)']
 representative states : 4, 12, 28, 144, 152, 56, 25, 48, 10, 128, 136, 40, 9, 32, 1
@@ -1476,8 +1374,8 @@ size : 2
 repr state: 100001000
 lex min decimal: 144
 states:
-010010000
 100001000
+010010000
 
 
 
@@ -1520,8 +1418,8 @@ size : 2
 repr state: 001001000
 lex min decimal: 48
 states:
-000110000
 001001000
+000110000
 
 
 
@@ -1531,8 +1429,8 @@ size : 2
 repr state: 000001010
 lex min decimal: 10
 states:
-000001010
 000010001
+000001010
 
 
 
@@ -1542,8 +1440,8 @@ size : 2
 repr state: 100000000
 lex min decimal: 128
 states:
-100000000
 010000000
+100000000
 
 
 
@@ -1553,8 +1451,8 @@ size : 2
 repr state: 100010000
 lex min decimal: 136
 states:
-010001000
 100010000
+010001000
 
 
 
@@ -1564,8 +1462,8 @@ size : 2
 repr state: 001010000
 lex min decimal: 40
 states:
-000101000
 001010000
+000101000
 
 
 
@@ -1586,8 +1484,8 @@ size : 2
 repr state: 001000000
 lex min decimal: 32
 states:
-001000000
 000100000
+001000000
 
 
 
@@ -1597,14 +1495,14 @@ size : 2
 repr state: 000000010
 lex min decimal: 1
 states:
-000000001
 000000010
+000000001
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.032 seconds
+[QRM NOTE]: Time elapsed since start: 6.852 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.098 seconds
+[QRM NOTE]: Time elapsed since last: 0.082 seconds
 
 [QRM NOTE]: Peak memory: 1219458 bytes
 
@@ -1663,11 +1561,11 @@ Representatitive states in reachability not in Rmin
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 7.056 seconds
+[QRM NOTE]: Time elapsed since start: 6.872 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.024 seconds
+[QRM NOTE]: Time elapsed since last: 0.020 seconds
 
-[QRM NOTE]: Peak memory: 179379 bytes
+[QRM NOTE]: Peak memory: 179275 bytes
 
 next size: node=2
 
@@ -1706,9 +1604,9 @@ OK
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.026 seconds
+[QRM NOTE]: Time elapsed since start: 0.028 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.026 seconds
+[QRM NOTE]: Time elapsed since last: 0.028 seconds
 
 [QRM NOTE]: Peak memory: 6252 bytes
 
@@ -1804,14 +1702,14 @@ qcost : 0
 === Prime Orbit 5 =====================
 size : 4
 num_suborbits: 2
-12 (*) : -1-1-----
-12     : ['grant_msg(node1)', 'holds_lock(node1)']
-13     : 1-1------
-13     : ['grant_msg(node0)', 'holds_lock(node0)']
-14 (*) : -11------
-14     : ['grant_msg(node1)', 'holds_lock(node0)']
-15     : 1--1-----
-15     : ['grant_msg(node0)', 'holds_lock(node1)']
+12 (*) : 1--1-----
+12     : ['grant_msg(node0)', 'holds_lock(node1)']
+13     : -11------
+13     : ['grant_msg(node1)', 'holds_lock(node0)']
+14 (*) : 1-1------
+14     : ['grant_msg(node0)', 'holds_lock(node0)']
+15     : -1-1-----
+15     : ['grant_msg(node1)', 'holds_lock(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1834,10 +1732,10 @@ qcost : 0
 === Prime Orbit 7 =====================
 size : 2
 num_suborbits: 1
-17 (*) : 1-----1--
-17     : ['grant_msg(node0)', 'server_holds_lock()']
-18     : -1----1--
-18     : ['grant_msg(node1)', 'server_holds_lock()']
+17 (*) : -1----1--
+17     : ['grant_msg(node1)', 'server_holds_lock()']
+18     : 1-----1--
+18     : ['grant_msg(node0)', 'server_holds_lock()']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -1878,9 +1776,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 22
 
-[QRM NOTE]: Time elapsed since start: 0.041 seconds
+[QRM NOTE]: Time elapsed since start: 0.043 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.015 seconds
+[QRM NOTE]: Time elapsed since last: 0.016 seconds
 
 [QRM NOTE]: Peak memory: 1106399 bytes
 
@@ -1936,11 +1834,11 @@ After reduction :
  pending  : []
  solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-[QRM NOTE]: Time elapsed since start: 0.042 seconds
+[QRM NOTE]: Time elapsed since start: 0.045 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.001 seconds
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 58926 bytes
+[QRM NOTE]: Peak memory: 58867 bytes
 
 
 ================================================================================
@@ -2069,7 +1967,7 @@ signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds_lock(NODE0)', 'unlock_msg(NODE1)']
+qterms: ['unlock_msg(NODE1)', 'holds_lock(NODE0)']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -2192,7 +2090,7 @@ constraint: ['NODE0:node = NODE1']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1)
+qclause: forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
 
 
 === Prime Orbit 1 =====================
@@ -2434,7 +2332,7 @@ constraint: ['NODE0:node = NODE1']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
+qclause: forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
 
 
 === Prime Orbit 2 =====================
@@ -2526,12 +2424,12 @@ signed_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [[Var('NODE
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['server_holds_lock', 'unlock_msg(NODE0)']
+qterms: ['unlock_msg(NODE0)', 'server_holds_lock']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0)
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
 
 
 === Prime Orbit 3 =====================
@@ -2727,14 +2625,14 @@ qclause: exists NODE0. ~holds_lock(NODE0)
 === Prime Orbit 5 =====================
 size : 4
 num_suborbits: 2
-12 (*) : -1-1-----
-12     : ['grant_msg(node1)', 'holds_lock(node1)']
-13     : 1-1------
-13     : ['grant_msg(node0)', 'holds_lock(node0)']
-14 (*) : -11------
-14     : ['grant_msg(node1)', 'holds_lock(node0)']
-15     : 1--1-----
-15     : ['grant_msg(node0)', 'holds_lock(node1)']
+12 (*) : 1--1-----
+12     : ['grant_msg(node0)', 'holds_lock(node1)']
+13     : -11------
+13     : ['grant_msg(node1)', 'holds_lock(node0)']
+14 (*) : 1-1------
+14     : ['grant_msg(node0)', 'holds_lock(node0)']
+15     : -1-1-----
+15     : ['grant_msg(node1)', 'holds_lock(node1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -2749,36 +2647,13 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['grant_msg(node1)', 'holds_lock(node1)']
+terms: ['grant_msg(node0)', 'holds_lock(node1)']
 
-sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$holds_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$holds_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
 
-const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0]}
 
-sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
-
-
----------- ArgPartition ----------
-
-sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
-
-sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
-
-part_sig: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)
-
-
----------- QPrime ----------
-
-
----------- ConstArgBinding ----------
-
-terms: ['grant_msg(node1)', 'holds_lock(node0)']
-
-sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)]}
-
-const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0], Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0]}
-
-sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
 
 
 ---------- ArgPartition ----------
@@ -2790,9 +2665,32 @@ sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0
 part_sig: ('node$0$grant_msg$0$0 | node$0$holds_lock$0$0',)
 
 
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'holds_lock(node0)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)
+
+
 ---------- SigGenerator ----------
 
-terms:  ['grant_msg(node1)', 'holds_lock(node1)']
+terms:  ['grant_msg(node0)', 'holds_lock(node1)']
 
 func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
 
@@ -2845,31 +2743,6 @@ qterms: ['holds_lock(NODE1)', 'grant_msg(NODE0)']
 
 ---------- QFormula: _get_partition_constraint ----------
 
-partition: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)[]
-
-sort partition signature: node$0$grant_msg$0$0; node$0$holds_lock$0$0
-
-class signature: node$0$grant_msg$0$0; node$0$holds_lock$0$0
-
-
----------- QFormula: _get_class_constraint ----------
-
-qvars: ['NODE0:node', 'NODE1:node']
-
-eq_terms: ['NODE0:node = NODE1']
-
-
----------- QFormula: _get_diff_class_constraint ----------
-
-qvars: ['NODE0:node']
-
-eq_terms: []
-
-constraint: ['NODE0:node = NODE1']
-
-
----------- QFormula: _get_partition_constraint ----------
-
 partition: ('node$0$grant_msg$0$0 | node$0$holds_lock$0$0',)[]
 
 sort partition signature: node$0$grant_msg$0$0 | node$0$holds_lock$0$0
@@ -2959,11 +2832,36 @@ qvars: ['NODE0:node', 'NODE1:node']
 eq_terms: ['NODE0:node ~= NODE1']
 
 constraint: ['NODE0:node ~= NODE1']
+
+
+---------- QFormula: _get_partition_constraint ----------
+
+partition: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)[]
+
+sort partition signature: node$0$grant_msg$0$0; node$0$holds_lock$0$0
+
+class signature: node$0$grant_msg$0$0; node$0$holds_lock$0$0
+
+
+---------- QFormula: _get_class_constraint ----------
+
+qvars: ['NODE0:node', 'NODE1:node']
+
+eq_terms: ['NODE0:node = NODE1']
+
+
+---------- QFormula: _get_diff_class_constraint ----------
+
+qvars: ['NODE0:node']
+
+eq_terms: []
+
+constraint: ['NODE0:node = NODE1']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)
+qclause: forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)
 
 
 === Prime Orbit 6 =====================
@@ -3064,10 +2962,10 @@ qclause: exists NODE0. ~grant_msg(NODE0)
 === Prime Orbit 7 =====================
 size : 2
 num_suborbits: 1
-17 (*) : 1-----1--
-17     : ['grant_msg(node0)', 'server_holds_lock()']
-18     : -1----1--
-18     : ['grant_msg(node1)', 'server_holds_lock()']
+17 (*) : -1----1--
+17     : ['grant_msg(node1)', 'server_holds_lock()']
+18     : 1-----1--
+18     : ['grant_msg(node0)', 'server_holds_lock()']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -3082,13 +2980,13 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['grant_msg(node0)', 'server_holds_lock']
+terms: ['grant_msg(node1)', 'server_holds_lock']
 
-sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$server_holds_lock': [[]]}
+sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$server_holds_lock': [[]]}
 
-const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0]}
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0]}
 
-sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
 
 
 ---------- ArgPartition ----------
@@ -3102,7 +3000,7 @@ part_sig: ('node$0$grant_msg$0$0',)
 
 ---------- SigGenerator ----------
 
-terms:  ['grant_msg(node0)', 'server_holds_lock']
+terms:  ['grant_msg(node1)', 'server_holds_lock']
 
 func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
 
@@ -3150,12 +3048,12 @@ signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['server_holds_lock', 'grant_msg(NODE0)']
+qterms: ['grant_msg(NODE0)', 'server_holds_lock']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+qclause: forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock
 
 
 === Prime Orbit 8 =====================
@@ -3247,12 +3145,12 @@ signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['server_holds_lock', 'holds_lock(NODE0)']
+qterms: ['holds_lock(NODE0)', 'server_holds_lock']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+qclause: forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
 
 
 === Prime Orbit 9 =====================
@@ -3342,12 +3240,12 @@ signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~grant_msg(NODE0)', '~holds_lock(NODE0)', '~unlock_msg(NODE0)', '~server_holds_lock']
+qterms: ['~holds_lock(NODE0)', '~grant_msg(NODE0)', '~server_holds_lock', '~unlock_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | unlock_msg(NODE0) | server_holds_lock
+qclause: exists NODE0. holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock | unlock_msg(NODE0)
 
 
 ==========================================================================================
@@ -3371,7 +3269,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
 qcost : 4
 
 
@@ -3391,7 +3289,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -3407,7 +3305,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0)
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -3444,18 +3342,18 @@ qcost : 2
 === Prime Orbit 5 =====================
 size : 4
 num_suborbits: 2
-12 (*) : -1-1-----
-12     : ['grant_msg(node1)', 'holds_lock(node1)']
-13     : 1-1------
-13     : ['grant_msg(node0)', 'holds_lock(node0)']
-14 (*) : -11------
-14     : ['grant_msg(node1)', 'holds_lock(node0)']
-15     : 1--1-----
-15     : ['grant_msg(node0)', 'holds_lock(node1)']
+12 (*) : 1--1-----
+12     : ['grant_msg(node0)', 'holds_lock(node1)']
+13     : -11------
+13     : ['grant_msg(node1)', 'holds_lock(node0)']
+14 (*) : 1-1------
+14     : ['grant_msg(node0)', 'holds_lock(node0)']
+15     : -1-1-----
+15     : ['grant_msg(node1)', 'holds_lock(node1)']
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -3478,14 +3376,14 @@ qcost : 2
 === Prime Orbit 7 =====================
 size : 2
 num_suborbits: 1
-17 (*) : 1-----1--
-17     : ['grant_msg(node0)', 'server_holds_lock()']
-18     : -1----1--
-18     : ['grant_msg(node1)', 'server_holds_lock()']
+17 (*) : -1----1--
+17     : ['grant_msg(node1)', 'server_holds_lock()']
+18     : 1-----1--
+18     : ['grant_msg(node0)', 'server_holds_lock()']
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+quantified form : forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -3501,7 +3399,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
 qcost : 3
 
 
@@ -3515,16 +3413,16 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | unlock_msg(NODE0) | server_holds_lock
+quantified form : exists NODE0. holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock | unlock_msg(NODE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.183 seconds
+[QRM NOTE]: Time elapsed since start: 0.178 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.140 seconds
+[QRM NOTE]: Time elapsed since last: 0.133 seconds
 
-[QRM NOTE]: Peak memory: 1779419 bytes
+[QRM NOTE]: Peak memory: 1779372 bytes
 
 
 =========================================================================
@@ -3588,157 +3486,34 @@ Equality Relations (length=0)
 
 Solution 0 : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] (length = 10)
 
-invariant [invar_0] forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) # qcost: 4
+invariant [invar_0] forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0) # qcost: 4
 
-invariant [invar_1] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0) # qcost: 4
+invariant [invar_1] forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0) # qcost: 4
 
-invariant [invar_2] forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0) # qcost: 3
+invariant [invar_2] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
 
 invariant [invar_3] exists NODE0. ~unlock_msg(NODE0) # qcost: 2
 
 invariant [invar_4] exists NODE0. ~holds_lock(NODE0) # qcost: 2
 
-invariant [invar_5] forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0) # qcost: 4
+invariant [invar_5] forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0) # qcost: 4
 
 invariant [invar_6] exists NODE0. ~grant_msg(NODE0) # qcost: 2
 
-invariant [invar_7] forall NODE0. ~server_holds_lock | ~grant_msg(NODE0) # qcost: 3
+invariant [invar_7] forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock # qcost: 3
 
-invariant [invar_8] forall NODE0. ~server_holds_lock | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_8] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
 
-invariant [invar_9] exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | unlock_msg(NODE0) | server_holds_lock # qcost: 5
-
-
+invariant [invar_9] exists NODE0. holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock | unlock_msg(NODE0) # qcost: 5
 
 
-[QRM NOTE]: Time elapsed since start: 0.245 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.063 seconds
-
-[QRM NOTE]: Peak memory: 1760270 bytes
 
 
-============================================================================
+[QRM NOTE]: Time elapsed since start: 0.235 seconds
 
-	[IVY_CHECK]: Ivy Check on [ivybench/sym/ivy/lockserv: node=2]
+[QRM NOTE]: Time elapsed since last: 0.057 seconds
 
-============================================================================
-
-ivy_check complete=fo ivybench/sym/ivy/lockserv.node_2.0.ivy
-
-
-Isolate this:
-
-    The inductive invariant consists of the following conjectures:
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9
-
-    The following action implementations are present:
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 32: implementation of recv_grant
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 23: implementation of recv_lock
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 46: implementation of recv_unlock
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 20: implementation of send_lock
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 39: implementation of unlock
-
-    The following initializers are present:
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 11: init[after1]
-
-    Initialization must establish the invariant
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8 ... PASS
-        ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9 ... PASS
-
-    The following set of external actions must preserve the invariant:
-        (internal) ext:recv_grant
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5 ... FAIL
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:recv_lock
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6 ... FAIL
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:recv_unlock
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2 ... FAIL
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:send_lock
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:unlock
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 70: invar_0 ... FAIL
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 79: invar_9 ... PASS
-
-    The following program assertions are treated as assumptions:
-        in action recv_lock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 24: assumption
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 25: assumption
-        in action recv_grant when called from the environment:
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 33: assumption
-        in action unlock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 40: assumption
-        in action recv_unlock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_2.0.ivy: line 47: assumption
-
-error: failed checks: 4
-[IVY_CHECK RESULT]: FAIL ... exit with return code 1
-
-[QRM NOTE]: Time elapsed since start: 2.185 seconds
-
-[QRM NOTE]: Time elapsed since last: 1.940 seconds
-
-[QRM NOTE]: Peak memory: 760720 bytes
+[QRM NOTE]: Peak memory: 1760223 bytes
 
 
 ***************************************************************************************
@@ -3795,11 +3570,11 @@ g++ -shared lockserv.node_3.finite.o lockserv.node_3.finite_wrap.o -o _ivy_exec.
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 7.227 seconds
+[QRM NOTE]: Time elapsed since start: 7.217 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.227 seconds
+[QRM NOTE]: Time elapsed since last: 7.217 seconds
 
-[QRM NOTE]: Peak memory: 1182858 bytes
+[QRM NOTE]: Peak memory: 1182917 bytes
 
 
 ===================================
@@ -3824,11 +3599,11 @@ g++ -shared lockserv.node_3.finite.o lockserv.node_3.finite_wrap.o -o _ivy_exec.
 =======================================================================================
 
 sort: node=['node0', 'node1', 'node2']
-predicate: server_holds_lock()
+predicate: lock_msg('node',)
 predicate: holds_lock('node',)
 predicate: grant_msg('node',)
-predicate: lock_msg('node',)
 predicate: unlock_msg('node',)
+predicate: server_holds_lock()
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'holds_lock(node0)', 'holds_lock(node1)', 'holds_lock(node2)', 'lock_msg(node0)', 'lock_msg(node1)', 'lock_msg(node2)', 'server_holds_lock()', 'unlock_msg(node0)', 'unlock_msg(node1)', 'unlock_msg(node2)']
 representative states : 8, 24, 56, 120, 1120, 1136, 240, 113, 224, 52, 1056, 1072, 176, 49, 160, 18, 1024, 1040, 144, 17, 128, 1
@@ -3850,8 +3625,8 @@ repr state: 0000001001000
 lex min decimal: 24
 states:
 0000001001000
-0000000101000
 0000000011000
+0000000101000
 
 
 
@@ -3861,9 +3636,9 @@ size : 3
 repr state: 0000001101000
 lex min decimal: 56
 states:
-0000001011000
-0000000111000
 0000001101000
+0000000111000
+0000001011000
 
 
 
@@ -3883,9 +3658,9 @@ size : 3
 repr state: 1000000110000
 lex min decimal: 1120
 states:
-0010001100000
 0100001010000
 1000000110000
+0010001100000
 
 
 
@@ -3895,9 +3670,9 @@ size : 3
 repr state: 1000001110000
 lex min decimal: 1136
 states:
+0010001110000
 1000001110000
 0100001110000
-0010001110000
 
 
 
@@ -3908,8 +3683,8 @@ repr state: 0001001110000
 lex min decimal: 240
 states:
 0000101110000
-0001001110000
 0000011110000
+0001001110000
 
 
 
@@ -3919,9 +3694,9 @@ size : 3
 repr state: 0000001110100
 lex min decimal: 113
 states:
-0000001110010
 0000001110100
 0000001110001
+0000001110010
 
 
 
@@ -3932,8 +3707,8 @@ repr state: 0001000110000
 lex min decimal: 224
 states:
 0001000110000
-0000011100000
 0000101010000
+0000011100000
 
 
 
@@ -3943,9 +3718,9 @@ size : 3
 repr state: 0000000110100
 lex min decimal: 52
 states:
+0000000110100
 0000001010010
 0000001100001
-0000000110100
 
 
 
@@ -3955,12 +3730,12 @@ size : 6
 repr state: 1000000100000
 lex min decimal: 1056
 states:
-1000000010000
 0010001000000
+1000000100000
+0100001000000
+1000000010000
 0100000010000
 0010000100000
-0100001000000
-1000000100000
 
 
 
@@ -3970,12 +3745,12 @@ size : 6
 repr state: 1000001100000
 lex min decimal: 1072
 states:
+0010000110000
+1000001100000
 0100000110000
-0010001010000
 0100001100000
 1000001010000
-1000001100000
-0010000110000
+0010001010000
 
 
 
@@ -3985,12 +3760,12 @@ size : 6
 repr state: 0001001100000
 lex min decimal: 176
 states:
-0001001100000
-0000011010000
-0000010110000
-0000100110000
-0001001010000
 0000101100000
+0001001100000
+0000010110000
+0001001010000
+0000011010000
+0000100110000
 
 
 
@@ -4000,11 +3775,11 @@ size : 6
 repr state: 0000001100100
 lex min decimal: 49
 states:
-0000000110001
-0000001100010
-0000001100100
 0000000110010
 0000001010100
+0000001100010
+0000001100100
+0000000110001
 0000001010001
 
 
@@ -4016,11 +3791,11 @@ repr state: 0001000100000
 lex min decimal: 160
 states:
 0000011000000
-0000101000000
-0001000010000
-0000010100000
-0000100010000
 0001000100000
+0000101000000
+0000100010000
+0000010100000
+0001000010000
 
 
 
@@ -4030,12 +3805,12 @@ size : 6
 repr state: 0000000100100
 lex min decimal: 18
 states:
-0000001000010
+0000000010010
 0000000100100
 0000000100001
-0000000010010
-0000001000001
 0000000010100
+0000001000010
+0000001000001
 
 
 
@@ -4045,8 +3820,8 @@ size : 3
 repr state: 1000000000000
 lex min decimal: 1024
 states:
-0010000000000
 1000000000000
+0010000000000
 0100000000000
 
 
@@ -4057,9 +3832,9 @@ size : 3
 repr state: 1000001000000
 lex min decimal: 1040
 states:
+1000001000000
 0010000010000
 0100000100000
-1000001000000
 
 
 
@@ -4069,8 +3844,8 @@ size : 3
 repr state: 0001001000000
 lex min decimal: 144
 states:
-0001001000000
 0000100100000
+0001001000000
 0000010010000
 
 
@@ -4081,9 +3856,9 @@ size : 3
 repr state: 0000001000100
 lex min decimal: 17
 states:
-0000000010001
 0000001000100
 0000000100010
+0000000010001
 
 
 
@@ -4093,8 +3868,8 @@ size : 3
 repr state: 0001000000000
 lex min decimal: 128
 states:
-0001000000000
 0000100000000
+0001000000000
 0000010000000
 
 
@@ -4105,17 +3880,17 @@ size : 3
 repr state: 0000000000100
 lex min decimal: 1
 states:
-0000000000001
 0000000000100
 0000000000010
+0000000000001
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.392 seconds
+[QRM NOTE]: Time elapsed since start: 7.343 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.165 seconds
+[QRM NOTE]: Time elapsed since last: 0.126 seconds
 
-[QRM NOTE]: Peak memory: 1229492 bytes
+[QRM NOTE]: Peak memory: 1229445 bytes
 
 
 ============================================================================================================
@@ -4162,11 +3937,11 @@ Found a representative state in Rmin not in reachability: decimal: 115, binary: 
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 7.475 seconds
+[QRM NOTE]: Time elapsed since start: 7.414 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.083 seconds
+[QRM NOTE]: Time elapsed since last: 0.070 seconds
 
-[QRM NOTE]: Peak memory: 218835 bytes
+[QRM NOTE]: Peak memory: 218904 bytes
 
 next size: node=3
 
@@ -4425,9 +4200,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 46
 
-[QRM NOTE]: Time elapsed since start: 0.057 seconds
+[QRM NOTE]: Time elapsed since start: 0.060 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.021 seconds
+[QRM NOTE]: Time elapsed since last: 0.024 seconds
 
 [QRM NOTE]: Peak memory: 1157455 bytes
 
@@ -4483,7 +4258,7 @@ After reduction :
  pending  : []
  solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-[QRM NOTE]: Time elapsed since start: 0.059 seconds
+[QRM NOTE]: Time elapsed since start: 0.062 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
@@ -4591,12 +4366,12 @@ signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds_lock(NODE0)', 'server_holds_lock']
+qterms: ['server_holds_lock', 'holds_lock(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
+qclause: forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
 
 
 === Prime Orbit 1 =====================
@@ -4789,12 +4564,12 @@ signed_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [[Var('NODE
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['unlock_msg(NODE0)', 'server_holds_lock']
+qterms: ['server_holds_lock', 'unlock_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+qclause: forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0)
 
 
 === Prime Orbit 3 =====================
@@ -5022,7 +4797,7 @@ signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds_lock(NODE1)', 'grant_msg(NODE0)']
+qterms: ['grant_msg(NODE0)', 'holds_lock(NODE1)']
 
 
 ---------- QFormula: _get_partition_constraint ----------
@@ -5145,7 +4920,7 @@ constraint: ['NODE0:node ~= NODE1']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)
+qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1)
 
 
 === Prime Orbit 5 =====================
@@ -5937,12 +5712,12 @@ signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~grant_msg(NODE0)', '~server_holds_lock', '~holds_lock(NODE0)', '~unlock_msg(NODE0)']
+qterms: ['~holds_lock(NODE0)', '~server_holds_lock', '~unlock_msg(NODE0)', '~grant_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: exists NODE0. grant_msg(NODE0) | server_holds_lock | holds_lock(NODE0) | unlock_msg(NODE0)
+qclause: exists NODE0. holds_lock(NODE0) | server_holds_lock | unlock_msg(NODE0) | grant_msg(NODE0)
 
 
 ==========================================================================================
@@ -5964,7 +5739,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
+quantified form : forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
 qcost : 3
 
 
@@ -6000,7 +5775,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+quantified form : forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0)
 qcost : 3
 
 
@@ -6048,7 +5823,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1)
 qcost : 4
 
 
@@ -6158,16 +5933,16 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. grant_msg(NODE0) | server_holds_lock | holds_lock(NODE0) | unlock_msg(NODE0)
+quantified form : exists NODE0. holds_lock(NODE0) | server_holds_lock | unlock_msg(NODE0) | grant_msg(NODE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.220 seconds
+[QRM NOTE]: Time elapsed since start: 0.202 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.161 seconds
+[QRM NOTE]: Time elapsed since last: 0.140 seconds
 
-[QRM NOTE]: Peak memory: 1830912 bytes
+[QRM NOTE]: Peak memory: 1830974 bytes
 
 
 =========================================================================
@@ -6231,15 +6006,15 @@ Equality Relations (length=0)
 
 Solution 0 : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] (length = 10)
 
-invariant [invar_0] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
+invariant [invar_0] forall NODE0. ~server_holds_lock | ~holds_lock(NODE0) # qcost: 3
 
 invariant [invar_1] forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock # qcost: 3
 
-invariant [invar_2] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
+invariant [invar_2] forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0) # qcost: 3
 
 invariant [invar_3] forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1 # qcost: 5
 
-invariant [invar_4] forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0) # qcost: 4
+invariant [invar_4] forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) # qcost: 4
 
 invariant [invar_5] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~holds_lock(NODE0) # qcost: 4
 
@@ -6249,143 +6024,16 @@ invariant [invar_7] forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | 
 
 invariant [invar_8] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1 # qcost: 5
 
-invariant [invar_9] exists NODE0. grant_msg(NODE0) | server_holds_lock | holds_lock(NODE0) | unlock_msg(NODE0) # qcost: 5
+invariant [invar_9] exists NODE0. holds_lock(NODE0) | server_holds_lock | unlock_msg(NODE0) | grant_msg(NODE0) # qcost: 5
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.281 seconds
+[QRM NOTE]: Time elapsed since start: 0.262 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.061 seconds
+[QRM NOTE]: Time elapsed since last: 0.060 seconds
 
-[QRM NOTE]: Peak memory: 1804841 bytes
-
-
-============================================================================
-
-	[IVY_CHECK]: Ivy Check on [ivybench/sym/ivy/lockserv: node=3]
-
-============================================================================
-
-ivy_check complete=fo ivybench/sym/ivy/lockserv.node_3.0.ivy
-
-
-Isolate this:
-
-    The inductive invariant consists of the following conjectures:
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9
-
-    The following action implementations are present:
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 32: implementation of recv_grant
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 23: implementation of recv_lock
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 46: implementation of recv_unlock
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 20: implementation of send_lock
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 39: implementation of unlock
-
-    The following initializers are present:
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 11: init[after1]
-
-    Initialization must establish the invariant
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
-        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
-
-    The following set of external actions must preserve the invariant:
-        (internal) ext:recv_grant
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:recv_lock
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:recv_unlock
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:send_lock
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
-        (internal) ext:unlock
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
-
-    The following program assertions are treated as assumptions:
-        in action recv_lock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 24: assumption
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 25: assumption
-        in action recv_grant when called from the environment:
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 33: assumption
-        in action unlock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 40: assumption
-        in action recv_unlock when called from the environment:
-            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 47: assumption
-
-OK
-[IVY_CHECK RESULT]: PASS
-
-[(R & P) & T & ~(R' & P')]: unsatisfiable
-
-[Strengthening Assertion]: ((forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock) & (forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock) & (forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock) & (forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0)) & (forall NODE1,NODE0. ~unlock_msg(NODE1) | ~holds_lock(NODE0)) & (forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)) & (forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1) & (forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1) & (exists NODE0. grant_msg(NODE0) | server_holds_lock | holds_lock(NODE0) | unlock_msg(NODE0)))
-
-[QRM NOTE]: Time elapsed since start: 2.553 seconds
-
-[QRM NOTE]: Time elapsed since last: 2.272 seconds
-
-[QRM NOTE]: Peak memory: 886002 bytes
+[QRM NOTE]: Peak memory: 1804903 bytes
 
 
 ***************************************************************************************
@@ -6442,11 +6090,11 @@ g++ -shared lockserv.node_4.finite.o lockserv.node_4.finite_wrap.o -o _ivy_exec.
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 7.420 seconds
+[QRM NOTE]: Time elapsed since start: 8.084 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.420 seconds
+[QRM NOTE]: Time elapsed since last: 8.084 seconds
 
-[QRM NOTE]: Peak memory: 1170117 bytes
+[QRM NOTE]: Peak memory: 1170072 bytes
 
 
 ===================================
@@ -6471,11 +6119,11 @@ g++ -shared lockserv.node_4.finite.o lockserv.node_4.finite_wrap.o -o _ivy_exec.
 =======================================================================================
 
 sort: node=['node0', 'node1', 'node2', 'node3']
+predicate: lock_msg('node',)
 predicate: server_holds_lock()
+predicate: holds_lock('node',)
 predicate: unlock_msg('node',)
 predicate: grant_msg('node',)
-predicate: lock_msg('node',)
-predicate: holds_lock('node',)
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'grant_msg(node3)', 'holds_lock(node0)', 'holds_lock(node1)', 'holds_lock(node2)', 'holds_lock(node3)', 'lock_msg(node0)', 'lock_msg(node1)', 'lock_msg(node2)', 'lock_msg(node3)', 'server_holds_lock()', 'unlock_msg(node0)', 'unlock_msg(node1)', 'unlock_msg(node2)', 'unlock_msg(node3)']
 representative states : 16, 48, 112, 240, 496, 8640, 8672, 992, 481, 960, 232, 8384, 8416, 736, 225, 704, 100, 8256, 8288, 608, 97, 576, 34, 8192, 8224, 544, 33, 512, 1
@@ -6496,10 +6144,10 @@ size : 4
 repr state: 00000000100010000
 lex min decimal: 48
 states:
-00000000100010000
-00000000000110000
-00000000001010000
 00000000010010000
+00000000001010000
+00000000000110000
+00000000100010000
 
 
 
@@ -6510,11 +6158,11 @@ repr state: 00000000110010000
 lex min decimal: 112
 states:
 00000000100110000
+00000000011010000
 00000000110010000
 00000000010110000
-00000000011010000
-00000000001110000
 00000000101010000
+00000000001110000
 
 
 
@@ -6525,9 +6173,9 @@ repr state: 00000000111010000
 lex min decimal: 240
 states:
 00000000101110000
-00000000011110000
-00000000110110000
 00000000111010000
+00000000110110000
+00000000011110000
 
 
 
@@ -6547,10 +6195,10 @@ size : 4
 repr state: 10000000011100000
 lex min decimal: 8640
 states:
-00010000111000000
-01000000101100000
 00100000110100000
 10000000011100000
+01000000101100000
+00010000111000000
 
 
 
@@ -6560,10 +6208,10 @@ size : 4
 repr state: 10000000111100000
 lex min decimal: 8672
 states:
-01000000111100000
+00100000111100000
 00010000111100000
 10000000111100000
-00100000111100000
+01000000111100000
 
 
 
@@ -6573,10 +6221,10 @@ size : 4
 repr state: 00001000111100000
 lex min decimal: 992
 states:
-00000010111100000
-00001000111100000
-00000100111100000
 00000001111100000
+00001000111100000
+00000010111100000
+00000100111100000
 
 
 
@@ -6587,9 +6235,9 @@ repr state: 00000000111101000
 lex min decimal: 481
 states:
 00000000111101000
-00000000111100100
-00000000111100001
 00000000111100010
+00000000111100001
+00000000111100100
 
 
 
@@ -6599,9 +6247,9 @@ size : 4
 repr state: 00001000011100000
 lex min decimal: 960
 states:
-00000100101100000
 00001000011100000
 00000010110100000
+00000100101100000
 00000001111000000
 
 
@@ -6612,9 +6260,9 @@ size : 4
 repr state: 00000000011101000
 lex min decimal: 232
 states:
-00000000110100010
-00000000111000001
 00000000011101000
+00000000111000001
+00000000110100010
 00000000101100100
 
 
@@ -6625,18 +6273,18 @@ size : 12
 repr state: 10000000011000000
 lex min decimal: 8384
 states:
-01000000100100000
-00010000011000000
-00010000110000000
 00100000100100000
-00100000110000000
-01000000101000000
 10000000010100000
-00100000010100000
 10000000011000000
-00010000101000000
 10000000001100000
 01000000001100000
+00010000110000000
+00010000011000000
+00100000110000000
+00010000101000000
+01000000100100000
+01000000101000000
+00100000010100000
 
 
 
@@ -6646,18 +6294,18 @@ size : 12
 repr state: 10000000111000000
 lex min decimal: 8416
 states:
-10000000110100000
 10000000111000000
-00100000011100000
-01000000011100000
-00010000101100000
-01000000111000000
 00100000101100000
+00010000011100000
 01000000110100000
 00100000111000000
-00010000110100000
 10000000101100000
-00010000011100000
+00010000101100000
+01000000011100000
+10000000110100000
+00010000110100000
+01000000111000000
+00100000011100000
 
 
 
@@ -6667,18 +6315,18 @@ size : 12
 repr state: 00001000111000000
 lex min decimal: 736
 states:
+00000001110100000
+00000010111000000
+00000001011100000
+00001000101100000
+00000100011100000
+00001000111000000
+00000001101100000
 00000010011100000
 00001000110100000
-00000001101100000
-00001000111000000
-00001000101100000
-00000001011100000
-00000010111000000
 00000100110100000
-00000010101100000
-00000001110100000
 00000100111000000
-00000100011100000
+00000010101100000
 
 
 
@@ -6688,17 +6336,17 @@ size : 12
 repr state: 00000000111001000
 lex min decimal: 225
 states:
-00000000011100001
-00000000110101000
-00000000110100100
-00000000111000010
+00000000101101000
 00000000110100001
-00000000101100001
+00000000011100001
 00000000011100100
-00000000111001000
 00000000011100010
 00000000111000100
-00000000101101000
+00000000111001000
+00000000110100100
+00000000110101000
+00000000111000010
+00000000101100001
 00000000101100010
 
 
@@ -6709,18 +6357,18 @@ size : 12
 repr state: 00001000011000000
 lex min decimal: 704
 states:
-00000100100100000
 00000100001100000
-00001000011000000
-00001000010100000
-00000010110000000
-00000100101000000
-00000001011000000
-00000010100100000
-00000001110000000
-00000010010100000
-00000001101000000
 00001000001100000
+00000010010100000
+00000010110000000
+00000001110000000
+00000001011000000
+00000100101000000
+00001000011000000
+00000001101000000
+00000100100100000
+00001000010100000
+00000010100100000
 
 
 
@@ -6730,17 +6378,17 @@ size : 12
 repr state: 00000000011001000
 lex min decimal: 100
 states:
-00000000010100010
-00000000100100100
-00000000100100010
-00000000101000001
-00000000010101000
-00000000110000001
-00000000101000100
-00000000011001000
-00000000001100100
-00000000001101000
 00000000110000010
+00000000100100100
+00000000010100010
+00000000010101000
+00000000011001000
+00000000101000001
+00000000001101000
+00000000001100100
+00000000101000100
+00000000100100010
+00000000110000001
 00000000011000001
 
 
@@ -6751,18 +6399,18 @@ size : 12
 repr state: 10000000010000000
 lex min decimal: 8256
 states:
-01000000001000000
-10000000010000000
-00100000010000000
 00100000100000000
 00010000010000000
+00100000010000000
+01000000100000000
+00010000100000000
+00100000000100000
+10000000010000000
+10000000001000000
 10000000000100000
 01000000000100000
+01000000001000000
 00010000001000000
-00010000100000000
-01000000100000000
-00100000000100000
-10000000001000000
 
 
 
@@ -6772,18 +6420,18 @@ size : 12
 repr state: 10000000110000000
 lex min decimal: 8288
 states:
-10000000110000000
 00100000101000000
-00010000010100000
-00010000001100000
-01000000010100000
-10000000101000000
 00100000001100000
-00100000011000000
+00010000010100000
+00010000100100000
 01000000110000000
 01000000011000000
 10000000100100000
-00010000100100000
+10000000101000000
+00100000011000000
+00010000001100000
+01000000010100000
+10000000110000000
 
 
 
@@ -6793,18 +6441,18 @@ size : 12
 repr state: 00001000110000000
 lex min decimal: 608
 states:
-00001000100100000
-00000100110000000
-00000001100100000
-00000001010100000
-00000001001100000
 00001000101000000
-00000010101000000
-00001000110000000
 00000010001100000
-00000100011000000
+00001000100100000
 00000100010100000
+00000010101000000
 00000010011000000
+00000100011000000
+00000001001100000
+00000001100100000
+00000100110000000
+00000001010100000
+00001000110000000
 
 
 
@@ -6814,18 +6462,18 @@ size : 12
 repr state: 00000000110001000
 lex min decimal: 97
 states:
-00000000010100100
-00000000011000010
-00000000010100001
-00000000110000100
-00000000011000100
 00000000100101000
+00000000010100100
 00000000101000010
+00000000110001000
+00000000011000100
+00000000011000010
 00000000001100010
 00000000101001000
 00000000100100001
+00000000110000100
 00000000001100001
-00000000110001000
+00000000010100001
 
 
 
@@ -6835,18 +6483,18 @@ size : 12
 repr state: 00001000010000000
 lex min decimal: 576
 states:
+00000100000100000
+00000001001000000
+00000100001000000
 00001000010000000
+00001000001000000
+00000001100000000
+00000001010000000
+00001000000100000
+00000100100000000
+00000010100000000
 00000010000100000
 00000010010000000
-00000100001000000
-00001000000100000
-00000001100000000
-00000001001000000
-00000010100000000
-00000100000100000
-00000001010000000
-00000100100000000
-00001000001000000
 
 
 
@@ -6856,18 +6504,18 @@ size : 12
 repr state: 00000000010001000
 lex min decimal: 34
 states:
-00000000010001000
-00000000000100100
 00000000001000001
-00000000000101000
-00000000010000010
-00000000100000001
-00000000010000001
-00000000001000100
+00000000000100100
 00000000100000010
-00000000000100010
-00000000100000100
+00000000000101000
 00000000001001000
+00000000000100010
+00000000010000001
+00000000100000100
+00000000100000001
+00000000010001000
+00000000001000100
+00000000010000010
 
 
 
@@ -6877,10 +6525,10 @@ size : 4
 repr state: 10000000000000000
 lex min decimal: 8192
 states:
-00100000000000000
 00010000000000000
-10000000000000000
+00100000000000000
 01000000000000000
+10000000000000000
 
 
 
@@ -6891,8 +6539,8 @@ repr state: 10000000100000000
 lex min decimal: 8224
 states:
 00100000001000000
-01000000010000000
 00010000000100000
+01000000010000000
 10000000100000000
 
 
@@ -6904,9 +6552,9 @@ repr state: 00001000100000000
 lex min decimal: 544
 states:
 00000001000100000
+00000010001000000
 00001000100000000
 00000100010000000
-00000010001000000
 
 
 
@@ -6916,10 +6564,10 @@ size : 4
 repr state: 00000000100001000
 lex min decimal: 33
 states:
-00000000000100001
 00000000001000010
-00000000010000100
+00000000000100001
 00000000100001000
+00000000010000100
 
 
 
@@ -6929,9 +6577,9 @@ size : 4
 repr state: 00001000000000000
 lex min decimal: 512
 states:
-00000100000000000
-00000001000000000
 00001000000000000
+00000001000000000
+00000100000000000
 00000010000000000
 
 
@@ -6942,18 +6590,18 @@ size : 4
 repr state: 00000000000001000
 lex min decimal: 1
 states:
-00000000000000100
-00000000000000010
-00000000000000001
 00000000000001000
+00000000000000001
+00000000000000010
+00000000000000100
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.638 seconds
+[QRM NOTE]: Time elapsed since start: 8.285 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.218 seconds
+[QRM NOTE]: Time elapsed since last: 0.201 seconds
 
-[QRM NOTE]: Peak memory: 1267471 bytes
+[QRM NOTE]: Peak memory: 1267365 bytes
 
 
 ============================================================================================================
@@ -6964,11 +6612,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 7.837 seconds
+[QRM NOTE]: Time elapsed since start: 8.481 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.198 seconds
+[QRM NOTE]: Time elapsed since last: 0.196 seconds
 
-[QRM NOTE]: Peak memory: 303751 bytes
+[QRM NOTE]: Peak memory: 303703 bytes
 
 ivy_check complete=fo ivybench/sym/ivy/lockserv.node_3.0.ivy
 
@@ -7095,7 +6743,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 58.917 seconds
+[QRM NOTE]: Time elapsed since start: 52.121 seconds
 
-[QRM NOTE]: Time elapsed since last: 58.917 seconds
+[QRM NOTE]: Time elapsed since last: 52.121 seconds
 

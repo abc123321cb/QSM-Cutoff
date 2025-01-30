@@ -652,16 +652,6 @@ void firewall__node_2__finite::ext__send_to_internal(node src, node dst){
         ivy_assume(allowed_in[src], "firewall.node_2.finite.ivy: line 26");
         sent[src][dst] = true;
 }
-bool firewall__node_2__finite::ext__get_sent(node n0, node n1){
-    bool qrm_result;
-    qrm_result = sent[n0][n1];
-    return qrm_result;
-}
-bool firewall__node_2__finite::ext__get_bool_sent(node n0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (sent[n0][n1] == result);
-    return qrm_result;
-}
 bool firewall__node_2__finite::ext__get_allowed_in(node n0){
     bool qrm_result;
     qrm_result = allowed_in[n0];
@@ -670,6 +660,16 @@ bool firewall__node_2__finite::ext__get_allowed_in(node n0){
 bool firewall__node_2__finite::ext__get_bool_allowed_in(node n0, bool result){
     bool qrm_result;
     qrm_result = (allowed_in[n0] == result);
+    return qrm_result;
+}
+bool firewall__node_2__finite::ext__get_sent(node n0, node n1){
+    bool qrm_result;
+    qrm_result = sent[n0][n1];
+    return qrm_result;
+}
+bool firewall__node_2__finite::ext__get_bool_sent(node n0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (sent[n0][n1] == result);
     return qrm_result;
 }
 bool firewall__node_2__finite::ext__get_internal(node n0){

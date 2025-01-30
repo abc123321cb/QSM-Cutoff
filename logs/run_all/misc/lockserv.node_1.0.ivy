@@ -68,9 +68,9 @@ export recv_unlock
 ##invariant [manual_8] ~(unlock_msg(N) & server_holds_lock)
 
 invariant [invar_0] forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0) # qcost: 3
-invariant [invar_1] forall NODE0. ~server_holds_lock | ~unlock_msg(NODE0) # qcost: 3
+invariant [invar_1] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
 invariant [invar_2] forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0) # qcost: 3
 invariant [invar_3] forall NODE0. ~server_holds_lock | ~grant_msg(NODE0) # qcost: 3
-invariant [invar_4] forall NODE0. ~server_holds_lock | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_4] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
 invariant [invar_5] forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0) # qcost: 3
-invariant [invar_6] forall NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock # qcost: 5
+invariant [invar_6] forall NODE0. holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0) | server_holds_lock # qcost: 5

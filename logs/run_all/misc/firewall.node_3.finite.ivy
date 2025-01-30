@@ -36,26 +36,16 @@ export send_to_internal
 ##invariant [manual_1] allowed_in(D) -> exists I. internal(I) & sent(I,D)
 
 invariant [invar_0] forall NODE0. ~sent(NODE0,NODE0) # qcost: 2
-invariant [invar_3] forall NODE1,NODE0. sent(NODE1,NODE0) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_8] forall NODE1,NODE0. ~sent(NODE0,NODE1) | allowed_in(NODE1) | allowed_in(NODE0) | NODE0 = NODE1 # qcost: 6
-invariant [invar_2] forall NODE1,NODE0. internal(NODE1) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_1] forall NODE0. ~internal(NODE0) | ~allowed_in(NODE0) # qcost: 3
+invariant [invar_1] forall NODE0,NODE1. sent(NODE1,NODE0) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_8] forall NODE0,NODE1. allowed_in(NODE0) | ~sent(NODE0,NODE1) | allowed_in(NODE1) | NODE0 = NODE1 # qcost: 6
+invariant [invar_3] forall NODE0,NODE1. internal(NODE1) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_2] forall NODE0. ~allowed_in(NODE0) | ~internal(NODE0) # qcost: 3
 
 ### For QRM DFS reachability ###
 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_allowed_in(n0: node) returns(qrm_result: bool) = {
-    qrm_result := allowed_in(n0)
-}
-export get_allowed_in
-
-action get_bool_allowed_in(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (allowed_in(n0) = result)
-}
-export get_bool_allowed_in
-
 action get_sent(n0: node, n1: node) returns(qrm_result: bool) = {
     qrm_result := sent(n0, n1)
 }
@@ -65,6 +55,16 @@ action get_bool_sent(n0: node, n1: node, result: bool) returns(qrm_result: bool)
     qrm_result := (sent(n0, n1) = result)
 }
 export get_bool_sent
+
+action get_allowed_in(n0: node) returns(qrm_result: bool) = {
+    qrm_result := allowed_in(n0)
+}
+export get_allowed_in
+
+action get_bool_allowed_in(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (allowed_in(n0) = result)
+}
+export get_bool_allowed_in
 
 action get_internal(n0: node) returns(qrm_result: bool) = {
     qrm_result := internal(n0)

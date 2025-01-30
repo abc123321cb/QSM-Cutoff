@@ -620,33 +620,33 @@ void sharded_kv__node_3_key_1_value_3__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 2;
     if (qrm_solution_count == 0){
-        bool __tmp0[3][1][3];
+        bool __tmp0[3][3][1];
         for (int N = 0; N < 3; N++) {
-            for (int K = 0; K < 1; K++) {
-                for (int V = 0; V < 3; V++) {
-                    __tmp0[N][K][V] = false;
+            for (int V = 0; V < 3; V++) {
+                for (int K = 0; K < 1; K++) {
+                    __tmp0[N][V][K] = false;
                 }
             }
         }
         for (int N = 0; N < 3; N++) {
-            for (int K = 0; K < 1; K++) {
-                for (int V = 0; V < 3; V++) {
-                    table[N][K][V] = __tmp0[N][K][V];
+            for (int V = 0; V < 3; V++) {
+                for (int K = 0; K < 1; K++) {
+                    table[N][K][V] = __tmp0[N][V][K];
                 }
             }
         }
-        bool __tmp1[3][1][3];
+        bool __tmp1[3][3][1];
         for (int N = 0; N < 3; N++) {
-            for (int K = 0; K < 1; K++) {
-                for (int V = 0; V < 3; V++) {
-                    __tmp1[N][K][V] = false;
+            for (int V = 0; V < 3; V++) {
+                for (int K = 0; K < 1; K++) {
+                    __tmp1[N][V][K] = false;
                 }
             }
         }
         for (int N = 0; N < 3; N++) {
-            for (int K = 0; K < 1; K++) {
-                for (int V = 0; V < 3; V++) {
-                    transfer_msg[N][K][V] = __tmp1[N][K][V];
+            for (int V = 0; V < 3; V++) {
+                for (int K = 0; K < 1; K++) {
+                    transfer_msg[N][K][V] = __tmp1[N][V][K];
                 }
             }
         }
@@ -655,9 +655,9 @@ void sharded_kv__node_3_key_1_value_3__finite::__init(){
         owner[2][0] = false;
     }
     else if (qrm_solution_count == 1){
-        owner[0][0] = true;
+        owner[0][0] = false;
         owner[1][0] = false;
-        owner[2][0] = false;
+        owner[2][0] = true;
     }
     ++ qrm_solution_count;
     if (qrm_solution_count != max_qrm_solution_count)

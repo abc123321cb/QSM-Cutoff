@@ -603,25 +603,25 @@ int Ricart_Agrawala__node_2__finite::___ivy_choose(int rng,const char *name,int 
 struct ivy_nondet_except {}; // lauren-yrluo added
 void Ricart_Agrawala__node_2__finite::__init(){
         bool __tmp0[2][2];
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                __tmp0[N2][N1] = false;
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                __tmp0[N1][N2] = false;
             }
         }
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                requested[N1][N2] = __tmp0[N2][N1];
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                requested[N1][N2] = __tmp0[N1][N2];
             }
         }
         bool __tmp1[2][2];
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                __tmp1[N2][N1] = false;
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                __tmp1[N1][N2] = false;
             }
         }
-        for (int N2 = 0; N2 < 2; N2++) {
-            for (int N1 = 0; N1 < 2; N1++) {
-                replied[N1][N2] = __tmp1[N2][N1];
+        for (int N1 = 0; N1 < 2; N1++) {
+            for (int N2 = 0; N2 < 2; N2++) {
+                replied[N1][N2] = __tmp1[N1][N2];
             }
         }
         bool __tmp2[2];

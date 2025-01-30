@@ -699,26 +699,6 @@ void simple_election__acceptor_4_proposer_3__finite::ext__decide(proposer p, quo
         ivy_assume(chosenAt(q,p), "simple-election.acceptor_4_proposer_3.finite.ivy: line 49");
         leader[p] = true;
 }
-bool simple_election__acceptor_4_proposer_3__finite::ext__get_promise(acceptor a0, proposer p1){
-    bool qrm_result;
-    qrm_result = promise[a0][p1];
-    return qrm_result;
-}
-bool simple_election__acceptor_4_proposer_3__finite::ext__get_bool_promise(acceptor a0, proposer p1, bool result){
-    bool qrm_result;
-    qrm_result = (promise[a0][p1] == result);
-    return qrm_result;
-}
-bool simple_election__acceptor_4_proposer_3__finite::ext__get_didNotPromise(acceptor a0){
-    bool qrm_result;
-    qrm_result = didNotPromise(a0);
-    return qrm_result;
-}
-bool simple_election__acceptor_4_proposer_3__finite::ext__get_bool_didNotPromise(acceptor a0, bool result){
-    bool qrm_result;
-    qrm_result = (didNotPromise(a0) == result);
-    return qrm_result;
-}
 bool simple_election__acceptor_4_proposer_3__finite::ext__get_leader(proposer p0){
     bool qrm_result;
     qrm_result = leader[p0];
@@ -739,6 +719,16 @@ bool simple_election__acceptor_4_proposer_3__finite::ext__get_bool_member(accept
     qrm_result = (member[a0][q1] == result);
     return qrm_result;
 }
+bool simple_election__acceptor_4_proposer_3__finite::ext__get_promise(acceptor a0, proposer p1){
+    bool qrm_result;
+    qrm_result = promise[a0][p1];
+    return qrm_result;
+}
+bool simple_election__acceptor_4_proposer_3__finite::ext__get_bool_promise(acceptor a0, proposer p1, bool result){
+    bool qrm_result;
+    qrm_result = (promise[a0][p1] == result);
+    return qrm_result;
+}
 bool simple_election__acceptor_4_proposer_3__finite::ext__get_chosenAt(quorum q0, proposer p1){
     bool qrm_result;
     qrm_result = chosenAt(q0,p1);
@@ -747,6 +737,16 @@ bool simple_election__acceptor_4_proposer_3__finite::ext__get_chosenAt(quorum q0
 bool simple_election__acceptor_4_proposer_3__finite::ext__get_bool_chosenAt(quorum q0, proposer p1, bool result){
     bool qrm_result;
     qrm_result = (chosenAt(q0,p1) == result);
+    return qrm_result;
+}
+bool simple_election__acceptor_4_proposer_3__finite::ext__get_didNotPromise(acceptor a0){
+    bool qrm_result;
+    qrm_result = didNotPromise(a0);
+    return qrm_result;
+}
+bool simple_election__acceptor_4_proposer_3__finite::ext__get_bool_didNotPromise(acceptor a0, bool result){
+    bool qrm_result;
+    qrm_result = (didNotPromise(a0) == result);
     return qrm_result;
 }
 bool simple_election__acceptor_4_proposer_3__finite::ext__get_start(proposer p0){
