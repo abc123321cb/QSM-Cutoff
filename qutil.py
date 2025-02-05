@@ -13,6 +13,8 @@ def add_member_terms_for_dependent_sorts(atoms, tran_sys : TransitionSystem):
     terms = []
     args = set()
     for atom in atoms:
+        if isinstance(atom, il.Not):
+            atom = atom.args[0] 
         atom_args = atom.args
         if il.is_eq(atom):
             atom_args = [atom_args[1]]
@@ -75,21 +77,21 @@ def replace_var_with_qvar(tran_sys : TransitionSystem, terms):
     qterms = futil.flatten_cube(qstate)
     return qterms
 
-def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
+def get_terms(tran_sys : TransitionSystem, atoms, prime : Prime):
     values = prime.values
     terms = []
-    atom_symbols = []
     for atom_id, atom in enumerate(atoms):
         val = values[atom_id]
         if val == '0':
             terms.append(il.Not(atom))
-            atom_symbols.append(atom)
         elif val == '1':
             terms.append(atom)
-            atom_symbols.append(atom)
         else:
             assert(val == '-')
-    terms += add_member_terms_for_dependent_sorts(atom_symbols, tran_sys)
+    return terms
+
+def get_qterms(tran_sys : TransitionSystem, atoms, prime : Prime):
+    terms  = get_terms(tran_sys, atoms, prime) 
     qterms = replace_var_with_qvar(tran_sys, terms)
     return qterms 
 
@@ -164,18 +166,3 @@ def get_func_args_sort(atom, func_symbol):
     elif isinstance(atom, il.App) or il.is_boolean(atom):
         args_sort = func_symbol.sort.dom
     return args_sort
-
-from enum import Enum
-QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
-ConstraintMode  = Enum('ConstraintMode', ['merge_absent', 'merge_present', 'no_merge'])
-'''
-    'merge_absent':   enumerate all partitions of "class_signature" in self.product_arg_partition
-                for each arg_partition of qprime, 
-                it is also a partition of "class_signature" in self.product_arg_partition
-                we add final constraint describing partitions of "class_signature" in self.product_arg_partition 
-                that is absent among self.arg_partitions
-    'merge_present':  does not enumerate all partitions of "class_signature" in self.product_arg_partition
-                we add final constraint describing partitions of "class_signature" 
-                that is present in self.arg_partitions
-'''
-

@@ -14,12 +14,17 @@ class FiniteIvyExecutor():
         self.ivy_exec = reload(ivy_exec)
         self.ivy_exec.ivy_exec_init()
 
-        dfs_state_vars  = instantiator.dfs_state_vars
-        ivy_state_vars  = instantiator.ivy_state_vars
+        dfs_state_vars       = instantiator.dfs_state_vars
+        dfs_interpreted_vars = instantiator.dfs_interpreted_vars
+        ivy_state_vars       = instantiator.ivy_state_vars
 
         self.get_dfs_state_vars  = self.ivy_exec.StrVector(len(dfs_state_vars)) 
         for i, state_var in enumerate(dfs_state_vars):
             self.get_dfs_state_vars[i] = 'get_bool_' + state_var 
+
+        self.get_dfs_interpreted_vars  = self.ivy_exec.StrVector(len(dfs_interpreted_vars)) 
+        for i, state_var in enumerate(dfs_interpreted_vars):
+            self.get_dfs_interpreted_vars[i] = 'get_bool_' + state_var 
         
         self.get_ivy_state_vars = self.ivy_exec.StrVector(len(ivy_state_vars)) 
         for i, state_var in enumerate(ivy_state_vars):
@@ -28,11 +33,21 @@ class FiniteIvyExecutor():
     def _decode_ivy_state(self, result : str) -> str:
         return ','.join(result.strip('\n> = ').split('\n> = '))
 
+    def _decode_dfs_state(self, result : str) -> str:
+        return ''.join(result.strip('\n> = ').split('\n> = '))
+
     def get_dfs_state(self) -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
         self.ivy_exec.ivy_exec_run_actions(self.get_dfs_state_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
-        result = self._decode_ivy_state(result)
+        result = self._decode_dfs_state(result)
+        return result
+
+    def get_dfs_immutable_state(self) -> str:
+        self.ivy_exec.ivy_exec_reset_buffer()
+        self.ivy_exec.ivy_exec_run_actions(self.get_dfs_interpreted_vars)
+        result = self.ivy_exec.ivy_exec_get_buffer()
+        result = self._decode_dfs_state(result)
         return result
 
     def backup_ivy_state(self) -> str:

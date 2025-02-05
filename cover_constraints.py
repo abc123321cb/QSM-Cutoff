@@ -3,12 +3,13 @@ from typing import List
 from pysat.solvers import Glucose4 as SatCounter 
 from pysat.solvers import Cadical153 as SatSolver
 from pysat.allies.approxmc import Counter
+from ivy import ivy_solver as slv
 from ivy import ivy_logic as il
 from ivy import logic as lg
 from transition_system import TransitionSystem
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from prime import *
-from util import UseMC
+from util import UseMC, ForwardMode
 
 class CoverConstraints():
     def __init__(self, options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits : List[PrimeOrbit], useMC : UseMC) -> None:
@@ -19,7 +20,7 @@ class CoverConstraints():
         if useMC == UseMC.sat:
             self.sat_counter   = SatCounter()
         self.def_prime_checker = SatSolver()
-        self.min_checker       = SatSolver()   
+        self.min_checker       = None   
         self.useMC             = useMC
         self.top_var           = 0
         self.root_top_var      = 0
@@ -30,6 +31,9 @@ class CoverConstraints():
         # axiom, definition
         self.root_assume_clauses   = [] 
         self.root_tseitin_clauses  = [] # axiom, definition
+        # when reach is computed with BDD-based symbolic image computation
+        self.rmin_var   = 0
+        self.reach_var  = 0
         # min_check or qinfer_check
         self.instantiated_orbit_assume_clauses    = [] 
         self.instantiated_orbit_tseitin_clauses   = [] 
@@ -155,7 +159,7 @@ class CoverConstraints():
     def _init_axioms_formula(self) -> None:
         dep_axioms = set(self.instantiator.dep_axioms_str)
         if len(dep_axioms) > 0:
-            for axiom_str in self.instantiator.protocol_axioms:
+            for axiom_str in self.instantiator.protocol_interpreted_atoms:
                 axiom_var = self.symbol2var_num[axiom_str]
                 if axiom_str in dep_axioms:  # member(n,q) in axioms_str
                     self.root_assume_clauses.append([axiom_var])
@@ -325,16 +329,49 @@ class CoverConstraints():
         result      = self.def_prime_checker.solve(assumptions)
         return False if result else True
 
-    def init_minimization_check_solver(self, quantified_orbits):
+    def init_minimization_check_clauses(self):
+        for atom_eq in self.tran_sys.atom_equivalence_constraints:
+            atom_eq_var = self.tseitin_encode(atom_eq, is_root=True)
+            self.root_assume_clauses.append([atom_eq_var])
+
+    def _get_cube_fmla(self, cube):
+        literals = []
+        for (var_id, val) in enumerate(cube):
+            lit  = self.instantiator.protocol_atoms_fmlas[var_id]
+            if val == '1':
+                literals.append(lit) 
+            elif val == '0':
+                literals.append(il.Not(lit))
+        return il.And(*literals)
+
+    def init_minimization_check_solver(self, quantified_orbits, protocol : Protocol):
+        top_var = self.top_var
+        self.min_checker = SatSolver()   
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
-        for qorbit in quantified_orbits: 
-            inst_orbit = self.instantiator.instantiate_quantifier(qorbit)
-            orbit_fmla_var = self.tseitin_encode(inst_orbit, is_root=False)
-            self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
-        for atom_eq in self.tran_sys.atom_equivalence_constraints:
-            atom_eq_var = self.tseitin_encode(atom_eq, is_root=False)
-            self.instantiated_orbit_assume_clauses.append([atom_eq_var])
+        invariants = [self.instantiator.instantiate_quantifier(qorbit) for qorbit in quantified_orbits]
+        if self.options.forward_mode == ForwardMode.Sym_DFS:
+            for invar in invariants: 
+                orbit_fmla_var = self.tseitin_encode(invar, is_root=False)
+                self.instantiated_orbit_assume_clauses.append([orbit_fmla_var])
+            if len(quantified_orbits) == 0: # edge case
+                top_atom_var = self.atom_vars[-1]
+                self.min_checker.add_clause([top_atom_var, -1*top_atom_var])
+        else:
+            # invars
+            if len(invariants) == 0: # edge case
+                self.rmin_var = self.new_var()
+            else:
+                and_invars = il.And(*invariants)
+                self.rmin_var = self.tseitin_encode(and_invars, is_root=False) 
+            # reachable states
+            cube_fmlas = [self._get_cube_fmla(cube) for cube in protocol.reachable_states]
+            or_cubes = il.Or(*cube_fmlas)
+            self.reach_var  = self.tseitin_encode(or_cubes)
+            # self.reach_var XOR self.rmin_var
+            self.min_checker.add_clause([self.reach_var, self.rmin_var])
+            self.min_checker.add_clause([-1*self.reach_var, -1*self.rmin_var])
+
         for clause in self.root_assume_clauses:
             self.min_checker.add_clause(clause)
         for clause in self.root_tseitin_clauses:
@@ -343,6 +380,7 @@ class CoverConstraints():
             self.min_checker.add_clause(clause)
         for clause in self.instantiated_orbit_tseitin_clauses:
             self.min_checker.add_clause(clause)
+        self.top_var = top_var
 
     def get_minimization_check_minterm(self):
         result  = self.min_checker.solve()
@@ -361,7 +399,7 @@ class CoverConstraints():
                 block_clause.append(atom_var)
         self.min_checker.add_clause(block_clause)
 
-    def _get_prime_clause(self, prime : Prime) -> List[int]:
+    def _get_prime_clause(self, prime : Prime):
         literals = []
         for (var_id, val) in enumerate(prime.values):
             lit  = self.instantiator.protocol_atoms_fmlas[var_id]
@@ -372,13 +410,15 @@ class CoverConstraints():
         return il.Not(il.And(*literals))
 
     def init_quantifier_inference_check_solver(self, primes : List[Prime], quantified_orbit):
+        top_var = self.top_var
         self.qinfer_checker = SatSolver()
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
-        
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
+        vprint(self.options, 'instantiate_quantifier', 5)
         inst_orbit     = self.instantiator.instantiate_quantifier(quantified_orbit)
         eq_term        = il.Equals(il.And(*primes_clauses), inst_orbit)
+        vprint(self.options, 'tseitin_encode', 5)
         eq_var         = self.tseitin_encode(eq_term, is_root=False)
         # assume neq
         self.instantiated_orbit_assume_clauses.append([-1*eq_var])
@@ -391,10 +431,46 @@ class CoverConstraints():
             self.qinfer_checker.add_clause(clause)
         for clause in self.instantiated_orbit_tseitin_clauses:
             self.qinfer_checker.add_clause(clause)
+        self.top_var = top_var
             
     def quantifier_inference_check(self):
         result  = self.qinfer_checker.solve()
         return not result
+
+    def _get_definition_formula(self):
+        def_terms = []
+        for def_lhs, def_rhs in self.instantiator.instantiated_def_map.items():
+            def_equal_symbol = il.Equals(def_lhs, def_rhs)
+            def_terms.append(def_equal_symbol)
+        return il.And(*def_terms)
+
+    def _get_axiom_formula(self):
+        axiom_terms = []
+        dep_axioms  = set(self.instantiator.dep_axioms_str)
+        if len(dep_axioms) > 0:
+            for axiom_fmla in self.instantiator.protocol_interpreted_atoms_fmlas:
+                if str(axiom_fmla) in dep_axioms:       # member(n,q) in axioms_str
+                    axiom_terms.append(axiom_fmla)
+                elif '~'+str(axiom_fmla) in dep_axioms: # ~member(n,q) not in axioms_str
+                    axiom_terms.append(il.Not(axiom_fmla))
+        if self.instantiator.axiom_fmla != None:
+            axiom_terms.append(self.instantiator.axiom_fmla)
+        return il.And(*axiom_terms)
+
+    def init_quantifier_inference_check_solver_smt(self, primes : List[Prime], quantified_orbit):
+        def_fmla       = self._get_definition_formula()
+        axiom_fmla     = self._get_axiom_formula()
+        primes_clauses = [self._get_prime_clause(prime) for prime in primes]
+        neq_term       = il.Not(il.Equals(il.And(*primes_clauses), quantified_orbit)) # do not instantiate qorbit, let SMT solver do it
+        check_fmla     = il.And(*[def_fmla, axiom_fmla, neq_term])
+        self.qinfer_checker  = slv.z3.Solver()
+        self.qinfer_checker.add(slv.formula_to_z3(check_fmla))
+    
+    def quantifier_inference_check_smt(self):
+        # TODO: replace instantiate quantifier for SAT solving to SMT solving for all checks?
+        res = self.qinfer_checker.check()
+        assert(res == slv.z3.unsat or slv.z3.sat)
+        return True if res == slv.z3.unsat else False
 
 
 

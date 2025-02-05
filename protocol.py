@@ -3,9 +3,10 @@ from typing import Dict,List,Set, Tuple
 from itertools import permutations, product
 from ivy import ivy_logic as il
 from transition_system import TransitionSystem
-from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
+from finite_ivy_instantiate import FiniteIvyInstantiator
+from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM, ForwardMode
 from verbose import *
-from math import factorial as fact
+import numpy as np
 
 # utils
 def format_relational_atom(function: str, args: List[str]) -> str:
@@ -39,11 +40,26 @@ def new_insert(obj, obj_set: Set[str]) -> bool:
         return True
     return False
 
+def get_func_args(atom):
+    args = None
+    if il.is_eq(atom):
+        lhs = atom.args[0]
+        args = []
+        if isinstance(lhs, il.App):
+            args += list(lhs.args)
+        args.append(atom.args[1])
+        args = tuple(args)
+    elif isinstance(atom, il.App) or il.is_boolean(atom):
+        args = atom.args
+    return args
+
 class Protocol():
     # static data
-    def __init__(self, options : QrmOptions, filename='') -> None:
+    def __init__(self, options : QrmOptions) -> None:
         ## helper
-        self.lines         = []
+        self.lines   = []
+        self.header  = []
+        self.options = options
         # member datas
         self.sorts            : List[str]            = [] # sort id -> sort name 
         self.sort_constants   : List[List[str]]      = [] # sort id -> constant names
@@ -51,152 +67,84 @@ class Protocol():
         self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
         self.predicates       : Dict[str,List[str]]  = {} # (function/constant name, [argsort1, argsort2, ..])
         self.atom_num         : int                  = 0
+        self.state_atom_num     : int                = 0
+        self.interpreted_atom_num : int              = 0
         self.atoms            : List[str]            = [] # atom id -> atom name
-        self.atoms_fmla                              = []
+        self.state_atoms                             = [] # atoms = state_atoms + interpreted_atoms
+        self.interpreted_atoms                       = []
+        self.atoms_fmla                              = [] # atoms_fmla = state_atoms_fmla + interpreted_atoms_fmla
+        self.state_atoms_fmla                        = []
+        self.interpreted_atoms_fmla                  = []
+        self.interpreted_atoms_values                = {} 
         self.atom_Name2Id     : Dict[str,int]        = {} # atom name -> atom id
         self.atom_sig         : List[List[str]]      = [] # atom id -> [predname, arg1, arg2,..]
         self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
-        self.reachable_states : List[str] = [] 
-        self.repr_states      : List[int] = []
-        self.quotient_reachable_states : List[str] = []
         self._sorts_permutations  = []              
-        self.options = options
-
-        # initialization 
-        if filename != '':
-            self.read(filename)
-            self._init_sorts_permutations()
-
-    def _read_sort(self, line : str) -> None:
-        # read '.s [sort_name] [constant1] [constant2] ...'
-        # .s node n1 n2
-        sort_id     = len(self.sorts)
-        (sort, constants) = split_head_tail(line, head=1)
-        self.sorts.append(sort)
-        self.sort_constants.append(constants)
-        self.sort_Name2Id[sort] = sort_id
-        for (id, e) in enumerate(constants):
-            self.constant_Name2Id[e]=id
-
-    def _read_dependent_sort(self, line : str) -> None:
-        # read '.d [member sort] [quorum1] [quorum2] ...' 
-        # .d node quorum-n1-n2 quorum-n1-n3 quorum-n2-n3 ...
-        (sort, sets) = split_head_tail(line, head=1) 
-        sort_id = self.sort_Name2Id[sort]
-        for name in sets:
-            self.set_name2elem_sort_id[name] = sort_id
-
-    def _read_predicate(self, line : str) -> None:
-        # read '.p [predicate_name] [argsort1] [argsort2] ...'
-        # .p hold node
-        (pred, arg_sorts) = split_head_tail(line, head=1)
-        self.predicates[pred] = arg_sorts 
-
-    def _read_atoms(self, line:str) -> None:
-        # read '.a [atom1] [atom2] ...'
-        # .a hold(n1) hold(n2)
-        atoms = line.split()[1:] # remove '.a'
-        self.atom_num = len(atoms)
-        assert( len(atoms) == self.atom_num )
-        for (id,atom) in enumerate(atoms):
-            predicate = '' 
-            args = []
-            match_pred    = re.search(r'([\w.]+)\(([^)]+)\)',  atom)
-            match_eq      = re.search(r'([\w.]+)=([^)]+)', atom)
-            match_func_eq = re.search(r'([\w.]+)\((\w+)\)=([^)]+)', atom)
-            if match_func_eq: # case 4: general function
-                predicate = match_func_eq.group(1) + '='
-                args      = match_func_eq.group(2).split(', ') + match_func_eq.group(3).split(', ')
-            elif match_pred: # case 3: predicate 
-                predicate = match_pred.group(1)
-                args      = match_pred.group(2).split(',')
-            elif match_eq: # case 1
-                predicate = match_eq.group(1) + '='
-                args      = match_eq.group(2).split(',')
-            else: # case 2: bool
-                predicate = atom.strip('( )')
-
-            if match_func_eq or match_eq:
-                atom = format_equal_atom(predicate, args)
-            else:
-                atom = format_relational_atom(predicate, args)
-            self.atoms.append(atom)
-            self.atom_Name2Id[atom]  = id
-            signature = [predicate] + args
-            self.atom_sig.append(signature)
-
-    def _read_states(self, line:str, states=set()) -> None:
-        # read '[reachable_state]'
-        # 010-
-        state = line.split()[0]
-        assert( len(state) == self.atom_num )
-        if not state in states:
-            self.reachable_states.append(state)
-
-    def read(self, filename: str) -> None:
-        with open(filename, 'r') as file:
-            states = set() # avoid reading repeated state
-            for line in file:
-                if line.startswith('.s'):
-                    self._read_sort(line)
-                if line.startswith('.d'):
-                    self._read_dependent_sort(line)
-                if line.startswith('.p'):
-                    self._read_predicate(line)                    
-                if line.startswith('.a'):
-                    self._read_atoms(line)
-                if not line.startswith('.') and not line.startswith('#'):
-                    self._read_states(line, states)
+        # reachability
+        self.reachable_states : List[str] = [] 
+        self.repr_states      : Set[int]  = set()
+        # equivalence quotient data structures
+        self.atom2equivs      = {} 
+        self.atom2complements = {}
+        self.remove_atom_ids  = set()
+        self.quotient_reachable_states : List[str] = [] 
 
     def init_sort(self, tran_sys : TransitionSystem) -> None:
-        for (sort, sort_consts) in tran_sys.sort2consts.items():
+        for sort in tran_sys.sort2consts.keys():
             sort_name   = tran_sys.get_sort_name_from_finite_sort(sort)
             consts_str  = tran_sys.get_sort_constants_str(sort)
-            line = '.s ' + sort_name + ' ' + ' '.join(consts_str)
-            self._read_sort(line) 
+            sort_id     = len(self.sorts)
+            self.sorts.append(sort_name)
+            self.sort_constants.append(consts_str)
+            self.sort_Name2Id[sort_name] = sort_id
+            for (const_id, const) in enumerate(consts_str):
+                self.constant_Name2Id[const]=const_id
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(line)
+                self.header.append(f'sort: {sort_name}={consts_str}')
 
     def init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
         for (set_sort, dep_type) in tran_sys.dep_types.items():
             elem_sort = tran_sys.get_dependent_element_sort(set_sort)
-            line = '.d ' +  tran_sys.get_sort_name_from_finite_sort(elem_sort)
+            elem_sort_name = tran_sys.get_sort_name_from_finite_sort(elem_sort)
+            sets = []
             for set_id in range(len(dep_type.sets)):
-                line  += ' ' + tran_sys.get_set_label(set_sort, set_id) 
-            self._read_dependent_sort(line)
-            if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(line) 
+                sets.append(tran_sys.get_set_label(set_sort, set_id))
+            sort_id = self.sort_Name2Id[elem_sort_name]
+            for name in sets:
+                self.set_name2elem_sort_id[name] = sort_id
 
     def init_predicate(self, tran_sys : TransitionSystem) -> None:
         for var in tran_sys.symbols:
-            line  = '.p ' + str(var)
-            eq_term    = ''
+            pred_name  = str(var)
             param_list = []
             var_type = var.sort
             if not il.is_function_sort(var_type):
                 if not il.is_boolean_sort(var_type): # case1: (start_node = n0)
                     param_list = [tran_sys.get_sort_name_from_finite_sort(var_type)]
-                    eq_term    = '='
+                    pred_name += '='
                 # else case2: bool type, no parameters 
             else: # case3: predicate/case 4: function (predicate is a function with return type bool)
                 param_list =  [tran_sys.get_sort_name_from_finite_sort(sort) for sort in list(var_type.dom)]
             # case 4: general function (dst(p0) = n0)
             if (il.is_function_sort(var_type) and
                not il.is_boolean_sort(var_type.rng)): 
-               eq_term = '='
+               pred_name += '='
                param_list.append(tran_sys.get_sort_name_from_finite_sort(var_type.rng))
-            
-            line += eq_term
-            if len(param_list) > 0:
-                line += ' ' + ' '.join(param_list)
-            
-            self._read_predicate(line)
+            param_list = tuple(param_list) 
+            self.predicates[pred_name] = param_list
             if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append(line)
+                self.header.append(f'predicate: {pred_name}{param_list}')
 
-    def init_atoms(self, atoms, atoms_fmla) -> None:
-        line = '.a'
-        for atom in atoms:
+    def init_atoms(self, state_atoms, state_atoms_fmla, interpreted_atoms, interpreted_atoms_fmla) -> None:
+        atoms      = state_atoms + interpreted_atoms
+        atoms_fmla = state_atoms_fmla + interpreted_atoms_fmla
+        self.atom_num               = len(atoms)
+        self.state_atom_num         = len(state_atoms)
+        self.interpreted_atom_num   = len(interpreted_atoms)
+        self.atoms_fmla             = atoms_fmla
+        self.state_atoms_fmla       = state_atoms_fmla
+        self.interpreted_atoms_fmla = interpreted_atoms_fmla
+        for atom_id, atom in enumerate(atoms):
             predicate = '' 
             args     = []
             match_pred    = re.search(r'([\w.]+)\(([^)]+)\)',  atom)
@@ -218,17 +166,28 @@ class Protocol():
                 atom = format_equal_atom(predicate, args)
             else:
                 atom = format_relational_atom(predicate, args)
-            line +=  ' ' + atom
-        self._read_atoms(line)
-        self.atoms_fmla = atoms_fmla
-        if self.options.writeReach or self.options.verbosity > 3:
-            self.lines.append(line)
+            self.atoms.append(atom)
+            self.atom_Name2Id[atom] = atom_id
+            signature = [predicate] + args
+            self.atom_sig.append(signature)
+        self.state_atoms          = self.atoms[:self.state_atom_num]
+        self.interpreted_atoms    = self.atoms[self.state_atom_num:]
 
-    def init_reachable_states(self, states) -> None:
+    def init_reachable_states(self, interpreted_state, states) -> None:
+        self.interpreted_atoms_values = {atom:val for (atom,val) in zip(self.interpreted_atoms, interpreted_state)}
         for state in states:
-            self._read_states(state)
+            assert( len(state) == self.state_atom_num )
+            self.reachable_states.append(state)
             if self.options.writeReach or self.options.verbosity > 3:
                 self.lines.append(state)
+        if self.options.writeReach or self.options.verbosity > 3:
+            self.header.append(f'interpreted atoms: {self.interpreted_atoms_values}')
+            self.header.append(f'state atoms: {self.state_atoms}')
+
+    def init_representative_states(self, repr_states : List[int]) -> None:
+        self.repr_states = set(repr_states)
+        if self.options.writeReach or self.options.verbosity > 3:
+            self.header.append(f'representative states : {', '.join([str(s) for s in repr_states])}')
 
     def init_sorts_permutations(self, tran_sys : TransitionSystem) -> None:
         all_sorts_permutations = []
@@ -246,22 +205,12 @@ class Protocol():
     def write_reachability(self) -> None:
         filename = self.options.instance_name + '.' + self.options.instance_suffix + '.reach'
         outF = open(filename, "w")
+        for line in self.header:
+            outF.write(line+'\n')
         for line in self.lines:
             outF.write(line+'\n')
-        outF.write('.e\n')
         outF.close()
 
-    def print_verbose(self, tran_sys) -> None:
-        sym_group_order = 1
-        for sort_id, constants in enumerate(self.sort_constants):
-            sort_name     = self.sorts[sort_id]
-            if not tran_sys.get_finite_sort_from_sort_name(sort_name) in tran_sys.dep_types:
-                sym_group_order *= fact(len(constants))
-        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        vprint(self.options, '\n'.join(self.lines), 3)
-        vprint(self.options, f'[FW NOTE]: number of variables: {self.atom_num}', 2)
-        vprint(self.options, f'[FW NOTE]: symmetric group order: {sym_group_order}', 2)
-    
     def _get_renamed_arguments(self, permutation, sort_id, arguments) -> str:
         new_constant = []
         for const in arguments:
@@ -305,12 +254,107 @@ class Protocol():
             if not atom in self.atom_Name2Id: # invalid permutation
                 return []
             nid = self.atom_Name2Id[atom]
+            assert(nid < self.state_atom_num)
             nvalues[nid] = val 
         return nvalues
 
+    #------------------------------------------------------------
+    # Protocol: equivalence reduction 
+    #------------------------------------------------------------
+    def _get_state_array_from_state_list(self):
+        # Convert list of strings to a 2D numpy array
+        state_list = self.reachable_states
+        return np.array([list(s) for s in state_list])
+
+    def _set_equivalent_complement_atoms(self, state_array):
+        atom_num = self.state_atom_num
+        for i in range(atom_num-1):
+            if i in self.remove_atom_ids:
+                continue
+            for j in range(i+1, atom_num):
+                if j in self.remove_atom_ids:
+                    continue
+                atom_i = self.atoms_fmla[i] 
+                atom_j = self.atoms_fmla[j]
+                if get_func_args(atom_i) != get_func_args(atom_j):
+                    continue
+                if np.array_equal(state_array[:, i], state_array[:, j]):
+                    if not atom_i in self.atom2equivs:
+                        self.atom2equivs[atom_i] = []
+                    self.atom2equivs[atom_i].append(atom_j)
+                    self.remove_atom_ids.add(j)
+                else: 
+                    str_i = ''.join(state_array[:, i])
+                    str_j = ''.join(state_array[:, j])
+                    if self.options.forward_mode == ForwardMode.BDD_Symbolic:
+                        if '-' in str_i or '-' in str_j:
+                            continue
+                    if int(str_i, 2) + int(str_j, 2) == int('1'*atom_num, 2):  # complement
+                        if not atom_i in self.atom2complements:
+                            self.atom2complements[atom_i] = []
+                        self.atom2complements[atom_i].append(atom_j)
+                        self.remove_atom_ids.add(j)
+
+    def _set_quotient_reachabiliy(self, state_array):
+        if len(self.remove_atom_ids) == 0:
+            self.quotient_reachable_states = self.reachable_states
+        else:
+            for atom_id in self.remove_atom_ids:
+                state_array[:, atom_id] = '-'
+            self.quotient_reachable_states = [''.join(row) for row in state_array.tolist()]
+
+    def _reduce_equivalent_atoms(self, tran_sys : TransitionSystem):
+        # equivalence reduced states (post-processing)
+        state_array = self._get_state_array_from_state_list()
+        self._set_equivalent_complement_atoms(state_array)
+        self._set_quotient_reachabiliy(state_array)
+        tran_sys.set_atom_equivalence_constraints(self.atom2equivs, self.atom2complements)
+
+    def _print_equiv_reduction_info(self) -> None:
+        vprint(self.options, f'[FW NOTE]: equivalent atoms', 2)
+        for atom, equivs in self.atom2equivs.items():
+            vprint(self.options, f'\t{str(atom)}: {[str(e) for e in equivs]}', 2)
+        vprint(self.options, f'[FW NOTE]: complement atoms', 2)
+        for atom, cmpls in self.atom2complements.items():
+            vprint(self.options, f'\t{str(atom)}: {[str(c) for c in cmpls]}', 2)
+        vprint(self.options, f'[FW NOTE]: remove_atom_ids: {self.remove_atom_ids}', 2)
+
+    #------------------------------------------------------------
+    # Protocol: public methods 
+    #------------------------------------------------------------
+    def init_protocol_from_file(self, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator):
+        vprint_title(self.options, 'Initializing reachability from file', 5)
+        self.init_sort(tran_sys)
+        self.init_dependent_sort(tran_sys)
+        self.init_predicate(tran_sys)
+        self.init_atoms(instantiator.protocol_state_atoms, instantiator.protocol_state_atoms_fmlas,
+                        instantiator.protocol_interpreted_atoms, instantiator.protocol_interpreted_atoms_fmlas)
+        self.init_sorts_permutations(tran_sys)
+        filename = self.options.instance_name + '.' + self.options.instance_suffix + '.reach'
+        with open(filename, 'r') as reach_file: 
+            for line in reach_file:
+                if (line.startswith('sort') or 
+                    line.startswith('predicate') or 
+                    line.startswith('interpreted atoms') or 
+                    line.startswith('state atoms')):
+                    continue
+                elif line.startswith('representative states'):
+                    repr_states_str  = line.strip().split(' : ')[1].split(', ')
+                    repr_states_int  = [int(t) for t in repr_states_str]
+                    self.repr_states = set(repr_states_int)
+                else:
+                    state = line.strip()
+                    assert( len(state) == self.state_atom_num )
+                    self.reachable_states.append(state)
+        vprint(self.options, 'OK', 5)
+
+    def reduce_equivalent_atoms(self, tran_sys : TransitionSystem):
+        self._reduce_equivalent_atoms(tran_sys)
+        self._print_equiv_reduction_info()
+
     def all_permutations(self, values : List[str]) -> List[List[str]]:
         # values is a list of '0', '1', '-'
-        assert( len(values) == self.atom_num )
+        assert( len(values) == self.state_atom_num ) # only permute the mutable part
         values_list = [] 
         values_hash  = set() # avoid repeated insertion
         for perm in self._sorts_permutations:
@@ -318,20 +362,3 @@ class Protocol():
             if nvalues and new_insert(nvalues, values_hash):
                 values_list.append(nvalues)
         return values_list 
-
-    def set_quotient_reachabiliy(self, remove_atom_ids : Set[int]):
-        if len(remove_atom_ids) == 0:
-            self.quotient_reachable_states = self.reachable_states
-        else:
-            self.quotient_reachable_states = ['']*len(self.reachable_states)
-            for state_id, state in enumerate(self.reachable_states): 
-                for atom_id in range(self.atom_num):
-                    if atom_id in remove_atom_ids:
-                        self.quotient_reachable_states[state_id] += '-'
-                    else:
-                        self.quotient_reachable_states[state_id] += state[atom_id]
-            if self.options.writeReach or self.options.verbosity > 3:
-                self.lines.append('')
-                self.lines.append('------ quotient reachability -------')
-                self.lines.append('')
-                self.lines += self.quotient_reachable_states

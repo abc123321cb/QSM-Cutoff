@@ -1,11 +1,37 @@
+import os
 from typing import List,Set
 from transition_system import TransitionSystem
-from ivy import ivy_logic as il
 from prime import *
 from cover_constraints import CoverConstraints
 from finite_ivy_instantiate import FiniteIvyInstantiator
-from util import QrmOptions
+from util import QrmOptions, ForwardMode
 from verbose import *
+
+class Rmin():
+    # static members
+    definitions  = {}
+    eq_relations = []
+    def_lines = []
+    eq_lines  = []
+    
+    def __init__(self, solution, orbits):
+        self.solution    = solution
+        self.invariants  = [orbits[i].quantified_form for i in solution] 
+        self.invar_lines = []
+        for i in solution:
+            line = f'invariant [invar_{i}] {str(orbits[i].quantified_form)} # qcost: {orbits[i].qcost}'
+            self.invar_lines.append(line)
+        
+    @staticmethod
+    def set_definitions_and_eq_relations(tran_sys : TransitionSystem):
+        Rmin.definitions  = tran_sys.definitions
+        Rmin.eq_relations = list(tran_sys.closed_atom_equivalence_constraints)
+        for def_symbol, def_ast in tran_sys.definitions.items():
+            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
+            Rmin.def_lines.append(line)
+        for i, atom_equiv in enumerate(tran_sys.closed_atom_equivalence_constraints):
+            line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation'
+            Rmin.eq_lines.append(line)
 
 def remove_target_from_source(source : list, target : set) -> list:
     temp = source.copy()
@@ -41,8 +67,12 @@ class Minimizer():
         self.pending    : List[int] = list(range(len(orbits)))
         self.solution   : List[int] = []
         self.optimal_solutions : List[List[int]] = []
+        self.rmin          = []
         self.options = options
 
+    #------------------------------------------------------------
+    # Minimizer: minimization 
+    #------------------------------------------------------------
     def _get_cost(self) -> int:
         s = sum([self.orbits[i].qcost for i in self.solution])
         vprint(self.options, f'\nSolution : {self.solution} has cost {s}.', 5)
@@ -51,12 +81,12 @@ class Minimizer():
     def _get_max_coverage_id(self) -> int:
         max_val = 0
         max_id  = -1
-        for id in self.pending:
-            orbit = self.orbits[id]
-            coverage = self.cover.coverage[id]
+        for i in self.pending:
+            orbit = self.orbits[i]
+            coverage = self.cover.coverage[i]
             if coverage > max_val:
                 max_val = coverage
-                max_id  = id
+                max_id  = i
         assert(max_val > 0 and max_id >=0)
         return max_id
 
@@ -110,10 +140,10 @@ class Minimizer():
     
     def _collect_essentials(self) -> Set[int]:
         essentials = set()
-        for id in self.pending:
-            orbit = self.orbits[id]
+        for i in self.pending:
+            orbit = self.orbits[i]
             if(self.cover.is_essential(orbit, self.pending, self.solution)):
-                essentials.add(id)
+                essentials.add(i)
         if self.options.verbosity >=5:
             assert(len(self.decision_stack))
             top = self.decision_stack[-1]
@@ -124,11 +154,11 @@ class Minimizer():
         vprint(self.options, f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
         covered = set()
         self.cover.reset_coverage()
-        for id in self.pending:
-            orbit = self.orbits[id]
+        for i in self.pending:
+            orbit = self.orbits[i]
             coverage = self.cover.get_coverage(orbit, self.solution)
             if coverage == 0:
-                covered.add(id)
+                covered.add(i)
         if self.options.verbosity >=5:
             assert(len(self.decision_stack))
             top = self.decision_stack[-1]
@@ -211,49 +241,9 @@ class Minimizer():
         self._backtrack()
         return 
 
-    def print_final_solutions(self) -> None:
-        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        for (sid, solution) in enumerate(self.optimal_solutions):
-            vprint(self.options, f'Solution {sid} : {solution} (length = {len(solution)})', 3)
-            costs = [self.orbits[i].qcost for i in solution]
-            vprint(self.options, f'Total cost : {sum(costs)} (individual cost : {costs})', 3)
-            for def_symbol, def_ast in self.tran_sys.definitions.items():
-                vprint(self.options, f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition', 3)
-            for i, atom_equiv in enumerate(self.tran_sys.closed_atom_equivalence_constraints):
-                vprint(self.options, f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation', 3)
-            for id in solution:
-                vprint(self.options, f'invariant [invar_{id}] {str(self.orbits[id].quantified_form)} # qcost: {self.orbits[id].qcost}', 3)
-            vprint(self.options, '\n', 3)
-        vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 2)
-        
-    def get_final_invariants(self) -> List[str]:
-        invariants = []
-        assert(len(self.optimal_solutions) >=1 )
-        solution = self.optimal_solutions[0]
-        total_cost = 0
-        for def_symbol, def_ast in self.tran_sys.definitions.items():
-            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
-            invariants.append(line)
-        for i, atom_equiv in enumerate(self.tran_sys.closed_atom_equivalence_constraints):
-            line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation'
-            invariants.append(line)
-        for id in solution:
-            total_cost += self.orbits[id].qcost
-            line = f'invariant [invar_{id}] {str(self.orbits[id].quantified_form)} # qcost: {self.orbits[id].qcost}'
-            invariants.append(line)
-        vprint(self.options, f'[MIN NOTE]: number of invariants in minimal solution: {len(solution)}', 2)
-        vprint(self.options, f'[MIN NOTE]: total qcost: {total_cost}', 2)
-        vprint(self.options, f'[MIN NOTE]: maximum branch and bound depth: {self.bnb_max_depth}', 2)
-        return invariants
-
-    def get_minimal_invariants(self) -> List[str]:
-        if self.options.all_solutions:
-            self._solve_all()
-        else:
-            self._solve_one()
-        self.print_final_solutions()
-        return self.get_final_invariants()
-
+    #------------------------------------------------------------
+    # Minimizer: reduction 
+    #------------------------------------------------------------
     def _remove_definition_prime_orbits_from_pending(self) -> Set[int]:
         def_orbits : Set[int]  = set()
         for orbit_id in self.pending:
@@ -264,70 +254,145 @@ class Minimizer():
         vprint(self.options, f'definition primes: {def_orbits}', 5)
         remove_target_from_source(source=self.pending, target=def_orbits)
 
+    #------------------------------------------------------------
+    # Minimizer: helpers 
+    #------------------------------------------------------------
+    def _print_quantifier_inference(self, inference_list) -> None:
+        if self.options.writeQI:
+            prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
+            outF = open(prime_filename, "w")
+            for i in inference_list:
+                orbit = self.orbits[i]
+                outF.write(str(orbit))
+            outF.close()
+        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
+        for i in inference_list:
+            orbit = self.orbits[i]
+            vprint(self.options, str(orbit), 3)
+
+    def print_rmin(self) -> None:
+        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
+        vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 3)
+        vprint(self.options, f'[MIN NOTE]: total qcost: {self.ubound}', 3)
+        vprint(self.options, f'[MIN NOTE]: maximum branch and bound depth: {self.bnb_max_depth}', 3)
+        vprint(self.options, f'Definitions (length={len(Rmin.def_lines)})', 3)
+        for line in Rmin.def_lines:
+            vprint(self.options, line, 3)
+        vprint(self.options, f'Equality Relations (length={len(Rmin.eq_lines)})', 3)
+        for line in Rmin.eq_lines:
+            vprint(self.options, line, 3)
+        for (sid, rmin) in enumerate(self.rmin):
+            vprint(self.options, f'Solution {sid} : {rmin.solution} (length = {len(rmin.solution)})', 3)
+            for line in rmin.invar_lines:
+                vprint(self.options, line, 3)
+            vprint(self.options, '\n', 3)
+
+    def set_rmin(self) -> None:
+        Rmin.set_definitions_and_eq_relations(self.tran_sys)
+        for solution in self.optimal_solutions:
+            self.rmin.append(Rmin(solution, self.orbits))
+
+    def write_ivy_files(self) -> None:
+        for rmin_id, rmin in enumerate(self.rmin):
+            ivy_name = self.options.instance_name + '.' + self.options.instance_suffix + f'.{rmin_id}'+ '.ivy'
+            cp_cmd = f'cp {self.options.ivy_filename} {ivy_name}'
+            os.system(cp_cmd)
+            comment_invar_cmd = f"sed -i '/invariant/s/^/#/' {ivy_name}"
+            os.system(comment_invar_cmd) # comment out the existing invariants, including safety property
+            ivy_file = open(ivy_name, 'a')
+            ivy_file.write('\n')
+            invariants = Rmin.def_lines + Rmin.eq_lines + rmin.invar_lines
+            for line in invariants:
+                ivy_file.write(line+'\n')
+            ivy_file.close()
+
+    #------------------------------------------------------------
+    # Minimizer: public core methods
+    #------------------------------------------------------------
     def reduce_redundant_prime_orbits(self):
         self._remove_definition_prime_orbits_from_pending()
         self._new_level()
         self._reduce()
 
-    def quantifier_inference(self, atoms) -> None:
+    def quantifier_inference(self, instantiator: FiniteIvyInstantiator, atoms) -> None:
         from qinference import QInference, QPrime
-        QInference.setup(atoms, self.tran_sys)
+        QInference.setup(atoms, self.tran_sys, instantiator)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
         for orbit_id in inference_list:
             orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
-            qprimes = [QPrime(prime, self.options) for prime in orbit.suborbit_repr_primes]
-            qinf    = QInference(qprimes, self.options)
+            qinf    = QInference(orbit, self.options)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
-            if self.options.check_qi:
-                self.cover.init_quantifier_inference_check_solver(orbit.primes, qclause)
+            if self.options.sanity_check:
+                self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
                 vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
-                if self.cover.quantifier_inference_check():
+                if self.cover.quantifier_inference_check_smt():
                     vprint(self.options, f'[QI_CHECK RESULT]: PASS')
                 else:
                     vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
-
         # output result
-        if self.options.writeQI:
-            prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
-            outF = open(prime_filename, "w")
-            for id in inference_list:
-                orbit = self.orbits[id]
-                outF.write(str(orbit))
-            outF.close()
-        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
-        for id in inference_list:
-            orbit = self.orbits[id]
-            vprint(self.options, str(orbit), 3)
+        self._print_quantifier_inference(inference_list)
         self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
         self.ubound   = self.max_cost
 
-    def minimization_check(self, protocol : Protocol):
-        quantified_orbits = [self.orbits[orbit_id].quantified_form for orbit_id in self.optimal_solutions[0]]
-        self.cover.init_minimization_check_solver(quantified_orbits)
+    def solve_rmin(self) -> List[str]:
+        if self.options.all_solutions:
+            self._solve_all()
+        else:
+            self._solve_one()
+        self.set_rmin()
+        self.print_rmin()
+        self.write_ivy_files()
+
+    def _compare_symmetry_quotient(self, sol_id, invariants, protocol : Protocol):
+        vprint(self.options, f'Minimization check for Solution {sol_id}')
+        self.cover.init_minimization_check_solver(invariants, protocol)
         (result, values)  = self.cover.get_minimization_check_minterm()
+        model_repr_states = set()
+        model_match = True
         while result:
             repr_int = int(''.join(values), 2)
-            if result:
-                for nvalues in protocol.all_permutations(values):
-                    repr_int = min(int(''.join(nvalues), 2), repr_int)
-                    self.cover.block_minimization_check_minterm(nvalues)
+            for nvalues in protocol.all_permutations(values[:protocol.state_atom_num]): # only permute the mutable part
+                nvalues += values[protocol.state_atom_num:]
+                repr_int = min(int(''.join(nvalues), 2), repr_int)
+                self.cover.block_minimization_check_minterm(nvalues)
             if not repr_int in protocol.repr_states:
-                bit_str = '{0:b}'.format(repr_int)
-                vprint(self.options, 'Found a state not in reachability')
-                vprint(self.options, f'decimal: {repr_int}')
-                vprint(self.options, f'binary: {bit_str}')
-                vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
-                return False
-            protocol.repr_states.remove(repr_int)
+                bit_str = '{0:0{1}b}'.format(repr_int, protocol.atom_num)[:protocol.state_atom_num]
+                vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}')
+                model_match = False 
+            model_repr_states.add(repr_int)
             (result, values) = self.cover.get_minimization_check_minterm()
 
-        if not len(protocol.repr_states) == 0:
-            vprint(self.options, 'Found states not included in solution')
-            vprint(self.options, f'{protocol.repr_states}')
+        difference = protocol.repr_states - model_repr_states
+        if len(difference) > 0:
+            vprint(self.options, 'Found states in reachability not in Rmin')
+            vprint(self.options, f'{difference}')
+            model_match = False
+        if model_match:
+            vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
+        else:
+            vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
+        return model_match 
+
+    def _equivalence_checking(self, sol_id, invariants, protocol : Protocol) -> bool:
+        vprint(self.options, f'Minimization check for Solution {sol_id}')
+        self.cover.init_minimization_check_solver(invariants, protocol)
+        (result, _)  = self.cover.get_minimization_check_minterm()
+        if result: # Non-equal
             vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
             return False
-        vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
-        return True
+        else:
+            vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
+            return True
+
+    def minimization_check(self, protocol : Protocol):
+        self.cover.init_minimization_check_clauses()
+        result = True
+        for sol_id, solution in enumerate(self.optimal_solutions):
+            invariants = [self.orbits[orbit_id].quantified_form for orbit_id in solution]
+            if self.options.forward_mode == ForwardMode.Sym_DFS:
+                result = result and self._compare_symmetry_quotient(sol_id, invariants, protocol)
+            else:
+                result = result and self._equivalence_checking(sol_id, invariants, protocol)

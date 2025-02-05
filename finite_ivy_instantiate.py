@@ -13,19 +13,19 @@ InstantiateMode  = Enum('InstantiateMode', ['vars', 'equals', 'non_bools'])
 class FiniteIvyInstantiator():
     def __init__(self, tran_sys : TransitionSystem):
         self._tran_sys     = tran_sys
-        self._axiom_vars  = []  # axiom non-defined + axiom defined
-        self._state_vars  = []  # state non-defined + state defined
-        self._indep_vars  = []  # state + axiom non-defined
+        self._interpreted_vars  = []  
+        self._state_vars        = []  
+        self._indep_vars        = [] # non-defined state vars 
 
         self._initialize()
 
         # instantiated
         # contains atomic predicate or non-boolean output functions
-        self._instantiated_axiom_vars       = [] 
+        self._instantiated_interpreted_vars = [] 
         self._instantiated_indep_vars       = []
         # contains either atomic predicate or equality term (f=g)
-        self._instantiated_axiom_equals     = [] 
-        self._instantiated_state_equals     = []
+        self._instantiated_interpreted_equals = [] 
+        self._instantiated_state_equals       = []
         # contains non-boolean output functions only
         self._instantiated_indep_non_bools  = []
         # actions
@@ -37,11 +37,14 @@ class FiniteIvyInstantiator():
         # public member 
         # dfs
         self.dfs_state_vars          = []
+        self.dfs_interpreted_vars    = []
         # protocol
-        self.protocol_atoms          = []
-        self.protocol_axioms         = []
-        self.protocol_atoms_fmlas    = []        
-        self.protocol_axioms_fmlas   = []
+        self.protocol_state_atoms             = []
+        self.protocol_interpreted_atoms       = []
+        self.protocol_state_atoms_fmlas       = []        
+        self.protocol_interpreted_atoms_fmlas = []
+        self.protocol_atoms                   = []
+        self.protocol_atoms_fmlas             = []
         # ivy
         self.ivy_state_vars          = []
         self.ivy_non_bool_state_vars = {} 
@@ -56,9 +59,9 @@ class FiniteIvyInstantiator():
 
         self._set_pretty_instantiations()
 
-    def _init_axiom_vars(self):
-        self._axiom_vars = list(self._tran_sys.axiom_symbols)
-        self._axiom_vars.sort(key=lambda v: str(v))
+    def _init_interpreted_vars(self):
+        self._interpreted_vars = list(self._tran_sys.interpreted_symbols)
+        self._interpreted_vars.sort(key=lambda v: str(v))
 
     def _init_state_vars(self):
         self._state_vars = list(self._tran_sys.state_symbols)
@@ -66,14 +69,13 @@ class FiniteIvyInstantiator():
 
     def _init_independent_vars(self):
         for symbol in self._tran_sys.state_symbols:
-            if (symbol not in self._tran_sys.axiom_symbols and
-                symbol not in self._tran_sys.definitions.keys()):
+            assert(symbol not in self._tran_sys.interpreted_symbols)
+            if (symbol not in self._tran_sys.definitions.keys()):
                 self._indep_vars.append(symbol)
         self._indep_vars.sort(key=lambda v: str(v))
-        self._indep_vars += self._axiom_vars
 
     def _initialize(self):
-        self._init_axiom_vars()
+        self._init_interpreted_vars()
         self._init_state_vars()
         self._init_independent_vars()
 
@@ -127,19 +129,19 @@ class FiniteIvyInstantiator():
         return instantiated_terms
 
     def _get_all_parameterized_actions(self):
-        actions = self._tran_sys.exported_actions
+        actions = self._tran_sys.exported_action_symbols
         parameterized_actions = []
         for action in actions:
             parameterized_actions += self._get_instantiated_functions(action, mode=InstantiateMode.vars)
         return parameterized_actions
 
     def _instantiate(self):
-        self._instantiated_axiom_vars      = self._get_instantiated_terms(terms=self._axiom_vars, mode=InstantiateMode.vars)
-        self._instantiated_indep_vars      = self._get_instantiated_terms(terms=self._indep_vars, mode=InstantiateMode.vars)
-        self._instantiated_axiom_equals    = self._get_instantiated_terms(terms=self._axiom_vars, mode=InstantiateMode.equals)
-        self._instantiated_state_equals    = self._get_instantiated_terms(terms=self._state_vars, mode=InstantiateMode.equals)
-        self._instantiated_indep_non_bools = self._get_instantiated_terms(terms=self._indep_vars, mode=InstantiateMode.non_bools)
-        self._instantiated_actions         = self._get_all_parameterized_actions()
+        self._instantiated_interpreted_vars   = self._get_instantiated_terms(terms=self._interpreted_vars, mode=InstantiateMode.vars)
+        self._instantiated_indep_vars       = self._get_instantiated_terms(terms=self._indep_vars,     mode=InstantiateMode.vars)
+        self._instantiated_interpreted_equals = self._get_instantiated_terms(terms=self._interpreted_vars, mode=InstantiateMode.equals)
+        self._instantiated_state_equals     = self._get_instantiated_terms(terms=self._state_vars,     mode=InstantiateMode.equals)
+        self._instantiated_indep_non_bools  = self._get_instantiated_terms(terms=self._indep_vars,     mode=InstantiateMode.non_bools)
+        self._instantiated_actions          = self._get_all_parameterized_actions()
 
     def _get_dfs_variables_from_instantiated_equals(self, instantiated_equals):
         pretty_equals   = []
@@ -170,17 +172,18 @@ class FiniteIvyInstantiator():
         return pretty_dfs_vars
 
     def _set_dfs_variables(self):
-        self.dfs_state_vars = self._get_dfs_variables_from_instantiated_equals(self._instantiated_state_equals + self._instantiated_axiom_equals)
+        self.dfs_state_vars     = self._get_dfs_variables_from_instantiated_equals(self._instantiated_state_equals)
+        self.dfs_interpreted_vars = self._get_dfs_variables_from_instantiated_equals(self._instantiated_interpreted_equals)
 
     def _set_protocol_atoms(self):
-        atoms = self._instantiated_state_equals + self._instantiated_axiom_equals
-        for atom in atoms:
-            self.protocol_atoms.append(str(atom))
-        self.protocol_atoms_fmlas  = atoms 
-        axioms = self._instantiated_axiom_equals
-        for axiom in axioms:
-            self.protocol_axioms.append(str(axiom))
-        self.protocol_axioms_fmlas = axioms 
+        for atom in self._instantiated_state_equals:
+            self.protocol_state_atoms.append(str(atom))
+        self.protocol_state_atoms_fmlas = self._instantiated_state_equals
+        for atom in self._instantiated_interpreted_equals:
+            self.protocol_interpreted_atoms.append(str(atom))
+        self.protocol_interpreted_atoms_fmlas = self._instantiated_interpreted_equals
+        self.protocol_atoms       = self.protocol_state_atoms + self.protocol_interpreted_atoms
+        self.protocol_atoms_fmlas = self.protocol_state_atoms_fmlas + self.protocol_interpreted_atoms_fmlas
     
     def _set_ivy_variables(self):
         ivy_vars      = self._instantiated_indep_vars
@@ -256,9 +259,9 @@ class FiniteIvyInstantiator():
                 formula = il.Equals(args[0], args[1])
         return formula
 
-    def _recursive_simplify(self, formula):
+    def recursive_simplify(self, formula):
         assert(not il.is_quantifier(formula))
-        args = [self._recursive_simplify(arg) for arg in formula.args]
+        args = [self.recursive_simplify(arg) for arg in formula.args]
         if isinstance(formula, il.Not):
             if il.is_true(args[0]):
                  return il.Or()
@@ -290,18 +293,37 @@ class FiniteIvyInstantiator():
                 return il.And()
             formula = il.Implies(args[0], args[1])
         elif isinstance(formula, lg.Eq):
-            if (il.is_enumerated(args[0]) and il.is_enumerated(args[1])
-                and str(formula.args[0]) in set(formula.args[0].sort.extension)):  # lhs is one of constant
-                if args[0] == args[1]:
-                    return il.And()
+            if il.is_enumerated(args[0]) and il.is_enumerated(args[1]):
+                constants = set(args[0].sort.extension)
+                if str(args[0]) in constants and str(args[1]) in constants: 
+                    if args[0] == args[1]:
+                        return il.And()
+                    else:
+                        return il.Or()
+                elif str(args[0]) in constants:
+                    return il.Equals(args[1], args[0])
+                elif str(args[1]) in constants:
+                    return il.Equals(args[0], args[1])
                 else:
-                    return il.Or()
+                    assert(0) 
+            elif (il.is_true(args[0]) or il.is_false(args[0])) and (il.is_true(args[1]) or il.is_false(args[1])):
+                return il.And() if args[0] == args[1] else il.Or()
+            elif il.is_true(args[0]) or il.is_false(args[0]):
+                return args[1] if il.is_true(args[0]) else il.Not(args[1])
+            elif  il.is_true(args[1]) or il.is_false(args[1]):
+                return args[0] if il.is_true(args[1]) else il.Not(args[0])
             formula = il.Equals(args[0], args[1])
+        elif isinstance(formula, il.Ite):
+            if il.is_true(args[0]):
+                return args[1]
+            elif il.is_false(args[0]):
+                return args[2]
+            formula = il.Ite(args[0], args[1], args[2])
         return formula
 
     def instantiate_quantifier(self, formula):
         formula = self._recursive_instantiate_quantifier(formula)
-        formula = self._recursive_simplify(formula)
+        formula = self.recursive_simplify(formula)
         return formula
 
     def _set_definitions(self):
@@ -324,7 +346,7 @@ class FiniteIvyInstantiator():
             if not il.is_forall(axiom_fmla) and len(free_vars) > 0:
                 axiom_fmla = il.ForAll(free_vars, axiom_fmla)
             self.axiom_fmla = self.instantiate_quantifier(axiom_fmla)
-            
+
     def _set_pretty_instantiations(self):
         self._set_dfs_variables()
         self._set_protocol_atoms()
@@ -333,4 +355,3 @@ class FiniteIvyInstantiator():
         self._set_dependent_axioms()
         self._set_definitions()
         self._set_axioms()
- 

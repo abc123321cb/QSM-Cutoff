@@ -68,43 +68,32 @@ class SortPartitionSignature_(SortPartitionSignature):
     def __init__(self, class_signatures : List[ClassSignature]):
         SortPartitionSignature.__init__(self, class_signatures)
         # reduced signatures
-        self.reduced_class        : Dict[str, List[ClassSignature]] = {} # group self.class_sigs into classes according to their reduced_class_sig
-        self.reduced_single_class : Set[str] = set() # contains key of reduced_classes whose cardinality = 1
-        self.reduced_multi_class  : Set[str] = set() # contains key reduced_classes whose cardinality > 1
-        self.reduced_single_class_sigs : List[ClassSignature]  = []  
-        self.reduced_multi_class_sigs  : List[ClassSignature]  = []
-        self._set_reduced_class_signatures()
-        self.multi_class_arg_sigs      : Set[str]  = set()
-        self._set_multi_class_argument_signatures()
+        self.identical_classes    : Dict[str, List[ClassSignature]] = {} # group self.class_sigs into classes according to their reduced_class_sig
+        self._set_identical_classes()
+        self.identical_single_classes : Dict[str, ClassSignature] = {}
+        self.identical_multi_classes  : Dict[str, List[ArgumentSignature]] = {} # all arguments that hold the multi-class constants
+        self._set_identical_single_multi_classes()
+        # quantification-pattern inference
+        self.forall_class_sigs : List[ClassSignature] = []
+        self.exists_class_sigs : List[ClassSignature] = []
 
-    def _set_reduced_class_signatures(self):
+    def _set_identical_classes(self):
         for sig in self.class_signatures:
             reduced_sig = sig.get_reduced_signature()
-            if not reduced_sig in self.reduced_class:
-                self.reduced_class[reduced_sig] = []
-            self.reduced_class[reduced_sig].append(sig)
-        for reduced_sig, class_sigs in self.reduced_class.items():
-            if len(class_sigs) == 1:
-                self.reduced_single_class.add(reduced_sig)
-                self.reduced_single_class_sigs += class_sigs
-            else:
-                self.reduced_multi_class.add(reduced_sig)
-                red_class_sigs      = [] 
-                used_red_class_sigs = set()
-                class_sig = class_sigs[0]
-                for arg_sig in class_sig.arg_signatures:
-                    if not arg_sig.get_reduced_signature() in used_red_class_sigs: # modulo func_id
-                        red_class_sigs.append(ClassSignature([arg_sig]))
-                        used_red_class_sigs.add(arg_sig.get_reduced_signature())
-                self.reduced_multi_class_sigs += red_class_sigs
-        assert(len(self.reduced_single_class) + len(self.reduced_multi_class) == len(self.reduced_class))
+            if not reduced_sig in self.identical_classes:
+                self.identical_classes[reduced_sig] = []
+            self.identical_classes[reduced_sig].append(sig)
 
-    def _set_multi_class_argument_signatures(self):
-        for class_sigs in self.reduced_class.values():
-            if len(class_sigs) > 1:
-                for class_sig in class_sigs: 
-                    for arg_sig in class_sig.arg_signatures:
-                        self.multi_class_arg_sigs.add(str(arg_sig))
+    def _set_identical_single_multi_classes(self):
+        for identical_key, class_sigs in self.identical_classes.items():
+            if len(class_sigs) == 1:
+                self.identical_single_classes[identical_key] = class_sigs[0]
+            else:
+                arg_signatures = []
+                for class_sig in class_sigs:
+                    arg_signatures += class_sig.arg_signatures
+                self.identical_multi_classes[identical_key] = arg_signatures 
+        assert(len(self.identical_single_classes) + len(self.identical_multi_classes) == len(self.identical_classes))
 
     def __str__(self):
         return SortPartitionSignature.__str__(self)
@@ -184,29 +173,29 @@ class SigGenerator():
 
 '''
 Given a list of terms with arguments,
-each argument holds a variable
+each argument holds a constant 
 bind each argument signature to the variable it is holding
-different signature may bind to same variable
+different signature may bind to same constant 
 '''
-class VarArgBinding():
+class ConstArgBinding():
     def __init__(self, terms, options):
-        self.sign_func_name2args  : Dict[str, List[il.Variable]] = {}  
+        self.sign_func_name2args  : Dict[str, List[il.Symbol]] = {}  
             # signed function name -> [arg_list1, arg_list2]
-            # each arg_list consists of qvars
+            # each arg_list consists of consts 
         # binding
-        self.qvar2sigs : Dict[il.Variable, ArgumentSignature]  = {}
-        self.sig2qvar  : Dict[str, il.Variable]                = {}
+        self.const2sigs : Dict[il.Symbol, ArgumentSignature]  = {}
+        self.sig2const  : Dict[str, il.Symbol]                = {}
 
         self._initialize(terms)
-        self._bind_each_qvar_to_argument_signatures()
+        self._bind_each_const_to_argument_signatures()
 
-        vprint_title(options, 'VarArgBinding', 5)
+        vprint_title(options, 'ConstArgBinding', 5)
         vprint(options, f'terms: {[str(term) for term in terms]}', 5)
         vprint(options, f'sign_func_name2args: {self.sign_func_name2args}', 5)
-        vprint(options, f'qvar2sigs: {self.qvar2sigs}', 5)
-        vprint(options, f'sig2qvar: {self.sig2qvar}', 5)
+        vprint(options, f'const2sigs: {self.const2sigs}', 5)
+        vprint(options, f'sig2const: {self.sig2const}', 5)
 
-    def _add_signed_func_name_args(self, sfname : str, args : List[il.Variable]):
+    def _add_signed_func_name_args(self, sfname : str, args : List[il.Symbol]):
         if not sfname in self.sign_func_name2args: 
             self.sign_func_name2args[sfname] = [] 
         self.sign_func_name2args[sfname].append(args)
@@ -219,33 +208,33 @@ class VarArgBinding():
             args    = get_func_args(atom) 
             self._add_signed_func_name_args(sfname, args)
 
-    def _bind_qvar_signature_pair(self, qvar : il.Variable, sig : ArgumentSignature):
-        if not qvar in self.qvar2sigs:
-            self.qvar2sigs[qvar] = [] 
-        self.qvar2sigs[qvar].append(sig)
-        self.sig2qvar[str(sig)] = qvar
+    def _bind_const_signature_pair(self, const : il.Symbol, sig : ArgumentSignature):
+        if not const in self.const2sigs:
+            self.const2sigs[const] = [] 
+        self.const2sigs[const].append(sig)
+        self.sig2const[str(sig)] = const 
 
-    def _bind_each_qvar_to_argument_signatures(self):
+    def _bind_each_const_to_argument_signatures(self):
         for sfname, args_list in self.sign_func_name2args.items():
             for func_id, args in enumerate(args_list):
-                for arg_id, qvar in enumerate(args):
-                    sig = ArgumentSignature(qvar.sort, sfname, func_id, arg_id)
-                    self._bind_qvar_signature_pair(qvar, sig)
+                for arg_id, const in enumerate(args):
+                    sig = ArgumentSignature(const.sort, sfname, func_id, arg_id)
+                    self._bind_const_signature_pair(const, sig)
 
     #------------------------------------------------------------
     # public method
     #------------------------------------------------------------
     def get(self):
-        for qvar, arg_sigs in self.qvar2sigs.items():
-            yield (qvar, arg_sigs)
+        for const, arg_sigs in self.const2sigs.items():
+            yield (const, arg_sigs)
 
 '''
 Given a variable and argument signatures binding representing how variables appear in arugments,
-group argument signatures associated with same qvar into the same "class",
+group argument signatures associated with same const into the same "class",
 which forms a "partition" consisting of classes of argument signatures
 '''
 class ArgPartition():
-    def __init__(self, binding : VarArgBinding, options : QrmOptions):
+    def __init__(self, binding : ConstArgBinding, options : QrmOptions):
         self.binding = binding      
         
         # sort2class_sigs
@@ -270,9 +259,9 @@ class ArgPartition():
         self.sort2class_sigs[sort].append(class_sig)
 
     def _set_sort_to_class_signatures(self):
-        for (qvar, arg_sigs) in self.binding.get():
+        for (const, arg_sigs) in self.binding.get():
             class_sig = ClassSignature(arg_sigs)
-            self._add_sort_class_signature(qvar.sort, class_sig)
+            self._add_sort_class_signature(const.sort, class_sig)
 
     def _set_sort_to_partition_signature(self):
         for sort, class_sigs in self.sort2class_sigs.items():
@@ -288,13 +277,13 @@ class ArgPartition():
 '''
 Given a set of variable and argument signatures bindings {b0, b1, ...}
 each argument signature is associated with v0 in b0, v1 in b1, ...
-group argument signatures associated with same product qvar (v0, v1, ...) into same "class" 
+group argument signatures associated with same product const (v0, v1, ...) into same "class" 
 which forms a "partition" consisting of classes of argument signatures
 '''
 class ProductArgPartition():
-    def __init__(self, sig_gen : SigGenerator, bindings : List[VarArgBinding], options : QrmOptions):
+    def __init__(self, sig_gen : SigGenerator, bindings : List[ConstArgBinding], options : QrmOptions):
         self.sig_gen  : SigGenerator     = sig_gen
-        self.bindings : List[VarArgBinding] = bindings
+        self.bindings : List[ConstArgBinding] = bindings
         # sort2classes
         self.sort2classes                   = {}
         # sort2class_sigs
@@ -309,31 +298,28 @@ class ProductArgPartition():
         vprint(options, f'sort2part_sig: {self.sort2part_sig}', 5)
         for sort, part_sig in self.sort2part_sig.items():
             vprint(options, f'\tsort: {sort.name}', 5)
-            vprint(options, f'\treduced_class: {part_sig.reduced_class}', 5)
-            vprint(options, f'\treduced_single_class: {part_sig.reduced_single_class}', 5)
-            vprint(options, f'\treduced_multi_class: {part_sig.reduced_multi_class}', 5)
-            vprint(options, f'\treduced_single_class_sigs: {part_sig.reduced_single_class_sigs}', 5)
-            vprint(options, f'\treduced_multi_class_sigs: {part_sig.reduced_multi_class_sigs}', 5)
-            vprint(options, f'\tmulti_class_arg_sigs: {part_sig.multi_class_arg_sigs}', 5)
+            vprint(options, f'\tidentical_classes: {part_sig.identical_classes}', 5)
+            vprint(options, f'\tidentical_single_classes: {part_sig.identical_single_classes}', 5)
+            vprint(options, f'\tidentical_multi_classes: {part_sig.identical_multi_classes}', 5)
 
-    def _get_qvar_product(self, signature : ArgumentSignature):
-        qvars = []
+    def _get_const_product(self, signature : ArgumentSignature):
+        consts = []
         for bid, binding in enumerate(self.bindings):
-            qvar = binding.sig2qvar[str(signature)]
-            qvars.append(f'{str(qvar)}.{bid}')
-        return '.'.join(qvars)
+            const = binding.sig2const[str(signature)]
+            consts.append(f'{str(const)}.{bid}')
+        return '.'.join(consts)
 
-    def _add_sort_signature(self, sort, qvar_product, signature : ArgumentSignature):
+    def _add_sort_signature(self, sort, const_product, signature : ArgumentSignature):
         if not sort in self.sort2classes:
             self.sort2classes[sort] = {} 
-        if not qvar_product in self.sort2classes[sort]:
-            self.sort2classes[sort][qvar_product] = []
-        self.sort2classes[sort][qvar_product].append(signature)
+        if not const_product in self.sort2classes[sort]:
+            self.sort2classes[sort][const_product] = []
+        self.sort2classes[sort][const_product].append(signature)
 
     def _set_sort_to_class_signatures(self):
         for sig in self.sig_gen.generate_argument_signature():
-            qvar_product = self._get_qvar_product(sig)
-            self._add_sort_signature(sig.sort, qvar_product, sig)
+            const_product = self._get_const_product(sig)
+            self._add_sort_signature(sig.sort, const_product, sig)
         for sort, classes in self.sort2classes.items():
             class_signatrs = []
             for sigs in classes.values():
@@ -347,22 +333,168 @@ class ProductArgPartition():
             part_sig = SortPartitionSignature_(class_sigs)
             self.sort2part_sig[sort] = part_sig 
 
-def get_permuted_signature(sig, sign_func_name2id, func_perm):
-    if isinstance(sig, ArgumentSignature):
-        fname_id      = sign_func_name2id[sig.signed_fname]
-        new_func_id   = func_perm[fname_id][sig.func_id]
-        return ArgumentSignature(sig.sort, sig.signed_fname, new_func_id, sig.arg_id)
-    elif isinstance(sig, ClassSignature):
-        permuted_arg_sigs = [get_permuted_signature(s, sign_func_name2id, func_perm) for s in sig.arg_signatures]
-        return ClassSignature(permuted_arg_sigs)
-    elif isinstance(sig, SortPartitionSignature):
-        permuted_class_sigs = [get_permuted_signature(s, sign_func_name2id, func_perm) for s in sig.class_signatures]
-        return SortPartitionSignature(permuted_class_sigs)  
-    elif isinstance(sig, PartitionSignature):
-        sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature] = {} 
-        for sort, s in sig.sort2signature.items():
-            sort2sig[sort] = get_permuted_signature(s, sign_func_name2id, func_perm)
-        return PartitionSignature(sort2sig)
+
+class MemberRelationSignature():
+    def __init__(self, member_symbol):
+        self.member_symbol = member_symbol
+        self.member_relations     = [] # consists of (node_class_sig, quorum_class_sig)
+        self.non_member_relations = [] 
+
+    def sort_member_relations(self):
+        self.member_relations.sort(key=lambda x: str(x))
+        self.non_member_relations.sort(key=lambda x: str(x))
+
+    def __str__(self):
+        return str(self.member_symbol) + str(self.member_relations) + str(self.non_member_relations)
+
+class ConstraintPartitionSignature(PartitionSignature):
+    tran_sys : TransitionSystem
+
+    def __init__(self, sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature]): 
+        PartitionSignature.__init__(self, sort2sig)
+        self.member_sigs : List[MemberRelationSignature] = []
+        self.mem_sig_str = ''
+
+    def sort_member_relations(self):
+        self.member_sigs.sort(key=lambda x: str(x))
+        self.mem_sig_str = str([str(s) for s in self.member_sigs])
+    
+    def init_member_relations_from_binding(self, binding : ConstArgBinding):
+        for dep_type in ConstraintPartitionSignature.tran_sys.dep_types.values():
+            if not dep_type.elem_sort in self.sort2signature or not dep_type.set_sort in self.sort2signature:
+                continue
+            elem_class_sigs = self.sort2signature[dep_type.elem_sort].class_signatures
+            set_class_sigs  = self.sort2signature[dep_type.set_sort].class_signatures
+            mem_sig = MemberRelationSignature(dep_type.dep_relation)
+            for elem_class_sig in elem_class_sigs:
+                for set_class_sig in set_class_sigs:
+                    elem_arg_sig = elem_class_sig.arg_signatures[0] 
+                    set_arg_sig  = set_class_sig.arg_signatures[0]
+                    elem_const   = binding.sig2const[str(elem_arg_sig)]
+                    set_const    = binding.sig2const[str(set_arg_sig)]
+                    if str(elem_const) in str(set_const):
+                        mem_sig.member_relations.append(tuple([elem_class_sig, set_class_sig]))
+                    else:
+                        mem_sig.non_member_relations.append(tuple([elem_class_sig, set_class_sig]))
+            mem_sig.sort_member_relations()
+            self.member_sigs.append(mem_sig)
+        self.sort_member_relations()
+
+    def init_member_relations_from_model(self, class_sig2const : Dict[str,str]):
+        for dep_type in ConstraintPartitionSignature.tran_sys.dep_types.values():
+            if not dep_type.elem_sort in self.sort2signature or not dep_type.set_sort in self.sort2signature:
+                continue
+            elem_class_sigs = self.sort2signature[dep_type.elem_sort].class_signatures
+            set_class_sigs  = self.sort2signature[dep_type.set_sort].class_signatures
+            mem_sig = MemberRelationSignature(dep_type.dep_relation)
+            for elem_class_sig in elem_class_sigs:
+                for set_class_sig in set_class_sigs:
+                    elem_const   = class_sig2const[str(elem_class_sig)]
+                    set_const    = class_sig2const[str(set_class_sig)]
+                    if elem_const in set_const:
+                        mem_sig.member_relations.append(tuple([elem_class_sig, set_class_sig]))
+                    else:
+                        mem_sig.non_member_relations.append(tuple([elem_class_sig, set_class_sig]))
+            mem_sig.sort_member_relations()
+            self.member_sigs.append(mem_sig)
+        self.sort_member_relations()
+
+    def __str__(self): 
+        return PartitionSignature.__str__(self) + self.mem_sig_str 
+
+    @staticmethod
+    def setup(tran_sys : TransitionSystem):
+        ConstraintPartitionSignature.tran_sys = tran_sys
+
+class ConstraintSignatures():
+    def __init__(self, sig_gen : SigGenerator):
+        self.sign_func_name2id : Dict[str, int]= {}
+        self.func_permutations = []
+        # public data
+        self.present_signatures : Dict[str, ConstraintPartitionSignature] = {}
+        self.absent_signatures  : Dict[str, ConstraintPartitionSignature] = {}
+        self.red_present_signatures : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
+        self.red_absent_signatures  : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
+
+        self._set_func_permutations(sig_gen)
+
+    def _set_func_permutations(self, sig_gen : SigGenerator) -> None:
+        all_func_permutations = []
+        fname_id = 0
+        for sfname, count in sig_gen.sign_func_name2count.items():
+            self.sign_func_name2id[sfname] = fname_id
+            fname_id += 1
+            func_ids  = list(range(count))
+            func_permutations = permutations(func_ids)
+            all_func_permutations.append(func_permutations)
+        # cartesian product
+        self.func_permutations = list(product(*all_func_permutations))
+
+    def get_permuted_signature(self, sig, func_perm):
+        if isinstance(sig, ArgumentSignature):
+            fname_id      = self.sign_func_name2id[sig.signed_fname]
+            new_func_id   = func_perm[fname_id][sig.func_id]
+            return ArgumentSignature(sig.sort, sig.signed_fname, new_func_id, sig.arg_id)
+        elif isinstance(sig, ClassSignature):
+            permuted_arg_sigs = [self.get_permuted_signature(s, func_perm) for s in sig.arg_signatures]
+            return ClassSignature(permuted_arg_sigs)
+        elif isinstance(sig, SortPartitionSignature):
+            permuted_class_sigs = [self.get_permuted_signature(s, func_perm) for s in sig.class_signatures]
+            return SortPartitionSignature(permuted_class_sigs)  
+        elif isinstance(sig, MemberRelationSignature):
+            mem_sig = MemberRelationSignature(sig.member_symbol)
+            for (elem_class_sig, set_class_sig) in sig.member_relations:
+                relation = [self.get_permuted_signature(elem_class_sig, func_perm), self.get_permuted_signature(set_class_sig, func_perm)]
+                mem_sig.member_relations.append(tuple(relation))
+            for (elem_class_sig, set_class_sig) in sig.non_member_relations:
+                relation = [self.get_permuted_signature(elem_class_sig, func_perm), self.get_permuted_signature(set_class_sig, func_perm)]
+                mem_sig.non_member_relations.append(tuple(relation))
+            mem_sig.sort_member_relations() 
+            return mem_sig
+        elif isinstance(sig, ConstraintPartitionSignature):  
+            sort2sig : Dict[il.EnumeratedSort, SortPartitionSignature] = {} 
+            for sort, s in sig.sort2signature.items():
+                sort2sig[sort] = self.get_permuted_signature(s, func_perm)
+            cpart_sig = ConstraintPartitionSignature(sort2sig) 
+            mem_sigs  = [self.get_permuted_signature(s, func_perm) for s in sig.member_sigs]
+            cpart_sig.member_sigs = mem_sigs
+            cpart_sig.sort_member_relations()
+            return cpart_sig 
+
+    def add_present_signatures(self, arg_partitions : List[ArgPartition]):
+        for arg_part in arg_partitions: 
+            cpart_sig = ConstraintPartitionSignature(arg_part.part_sig.sort2signature)
+            cpart_sig.init_member_relations_from_binding(arg_part.binding)
+            for func_perm in  self.func_permutations:
+                permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
+                if not str(permuted_sig) in self.present_signatures:
+                    self.present_signatures[str(permuted_sig)] = permuted_sig
+            assert(not str(cpart_sig) in self.red_present_signatures)
+            self.red_present_signatures[str(cpart_sig)] = cpart_sig
+
+    def add_absent_signatures(self, cpart_sig: ConstraintPartitionSignature):
+        absent_sigs : Dict[str, ConstraintPartitionSignature] = {}
+        for func_perm in self.func_permutations:
+            permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
+            if not str(permuted_sig) in self.absent_signatures:
+                self.absent_signatures[str(permuted_sig)] = permuted_sig
+                absent_sigs[str(permuted_sig)] = permuted_sig
+        assert(not str(cpart_sig) in self.red_absent_signatures)
+        self.red_absent_signatures[str(cpart_sig)] = cpart_sig
+        return list(absent_sigs.values())
+
+    def get_present_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.present_signatures.values())
+
+    def get_absent_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.absent_signatures.values())
+
+    def get_reduced_present_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.red_present_signatures.values())
+
+    def get_reduced_absent_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.red_absent_signatures.values())
+
 
 def merge_class_signatures(class_sigs: List[ClassSignature]) -> ClassSignature:
     arg_sigs = []

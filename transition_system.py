@@ -14,6 +14,7 @@ from verbose import *
 registered_dependent_relations           = {}
 registered_dependent_relations['member'] = lambda elem_size : floor(elem_size/2) +1 # member selection function
 set_delim = SET_DELIM
+registered_interpreted_symbols           = set(['member'])
 
 #*************************************************************************
 # helpers 
@@ -92,12 +93,17 @@ class TransitionSystem():
         self.symbols          = set()  # all declared symbols
         self.definitions      = dict() # definition symbols to Definition ast
         self.axiom_fmla       = None 
-        self.axiom_symbols    = set()  # globally unchanged symbols, e.g. member, le
-        self.state_symbols    = set()  # state variables (symbols that are non-axiom symbols)
+        self.axiom_symbols    = set()  # symbols that appear in axioms, e.g. member, le
+        self.state_symbols    = set()  # state variables (symbols that are un-interpreted)
+        self.interpreted_symbols = set() # symbols whose values are interpreted (due to axioms), e.g. member, le
         # dependent sorts
         self.dep_types        = dict() # "quorum" to quorum meta data (e.g. "member", "node" ...) 
         # actions
-        self.exported_actions = []
+        self.exported_action_symbols = [] 
+        self.init_actions     = {} 
+        self.exported_actions = {} 
+        # safety
+        self.safety_properties= []
 
         self._initialize()
 
@@ -180,17 +186,118 @@ class TransitionSystem():
 
     def _init_state_symbols(self):
         for symbol in self.symbols:
-            if symbol not in self.axiom_symbols:
+            if str(symbol) not in registered_interpreted_symbols:
                 self.state_symbols.add(symbol)
+            else:
+                self.interpreted_symbols.add(symbol)
 
-    def _init_exported_actions(self):
+    def _init_actions(self):
         exports = set([str(export) for export in self.ivy_module.exports])
         for action_name, action in self.ivy_module.actions.items():
+            params      = [ilu.resort_symbol(param, self.sort_inf2fin) for param in action.formal_params]
+            param_sorts = [param.sort for param in params]
+            action_func_sort    = il.FunctionSort(*param_sorts, il.BooleanSort())
+            action_symbol       = il.Symbol(action_name, action_func_sort)
+            apply_action_symbol = il.App(action_symbol, *params)
+            finite_action = ilu.resort_ast(action, self.sort_inf2fin)
             if action_name in exports:
-                param_sorts = [ilu.resort_symbol(param, self.sort_inf2fin).sort for param in action.formal_params]
-                action_func_sort = il.FunctionSort(*param_sorts, il.BooleanSort())
-                action_symbol    = il.Symbol(action_name, action_func_sort)
-                self.exported_actions.append(action_symbol)
+                self.exported_action_symbols.append(action_symbol)
+                self.exported_actions[apply_action_symbol] = finite_action 
+            else:
+                self.init_actions[apply_action_symbol] = finite_action 
+
+    def _init_safety_properties(self):
+        self.safety_properties = [ilu.resort_ast(il.close_formula(conj.formula), self.sort_inf2fin) for conj in self.ivy_module.labeled_conjs]
+
+    def _get_action_formula_recur(self, action, params=set()):
+        if isinstance(action, ia.Sequence):
+           action_fmlas = [self._get_action_formula_recur(a, params) for a in action.args] 
+           return il.And(*action_fmlas)
+        elif isinstance(action, ia.AssertAction) or isinstance(action, ia.AssumeAction):
+            assert(hasattr(action, 'formula'))
+            return il.close_formula(action.formula)
+        elif isinstance(action, ia.AssignAction):
+            lhs = action.args[0]
+            rhs = action.args[1]
+            lhs_vars = ilu.used_variables_ast(lhs)            
+            consts    = ilu.used_constants_ast(lhs) 
+            consts    = consts.intersection(params)
+            var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
+            const2var = {c:v for v,c in var2const.items()}
+            lhs       = il.substitute(lhs, const2var)
+            if_fmla   = il.And(*[il.Equals(v,c) for v,c in var2const.items()])
+            then_fmla = rhs
+            else_fmla = lhs 
+            next_lhs  = il.substitute(lhs, self.curr2next)
+            fmla = il.Equals(next_lhs, il.Ite(if_fmla, then_fmla, else_fmla))
+            all_vars = list(lhs_vars) + list(var2const.keys())
+            if len(all_vars) > 0:
+                fmla = il.ForAll(all_vars, fmla)
+            return fmla 
+        elif isinstance(action, ia.HavocAction):
+            lhs = action.args[0]
+            lhs_vars = ilu.used_variables_ast(lhs)            
+            consts    = ilu.used_constants_ast(lhs) 
+            consts    = consts.intersection(params)
+            var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
+            const2var = {c:v for v,c in var2const.items()}
+            lhs       = il.substitute(lhs, const2var)
+            next_lhs  = il.substitute(lhs, self.curr2next)
+            all_vars  = list(lhs_vars) + list(var2const.keys())
+            fmlas = []
+            for v,c in var2const.items():
+                fmla = il.Implies(next_lhs, il.Or(lhs, il.Equals(v,c)))
+                fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
+                fmlas.append(fmla)
+                fmla = il.Implies(lhs, il.Or(next_lhs, il.Equals(v,c)))
+                fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
+                fmlas.append(fmla)
+            return il.And(*fmlas)
+        else:
+            assert(0)
+
+    def _get_action_assign_symbols(self, action):
+        if isinstance(action, ia.Sequence):
+            lhs = set() 
+            for a in action.args:
+                lhs.update(self._get_action_assign_symbols(a))
+            return lhs
+        elif isinstance(action, ia.AssignAction):
+            return ilu.used_symbols_ast(action.args[0])
+        elif isinstance(action, ia.HavocAction):
+            return ilu.used_symbols_ast(action.args[0])
+        else:
+            return set()
+
+    def _update_action_non_changing_fmlas(self, action, action_fmla):
+        assign_symbols = self._get_action_assign_symbols(action)
+        fmlas = [action_fmla]
+        for state_symbol in self.state_symbols:
+            if state_symbol not in assign_symbols and state_symbol not in self.definitions: 
+                state_var   = state_symbol
+                argvars     = []
+                if il.is_function_sort(state_symbol.sort):
+                    argvars     = [il.Variable(f'{sort.name.upper()}{i}', sort) for i, sort in enumerate(state_symbol.sort.dom)] 
+                    state_var   = il.App(state_symbol, *argvars)
+                next_state_var = il.substitute(state_var, self.curr2next)
+                fmla = il.Equals(next_state_var, state_var)
+                if len(argvars) > 0:
+                    fmla = il.ForAll(argvars, fmla) 
+                fmlas.append(fmla)
+        return il.And(*fmlas) 
+
+    def _init_transition_relation(self):
+        self.curr2next = {symb:il.Symbol('next_'+symb.name, symb.sort) for symb in self.state_symbols} 
+        action_fmlas = []
+        for action_symbol, action in self.exported_actions.items():
+            action_fmla   = self._get_action_formula_recur(action, params=set(action_symbol.args))
+            action_fmla   = self._update_action_non_changing_fmlas(action, action_fmla)
+            const2var     = {const:il.Variable(f'F{const.sort.name.upper()}{i}', const.sort) for i,const in enumerate(action_symbol.args)}
+            action_fmla   = il.substitute(action_fmla, const2var)
+            if len(const2var.values()) > 0:
+                action_fmla   = il.Exists(list(const2var.values()), action_fmla)
+            action_fmlas.append(action_fmla)
+        self.transition_relation = il.Or(*action_fmlas)
 
     def _initialize(self):
         with self.ivy_module.theory_context():
@@ -200,7 +307,9 @@ class TransitionSystem():
             self._init_definitions()
             self._init_axioms()
             self._init_state_symbols()
-            self._init_exported_actions()
+            self._init_actions()
+            self._init_safety_properties()
+            self._init_transition_relation()
 
     #------------------------------------------------------------
     # TransitionSystem: public access methods
@@ -262,16 +371,16 @@ class TransitionSystem():
                     constraints.append(il.Not(il.Equals(atom.args[0], equiv.args[0])))
                 else:
                     constraints.append(il.Equals(atom, il.Not(cmpl)))
-        closed_constraints = []
+        closed_constraints = set()
         for constraint in constraints:
             consts    = ilu.used_constants_ast(constraint)
             const2var = {}
             for const in consts: 
                 if il.is_enumerated(const):
-                    const2var[const] = il.Variable(const.name.upper(), const.sort)
+                    const2var[const] = il.Variable(const.sort.name.upper(), const.sort)
             constraint = ilu.substitute_constants_ast(constraint, const2var)
             constraint = il.close_formula(constraint)
-            closed_constraints.append(constraint)
+            closed_constraints.add(constraint)
         self.atom_equivalence_constraints        = constraints
         self.closed_atom_equivalence_constraints = closed_constraints
 
