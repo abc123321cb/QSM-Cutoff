@@ -68,7 +68,7 @@ If you don't have permission to `apt-get install` or `yum install`, try the foll
 ```=python3
 ./configure.sh [PYTON INCLUDE PATH] (e.g. /usr/include/python3.12)
 python3 qrm.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
-python3 run_all.py [YAML FILE]
+python3 run_all.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 ```
 ### Usage for Options
 #### Verbosity
@@ -85,8 +85,3 @@ python3 run_all.py [YAML FILE]
     - prints results of minimization (prints all solutions if using option `-a`)
 - `-v 5`: 
     - print debug info
-#### Experient Options
-```
-python3 run_all.py [YAML] -v 5 -w -l log 
-```
-
