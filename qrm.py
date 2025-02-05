@@ -153,7 +153,7 @@ def qrm(ivy_name, args):
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
     if options.flow_mode == FlowMode.Check_Finite_Inductive: 
-        options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.instance_name}: {options.size_str}]')
+        options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.ivy_filename}: {options.size_str}]')
         finite_result = check_inductive_and_prove_property(tran_sys, options)
         options.step_end()
         if options.convergence_check:
@@ -174,7 +174,7 @@ def qrm(ivy_name, args):
         protocol = Protocol(options)
         protocol.init_protocol_from_file(tran_sys, instantiator)
     else: # forward reachability
-        options.step_start(f'[FW]: Forward Reachability on [{options.instance_name}: {options.size_str}]')
+        options.step_start(f'[FW]: Forward Reachability on [{options.ivy_filename}: {options.size_str}]')
         options.step_start('Set up for forward reachability')
         fr_solver = SymDFS(tran_sys, instantiator, options) if options.forward_mode == ForwardMode.Sym_DFS else BddSymbolic(tran_sys, instantiator, options)
         options.step_end()
@@ -185,7 +185,7 @@ def qrm(ivy_name, args):
 
     if options.flow_mode == FlowMode.Check_Reachability:
         # check reachability converges
-        options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.instance_name}: {options.size_str}]')
+        options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.ivy_filename}: {options.size_str}]')
         reach_checker = ReachCheck(options, tran_sys, instantiator, protocol)
         reach_result  = reach_checker.is_rmin_matching_reachability()
         options.step_end()
@@ -206,37 +206,37 @@ def qrm(ivy_name, args):
         options.step_end()
 
     # generate prime orbits
-    options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.ivy_filename}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options) 
     prime_orbits.symmetry_aware_enumerate(protocol)               
     options.step_end()
 
     # reduction
-    options.step_start(f'[RED]: PRIME REDUCTION on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[RED]: PRIME REDUCTION on [{options.ivy_filename}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
     minimizer.reduce_redundant_prime_orbits()
     options.step_end()
 
     # quantifier inference
-    options.step_start(f'[QI]: Quantifier Inference on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
     minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
     options.step_end()
 
     # minimization
-    options.step_start(f'[MIN]: Minimization on [{options.instance_name}: {options.size_str}]')
+    options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')
     minimizer.solve_rmin()
     options.step_end()
 
     # minimization sanity check
     if options.sanity_check:
-        options.step_start(f'[MIN_CHECK] Minimization Sanity Check on [{options.instance_name}: {options.size_str}]')
+        options.step_start(f'[MIN_CHECK] Minimization Sanity Check on [{options.ivy_filename}: {options.size_str}]')
         sanity_result = minimizer.minimization_check(protocol)
         qrm_result    = qrm_result and sanity_result
         options.step_end()
 
     # ivy_check
     if options.flow_mode == FlowMode.Rmin_Ivy:
-        options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.instance_name}: {options.size_str}]')
+        options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.ivy_filename}]')
         ivy_result = check_inductive_and_prove_property(tran_sys, minimizer, options)
         qrm_result = qrm_result and ivy_result 
         options.step_end()

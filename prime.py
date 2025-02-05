@@ -189,7 +189,7 @@ class PrimeOrbits():
         if self.options.writePrime:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.pis'
             self._write_primes(prime_filename)
-        vprint_step_banner(self.options, f'[PRIME RESULT]: Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[PRIME RESULT]: Prime Orbits on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         vprint(self.options, str(self), 3)
         vprint(self.options, f'[PRIME NOTE]: number of orbits after merging: {PrimeOrbit.count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of orbits before merging: {PrimeOrbit.count + self._sub_orbit_count}', 2)

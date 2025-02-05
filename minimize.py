@@ -265,13 +265,13 @@ class Minimizer():
                 orbit = self.orbits[i]
                 outF.write(str(orbit))
             outF.close()
-        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         for i in inference_list:
             orbit = self.orbits[i]
             vprint(self.options, str(orbit), 3)
 
     def print_rmin(self) -> None:
-        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 3)
         vprint(self.options, f'[MIN NOTE]: total qcost: {self.ubound}', 3)
         vprint(self.options, f'[MIN NOTE]: maximum branch and bound depth: {self.bnb_max_depth}', 3)

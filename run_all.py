@@ -67,7 +67,7 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
     return options
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
-    vprint_instance_banner(options, f'[Synthesize Rmin]: {options.instance_name}: {options.size_str}', 0)
+    vprint_instance_banner(options, f'[Synthesize Rmin]: [{options.ivy_filename}: {options.size_str}]', 0)
     qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-w', '-r'] + sys_args
     rmin_result = True 
     try:
@@ -109,7 +109,7 @@ def get_next_size_string(next_sizes) -> str:
     return next_size_str
 
 def reachability_convergence_check(sol_id, options : QrmOptions, sys_args, increase_size) -> bool:
-    vprint_instance_banner(options, f'[Reachability Convergence Check]: {options.instance_name}: {options.size_str}', 0)
+    vprint_instance_banner(options, f'[Reachability Convergence Check]: [{options.ivy_filename}: {options.size_str}]', 0)
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{sol_id}.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
@@ -151,7 +151,7 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args, incre
         return has_converge, next_size_str
 
 def finite_ivy_check(options : QrmOptions, sys_args, increase_size) -> bool:
-    vprint_instance_banner(options, f'[Finite Inductive Check]: {options.instance_name}: {options.size_str}', 0)
+    vprint_instance_banner(options, f'[Finite Inductive Check]: [{options.ivy_filename}: {options.size_str}]', 0)
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + '.0.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
@@ -240,6 +240,7 @@ def run_all(ivy_name, args):
                     fail_sol_ids.append(sol_id)
                     sizes_str.append(size_str)
             if len(pass_sol_ids) == 1:
+                vprint_instance_banner(options, f'[IVY_CHECK]: {options.ivy_filename}', 0)
                 ivy_result = run_ivy_check(pass_sol_ids[0], options)
                 if ivy_result:
                     qrm_result = True
