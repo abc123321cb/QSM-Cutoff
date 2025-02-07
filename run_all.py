@@ -240,8 +240,9 @@ def run_all(ivy_name, args):
                     fail_sol_ids.append(sol_id)
                     sizes_str.append(size_str)
             if len(pass_sol_ids) == 1:
-                vprint_instance_banner(options, f'[IVY_CHECK]: {options.ivy_filename}', 0)
-                ivy_result = run_ivy_check(pass_sol_ids[0], options)
+                vprint_instance_banner(options, f'[IVY_CHECK]: Ivy Check for Reachability Invariant', 0)
+                ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{pass_sol_ids[0]}'+ '.ivy'
+                ivy_result = run_ivy_check(ivy_name, options)
                 if ivy_result:
                     qrm_result = True
                     cutoff_size_str = size_str

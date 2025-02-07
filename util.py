@@ -2,7 +2,7 @@ import datetime
 import tracemalloc
 from verbose import *
 from enum import Enum
-FlowMode    = Enum('FlowMode', ['Rmin_Ivy', 'Synthesize_Rmin', 'Check_Reachability', 'Check_Finite_Inductive'])
+FlowMode    = Enum('FlowMode', ['Synthesize_Rmin', 'Check_Reachability', 'Check_Finite_Inductive'])
 ForwardMode = Enum('ForwardMode', ['Sym_DFS', 'BDD_Symbolic'])
 PrimeGen    = Enum('PrimeGen', ['ilp', 'binary', 'enumerate'])
 UseMC       = Enum('UseMC', ['sat', 'mc'])
@@ -18,7 +18,7 @@ class QrmOptions():
         self.size_str      = ''
         self.sizes         = {} # sort name to size
         self.instance_suffix = ''
-        self.flow_mode     = FlowMode.Rmin_Ivy 
+        self.flow_mode     = FlowMode.Synthesize_Rmin 
         self.forward_mode  = ForwardMode.Sym_DFS
         self.prime_gen     = PrimeGen.ilp
         self.useMC = UseMC.sat
@@ -34,6 +34,7 @@ class QrmOptions():
         self.all_solutions     = True 
         self.merge_suborbits   = True 
         self.convergence_check = False 
+        self.ivy_check         = True
         self.ivy_to            = 120 
         self.qrm_to            = 36000 
         self.time_start        = None
@@ -50,8 +51,8 @@ class QrmOptions():
         options.writeLog     = self.writeLog 
         options.log_name     = self.log_name
         options.log_fout     = self.log_fout
-        options.time_start     = self.time_start 
-        options.time_stamp     = self.time_stamp 
+        options.time_start   = self.time_start 
+        options.time_stamp   = self.time_stamp 
         return options
 
     def set_files_name(self, ivy_name):

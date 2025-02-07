@@ -23,26 +23,24 @@ def usage ():
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Flow modes:')
-    print('-f 0|1|2|3   flow: 0. Synthesize Rmin and ivy_check (default)')
-    print('                   1. Synthesize Rmin')               
+    print('-f 1|2       flow: 1. Synthesize Rmin (default)')                                         
     print('                   2. Read Rmin from invariants and do reachability check')               
-    print('                   3. Read Rmin from invariants and do finite ivy check')               
     print('')
     print('Options:')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
-    print('-b           use bdd-based symbolic image computation to compute reachable states (default: off)')
+    print('-b           use bdd-based symbolic image computation to compute reachable states (default: off, use SymDFS)')
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
-    print('-m           disable suborbits (default: on)')
+    print('-m           disable orbit family (default: on)')
     print('-k           enalbe sanity checks for quantifier inference and minimization (default: off)')
     print('-p 1|2|3     prime generation: 1. ilp 2. binary search ilp 3. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       write verbose info to LOG (default: off)')
     print('-w           write .reach, .pis, .qpis (default: off)')
-    print('             write reachable states to FILE.reach')
-    print('             write prime orbits to FILE.pis')
-    print('             write quantified prime orbits to FILE.qpis')
+    print('                 write reachable states to FILE.reach')
+    print('                 write prime orbits to FILE.pis')
+    print('                 write quantified prime orbits to FILE.qpis')
     print('-h           usage')
 
 def usage_and_exit():
@@ -69,14 +67,10 @@ def get_options(ivy_name, args):
         if optc == '-s':
             options.set_sizes(optv)
         elif optc == '-f':
-            if optv == '0':
-                options.flow_mode = FlowMode.Rmin_Ivy # Synthesize_Rmin + ivy_check 
-            elif optv == '1':
+            if optv == '1':
                 options.flow_mode = FlowMode.Synthesize_Rmin 
             elif optv == '2':
                 options.flow_mode = FlowMode.Check_Reachability 
-            elif optv == '3':
-                options.flow_mode = FlowMode.Check_Finite_Inductive 
             else:
                 usage_and_exit()
         elif optc == '-r':
@@ -118,6 +112,7 @@ def get_options(ivy_name, args):
             options.writeQI    = True
         elif optc == '-g': # NOTE: not for user, used when doing convergence
             options.convergence_check = True
+            options.ivy_check = False
         else:
             usage_and_exit()
     if options.writeLog:
@@ -152,22 +147,6 @@ def qrm(ivy_name, args):
     instance_start(options, ivy_name)
     tran_sys     = get_transition_system(options, options.ivy_filename)
     instantiator = FiniteIvyInstantiator(tran_sys)
-    if options.flow_mode == FlowMode.Check_Finite_Inductive: 
-        options.step_start(f'[FINITE_CHECK]: Finite Ivy Check for Rmin on [{options.ivy_filename}: {options.size_str}]')
-        finite_result = check_inductive_and_prove_property(tran_sys, options)
-        options.step_end()
-        if options.convergence_check:
-            try:
-                if finite_result:
-                    sys.exit(0)
-                else:
-                    raise QrmFail()
-            except QrmFail:
-                sys.stderr.write('QrmFail')
-                sys.exit(1) 
-        else:
-            sys.exit(0)
-
     # get reachability
     protocol     = None
     if options.readReach and can_skip_forward_reachability(options): # read reachability
@@ -235,8 +214,8 @@ def qrm(ivy_name, args):
         options.step_end()
 
     # ivy_check
-    if options.flow_mode == FlowMode.Rmin_Ivy:
-        options.step_start(f'[IVY_CHECK]: Ivy Check on [{options.ivy_filename}]')
+    if options.ivy_check:
+        options.step_start(f'[IVY_CHECK] Ivy Check for Rmin')
         ivy_result = check_inductive_and_prove_property(tran_sys, minimizer, options)
         qrm_result = qrm_result and ivy_result 
         options.step_end()
