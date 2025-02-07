@@ -63,6 +63,10 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
     next_R_fmlas = [il.substitute(f, tran_sys.curr2next) for f in R_fmlas]
     R_fmlas      = [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in R_fmlas]
     next_R_fmlas = [ilu.resort_ast(invar, tran_sys.sort_fin2inf) for invar in next_R_fmlas]
+    # control R
+    cvars             = [il.Symbol(f'c{i}', il.BooleanSort()) for i in range(len(R_fmlas))]
+    ctrl_R_fmlas      = [il.Implies(cvar, fmla) for cvar,fmla in zip(cvars, R_fmlas)]
+    ctrl_next_R_fmlas = [il.Implies(cvar, fmla) for cvar,fmla in zip(cvars, next_R_fmlas)]
     # safety
     safety_fmlas      = [p for p in tran_sys.safety_properties]
     next_safety_fmlas = [il.substitute(f, tran_sys.curr2next) for f in safety_fmlas]
@@ -72,8 +76,9 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
     axiom_fmlas       = [ilu.resort_ast(tran_sys.axiom_fmla, tran_sys.sort_fin2inf)]
     transition_fmlas  = [ilu.resort_ast(tran_sys.transition_relation, tran_sys.sort_fin2inf)] 
     # soft/hard fmlas
-    soft_fmlas        = R_fmlas
-    hard_fmlas        = safety_fmlas + axiom_fmlas + transition_fmlas + [il.Not(il.And(*next_safety_fmlas + next_R_fmlas))]
+    soft_fmlas        = cvars 
+    hard_fmlas        = ctrl_R_fmlas + safety_fmlas + axiom_fmlas + transition_fmlas + [il.Not(il.And(*next_safety_fmlas + ctrl_next_R_fmlas))]
+
     # solver
     slv.clear() # changing from finite signature (qpi) to uninterpreted signature
     solver = slv.z3.Solver()
