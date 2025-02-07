@@ -77,9 +77,21 @@ def run_ivy_check(ivy_name, options : QrmOptions):
     vprint(options, f'[IVY_CHECK RESULT]: PASS')
     return True
 
-def compute_strengthening_assertion(ivy_name, rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
+def compute_strengthening_assertion(rmin_id, ivy_name, rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     vprint_step_banner(options, f'[MUS]: Extract strengthening assertion for on [{ivy_name}]', 3)
-    get_MUS(rmin_invars, tran_sys, options)
+    fmlas = get_MUS(rmin_invars, tran_sys, options)
+    # ivy_check the strengthening assertions
+    assert_ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{rmin_id}'+ '.assert.ivy'
+    cp_cmd = f'cp {options.ivy_filename} {assert_ivy_name}'
+    os.system(cp_cmd)
+    assert_ivy_file = open(assert_ivy_name, 'a')
+    assert_ivy_file.write('\n')
+    for fmla_id, fmla in enumerate(fmlas):
+        line = f'invariant [mus_{fmla_id}] {str(fmla)}'
+        vprint(options, line)
+        assert_ivy_file.write(line+'\n')
+    assert_ivy_file.close()
+    run_ivy_check(assert_ivy_name, options)
 
 def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : Minimizer, options: QrmOptions) -> bool:
     rmins    = minimizer.rmin
@@ -89,5 +101,5 @@ def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : M
         result = run_ivy_check(ivy_name, options)
         if result:
             has_true = True
-            compute_strengthening_assertion(ivy_name, rmin.invariants, tran_sys, options)
+            compute_strengthening_assertion(rmin_id, ivy_name, rmin.invariants, tran_sys, options)
     return has_true

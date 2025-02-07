@@ -11,7 +11,7 @@ apt-get install pip
 apt-get install python3-dev
 python3 -m pip install python-sat[aiger,approxmc,cryptosat,pblib]
 python3 -m pip install python-sat
-python3 -m pip install z3-solver==4.8.9
+python3 -m pip install z3-solver
 python3 -m pip install pyyaml
 python3 -m pip install pytest
 python3 -m pip install setuptools
@@ -56,6 +56,12 @@ python3 setup.py install
 python3 setup.py develop
 ```
 
+5. Install MARCO
+```
+cd MARCO/src/pyminisolvers
+make
+make test
+```
 
 ### Issues with Installation
 If you don't have permission to `apt-get install` or `yum install`, try the following steps:

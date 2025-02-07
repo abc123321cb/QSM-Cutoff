@@ -86,7 +86,6 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
 def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     mus_smt2 = get_MUS_smt2(rmin_invars, tran_sys)
     # print & write
-    vprint(options, mus_smt2, 3)
     smt_filename = options.instance_name + '.smt2'
     smt_file = open(smt_filename, "w")
     smt_file.write(mus_smt2)
