@@ -130,4 +130,5 @@ def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
         if fmla_id in min_mus:
             fmlas.append(invar)
         fmla_id += 1
+    vprint(options, f'[MUS NOTE]: number of strengthening assertions: {len(fmlas)}')
     return fmlas 
