@@ -84,9 +84,20 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
     solver = slv.z3.Solver()
     hard_clauses = ilu.Clauses(hard_fmlas, defns + next_defns)
     solver.add(slv.clauses_to_z3(hard_clauses))
-    for soft_fmla in soft_fmlas:
-        solver.add(slv.clauses_to_z3(ilu.Clauses([soft_fmla], defns)))
+    for i, soft_fmla in enumerate(soft_fmlas):
+        solver.add(slv.formula_to_z3(soft_fmla))
+        solver.add(slv.formula_to_z3(il.Not(soft_fmla)))
     return solver.to_smt2()
+
+def parse_mus(line):
+    clause_ids = [int(i) for i in line.strip().split()[1:]]
+    if len(clause_ids) == 2 and (clause_ids[1] == clause_ids[0] + 1) and (clause_ids[1] & 1):
+        return None
+    mus = []
+    for i in clause_ids:
+        if not (i & 1): # positive phase
+            mus.append((i>>1)-1)
+    return mus
 
 def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     mus_smt2 = get_MUS_smt2(rmin_invars, tran_sys)
@@ -119,14 +130,14 @@ def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     with open(mus_filename, 'r') as mus_file: 
         for line in mus_file:
             if line.startswith('U'):
-                mus = line.strip().split()[1:]
-                if min_mus == None:
-                    min_mus = mus
-                elif len(mus) < len(min_mus):
-                    min_mus = mus
-    min_mus = set([int(i) for i in min_mus])
+                mus = parse_mus(line) 
+                if mus != None:
+                    if min_mus == None:
+                        min_mus = mus
+                    elif len(mus) < len(min_mus):
+                        min_mus = mus
     fmlas   = []
-    fmla_id = 2
+    fmla_id = 0 
     for equiv in Rmin.eq_relations:
         if fmla_id in min_mus:
             fmlas.append(equiv)
