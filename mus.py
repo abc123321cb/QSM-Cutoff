@@ -55,8 +55,8 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
         args = [il.substitute(a, tran_sys.curr2next) for a in defn.args]
         new_defn = il.Definition(*args)
         next_defns.append(new_defn)
-    defns         = [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in defns]
-    next_defns    = [ilu.resort_ast(defn,  tran_sys.sort_fin2inf) for defn  in next_defns]
+    defns         = [ilu.resort_ast(il.close_formula(defn.to_constraint()),  tran_sys.sort_fin2inf) for defn  in defns]
+    next_defns    = [ilu.resort_ast(il.close_formula(defn.to_constraint()),  tran_sys.sort_fin2inf) for defn  in next_defns]
     # R
     R_fmlas      = [equiv for equiv in Rmin.eq_relations]
     R_fmlas     += [invar for invar in rmin_invars]
@@ -77,16 +77,25 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
     transition_fmlas  = [ilu.resort_ast(tran_sys.transition_relation, tran_sys.sort_fin2inf)] 
     # soft/hard fmlas
     soft_fmlas        = cvars 
-    hard_fmlas        = ctrl_R_fmlas + safety_fmlas + axiom_fmlas + transition_fmlas + [il.Not(il.And(*next_safety_fmlas + ctrl_next_R_fmlas))]
-
+    hard_fmlas        = ctrl_R_fmlas + safety_fmlas + axiom_fmlas + transition_fmlas + defns + next_defns + [il.Not(il.And(*next_safety_fmlas + ctrl_next_R_fmlas))]
+    # replace the keyword "match"
+    subst = {}
+    for sym in tran_sys.symbols:
+        if str(sym) == 'match':
+            new_name = 'mtch'
+            old_sym = ilu.resort_symbol(sym, tran_sys.sort_fin2inf)
+            new_sym = il.Symbol(new_name, old_sym.sort)
+            subst[old_sym] = new_sym
+    hard_fmlas = [il.substitute(f, subst) for f in hard_fmlas]
     # solver
     slv.clear() # changing from finite signature (qpi) to uninterpreted signature
     solver = slv.z3.Solver()
-    hard_clauses = ilu.Clauses(hard_fmlas, defns + next_defns)
+    hard_clauses = ilu.Clauses(hard_fmlas)
     solver.add(slv.clauses_to_z3(hard_clauses))
     for i, soft_fmla in enumerate(soft_fmlas):
         solver.add(slv.formula_to_z3(soft_fmla))
         solver.add(slv.formula_to_z3(il.Not(soft_fmla)))
+    #result = solver.check()
     return solver.to_smt2()
 
 def parse_mus(line):
