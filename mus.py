@@ -109,7 +109,7 @@ def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     # MARCO
     mus_filename = options.instance_name + '.mus'
     mus_file = open(mus_filename, 'w')
-    marco_args = ['./MARCO/marco.py', smt_filename, '-v']
+    marco_args = ['./MARCO/marco.py', smt_filename, '-v', '-b', 'MUSes']
     try:
         subprocess.run(marco_args, text=True, check=True, stdout=mus_file, timeout=options.qrm_to) 
     except subprocess.CalledProcessError as error:
