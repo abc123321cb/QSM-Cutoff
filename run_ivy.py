@@ -91,7 +91,11 @@ def compute_strengthening_assertion(rmin_id, ivy_name, rmin_invars, tran_sys: Tr
         vprint(options, line)
         assert_ivy_file.write(line+'\n')
     assert_ivy_file.close()
-    run_ivy_check(assert_ivy_name, options)
+    result = run_ivy_check(assert_ivy_name, options)
+    if result:
+        vprint(options, f'[ASSERT_CHECK RESULT]: PASS')
+    else:
+        vprint(options, f'[ASSERT_CHECK RESULT]: FAIL')
 
 def check_inductive_and_prove_property(tran_sys: TransitionSystem, minimizer : Minimizer, options: QrmOptions) -> bool:
     rmins    = minimizer.rmin
