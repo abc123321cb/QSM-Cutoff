@@ -1,12 +1,13 @@
 import os
 import subprocess
-from util import QrmOptions
+from util import QrmOptions, MUSMode
 from transition_system import TransitionSystem
 from minimize import Rmin
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
 from ivy import ivy_solver as slv
 from verbose import *
+from itertools import combinations as combinations
 
 def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
     defns        =  [defn for defn  in Rmin.definitions.values()]
@@ -92,11 +93,9 @@ def get_MUS_smt2(rmin_invars, tran_sys: TransitionSystem):
     solver = slv.z3.Solver()
     hard_clauses = ilu.Clauses(hard_fmlas)
     solver.add(slv.clauses_to_z3(hard_clauses))
-    for i, soft_fmla in enumerate(soft_fmlas):
-        solver.add(slv.formula_to_z3(soft_fmla))
-        solver.add(slv.formula_to_z3(il.Not(soft_fmla)))
-    #result = solver.check()
-    return solver.to_smt2()
+    pctrls = [slv.formula_to_z3(soft_fmla) for soft_fmla in soft_fmlas]
+    nctrls = [slv.formula_to_z3(il.Not(soft_fmla)) for soft_fmla in soft_fmlas]
+    return solver, pctrls, nctrls
 
 def parse_mus(line):
     clause_ids = [int(i) for i in line.strip().split()[1:]]
@@ -108,8 +107,12 @@ def parse_mus(line):
             mus.append((i>>1)-1)
     return mus
 
-def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
-    mus_smt2 = get_MUS_smt2(rmin_invars, tran_sys)
+def use_MARCO_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
+    solver, pctrls, nctrls  = get_MUS_smt2(rmin_invars, tran_sys)
+    for p,n in zip(pctrls, nctrls):
+        solver.add(p)
+        solver.add(n)
+    mus_smt2 = solver.to_smt2()
     # print & write
     smt_filename = options.instance_name + '.smt2'
     smt_file = open(smt_filename, "w")
@@ -145,6 +148,27 @@ def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
                         min_mus = mus
                     elif len(mus) < len(min_mus):
                         min_mus = mus
+    return min_mus
+
+def enumerate_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
+    solver, pctrls, nctrls  = get_MUS_smt2(rmin_invars, tran_sys)
+    sizes = list(range(len(rmin_invars)+1))
+    universe = list(range(len(rmin_invars)))
+    for size in sizes:
+        combs = combinations(universe, size)
+        for comb in combs:
+            comb = set(comb)
+            lits = [pctrls[i] if i in comb else nctrls[i] for i in universe]
+            result = solver.check(lits)
+            if result == slv.z3.unsat:
+                return list(comb) 
+
+def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
+    min_mus = None
+    if options.mus_mode == MUSMode.MARCO:
+        min_mus = use_MARCO_MUS(rmin_invars, tran_sys, options) 
+    else:
+        min_mus = enumerate_MUS(rmin_invars, tran_sys, options)
     fmlas   = []
     fmla_id = 0 
     for equiv in Rmin.eq_relations:

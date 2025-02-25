@@ -27,6 +27,7 @@ def usage ():
     print('                   2. Read Rmin from invariants and do reachability check')               
     print('')
     print('Options:')
+    print('-u           enumerate MUS for strengnthening assertions instead of using MARCO(default: MARCO)')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
     print('-b           use bdd-based symbolic image computation to compute reachable states (default: off, use SymDFS)')
     print('-t           early termination for reachability check (default: off)')
@@ -55,7 +56,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:rtamkp:c:v:l:whg")
+        opts, args = getopt.getopt(args, "s:bf:urtamkp:c:v:l:whg")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -73,6 +74,8 @@ def get_options(ivy_name, args):
                 options.flow_mode = FlowMode.Check_Reachability 
             else:
                 usage_and_exit()
+        elif optc == '-u':
+            options.mus_mode = MUSMode.enumerate
         elif optc == '-r':
             options.readReach = True
         elif optc == '-b':

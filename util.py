@@ -6,6 +6,7 @@ FlowMode    = Enum('FlowMode', ['Synthesize_Rmin', 'Check_Reachability', 'Check_
 ForwardMode = Enum('ForwardMode', ['Sym_DFS', 'BDD_Symbolic'])
 PrimeGen    = Enum('PrimeGen', ['ilp', 'binary', 'enumerate'])
 UseMC       = Enum('UseMC', ['sat', 'mc'])
+MUSMode     = Enum('MUSMode', ['MARCO', 'enumerate'])
 
 class QrmFail(Exception):
     pass
@@ -22,6 +23,7 @@ class QrmOptions():
         self.forward_mode  = ForwardMode.Sym_DFS
         self.prime_gen     = PrimeGen.ilp
         self.useMC = UseMC.sat
+        self.mus_mode = MUSMode.MARCO
         self.readReach         = False
         self.early_terminate_reach = False
         self.sanity_check      = False
