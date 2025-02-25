@@ -147,12 +147,12 @@ def use_MARCO_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions)
                         min_mus = mus
                     elif len(mus) < len(min_mus):
                         min_mus = mus
-    return min_mus
+    return set(min_mus)
 
-def enumerate_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
+def enumerate_MUS(rmin_invars, tran_sys: TransitionSystem):
     inductive_solver, pctrls, nctrls  = get_MUS_smt2(rmin_invars, tran_sys)
-    sizes    = list(range(len(rmin_invars)+1))  # 0, 1, 2, ..., n
-    universe = list(range(len(rmin_invars)))
+    sizes    = list(range(len(Rmin.eq_relations) + len(rmin_invars)+1))  # 0, 1, 2, ..., n
+    universe = list(range(len(Rmin.eq_relations) + len(rmin_invars)))
     for size in sizes:
         selection_solver = slv.z3.Solver()
         atmost  = slv.z3.AtMost(pctrls + [size])
@@ -165,7 +165,7 @@ def enumerate_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions)
             result = inductive_solver.check(sel_lits)
             if result == slv.z3.unsat:
                 min_mus = [i for i in universe if selection.eval(pctrls[i])]
-                return min_mus 
+                return set(min_mus)
             else:
                 block_clause = slv.z3.Or([nctrls[i] if selection.eval(pctrls[i]) else pctrls[i] for i in universe])
                 selection_solver.add(block_clause)
@@ -175,7 +175,7 @@ def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     if options.mus_mode == MUSMode.MARCO:
         min_mus = use_MARCO_MUS(rmin_invars, tran_sys, options) 
     else:
-        min_mus = enumerate_MUS(rmin_invars, tran_sys, options)
+        min_mus = enumerate_MUS(rmin_invars, tran_sys)
     fmlas   = []
     fmla_id = 0 
     for equiv in Rmin.eq_relations:
@@ -187,4 +187,5 @@ def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
             fmlas.append(invar)
         fmla_id += 1
     vprint(options, f'[MUS NOTE]: number of strengthening assertions: {len(fmlas)}')
+    vprint(options, f'[MUS NOTE]: min mus: {min_mus}')
     return fmlas 
