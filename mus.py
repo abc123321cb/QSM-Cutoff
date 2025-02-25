@@ -7,7 +7,6 @@ from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
 from ivy import ivy_solver as slv
 from verbose import *
-from itertools import combinations as combinations
 
 def unsat_core(tran_sys: TransitionSystem, rmin_invars, options : QrmOptions):
     defns        =  [defn for defn  in Rmin.definitions.values()]
@@ -151,17 +150,25 @@ def use_MARCO_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions)
     return min_mus
 
 def enumerate_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
-    solver, pctrls, nctrls  = get_MUS_smt2(rmin_invars, tran_sys)
-    sizes = list(range(len(rmin_invars)+1))
+    inductive_solver, pctrls, nctrls  = get_MUS_smt2(rmin_invars, tran_sys)
+    sizes    = list(range(len(rmin_invars)+1))  # 0, 1, 2, ..., n
     universe = list(range(len(rmin_invars)))
     for size in sizes:
-        combs = combinations(universe, size)
-        for comb in combs:
-            comb = set(comb)
-            lits = [pctrls[i] if i in comb else nctrls[i] for i in universe]
-            result = solver.check(lits)
+        selection_solver = slv.z3.Solver()
+        atmost  = slv.z3.AtMost(pctrls + [size])
+        atleast = slv.z3.AtLeast(pctrls + [size])
+        selection_solver.add(atmost)
+        selection_solver.add(atleast)
+        while selection_solver.check() == slv.z3.sat:
+            selection = selection_solver.model()
+            sel_lits = [pctrls[i] if selection.eval(pctrls[i]) else nctrls[i] for i in universe]
+            result = inductive_solver.check(sel_lits)
             if result == slv.z3.unsat:
-                return list(comb) 
+                min_mus = [i for i in universe if selection.eval(pctrls[i])]
+                return min_mus 
+            else:
+                block_clause = slv.z3.Or([nctrls[i] if selection.eval(pctrls[i]) else pctrls[i] for i in universe])
+                selection_solver.add(block_clause)
 
 def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
     min_mus = None
