@@ -23,7 +23,7 @@ class QrmOptions():
         self.forward_mode  = ForwardMode.Sym_DFS
         self.prime_gen     = PrimeGen.ilp
         self.useMC = UseMC.sat
-        self.mus_mode = MUSMode.MARCO
+        self.mus_mode = MUSMode.enumerate
         self.readReach         = False
         self.early_terminate_reach = False
         self.sanity_check      = False

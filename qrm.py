@@ -27,7 +27,7 @@ def usage ():
     print('                   2. Read Rmin from invariants and do reachability check')               
     print('')
     print('Options:')
-    print('-u           enumerate MUS for strengnthening assertions instead of using MARCO(default: MARCO)')
+    print('-u           enumerate MUS for strengnthening assertions using MARCO (default: naive enumeration)')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
     print('-b           use bdd-based symbolic image computation to compute reachable states (default: off, use SymDFS)')
     print('-t           early termination for reachability check (default: off)')
@@ -75,7 +75,7 @@ def get_options(ivy_name, args):
             else:
                 usage_and_exit()
         elif optc == '-u':
-            options.mus_mode = MUSMode.enumerate
+            options.mus_mode = MUSMode.MARCO
         elif optc == '-r':
             options.readReach = True
         elif optc == '-b':

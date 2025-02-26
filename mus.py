@@ -170,19 +170,19 @@ def enumerate_MUS(rmin_invars, tran_sys: TransitionSystem):
                 block_clause = slv.z3.Or([nctrls[i] if selection.eval(pctrls[i]) else pctrls[i] for i in universe])
                 selection_solver.add(block_clause)
 
-def get_MUS(rmin_invars, tran_sys: TransitionSystem, options : QrmOptions):
+def get_MUS(rmin : Rmin, tran_sys: TransitionSystem, options : QrmOptions):
     min_mus = None
     if options.mus_mode == MUSMode.MARCO:
-        min_mus = use_MARCO_MUS(rmin_invars, tran_sys, options) 
+        min_mus = use_MARCO_MUS(rmin.invariants, tran_sys, options) 
     else:
-        min_mus = enumerate_MUS(rmin_invars, tran_sys)
+        min_mus = enumerate_MUS(rmin.invariants, tran_sys)
     fmlas   = []
     fmla_id = 0 
-    for equiv in Rmin.eq_relations:
+    for equiv in Rmin.eq_lines:
         if fmla_id in min_mus:
             fmlas.append(equiv)
         fmla_id += 1
-    for invar in rmin_invars:
+    for invar in rmin.invar_lines:
         if fmla_id in min_mus:
             fmlas.append(invar)
         fmla_id += 1
