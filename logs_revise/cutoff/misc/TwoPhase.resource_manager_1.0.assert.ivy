@@ -113,10 +113,10 @@ invariant [safety] (forall R1, R2. ~(aborted(R1) & committed(R2)) )
 #invariant [manual_ic3po11]	(tm_committed -> ~tm_aborted)
 
 invariant [invar_6] forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_8] ~msg_commit | ~tm_init # qcost: 2
-invariant [invar_10] ~msg_commit | ~msg_abort # qcost: 2
-invariant [invar_12] ~tm_init | ~msg_abort # qcost: 2
+invariant [invar_9] ~tm_init | ~msg_abort # qcost: 2
+invariant [invar_18] ~msg_commit | ~tm_init # qcost: 2
+invariant [invar_19] ~msg_commit | ~msg_abort # qcost: 2
 invariant [invar_2] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_16] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | msg_commit # qcost: 3
-invariant [invar_7] forall RESOURCE_MANAGER0. ~msg_commit | tm_prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_30] forall RESOURCE_MANAGER0. msg_abort | ~msg_prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 4
+invariant [invar_12] forall RESOURCE_MANAGER0. msg_commit | ~committed(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_17] forall RESOURCE_MANAGER0. ~msg_commit | tm_prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_31] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | msg_abort # qcost: 4

@@ -82,6 +82,16 @@ action get_bool_unlock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_unlock_msg
 
+action get_lock_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := lock_msg(n0)
+}
+export get_lock_msg
+
+action get_bool_lock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (lock_msg(n0) = result)
+}
+export get_bool_lock_msg
+
 action get_server_holds_lock returns(qrm_result: bool) = {
     qrm_result := server_holds_lock
 }
@@ -111,14 +121,4 @@ action get_bool_holds_lock(n0: node, result: bool) returns(qrm_result: bool) = {
     qrm_result := (holds_lock(n0) = result)
 }
 export get_bool_holds_lock
-
-action get_lock_msg(n0: node) returns(qrm_result: bool) = {
-    qrm_result := lock_msg(n0)
-}
-export get_lock_msg
-
-action get_bool_lock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (lock_msg(n0) = result)
-}
-export get_bool_lock_msg
 

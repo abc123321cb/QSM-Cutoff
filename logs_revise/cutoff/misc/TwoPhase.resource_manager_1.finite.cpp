@@ -704,34 +704,14 @@ void TwoPhase__resource_manager_1__finite::ext__rMRcvAbortMsg(resource_manager r
         committed[rm] = false;
         aborted[rm] = true;
 }
-bool TwoPhase__resource_manager_1__finite::ext__get_tm_committed(){
+bool TwoPhase__resource_manager_1__finite::ext__get_aborted(resource_manager r0){
     bool qrm_result;
-    qrm_result = tm_committed;
+    qrm_result = aborted[r0];
     return qrm_result;
 }
-bool TwoPhase__resource_manager_1__finite::ext__get_bool_tm_committed(bool result){
+bool TwoPhase__resource_manager_1__finite::ext__get_bool_aborted(resource_manager r0, bool result){
     bool qrm_result;
-    qrm_result = (tm_committed == result);
-    return qrm_result;
-}
-bool TwoPhase__resource_manager_1__finite::ext__get_tm_aborted(){
-    bool qrm_result;
-    qrm_result = tm_aborted;
-    return qrm_result;
-}
-bool TwoPhase__resource_manager_1__finite::ext__get_bool_tm_aborted(bool result){
-    bool qrm_result;
-    qrm_result = (tm_aborted == result);
-    return qrm_result;
-}
-bool TwoPhase__resource_manager_1__finite::ext__get_msg_prepared(resource_manager r0){
-    bool qrm_result;
-    qrm_result = msg_prepared[r0];
-    return qrm_result;
-}
-bool TwoPhase__resource_manager_1__finite::ext__get_bool_msg_prepared(resource_manager r0, bool result){
-    bool qrm_result;
-    qrm_result = (msg_prepared[r0] == result);
+    qrm_result = (aborted[r0] == result);
     return qrm_result;
 }
 bool TwoPhase__resource_manager_1__finite::ext__get_msg_commit(){
@@ -744,6 +724,26 @@ bool TwoPhase__resource_manager_1__finite::ext__get_bool_msg_commit(bool result)
     qrm_result = (msg_commit == result);
     return qrm_result;
 }
+bool TwoPhase__resource_manager_1__finite::ext__get_committed(resource_manager r0){
+    bool qrm_result;
+    qrm_result = committed[r0];
+    return qrm_result;
+}
+bool TwoPhase__resource_manager_1__finite::ext__get_bool_committed(resource_manager r0, bool result){
+    bool qrm_result;
+    qrm_result = (committed[r0] == result);
+    return qrm_result;
+}
+bool TwoPhase__resource_manager_1__finite::ext__get_tm_committed(){
+    bool qrm_result;
+    qrm_result = tm_committed;
+    return qrm_result;
+}
+bool TwoPhase__resource_manager_1__finite::ext__get_bool_tm_committed(bool result){
+    bool qrm_result;
+    qrm_result = (tm_committed == result);
+    return qrm_result;
+}
 bool TwoPhase__resource_manager_1__finite::ext__get_tm_prepared(resource_manager r0){
     bool qrm_result;
     qrm_result = tm_prepared[r0];
@@ -752,6 +752,16 @@ bool TwoPhase__resource_manager_1__finite::ext__get_tm_prepared(resource_manager
 bool TwoPhase__resource_manager_1__finite::ext__get_bool_tm_prepared(resource_manager r0, bool result){
     bool qrm_result;
     qrm_result = (tm_prepared[r0] == result);
+    return qrm_result;
+}
+bool TwoPhase__resource_manager_1__finite::ext__get_prepared(resource_manager r0){
+    bool qrm_result;
+    qrm_result = prepared[r0];
+    return qrm_result;
+}
+bool TwoPhase__resource_manager_1__finite::ext__get_bool_prepared(resource_manager r0, bool result){
+    bool qrm_result;
+    qrm_result = (prepared[r0] == result);
     return qrm_result;
 }
 bool TwoPhase__resource_manager_1__finite::ext__get_tm_init(){
@@ -784,34 +794,24 @@ bool TwoPhase__resource_manager_1__finite::ext__get_bool_working(resource_manage
     qrm_result = (working[r0] == result);
     return qrm_result;
 }
-bool TwoPhase__resource_manager_1__finite::ext__get_committed(resource_manager r0){
+bool TwoPhase__resource_manager_1__finite::ext__get_msg_prepared(resource_manager r0){
     bool qrm_result;
-    qrm_result = committed[r0];
+    qrm_result = msg_prepared[r0];
     return qrm_result;
 }
-bool TwoPhase__resource_manager_1__finite::ext__get_bool_committed(resource_manager r0, bool result){
+bool TwoPhase__resource_manager_1__finite::ext__get_bool_msg_prepared(resource_manager r0, bool result){
     bool qrm_result;
-    qrm_result = (committed[r0] == result);
+    qrm_result = (msg_prepared[r0] == result);
     return qrm_result;
 }
-bool TwoPhase__resource_manager_1__finite::ext__get_prepared(resource_manager r0){
+bool TwoPhase__resource_manager_1__finite::ext__get_tm_aborted(){
     bool qrm_result;
-    qrm_result = prepared[r0];
+    qrm_result = tm_aborted;
     return qrm_result;
 }
-bool TwoPhase__resource_manager_1__finite::ext__get_bool_prepared(resource_manager r0, bool result){
+bool TwoPhase__resource_manager_1__finite::ext__get_bool_tm_aborted(bool result){
     bool qrm_result;
-    qrm_result = (prepared[r0] == result);
-    return qrm_result;
-}
-bool TwoPhase__resource_manager_1__finite::ext__get_aborted(resource_manager r0){
-    bool qrm_result;
-    qrm_result = aborted[r0];
-    return qrm_result;
-}
-bool TwoPhase__resource_manager_1__finite::ext__get_bool_aborted(resource_manager r0, bool result){
-    bool qrm_result;
-    qrm_result = (aborted[r0] == result);
+    qrm_result = (tm_aborted == result);
     return qrm_result;
 }
 void TwoPhase__resource_manager_1__finite::__tick(int __timeout){

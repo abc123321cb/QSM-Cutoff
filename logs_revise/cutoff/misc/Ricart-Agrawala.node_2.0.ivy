@@ -49,7 +49,7 @@ export leave
 # safety property
 #invariant [1000000] holds(N1) & holds(N2) -> N1 = N2
 
-invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation, qcost: 3
+invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation, qcost: 2
 invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
-invariant [invar_1] forall NODE1,NODE0. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1 # qcost: 6
-invariant [invar_4] forall NODE1,NODE0. ~replied(NODE0,NODE1) | ~replied(NODE1,NODE0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_2] forall NODE1,NODE0. ~replied(NODE1,NODE0) | ~replied(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_3] forall NODE1,NODE0. replied(NODE0,NODE1) | ~holds(NODE0) | NODE0 = NODE1 # qcost: 5

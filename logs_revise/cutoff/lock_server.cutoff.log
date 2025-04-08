@@ -51,11 +51,11 @@ g++ -shared lock_server.server_1_client_3.finite.o lock_server.server_1_client_3
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 9.395 seconds
+[QRM NOTE]: Time elapsed since start: 7.766 seconds
 
-[QRM NOTE]: Time elapsed since last: 9.395 seconds
+[QRM NOTE]: Time elapsed since last: 7.766 seconds
 
-[QRM NOTE]: Peak memory: 1171798 bytes
+[QRM NOTE]: Peak memory: 1171850 bytes
 
 
 ===================================
@@ -81,8 +81,8 @@ g++ -shared lock_server.server_1_client_3.finite.o lock_server.server_1_client_3
 
 sort: client=['client0', 'client1', 'client2']
 sort: server=['server0']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,server0)', 'semaphore(server0)']
 representative states : 1, 2
@@ -103,17 +103,17 @@ size : 3
 repr state: 1000
 lex min decimal: 2
 states:
-1000
 0010
 0100
+1000
 
 
 
-[QRM NOTE]: Time elapsed since start: 9.494 seconds
+[QRM NOTE]: Time elapsed since start: 7.845 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.099 seconds
+[QRM NOTE]: Time elapsed since last: 0.079 seconds
 
-[QRM NOTE]: Peak memory: 1196676 bytes
+[QRM NOTE]: Peak memory: 1196671 bytes
 
 
 ======================================
@@ -128,11 +128,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 9.495 seconds
+[QRM NOTE]: Time elapsed since start: 7.846 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 146766 bytes
+[QRM NOTE]: Peak memory: 146761 bytes
 
 
 =========================================================================================================
@@ -200,11 +200,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 7
 
-[QRM NOTE]: Time elapsed since start: 9.508 seconds
+[QRM NOTE]: Time elapsed since start: 7.856 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.013 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
-[QRM NOTE]: Peak memory: 1208700 bytes
+[QRM NOTE]: Peak memory: 1208648 bytes
 
 
 ==============================================================================================
@@ -258,11 +258,11 @@ After reduction :
  pending  : []
  solution : [0, 1, 2]
 
-[QRM NOTE]: Time elapsed since start: 9.510 seconds
+[QRM NOTE]: Time elapsed since start: 7.858 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 160922 bytes
+[QRM NOTE]: Peak memory: 160766 bytes
 
 
 ==================================================================================================
@@ -376,12 +376,12 @@ signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
+qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+qclause: forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 
 
 === Prime Orbit 1 =====================
@@ -473,7 +473,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2')))}
+forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
 
 exists_qvars: set()
 
@@ -490,7 +490,7 @@ qterms: ['link(CLIENT1,SERVER0)', 'link(CLIENT0,SERVER0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall CLIENT1,SERVER0,CLIENT0. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
+qclause: forall CLIENT0,CLIENT1,SERVER0. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
 
 
 === Prime Orbit 2 =====================
@@ -590,12 +590,12 @@ signed_func_name2args: {'1$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~link(CLIENT0,SERVER0)', '~semaphore(SERVER0)']
+qterms: ['~semaphore(SERVER0)', '~link(CLIENT0,SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))
+qclause: forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
 
 
 ============================================================================================================
@@ -617,7 +617,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+quantified form : forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
 qcost : 4
 
 
@@ -634,9 +634,9 @@ num_suborbits: 1
 5     : ['link(client1,server0)', 'link(client2,server0)']
 num_forall :   3
 num_exists :   0
-num_literals : 4
-quantified form : forall CLIENT1,SERVER0,CLIENT0. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
-qcost : 7
+num_literals : 3
+quantified form : forall CLIENT0,CLIENT1,SERVER0. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1
+qcost : 6
 
 
 
@@ -649,14 +649,14 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))
+quantified form : forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 9.610 seconds
+[QRM NOTE]: Time elapsed since start: 7.948 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.101 seconds
+[QRM NOTE]: Time elapsed since last: 0.090 seconds
 
 [QRM NOTE]: Peak memory: 1895455 bytes
 
@@ -692,7 +692,7 @@ After reduction :
  solution : [0, 1, 2]
 
 
-Solution : [0, 1, 2] has cost 15.
+Solution : [0, 1, 2] has cost 14.
 
 
 Before backtrack at level 1
@@ -712,7 +712,7 @@ After backtrack at level 1
 
 [MIN NOTE]: number of minimal solution found: 1
 
-[MIN NOTE]: upper bound: 15
+[MIN NOTE]: upper bound: 14
 
 [MIN NOTE]: maximum branch and bound depth: 1
 
@@ -724,24 +724,24 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_0] forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_0] forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
 
-invariant [invar_1] forall CLIENT1,SERVER0,CLIENT0. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1 # qcost: 7
+invariant [invar_1] forall CLIENT0,CLIENT1,SERVER0. ~link(CLIENT1,SERVER0) | ~link(CLIENT0,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
 
-invariant [invar_2] forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0)) # qcost: 4
+invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 3
 
-[MIN NOTE]: total qCost: 15
+[MIN NOTE]: total qCost: 14
 
 
 
 
-[QRM NOTE]: Time elapsed since start: 9.890 seconds
+[QRM NOTE]: Time elapsed since start: 7.999 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.280 seconds
+[QRM NOTE]: Time elapsed since last: 0.051 seconds
 
-[QRM NOTE]: Peak memory: 1879564 bytes
+[QRM NOTE]: Peak memory: 1879505 bytes
 
 
 =============================================
@@ -809,7 +809,7 @@ OK
 
 [MUS NOTE]: min mus: {0}
 
-invariant [invar_0] forall SERVER0,CLIENT0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_0] forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
 
 
 ======================================================================================================
@@ -857,11 +857,11 @@ OK
 
 [ASSERT_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 15.650 seconds
+[QRM NOTE]: Time elapsed since start: 12.829 seconds
 
-[QRM NOTE]: Time elapsed since last: 5.759 seconds
+[QRM NOTE]: Time elapsed since last: 4.830 seconds
 
-[QRM NOTE]: Peak memory: 1937430 bytes
+[QRM NOTE]: Peak memory: 1937283 bytes
 
 
 ***********************************************************
