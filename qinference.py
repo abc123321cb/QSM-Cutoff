@@ -143,8 +143,9 @@ class QInference():
         for qterm in qterms:
             used_constants.update(ilu.used_constants_ast(qterm))
         used_sort_constants = []
+        domain_constants = set(sort.constructors)
         for const in used_constants:
-            if const.sort == sort:
+            if const.sort == sort and const in domain_constants:
                 used_sort_constants.append(const)
         eqs = []
         for const in used_sort_constants:
