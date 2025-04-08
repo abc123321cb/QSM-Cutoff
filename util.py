@@ -35,6 +35,7 @@ class QrmOptions():
         self.log_fout          = None
         self.all_solutions     = True 
         self.merge_suborbits   = True 
+        self.minimize_equality = False
         self.convergence_check = False 
         self.ivy_check         = True
         self.ivy_to            = 120 

@@ -101,7 +101,7 @@ class Minimizer():
             assert(top.orbit_id == self.solution.pop())
         top._switch_branch()
         if top.include_orbit:
-            self.solution.append(top.id)
+            self.solution.append(top.orbit_id)
         vprint(self.options, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
 
     def _new_level(self) -> None:
@@ -396,3 +396,4 @@ class Minimizer():
                 result = result and self._compare_symmetry_quotient(sol_id, invariants, protocol)
             else:
                 result = result and self._equivalence_checking(sol_id, invariants, protocol)
+        return result

@@ -30,6 +30,7 @@ def usage ():
     print('-u           enumerate MUS for strengnthening assertions using MARCO (default: naive enumeration)')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
     print('-b           use bdd-based symbolic image computation to compute reachable states (default: off, use SymDFS)')
+    print('-e           minimize equality constraints for orbit families (default: off)')
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable orbit family (default: on)')
@@ -56,7 +57,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:urtamkp:c:v:l:whg")
+        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whg")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -80,6 +81,8 @@ def get_options(ivy_name, args):
             options.readReach = True
         elif optc == '-b':
             options.forward_mode = ForwardMode.BDD_Symbolic
+        elif optc == '-e':
+            options.minimize_equality = True
         elif optc == '-t':
             options.early_terminate_reach = True
         elif optc == '-a':
