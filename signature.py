@@ -407,16 +407,17 @@ class ConstraintPartitionSignature(PartitionSignature):
         ConstraintPartitionSignature.tran_sys = tran_sys
 
 class ConstraintSignatures():
-    def __init__(self, sig_gen : SigGenerator):
+    def __init__(self, sig_gen : SigGenerator, arg_partitions : List[ArgPartition]):
         self.sign_func_name2id : Dict[str, int]= {}
         self.func_permutations = []
         # public data
-        self.present_signatures : Dict[str, ConstraintPartitionSignature] = {}
+        self.constraint_signatures : Dict[str, ConstraintPartitionSignature] = {}
+        self.red_constraint_signatures : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
         self.absent_signatures  : Dict[str, ConstraintPartitionSignature] = {}
-        self.red_present_signatures : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
         self.red_absent_signatures  : Dict[str, ConstraintPartitionSignature] = {} # symmetric reduced
 
         self._set_func_permutations(sig_gen)
+        self._add_constraint_signatures(arg_partitions)
 
     def _set_func_permutations(self, sig_gen : SigGenerator) -> None:
         all_func_permutations = []
@@ -429,6 +430,28 @@ class ConstraintSignatures():
             all_func_permutations.append(func_permutations)
         # cartesian product
         self.func_permutations = list(product(*all_func_permutations))
+
+    def _add_constraint_signatures(self, arg_partitions : List[ArgPartition]):
+        for arg_part in arg_partitions: 
+            cpart_sig = ConstraintPartitionSignature(arg_part.part_sig.sort2signature)
+            cpart_sig.init_member_relations_from_binding(arg_part.binding)
+            for func_perm in  self.func_permutations:
+                permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
+                if not str(permuted_sig) in self.constraint_signatures:
+                    self.constraint_signatures[str(permuted_sig)] = permuted_sig
+            assert(not str(cpart_sig) in self.red_constraint_signatures)
+            self.red_constraint_signatures[str(cpart_sig)] = cpart_sig
+
+    def add_absent_signatures(self, cpart_sig: ConstraintPartitionSignature):
+        absent_sigs : Dict[str, ConstraintPartitionSignature] = {}
+        for func_perm in self.func_permutations:
+            permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
+            if not str(permuted_sig) in self.absent_signatures:
+                self.absent_signatures[str(permuted_sig)] = permuted_sig
+                absent_sigs[str(permuted_sig)] = permuted_sig
+        assert(not str(cpart_sig) in self.red_absent_signatures)
+        self.red_absent_signatures[str(cpart_sig)] = cpart_sig
+        return list(absent_sigs.values())
 
     def get_permuted_signature(self, sig, func_perm):
         if isinstance(sig, ArgumentSignature):
@@ -461,40 +484,17 @@ class ConstraintSignatures():
             cpart_sig.sort_member_relations()
             return cpart_sig 
 
-    def add_present_signatures(self, arg_partitions : List[ArgPartition]):
-        for arg_part in arg_partitions: 
-            cpart_sig = ConstraintPartitionSignature(arg_part.part_sig.sort2signature)
-            cpart_sig.init_member_relations_from_binding(arg_part.binding)
-            for func_perm in  self.func_permutations:
-                permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
-                if not str(permuted_sig) in self.present_signatures:
-                    self.present_signatures[str(permuted_sig)] = permuted_sig
-            assert(not str(cpart_sig) in self.red_present_signatures)
-            self.red_present_signatures[str(cpart_sig)] = cpart_sig
+    def get_constraint_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.constraint_signatures.values())
 
-    def add_absent_signatures(self, cpart_sig: ConstraintPartitionSignature):
-        absent_sigs : Dict[str, ConstraintPartitionSignature] = {}
-        for func_perm in self.func_permutations:
-            permuted_sig = self.get_permuted_signature(cpart_sig, func_perm)
-            if not str(permuted_sig) in self.absent_signatures:
-                self.absent_signatures[str(permuted_sig)] = permuted_sig
-                absent_sigs[str(permuted_sig)] = permuted_sig
-        assert(not str(cpart_sig) in self.red_absent_signatures)
-        self.red_absent_signatures[str(cpart_sig)] = cpart_sig
-        return list(absent_sigs.values())
-
-    def get_present_signatures(self) -> List[ConstraintPartitionSignature]:
-        return list(self.present_signatures.values())
+    def get_reduced_constraint_signatures(self) -> List[ConstraintPartitionSignature]:
+        return list(self.red_constraint_signatures.values())
 
     def get_absent_signatures(self) -> List[ConstraintPartitionSignature]:
         return list(self.absent_signatures.values())
 
-    def get_reduced_present_signatures(self) -> List[ConstraintPartitionSignature]:
-        return list(self.red_present_signatures.values())
-
     def get_reduced_absent_signatures(self) -> List[ConstraintPartitionSignature]:
         return list(self.red_absent_signatures.values())
-
 
 def merge_class_signatures(class_sigs: List[ClassSignature]) -> ClassSignature:
     arg_sigs = []

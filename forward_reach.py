@@ -184,7 +184,7 @@ class SymDFS(ForwardReachability):
     # SymDFS: print methods
     #------------------------------------------------------------
     def _print_reachability(self) -> None:
-        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[FW RESULT]: Forward Reachability on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         vprint(self.options, '\n'.join(self.protocol.header), 3)
         for state_orbit in self.dfs_state_orbits:
             vprint(self.options, str(state_orbit), 3) 

@@ -101,7 +101,7 @@ class Minimizer():
             assert(top.orbit_id == self.solution.pop())
         top._switch_branch()
         if top.include_orbit:
-            self.solution.append(top.id)
+            self.solution.append(top.orbit_id)
         vprint(self.options, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
 
     def _new_level(self) -> None:
@@ -265,13 +265,13 @@ class Minimizer():
                 orbit = self.orbits[i]
                 outF.write(str(orbit))
             outF.close()
-        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[QI RESULT]: Quantified Prime Orbits on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         for i in inference_list:
             orbit = self.orbits[i]
             vprint(self.options, str(orbit), 3)
 
     def print_rmin(self) -> None:
-        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.instance_name}: {self.options.size_str}]', 3)
+        vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 3)
         vprint(self.options, f'[MIN NOTE]: total qcost: {self.ubound}', 3)
         vprint(self.options, f'[MIN NOTE]: maximum branch and bound depth: {self.bnb_max_depth}', 3)
@@ -396,3 +396,4 @@ class Minimizer():
                 result = result and self._compare_symmetry_quotient(sol_id, invariants, protocol)
             else:
                 result = result and self._equivalence_checking(sol_id, invariants, protocol)
+        return result
