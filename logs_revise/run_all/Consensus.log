@@ -1,0 +1,1485 @@
+
+*********************************************************
+
+	[QRM]: ivybench/sym/ivy/Consensus.ivy
+
+*********************************************************
+
+
+********************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+********************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Consensus.ivy -s value=1 -f 1 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/Consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+======================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 1
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[FW NOTE]: number of branching actions: 1
+
+ivy_to_cpp target=qrm Consensus.value_1.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o Consensus.value_1.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 Consensus.value_1.finite.cpp Consensus.value_1.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared Consensus.value_1.finite.o Consensus.value_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.689 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.689 seconds
+
+[QRM NOTE]: Peak memory: 1171055 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        2
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 0
+
+
+=============================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+=============================================================================================
+
+sort: value=['value0']
+predicate: chosen('value',)
+interpreted atoms: {}
+state atoms: ['chosen(value0)']
+representative states : 0, 1
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 0
+lex min decimal: 0
+states:
+0
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 1
+lex min decimal: 1
+states:
+1
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.774 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.084 seconds
+
+[QRM NOTE]: Peak memory: 1194920 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 6.777 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
+
+[QRM NOTE]: Peak memory: 145492 bytes
+
+
+=============================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+=============================================================================================
+
+
+========================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+========================================================================================
+
+
+
+[PRIME NOTE]: number of orbits after merging: 0
+
+[PRIME NOTE]: number of orbits before merging: 0
+
+[PRIME NOTE]: number of primes: 0
+
+[QRM NOTE]: Time elapsed since start: 6.788 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 1197061 bytes
+
+
+==================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+==================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : []
+ solution : []
+
+
+Before reduction : 
+ pending  : []
+ solution : []
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : []
+
+After removed
+ coverage : []
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : []
+
+[QRM NOTE]: Time elapsed since start: 6.790 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
+
+[QRM NOTE]: Peak memory: 149704 bytes
+
+
+======================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+======================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+================================================================================================
+
+[QRM NOTE]: Time elapsed since start: 6.847 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.058 seconds
+
+[QRM NOTE]: Peak memory: 1852681 bytes
+
+
+===============================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+===============================================================================
+
+
+New level: 1
+ pending : []
+ solution : []
+
+
+Before reduction : 
+ pending  : []
+ solution : []
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : []
+
+After removed
+ coverage : []
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : []
+
+
+Solution : [] has cost 0.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : []
+
+After backtrack at level 1
+ pending : []
+ solution : []
+
+
+==============================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+==============================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 0
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : []
+
+[MIN NOTE]: solution length: 0
+
+[MIN NOTE]: number of total invariants: 0
+
+[MIN NOTE]: total qCost: 0
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.888 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.041 seconds
+
+[QRM NOTE]: Peak memory: 1853727 bytes
+
+
+***********************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/Consensus.ivy: value=1]
+
+***********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Consensus.value_1.0.ivy -s value=2 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/Consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Consensus.value_1.0.ivy: value=2]
+
+================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 2
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[FW NOTE]: number of branching actions: 2
+
+ivy_to_cpp target=qrm Consensus.value_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o Consensus.value_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 Consensus.value_2.finite.cpp Consensus.value_2.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared Consensus.value_2.finite.o Consensus.value_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.760 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.760 seconds
+
+[QRM NOTE]: Peak memory: 1175312 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        3
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 1
+
+
+=======================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Consensus.value_1.0.ivy: value=2]
+
+=======================================================================================================
+
+sort: value=['value0', 'value1']
+predicate: chosen('value',)
+interpreted atoms: {}
+state atoms: ['chosen(value0)', 'chosen(value1)']
+representative states : 0, 1
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 00
+lex min decimal: 0
+states:
+00
+
+
+
+
+=== State Orbit 1 =====================
+size : 2
+repr state: 10
+lex min decimal: 1
+states:
+10
+01
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.849 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.089 seconds
+
+[QRM NOTE]: Peak memory: 1199470 bytes
+
+
+============================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/Consensus.value_1.0.ivy: value=2]
+
+============================================================================================================================
+
+Found a representative state in Rmin not in reachability: decimal: 3, binary: 11
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 6.850 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 151022 bytes
+
+next size: value=2
+
+
+********************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+********************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Consensus.ivy -s value=2 -f 1 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/Consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.011 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 934 bytes
+
+
+=============================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+=============================================================================================
+
+
+========================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+========================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11
+0     : ['chosen(value0)', 'chosen(value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 1
+
+[PRIME NOTE]: number of orbits before merging: 1
+
+[PRIME NOTE]: number of primes: 1
+
+[QRM NOTE]: Time elapsed since start: 0.020 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.008 seconds
+
+[QRM NOTE]: Peak memory: 1054394 bytes
+
+
+==================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+==================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0]
+ solution : []
+
+Essensial at level 0 : {0}
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+[QRM NOTE]: Time elapsed since start: 0.021 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 6944 bytes
+
+
+======================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+======================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11
+0     : ['chosen(value0)', 'chosen(value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['chosen(value0)', 'chosen(value1)']
+
+sign_func_name2args: {'0$chosen': [(Const('value0', EnumeratedSort('value', ('value0', 'value1'))),), (Const('value1', EnumeratedSort('value', ('value0', 'value1'))),)]}
+
+const2sigs: {Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$0$chosen$0$0], Const('value1', EnumeratedSort('value', ('value0', 'value1'))): [value$0$chosen$0$1]}
+
+sig2const: {'value$0$chosen$0$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'value$0$chosen$0$1': Const('value1', EnumeratedSort('value', ('value0', 'value1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('value', ('value0', 'value1')): [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+sort2part_sig: {EnumeratedSort('value', ('value0', 'value1')): value$0$chosen$0$0 | value$0$chosen$0$1}
+
+part_sig: ('value$0$chosen$0$0 | value$0$chosen$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['chosen(value0)', 'chosen(value1)']
+
+func_name2symbol:  {'chosen': Const('chosen', FunctionSort(EnumeratedSort('value', ('value0', 'value1')), BooleanSort()))}
+
+func_name2args_sort:  {'chosen': (EnumeratedSort('value', ('value0', 'value1')),)}
+
+sign_func_name2count:  {'0$chosen': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('value', ('value0', 'value1')): [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+sort2part_sig: {EnumeratedSort('value', ('value0', 'value1')): value$0$chosen$0$0 | value$0$chosen$0$1}
+
+	sort: value
+
+	identical_classes: {'value$0$chosen$0': [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'value$0$chosen$0': [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: value: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: set()
+
+exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$chosen': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['chosen(VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: exists VALUE0. ~chosen(VALUE0)
+
+
+================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11
+0     : ['chosen(value0)', 'chosen(value1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists VALUE0. ~chosen(VALUE0)
+qcost : 2
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.098 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.077 seconds
+
+[QRM NOTE]: Peak memory: 1740009 bytes
+
+
+===============================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+===============================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+
+Solution : [0] has cost 2.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0]
+
+After backtrack at level 1
+ pending : []
+ solution : [0]
+
+
+==============================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+==============================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 2
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0]
+
+[MIN NOTE]: solution length: 1
+
+invariant [invar_0] exists VALUE0. ~chosen(VALUE0) # qcost: 2
+
+[MIN NOTE]: number of total invariants: 1
+
+[MIN NOTE]: total qCost: 2
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.157 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.060 seconds
+
+[QRM NOTE]: Peak memory: 1729205 bytes
+
+
+***********************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/Consensus.ivy: value=2]
+
+***********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Consensus.value_2.0.ivy -s value=3 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/Consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Consensus.value_2.0.ivy: value=3]
+
+================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 3
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 6
+
+[FW NOTE]: number of branching actions: 3
+
+ivy_to_cpp target=qrm Consensus.value_3.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o Consensus.value_3.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 Consensus.value_3.finite.cpp Consensus.value_3.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared Consensus.value_3.finite.o Consensus.value_3.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.773 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.773 seconds
+
+[QRM NOTE]: Peak memory: 1174584 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        4
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 2
+
+
+=======================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Consensus.value_2.0.ivy: value=3]
+
+=======================================================================================================
+
+sort: value=['value0', 'value1', 'value2']
+predicate: chosen('value',)
+interpreted atoms: {}
+state atoms: ['chosen(value0)', 'chosen(value1)', 'chosen(value2)']
+representative states : 0, 1
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 000
+lex min decimal: 0
+states:
+000
+
+
+
+
+=== State Orbit 1 =====================
+size : 3
+repr state: 100
+lex min decimal: 1
+states:
+100
+010
+001
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.866 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.093 seconds
+
+[QRM NOTE]: Peak memory: 1199087 bytes
+
+
+============================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/Consensus.value_2.0.ivy: value=3]
+
+============================================================================================================================
+
+Found a representative state in Rmin not in reachability: decimal: 3, binary: 011
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 6.869 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
+
+[QRM NOTE]: Peak memory: 151784 bytes
+
+next size: value=3
+
+
+********************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+********************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Consensus.ivy -s value=3 -f 1 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/Consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.012 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.012 seconds
+
+[QRM NOTE]: Peak memory: 1022 bytes
+
+
+=============================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+=============================================================================================
+
+
+========================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+========================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : 11-
+0     : ['chosen(value0)', 'chosen(value1)']
+1     : 1-1
+1     : ['chosen(value0)', 'chosen(value2)']
+2     : -11
+2     : ['chosen(value1)', 'chosen(value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 1
+
+[PRIME NOTE]: number of orbits before merging: 1
+
+[PRIME NOTE]: number of primes: 3
+
+[QRM NOTE]: Time elapsed since start: 0.020 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.008 seconds
+
+[QRM NOTE]: Peak memory: 1056922 bytes
+
+
+==================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+==================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0]
+ solution : []
+
+Essensial at level 0 : {0}
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+[QRM NOTE]: Time elapsed since start: 0.021 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 9421 bytes
+
+
+======================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+======================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : 11-
+0     : ['chosen(value0)', 'chosen(value1)']
+1     : 1-1
+1     : ['chosen(value0)', 'chosen(value2)']
+2     : -11
+2     : ['chosen(value1)', 'chosen(value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['chosen(value0)', 'chosen(value1)']
+
+sign_func_name2args: {'0$chosen': [(Const('value0', EnumeratedSort('value', ('value0', 'value1', 'value2'))),), (Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))),)]}
+
+const2sigs: {Const('value0', EnumeratedSort('value', ('value0', 'value1', 'value2'))): [value$0$chosen$0$0], Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))): [value$0$chosen$0$1]}
+
+sig2const: {'value$0$chosen$0$0': Const('value0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'value$0$chosen$0$1': Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+sort2part_sig: {EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$chosen$0$0 | value$0$chosen$0$1}
+
+part_sig: ('value$0$chosen$0$0 | value$0$chosen$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['chosen(value0)', 'chosen(value1)']
+
+func_name2symbol:  {'chosen': Const('chosen', FunctionSort(EnumeratedSort('value', ('value0', 'value1', 'value2')), BooleanSort()))}
+
+func_name2args_sort:  {'chosen': (EnumeratedSort('value', ('value0', 'value1', 'value2')),)}
+
+sign_func_name2count:  {'0$chosen': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+sort2part_sig: {EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$chosen$0$0 | value$0$chosen$0$1}
+
+	sort: value
+
+	identical_classes: {'value$0$chosen$0': [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'value$0$chosen$0': [value$0$chosen$0$0, value$0$chosen$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: value: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$chosen': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))], [Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['chosen(VALUE1)', 'chosen(VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall VALUE0,VALUE1. ~chosen(VALUE1) | ~chosen(VALUE0) | VALUE0 = VALUE1
+
+
+================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : 11-
+0     : ['chosen(value0)', 'chosen(value1)']
+1     : 1-1
+1     : ['chosen(value0)', 'chosen(value2)']
+2     : -11
+2     : ['chosen(value1)', 'chosen(value2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall VALUE0,VALUE1. ~chosen(VALUE1) | ~chosen(VALUE0) | VALUE0 = VALUE1
+qcost : 5
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.316 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.295 seconds
+
+[QRM NOTE]: Peak memory: 1743584 bytes
+
+
+===============================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+===============================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+
+Solution : [0] has cost 5.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0]
+
+After backtrack at level 1
+ pending : []
+ solution : [0]
+
+
+==============================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+==============================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 5
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0]
+
+[MIN NOTE]: solution length: 1
+
+invariant [invar_0] forall VALUE0,VALUE1. ~chosen(VALUE1) | ~chosen(VALUE0) | VALUE0 = VALUE1 # qcost: 5
+
+[MIN NOTE]: number of total invariants: 1
+
+[MIN NOTE]: total qCost: 5
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.380 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.064 seconds
+
+[QRM NOTE]: Peak memory: 1732854 bytes
+
+
+***********************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/Consensus.ivy: value=3]
+
+***********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Consensus.value_3.0.ivy -s value=4 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/Consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Consensus.value_3.0.ivy: value=4]
+
+================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 4
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 24
+
+[FW NOTE]: number of branching actions: 4
+
+ivy_to_cpp target=qrm Consensus.value_4.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o Consensus.value_4.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 Consensus.value_4.finite.cpp Consensus.value_4.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared Consensus.value_4.finite.o Consensus.value_4.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.843 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.843 seconds
+
+[QRM NOTE]: Peak memory: 1174255 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        5
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 3
+
+
+=======================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Consensus.value_3.0.ivy: value=4]
+
+=======================================================================================================
+
+sort: value=['value0', 'value1', 'value2', 'value3']
+predicate: chosen('value',)
+interpreted atoms: {}
+state atoms: ['chosen(value0)', 'chosen(value1)', 'chosen(value2)', 'chosen(value3)']
+representative states : 0, 1
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 0000
+lex min decimal: 0
+states:
+0000
+
+
+
+
+=== State Orbit 1 =====================
+size : 4
+repr state: 1000
+lex min decimal: 1
+states:
+0010
+0001
+1000
+0100
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.923 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.080 seconds
+
+[QRM NOTE]: Peak memory: 1199345 bytes
+
+
+============================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/Consensus.value_3.0.ivy: value=4]
+
+============================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 6.942 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.019 seconds
+
+[QRM NOTE]: Peak memory: 166026 bytes
+
+
+*********************************************************************
+
+	[IVY_CHECK]: Ivy Check for Reachability Invariant
+
+*********************************************************************
+
+
+===================================================================================
+
+	[IVY_CHECK]: Ivy check on [ivybench/sym/ivy/Consensus.value_3.0.ivy]
+
+===================================================================================
+
+ivy_check complete=fo ivybench/sym/ivy/Consensus.value_3.0.ivy
+
+
+Isolate this:
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym/ivy/Consensus.value_3.0.ivy: line 20: invar_0
+
+    The following action implementations are present:
+        ivybench/sym/ivy/Consensus.value_3.0.ivy: line 11: implementation of choose
+
+    The following initializers are present:
+        ivybench/sym/ivy/Consensus.value_3.0.ivy: line 8: init[after1]
+
+    Initialization must establish the invariant
+        ivybench/sym/ivy/Consensus.value_3.0.ivy: line 20: invar_0 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:choose
+            ivybench/sym/ivy/Consensus.value_3.0.ivy: line 20: invar_0 ... PASS
+
+    The following program assertions are treated as assumptions:
+        in action choose when called from the environment:
+            ivybench/sym/ivy/Consensus.value_3.0.ivy: line 12: assumption
+
+OK
+[IVY_CHECK RESULT]: PASS
+
+
+*******************************************************************
+
+	[QRM]: ivybench/sym/ivy/Consensus.value_3.0.ivy
+
+*******************************************************************
+
+[RMIN NUM]: 1
+
+[RMIN RESULT]: ['ivybench/sym/ivy/Consensus.value_3.0.ivy']
+
+[CUTOFF]: value=3
+
+[QRM RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 49.071 seconds
+
+[QRM NOTE]: Time elapsed since last: 49.071 seconds
+
