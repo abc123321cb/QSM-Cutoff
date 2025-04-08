@@ -131,6 +131,7 @@ SET_DELIM      = '__'
 SET_ELEM_DELIM = '_'
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
+from ivy import logic as lg
 class FormulaUtility():
     @staticmethod
     def flatten_or(formula):
@@ -183,6 +184,10 @@ class FormulaUtility():
             return (outF, outE, outL)
         if isinstance(formula, il.Implies):
             outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[0], not pol, outF, outE, outL)
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[1], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if isinstance(formula, lg.Eq) or isinstance(formula, lg.Iff) or isinstance(formula, il.Definition):
+            outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[0], pol, outF, outE, outL)
             outF, outE, outL = FormulaUtility.count_quantifiers_and_literals(formula.args[1], pol, outF, outE, outL)
             return (outF, outE, outL)
         is_e = isinstance(formula, il.Exists)
