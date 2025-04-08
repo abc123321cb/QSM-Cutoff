@@ -88,25 +88,15 @@ invariant holds_lock(X) & holds_lock(Y) -> X = Y
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_holds_lock(n0: node) returns(qrm_result: bool) = {
-    qrm_result := holds_lock(n0)
+action get_unlock_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := unlock_msg(n0)
 }
-export get_holds_lock
+export get_unlock_msg
 
-action get_bool_holds_lock(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (holds_lock(n0) = result)
+action get_bool_unlock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (unlock_msg(n0) = result)
 }
-export get_bool_holds_lock
-
-action get_grant_msg(n0: node) returns(qrm_result: bool) = {
-    qrm_result := grant_msg(n0)
-}
-export get_grant_msg
-
-action get_bool_grant_msg(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (grant_msg(n0) = result)
-}
-export get_bool_grant_msg
+export get_bool_unlock_msg
 
 action get_lock_msg(n0: node) returns(qrm_result: bool) = {
     qrm_result := lock_msg(n0)
@@ -118,15 +108,25 @@ action get_bool_lock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_lock_msg
 
-action get_unlock_msg(n0: node) returns(qrm_result: bool) = {
-    qrm_result := unlock_msg(n0)
+action get_grant_msg(n0: node) returns(qrm_result: bool) = {
+    qrm_result := grant_msg(n0)
 }
-export get_unlock_msg
+export get_grant_msg
 
-action get_bool_unlock_msg(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (unlock_msg(n0) = result)
+action get_bool_grant_msg(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (grant_msg(n0) = result)
 }
-export get_bool_unlock_msg
+export get_bool_grant_msg
+
+action get_holds_lock(n0: node) returns(qrm_result: bool) = {
+    qrm_result := holds_lock(n0)
+}
+export get_holds_lock
+
+action get_bool_holds_lock(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (holds_lock(n0) = result)
+}
+export get_bool_holds_lock
 
 action get_held returns(qrm_result: bool) = {
     qrm_result := held

@@ -39,5 +39,5 @@ invariant decision(V1) & decision(V2) -> V1 = V2
 #invariant [manual_1] vote(N,V1) & vote(N,V2) -> V1 = V2
 #invariant [manual_2] decision(V) -> exists Q:quorum. forall N:node. member(N, Q) -> vote(N,V)
 
-invariant [invar_0] forall NODE0,VALUE1,VALUE0. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
-invariant [invar_21] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4
+invariant [invar_0] forall VALUE0,VALUE1,NODE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1 # qcost: 6
+invariant [invar_22] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4

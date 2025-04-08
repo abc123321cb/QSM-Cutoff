@@ -17,7 +17,7 @@
  (let (($x41 (not $x16)))
  (let (($x22 (= |NODE0:node| |NODE3:node|)))
  (let (($x6 (not $x22)))
- (let (($x33 (or (and $x13 $x16 $x18) (and $x16 $x20 $x18) (and $x22 $x13 $x18) (and $x22 $x17 $x24) (and $x13 $x17 $x6) (and $x22 $x20 $x18) (and $x16 $x34 $x24 $x18) (and $x13 $x6 $x41 $x18) (and $x17 $x24 $x6 (not $x40)) (and $x22 $x34 $x24 $x18) (and $x20 $x6 $x41 $x18) (and $x40 $x34 $x24 $x18))))
+ (let (($x33 (or (and $x13 $x16 $x18) (and $x16 $x20 $x18) (and $x22 $x13 $x18) (and $x22 $x17 $x24) (and $x17 $x13 $x6) (and $x22 $x20 $x18) (and $x16 $x34 $x24 $x18) (and $x13 $x6 $x41 $x18) (and $x17 $x6 $x24 (not $x40)) (and $x22 $x34 $x24 $x18) (and $x20 $x6 $x41 $x18) (and $x40 $x34 $x24 $x18))))
  (and (not $x33)))))))))))))))
 (assert
  (= |NODE0:node| |NODE1:node|))

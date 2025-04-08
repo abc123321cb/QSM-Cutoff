@@ -45,4 +45,4 @@ invariant [safety] (exists N,K,V. transfer_msg(N,K,V)) | (forall K. exists N. ow
 
 #invariant [manual_1] forall K. (exists N. owner(N, K)) | (exists N, V. transfer_msg(N, K, V))
 
-invariant [invar_7] forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)) # qcost: 5
+invariant [invar_7] forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
