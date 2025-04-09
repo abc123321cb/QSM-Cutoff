@@ -1,0 +1,1414 @@
+
+***************************************************************
+
+	[QRM]: ivybench/sym/ivy/Ricart-Agrawala.ivy
+
+***************************************************************
+
+
+*************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+*************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Ricart-Agrawala.ivy -s node=1 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/Ricart-Agrawala.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+===========================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 3
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[QRM NOTE]: Time elapsed since start: 0.043 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.043 seconds
+
+[QRM NOTE]: Peak memory: 26929 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: request(fml:requester,fml:responder)
+
+building bdd for action: reply(fml:requester,fml:responder)
+
+building bdd for action: enter(fml:requester)
+
+building bdd for action: leave(fml:requester)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 1
+
+
+==============================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Ricart-Agrawala: node=1]
+
+==============================================================================================
+
+sort: node=['node0']
+predicate: requested('node', 'node')
+predicate: holds('node',)
+predicate: replied('node', 'node')
+interpreted atoms: {}
+state atoms: ['holds(node0)', 'replied(node0,node0)', 'requested(node0,node0)']
+
+-00
+
+[QRM NOTE]: Time elapsed since start: 0.089 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.046 seconds
+
+[QRM NOTE]: Peak memory: 1086352 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+	replied(node0,node0): ['requested(node0,node0)']
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: {2}
+
+[QRM NOTE]: Time elapsed since start: 0.094 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.005 seconds
+
+[QRM NOTE]: Peak memory: 40854 bytes
+
+
+==================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+==================================================================================================
+
+
+=============================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+=============================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : -1-
+0     : ['replied(node0,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 1
+
+[PRIME NOTE]: number of orbits before merging: 1
+
+[PRIME NOTE]: number of primes: 1
+
+[QRM NOTE]: Time elapsed since start: 0.106 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.012 seconds
+
+[QRM NOTE]: Peak memory: 1092730 bytes
+
+
+=======================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+=======================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0]
+ solution : []
+
+Essensial at level 0 : {0}
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+[QRM NOTE]: Time elapsed since start: 0.108 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
+
+[QRM NOTE]: Peak memory: 45364 bytes
+
+
+===========================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+===========================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : -1-
+0     : ['replied(node0,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['replied(node0,node0)']
+
+sign_func_name2args: {'0$replied': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('node0', EnumeratedSort('node', ('node0',))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$replied$0$0, node$0$replied$1$0]}
+
+sig2const: {'node$0$replied$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$replied$1$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$replied$0$0; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$replied$0$0; node$0$replied$1$0}
+
+part_sig: ('node$0$replied$0$0; node$0$replied$1$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['replied(node0,node0)']
+
+func_name2symbol:  {'replied': Const('replied', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'replied': (EnumeratedSort('node', ('node0',)), EnumeratedSort('node', ('node0',)))}
+
+sign_func_name2count:  {'0$replied': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$replied$0$0; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$replied$0$0; node$0$replied$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0; node$0$replied$1$0]}
+
+	identical_single_classes: {'node$0$replied$0; node$0$replied$1': node$0$replied$0$0; node$0$replied$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$replied': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['replied(NODE0,NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~replied(NODE0,NODE0)
+
+
+=====================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+=====================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : -1-
+0     : ['replied(node0,node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : forall NODE0. ~replied(NODE0,NODE0)
+qcost : 2
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.190 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.082 seconds
+
+[QRM NOTE]: Peak memory: 1765272 bytes
+
+
+====================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+====================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1)]
+
+After removed
+ coverage : [(0, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0]
+
+
+Solution : [0] has cost 2.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0]
+
+After backtrack at level 1
+ pending : []
+ solution : [0]
+
+
+===================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+===================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 2
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 1
+
+invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation, qcost: 2
+
+[MIN NOTE]: Solution 0 : [0]
+
+[MIN NOTE]: solution length: 1
+
+invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
+
+[MIN NOTE]: number of total invariants: 2
+
+[MIN NOTE]: total qCost: 4
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.258 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.068 seconds
+
+[QRM NOTE]: Peak memory: 1756101 bytes
+
+
+****************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=1]
+
+****************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Ricart-Agrawala.node_1.0.ivy -s node=2 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/Ricart-Agrawala.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+====================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Ricart-Agrawala.node_1.0.ivy: node=2]
+
+====================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 10
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 0.059 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.059 seconds
+
+[QRM NOTE]: Peak memory: 91005 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: request(fml:requester,fml:responder)
+
+building bdd for action: reply(fml:requester,fml:responder)
+
+building bdd for action: enter(fml:requester)
+
+building bdd for action: leave(fml:requester)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 4
+
+
+==============================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Ricart-Agrawala: node=2]
+
+==============================================================================================
+
+sort: node=['node0', 'node1']
+predicate: holds('node',)
+predicate: requested('node', 'node')
+predicate: replied('node', 'node')
+interpreted atoms: {}
+state atoms: ['holds(node0)', 'holds(node1)', 'replied(node0,node0)', 'replied(node0,node1)', 'replied(node1,node0)', 'replied(node1,node1)', 'requested(node0,node0)', 'requested(node0,node1)', 'requested(node1,node0)', 'requested(node1,node1)']
+
+0000-00--0
+0001000--0
+0100100--0
+1001000--0
+
+[QRM NOTE]: Time elapsed since start: 0.368 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.308 seconds
+
+[QRM NOTE]: Peak memory: 1151007 bytes
+
+
+================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/Ricart-Agrawala.node_1.0.ivy: node=2]
+
+================================================================================================================================
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 0.386 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.018 seconds
+
+[QRM NOTE]: Peak memory: 118239 bytes
+
+next size: node=2
+
+
+*************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+*************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Ricart-Agrawala.ivy -s node=2 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/Ricart-Agrawala.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+	replied(node0,node0): ['requested(node0,node0)']
+
+	replied(node1,node1): ['requested(node1,node1)']
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: {9, 6}
+
+[QRM NOTE]: Time elapsed since start: 0.028 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.028 seconds
+
+[QRM NOTE]: Peak memory: 6799 bytes
+
+
+==================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+==================================================================================================
+
+
+=============================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+=============================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : -----1----
+0     : ['replied(node1,node1)']
+1     : --1-------
+1     : ['replied(node0,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1--0------
+2     : ['holds(node0)', '~replied(node0,node1)']
+3     : -1--0-----
+3     : ['holds(node1)', '~replied(node1,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 11--------
+4     : ['holds(node0)', 'holds(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+5 (*) : -1-1------
+5     : ['holds(node1)', 'replied(node0,node1)']
+6     : 1---1-----
+6     : ['holds(node0)', 'replied(node1,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+7 (*) : ---11-----
+7     : ['replied(node0,node1)', 'replied(node1,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 5
+
+[PRIME NOTE]: number of orbits before merging: 5
+
+[PRIME NOTE]: number of primes: 8
+
+[QRM NOTE]: Time elapsed since start: 0.039 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.012 seconds
+
+[QRM NOTE]: Peak memory: 1097780 bytes
+
+
+=======================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+=======================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3, 4]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3, 4]
+ solution : []
+
+Essensial at level 0 : {0, 1, 4}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, 0), (3, 0), (4, -1)]
+
+Covered at level 0 : {2, 3}
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 4]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 4]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, 0), (3, 0), (4, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 4]
+
+[QRM NOTE]: Time elapsed since start: 0.041 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
+
+[QRM NOTE]: Peak memory: 50406 bytes
+
+
+===========================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+===========================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : -----1----
+0     : ['replied(node1,node1)']
+1     : --1-------
+1     : ['replied(node0,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['replied(node1,node1)']
+
+sign_func_name2args: {'0$replied': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))), Const('node1', EnumeratedSort('node', ('node0', 'node1'))))]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$0$0, node$0$replied$1$0]}
+
+sig2const: {'node$0$replied$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$0}
+
+part_sig: ('node$0$replied$0$0; node$0$replied$1$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['replied(node1,node1)']
+
+func_name2symbol:  {'replied': Const('replied', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'replied': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')))}
+
+sign_func_name2count:  {'0$replied': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0; node$0$replied$1$0]}
+
+	identical_single_classes: {'node$0$replied$0; node$0$replied$1': node$0$replied$0$0; node$0$replied$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$replied': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['replied(NODE0,NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~replied(NODE0,NODE0)
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1--0------
+2     : ['holds(node0)', '~replied(node0,node1)']
+3     : -1--0-----
+3     : ['holds(node1)', '~replied(node1,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds(node0)', '~replied(node0,node1)']
+
+sign_func_name2args: {'0$holds': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '1$replied': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))), Const('node1', EnumeratedSort('node', ('node0', 'node1'))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds$0$0, node$1$replied$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$1$replied$1$0]}
+
+sig2const: {'node$0$holds$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$replied$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$replied$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds$0$0; node$1$replied$0$0, node$1$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds$0$0; node$1$replied$0$0 | node$1$replied$1$0}
+
+part_sig: ('node$0$holds$0$0; node$1$replied$0$0 | node$1$replied$1$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds(node0)', '~replied(node0,node1)']
+
+func_name2symbol:  {'holds': Const('holds', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'replied': Const('replied', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'holds': (EnumeratedSort('node', ('node0', 'node1')),), 'replied': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')))}
+
+sign_func_name2count:  {'0$holds': 1, '1$replied': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds$0$0; node$1$replied$0$0, node$1$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds$0$0; node$1$replied$0$0 | node$1$replied$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds$0; node$1$replied$0': [node$0$holds$0$0; node$1$replied$0$0], 'node$1$replied$1': [node$1$replied$1$0]}
+
+	identical_single_classes: {'node$0$holds$0; node$1$replied$0': node$0$holds$0$0; node$1$replied$0$0, 'node$1$replied$1': node$1$replied$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '1$replied': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds(NODE0)', '~replied(NODE0,NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+7 (*) : ---11-----
+7     : ['replied(node0,node1)', 'replied(node1,node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['replied(node0,node1)', 'replied(node1,node0)']
+
+sign_func_name2args: {'0$replied': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))), Const('node1', EnumeratedSort('node', ('node0', 'node1')))), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))), Const('node0', EnumeratedSort('node', ('node0', 'node1'))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$0$0, node$0$replied$1$1], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$replied$1$0, node$0$replied$0$1]}
+
+sig2const: {'node$0$replied$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$replied$1$1': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0}
+
+part_sig: ('node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['replied(node0,node1)', 'replied(node1,node0)']
+
+func_name2symbol:  {'replied': Const('replied', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'replied': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('node', ('node0', 'node1')))}
+
+sign_func_name2count:  {'0$replied': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$replied$0$0; node$0$replied$1$1 | node$0$replied$0$1; node$0$replied$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0; node$0$replied$1$1, node$0$replied$0$1; node$0$replied$1$0]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$replied$0; node$0$replied$1': [node$0$replied$0$0, node$0$replied$1$1, node$0$replied$0$1, node$0$replied$1$0]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$replied': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['replied(NODE1,NODE0)', 'replied(NODE0,NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~replied(NODE1,NODE0) | ~replied(NODE0,NODE1) | NODE0 = NODE1
+
+
+=====================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+=====================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : -----1----
+0     : ['replied(node1,node1)']
+1     : --1-------
+1     : ['replied(node0,node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : forall NODE0. ~replied(NODE0,NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1--0------
+2     : ['holds(node0)', '~replied(node0,node1)']
+3     : -1--0-----
+3     : ['holds(node1)', '~replied(node1,node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+7 (*) : ---11-----
+7     : ['replied(node0,node1)', 'replied(node1,node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~replied(NODE1,NODE0) | ~replied(NODE0,NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.136 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.095 seconds
+
+[QRM NOTE]: Peak memory: 1791885 bytes
+
+
+====================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+====================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 4]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 4]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 4]
+
+
+Solution : [0, 1, 4] has cost 12.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 4]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 4]
+
+
+===================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+===================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 12
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 1
+
+invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation, qcost: 2
+
+[MIN NOTE]: Solution 0 : [0, 1, 4]
+
+[MIN NOTE]: solution length: 3
+
+invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
+
+invariant [invar_1] forall NODE1,NODE0. ~holds(NODE0) | replied(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_4] forall NODE1,NODE0. ~replied(NODE1,NODE0) | ~replied(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
+
+[MIN NOTE]: number of total invariants: 4
+
+[MIN NOTE]: total qCost: 14
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.211 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.075 seconds
+
+[QRM NOTE]: Peak memory: 1780743 bytes
+
+
+****************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/Ricart-Agrawala.ivy: node=2]
+
+****************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy -s node=3 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/Ricart-Agrawala.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+====================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: node=3]
+
+====================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 21
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 6
+
+[QRM NOTE]: Time elapsed since start: 0.182 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.182 seconds
+
+[QRM NOTE]: Peak memory: 288181 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: request(fml:requester,fml:responder)
+
+building bdd for action: reply(fml:requester,fml:responder)
+
+building bdd for action: enter(fml:requester)
+
+building bdd for action: leave(fml:requester)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 14
+
+
+==============================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/Ricart-Agrawala: node=3]
+
+==============================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+predicate: requested('node', 'node')
+predicate: holds('node',)
+predicate: replied('node', 'node')
+interpreted atoms: {}
+state atoms: ['holds(node0)', 'holds(node1)', 'holds(node2)', 'replied(node0,node0)', 'replied(node0,node1)', 'replied(node0,node2)', 'replied(node1,node0)', 'replied(node1,node1)', 'replied(node1,node2)', 'replied(node2,node0)', 'replied(node2,node1)', 'replied(node2,node2)', 'requested(node0,node0)', 'requested(node0,node1)', 'requested(node0,node2)', 'requested(node1,node0)', 'requested(node1,node1)', 'requested(node1,node2)', 'requested(node2,node0)', 'requested(node2,node1)', 'requested(node2,node2)']
+
+000000-00--00---0---0
+000000-01-000---0---0
+000001-000-00---0---0
+000001-010000---0---0
+000010000--00---0---0
+000010001-000---0---0
+0000110000-00---0---0
+0000110010000---0---0
+001000-001100---0---0
+0010100001100---0---0
+010000101-000---0---0
+0100011010000---0---0
+1000110000-00---0---0
+1000110010000---0---0
+
+[QRM NOTE]: Time elapsed since start: 1.312 seconds
+
+[QRM NOTE]: Time elapsed since last: 1.130 seconds
+
+[QRM NOTE]: Peak memory: 1486193 bytes
+
+
+================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: node=3]
+
+================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 1.421 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.109 seconds
+
+[QRM NOTE]: Peak memory: 524791 bytes
+
+
+*********************************************************************
+
+	[IVY_CHECK]: Ivy Check for Reachability Invariant
+
+*********************************************************************
+
+
+========================================================================================
+
+	[IVY_CHECK]: Ivy check on [ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy]
+
+========================================================================================
+
+ivy_check complete=fo ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy
+
+
+Isolate this:
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4
+
+    The following action implementations are present:
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 33: implementation of enter
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 38: implementation of leave
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 23: implementation of reply
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 17: implementation of request
+
+    The following initializers are present:
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 11: init[after1]
+
+    Initialization must establish the invariant
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
+        ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:enter
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
+        (internal) ext:leave
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
+        (internal) ext:reply
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
+        (internal) ext:request
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 52: eq_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 53: invar_0 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 54: invar_1 ... PASS
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 55: invar_4 ... PASS
+
+    The following program assertions are treated as assumptions:
+        in action request when called from the environment:
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 18: assumption
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 19: assumption
+        in action reply when called from the environment:
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 24: assumption
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 25: assumption
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 26: assumption
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 27: assumption
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 28: assumption
+        in action enter when called from the environment:
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 34: assumption
+        in action leave when called from the environment:
+            ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy: line 39: assumption
+
+OK
+[IVY_CHECK RESULT]: PASS
+
+
+************************************************************************
+
+	[QRM]: ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy
+
+************************************************************************
+
+[RMIN NUM]: 1
+
+[RMIN RESULT]: ['ivybench/sym/ivy/Ricart-Agrawala.node_2.0.ivy']
+
+[CUTOFF]: node=2
+
+[QRM RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 16.252 seconds
+
+[QRM NOTE]: Time elapsed since last: 16.252 seconds
+

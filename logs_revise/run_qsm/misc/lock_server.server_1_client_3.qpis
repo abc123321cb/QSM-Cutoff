@@ -1,0 +1,44 @@
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : --11
+0     : ['link(client2,server0)', 'semaphore(server0)']
+1     : -1-1
+1     : ['link(client1,server0)', 'semaphore(server0)']
+2     : 1--1
+2     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+qcost : 4
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : 1-1-
+3     : ['link(client0,server0)', 'link(client2,server0)']
+4     : 11--
+4     : ['link(client0,server0)', 'link(client1,server0)']
+5     : -11-
+5     : ['link(client1,server0)', 'link(client2,server0)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall SERVER0,CLIENT1,CLIENT0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
+qcost : 6
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 0000
+6     : ['~link(client0,server0)', '~link(client1,server0)', '~link(client2,server0)', '~semaphore(server0)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
+qcost : 4
+
