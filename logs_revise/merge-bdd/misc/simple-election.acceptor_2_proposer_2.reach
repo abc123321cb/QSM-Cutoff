@@ -1,0 +1,20 @@
+sort: acceptor=['acceptor0', 'acceptor1']
+sort: proposer=['proposer0', 'proposer1']
+sort: quorum=['quorum__acceptor0_acceptor1']
+predicate: promise('acceptor', 'proposer')
+predicate: didNotPromise('acceptor',)
+predicate: leader('proposer',)
+predicate: chosenAt('quorum', 'proposer')
+predicate: member('acceptor', 'quorum')
+predicate: start('proposer',)
+interpreted atoms: {'member(acceptor0,quorum__acceptor0_acceptor1)': '1', 'member(acceptor1,quorum__acceptor0_acceptor1)': '1'}
+state atoms: ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer0)', 'leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor1,proposer0)', 'promise(acceptor1,proposer1)', 'start(proposer0)', 'start(proposer1)']
+000000011011
+000000100111
+0001000100-1
+00010010001-
+0010000001-1
+00100000101-
+0011000000--
+01000-0101-1
+1000-010101-

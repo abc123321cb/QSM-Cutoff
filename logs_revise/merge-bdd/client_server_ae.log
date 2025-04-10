@@ -1,0 +1,1875 @@
+
+****************************************************************
+
+	[QRM]: ivybench/sym/ivy/client_server_ae.ivy
+
+****************************************************************
+
+
+***********************************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+***********************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/client_server_ae.ivy -s node=1,request=1,response=1 -f 1 -g -w -r -b -e -v 5 -w -l ivybench/sym/ivy/client_server_ae.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+=================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 5
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[QRM NOTE]: Time elapsed since start: 0.028 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.028 seconds
+
+[QRM NOTE]: Peak memory: 27702 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: new_request(fml:n,fml:r)
+
+building bdd for action: respond(fml:n,fml:r,fml:p)
+
+building bdd for action: receive_response(fml:n,fml:p)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 4
+
+
+====================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/client_server_ae: node=1,request=1,response=1]
+
+====================================================================================================================
+
+sort: node=['node0']
+sort: request=['request0']
+sort: response=['response0']
+predicate: match('request', 'response')
+predicate: request_sent('node', 'request')
+predicate: responseMatched('node', 'response')
+predicate: response_sent('node', 'response')
+predicate: response_received('node', 'response')
+interpreted atoms: {}
+state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'responseMatched(node0,response0)', 'response_received(node0,response0)', 'response_sent(node0,response0)']
+
+0-000
+10000
+1110-
+11111
+
+[QRM NOTE]: Time elapsed since start: 0.088 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.060 seconds
+
+[QRM NOTE]: Peak memory: 1095913 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.093 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.005 seconds
+
+[QRM NOTE]: Peak memory: 46394 bytes
+
+
+========================================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+========================================================================================================================
+
+
+===================================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+===================================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : -0--1
+0     : ['response_sent(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : -01--
+1     : ['responseMatched(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : -0-1-
+2     : ['response_received(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 0-1--
+3     : ['responseMatched(node0,response0)', '~match(request0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 0---1
+4     : ['response_sent(node0,response0)', '~match(request0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+5 (*) : 0--1-
+5     : ['response_received(node0,response0)', '~match(request0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+6 (*) : ---10
+6     : ['response_received(node0,response0)', '~response_sent(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 1
+num_suborbits: 1
+7 (*) : --01-
+7     : ['response_received(node0,response0)', '~responseMatched(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 1
+num_suborbits: 1
+8 (*) : --0-1
+8     : ['response_sent(node0,response0)', '~responseMatched(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 1
+num_suborbits: 1
+9 (*) : 110--
+9     : ['match(request0,response0)', 'request_sent(node0,request0)', '~responseMatched(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 10
+
+[PRIME NOTE]: number of orbits before merging: 10
+
+[PRIME NOTE]: number of primes: 10
+
+[QRM NOTE]: Time elapsed since start: 0.110 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.017 seconds
+
+[QRM NOTE]: Peak memory: 1119354 bytes
+
+
+=============================================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+=============================================================================================================
+
+definition primes: {1, 3, 9}
+
+
+New level: 0
+ pending : [0, 2, 4, 5, 6, 7, 8]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 2, 4, 5, 6, 7, 8]
+ solution : []
+
+Essensial at level 0 : {6}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1)]
+
+After removed
+ coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : [0, 2, 4, 5, 7, 8]
+ solution : [6]
+
+
+Before reduction : 
+ pending  : [0, 2, 4, 5, 7, 8]
+ solution : [6]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+After removed
+ coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : [0, 2, 4, 5, 7, 8]
+ solution : [6]
+
+[QRM NOTE]: Time elapsed since start: 0.114 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 71184 bytes
+
+
+=================================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+=================================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+6 (*) : ---10
+6     : ['response_received(node0,response0)', '~response_sent(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['response_received(node0,response0)', '~response_sent(node0,response0)']
+
+sign_func_name2args: {'0$response_received': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))], '1$response_sent': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$response_received$0$0, node$1$response_sent$0$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$0$response_received$1$0, response$1$response_sent$1$0]}
+
+sig2const: {'node$0$response_received$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_received$1$0': Const('response0', EnumeratedSort('response', ('response0',))), 'node$1$response_sent$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$1$response_sent$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0; node$1$response_sent$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0; response$1$response_sent$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_received$0$0; node$1$response_sent$0$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0; response$1$response_sent$1$0}
+
+part_sig: ('node$0$response_received$0$0; node$1$response_sent$0$0', 'response$0$response_received$1$0; response$1$response_sent$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['response_received(node0,response0)', '~response_sent(node0,response0)']
+
+func_name2symbol:  {'response_received': Const('response_received', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort())), 'response_sent': Const('response_sent', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'response_received': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',))), 'response_sent': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'0$response_received': 1, '1$response_sent': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0; node$1$response_sent$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0; response$1$response_sent$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_received$0$0; node$1$response_sent$0$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0; response$1$response_sent$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$response_received$0; node$1$response_sent$0': [node$0$response_received$0$0; node$1$response_sent$0$0]}
+
+	identical_single_classes: {'node$0$response_received$0; node$1$response_sent$0': node$0$response_received$0$0; node$1$response_sent$0$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_received$1; response$1$response_sent$1': [response$0$response_received$1$0; response$1$response_sent$1$0]}
+
+	identical_single_classes: {'response$0$response_received$1; response$1$response_sent$1': response$0$response_received$1$0; response$1$response_sent$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$response_received': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]], '1$response_sent': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~response_sent(NODE0,RESPONSE0)', 'response_received(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : -0--1
+0     : ['response_sent(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~request_sent(node0,request0)', 'response_sent(node0,response0)']
+
+sign_func_name2args: {'1$request_sent': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('request0', EnumeratedSort('request', ('request0',))))], '0$response_sent': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$request_sent$0$0, node$0$response_sent$0$0], Const('request0', EnumeratedSort('request', ('request0',))): [request$1$request_sent$1$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$0$response_sent$1$0]}
+
+sig2const: {'node$1$request_sent$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'request$1$request_sent$1$0': Const('request0', EnumeratedSort('request', ('request0',))), 'node$0$response_sent$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_sent$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_sent$0$0; node$1$request_sent$0$0], EnumeratedSort('request', ('request0',)): [request$1$request_sent$1$0], EnumeratedSort('response', ('response0',)): [response$0$response_sent$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_sent$0$0; node$1$request_sent$0$0, EnumeratedSort('request', ('request0',)): request$1$request_sent$1$0, EnumeratedSort('response', ('response0',)): response$0$response_sent$1$0}
+
+part_sig: ('node$0$response_sent$0$0; node$1$request_sent$0$0', 'request$1$request_sent$1$0', 'response$0$response_sent$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~request_sent(node0,request0)', 'response_sent(node0,response0)']
+
+func_name2symbol:  {'request_sent': Const('request_sent', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('request', ('request0',)), BooleanSort())), 'response_sent': Const('response_sent', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'request_sent': (EnumeratedSort('node', ('node0',)), EnumeratedSort('request', ('request0',))), 'response_sent': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'1$request_sent': 1, '0$response_sent': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_sent$0$0; node$1$request_sent$0$0], EnumeratedSort('request', ('request0',)): [request$1$request_sent$1$0], EnumeratedSort('response', ('response0',)): [response$0$response_sent$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_sent$0$0; node$1$request_sent$0$0, EnumeratedSort('request', ('request0',)): request$1$request_sent$1$0, EnumeratedSort('response', ('response0',)): response$0$response_sent$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$response_sent$0; node$1$request_sent$0': [node$0$response_sent$0$0; node$1$request_sent$0$0]}
+
+	identical_single_classes: {'node$0$response_sent$0; node$1$request_sent$0': node$0$response_sent$0$0; node$1$request_sent$0$0}
+
+	identical_multi_classes: {}
+
+	sort: request
+
+	identical_classes: {'request$1$request_sent$1': [request$1$request_sent$1$0]}
+
+	identical_single_classes: {'request$1$request_sent$1': request$1$request_sent$1$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_sent$1': [response$0$response_sent$1$0]}
+
+	identical_single_classes: {'response$0$response_sent$1': response$0$response_sent$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: request: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$request_sent': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('REQUEST0', EnumeratedSort('request', ('request0',)))]], '0$response_sent': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~request_sent(NODE0,REQUEST0)', 'response_sent(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_sent(NODE0,RESPONSE0)
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : -0-1-
+2     : ['response_received(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~request_sent(node0,request0)', 'response_received(node0,response0)']
+
+sign_func_name2args: {'1$request_sent': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('request0', EnumeratedSort('request', ('request0',))))], '0$response_received': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$request_sent$0$0, node$0$response_received$0$0], Const('request0', EnumeratedSort('request', ('request0',))): [request$1$request_sent$1$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$0$response_received$1$0]}
+
+sig2const: {'node$1$request_sent$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'request$1$request_sent$1$0': Const('request0', EnumeratedSort('request', ('request0',))), 'node$0$response_received$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_received$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0; node$1$request_sent$0$0], EnumeratedSort('request', ('request0',)): [request$1$request_sent$1$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_received$0$0; node$1$request_sent$0$0, EnumeratedSort('request', ('request0',)): request$1$request_sent$1$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0}
+
+part_sig: ('node$0$response_received$0$0; node$1$request_sent$0$0', 'request$1$request_sent$1$0', 'response$0$response_received$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~request_sent(node0,request0)', 'response_received(node0,response0)']
+
+func_name2symbol:  {'request_sent': Const('request_sent', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('request', ('request0',)), BooleanSort())), 'response_received': Const('response_received', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'request_sent': (EnumeratedSort('node', ('node0',)), EnumeratedSort('request', ('request0',))), 'response_received': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'1$request_sent': 1, '0$response_received': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0; node$1$request_sent$0$0], EnumeratedSort('request', ('request0',)): [request$1$request_sent$1$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_received$0$0; node$1$request_sent$0$0, EnumeratedSort('request', ('request0',)): request$1$request_sent$1$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$response_received$0; node$1$request_sent$0': [node$0$response_received$0$0; node$1$request_sent$0$0]}
+
+	identical_single_classes: {'node$0$response_received$0; node$1$request_sent$0': node$0$response_received$0$0; node$1$request_sent$0$0}
+
+	identical_multi_classes: {}
+
+	sort: request
+
+	identical_classes: {'request$1$request_sent$1': [request$1$request_sent$1$0]}
+
+	identical_single_classes: {'request$1$request_sent$1': request$1$request_sent$1$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_received$1': [response$0$response_received$1$0]}
+
+	identical_single_classes: {'response$0$response_received$1': response$0$response_received$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: request: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$request_sent': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('REQUEST0', EnumeratedSort('request', ('request0',)))]], '0$response_received': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~request_sent(NODE0,REQUEST0)', 'response_received(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_received(NODE0,RESPONSE0)
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 0---1
+4     : ['response_sent(node0,response0)', '~match(request0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~match(request0,response0)', 'response_sent(node0,response0)']
+
+sign_func_name2args: {'1$match': [(Const('request0', EnumeratedSort('request', ('request0',))), Const('response0', EnumeratedSort('response', ('response0',))))], '0$response_sent': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('request0', EnumeratedSort('request', ('request0',))): [request$1$match$0$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$1$match$1$0, response$0$response_sent$1$0], Const('node0', EnumeratedSort('node', ('node0',))): [node$0$response_sent$0$0]}
+
+sig2const: {'request$1$match$0$0': Const('request0', EnumeratedSort('request', ('request0',))), 'response$1$match$1$0': Const('response0', EnumeratedSort('response', ('response0',))), 'node$0$response_sent$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_sent$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('request', ('request0',)): [request$1$match$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_sent$1$0; response$1$match$1$0], EnumeratedSort('node', ('node0',)): [node$0$response_sent$0$0]}
+
+sort2part_sig: {EnumeratedSort('request', ('request0',)): request$1$match$0$0, EnumeratedSort('response', ('response0',)): response$0$response_sent$1$0; response$1$match$1$0, EnumeratedSort('node', ('node0',)): node$0$response_sent$0$0}
+
+part_sig: ('node$0$response_sent$0$0', 'request$1$match$0$0', 'response$0$response_sent$1$0; response$1$match$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~match(request0,response0)', 'response_sent(node0,response0)']
+
+func_name2symbol:  {'match': Const('match', FunctionSort(EnumeratedSort('request', ('request0',)), EnumeratedSort('response', ('response0',)), BooleanSort())), 'response_sent': Const('response_sent', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'match': (EnumeratedSort('request', ('request0',)), EnumeratedSort('response', ('response0',))), 'response_sent': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'1$match': 1, '0$response_sent': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('request', ('request0',)): [request$1$match$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_sent$1$0; response$1$match$1$0], EnumeratedSort('node', ('node0',)): [node$0$response_sent$0$0]}
+
+sort2part_sig: {EnumeratedSort('request', ('request0',)): request$1$match$0$0, EnumeratedSort('response', ('response0',)): response$0$response_sent$1$0; response$1$match$1$0, EnumeratedSort('node', ('node0',)): node$0$response_sent$0$0}
+
+	sort: request
+
+	identical_classes: {'request$1$match$0': [request$1$match$0$0]}
+
+	identical_single_classes: {'request$1$match$0': request$1$match$0$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_sent$1; response$1$match$1': [response$0$response_sent$1$0; response$1$match$1$0]}
+
+	identical_single_classes: {'response$0$response_sent$1; response$1$match$1': response$0$response_sent$1$0; response$1$match$1$0}
+
+	identical_multi_classes: {}
+
+	sort: node
+
+	identical_classes: {'node$0$response_sent$0': [node$0$response_sent$0$0]}
+
+	identical_single_classes: {'node$0$response_sent$0': node$0$response_sent$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: request: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$match': [[Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]], '0$response_sent': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~match(REQUEST0,RESPONSE0)', 'response_sent(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+5 (*) : 0--1-
+5     : ['response_received(node0,response0)', '~match(request0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~match(request0,response0)', 'response_received(node0,response0)']
+
+sign_func_name2args: {'1$match': [(Const('request0', EnumeratedSort('request', ('request0',))), Const('response0', EnumeratedSort('response', ('response0',))))], '0$response_received': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('request0', EnumeratedSort('request', ('request0',))): [request$1$match$0$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$1$match$1$0, response$0$response_received$1$0], Const('node0', EnumeratedSort('node', ('node0',))): [node$0$response_received$0$0]}
+
+sig2const: {'request$1$match$0$0': Const('request0', EnumeratedSort('request', ('request0',))), 'response$1$match$1$0': Const('response0', EnumeratedSort('response', ('response0',))), 'node$0$response_received$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_received$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('request', ('request0',)): [request$1$match$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0; response$1$match$1$0], EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0]}
+
+sort2part_sig: {EnumeratedSort('request', ('request0',)): request$1$match$0$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0; response$1$match$1$0, EnumeratedSort('node', ('node0',)): node$0$response_received$0$0}
+
+part_sig: ('node$0$response_received$0$0', 'request$1$match$0$0', 'response$0$response_received$1$0; response$1$match$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~match(request0,response0)', 'response_received(node0,response0)']
+
+func_name2symbol:  {'match': Const('match', FunctionSort(EnumeratedSort('request', ('request0',)), EnumeratedSort('response', ('response0',)), BooleanSort())), 'response_received': Const('response_received', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'match': (EnumeratedSort('request', ('request0',)), EnumeratedSort('response', ('response0',))), 'response_received': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'1$match': 1, '0$response_received': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('request', ('request0',)): [request$1$match$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0; response$1$match$1$0], EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0]}
+
+sort2part_sig: {EnumeratedSort('request', ('request0',)): request$1$match$0$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0; response$1$match$1$0, EnumeratedSort('node', ('node0',)): node$0$response_received$0$0}
+
+	sort: request
+
+	identical_classes: {'request$1$match$0': [request$1$match$0$0]}
+
+	identical_single_classes: {'request$1$match$0': request$1$match$0$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_received$1; response$1$match$1': [response$0$response_received$1$0; response$1$match$1$0]}
+
+	identical_single_classes: {'response$0$response_received$1; response$1$match$1': response$0$response_received$1$0; response$1$match$1$0}
+
+	identical_multi_classes: {}
+
+	sort: node
+
+	identical_classes: {'node$0$response_received$0': [node$0$response_received$0$0]}
+
+	identical_single_classes: {'node$0$response_received$0': node$0$response_received$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: request: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$match': [[Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]], '0$response_received': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~match(REQUEST0,RESPONSE0)', 'response_received(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+
+
+=== Prime Orbit 7 =====================
+size : 1
+num_suborbits: 1
+7 (*) : --01-
+7     : ['response_received(node0,response0)', '~responseMatched(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~responseMatched(node0,response0)', 'response_received(node0,response0)']
+
+sign_func_name2args: {'1$responseMatched': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))], '0$response_received': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$responseMatched$0$0, node$0$response_received$0$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$1$responseMatched$1$0, response$0$response_received$1$0]}
+
+sig2const: {'node$1$responseMatched$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$1$responseMatched$1$0': Const('response0', EnumeratedSort('response', ('response0',))), 'node$0$response_received$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_received$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0; node$1$responseMatched$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0; response$1$responseMatched$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_received$0$0; node$1$responseMatched$0$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0; response$1$responseMatched$1$0}
+
+part_sig: ('node$0$response_received$0$0; node$1$responseMatched$0$0', 'response$0$response_received$1$0; response$1$responseMatched$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~responseMatched(node0,response0)', 'response_received(node0,response0)']
+
+func_name2symbol:  {'responseMatched': Const('responseMatched', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort())), 'response_received': Const('response_received', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'responseMatched': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',))), 'response_received': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'1$responseMatched': 1, '0$response_received': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_received$0$0; node$1$responseMatched$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_received$1$0; response$1$responseMatched$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_received$0$0; node$1$responseMatched$0$0, EnumeratedSort('response', ('response0',)): response$0$response_received$1$0; response$1$responseMatched$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$response_received$0; node$1$responseMatched$0': [node$0$response_received$0$0; node$1$responseMatched$0$0]}
+
+	identical_single_classes: {'node$0$response_received$0; node$1$responseMatched$0': node$0$response_received$0$0; node$1$responseMatched$0$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_received$1; response$1$responseMatched$1': [response$0$response_received$1$0; response$1$responseMatched$1$0]}
+
+	identical_single_classes: {'response$0$response_received$1; response$1$responseMatched$1': response$0$response_received$1$0; response$1$responseMatched$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$responseMatched': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]], '0$response_received': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~responseMatched(NODE0,RESPONSE0)', 'response_received(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+
+
+=== Prime Orbit 8 =====================
+size : 1
+num_suborbits: 1
+8 (*) : --0-1
+8     : ['response_sent(node0,response0)', '~responseMatched(node0,response0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~responseMatched(node0,response0)', 'response_sent(node0,response0)']
+
+sign_func_name2args: {'1$responseMatched': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))], '0$response_sent': [(Const('node0', EnumeratedSort('node', ('node0',))), Const('response0', EnumeratedSort('response', ('response0',))))]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$responseMatched$0$0, node$0$response_sent$0$0], Const('response0', EnumeratedSort('response', ('response0',))): [response$1$responseMatched$1$0, response$0$response_sent$1$0]}
+
+sig2const: {'node$1$responseMatched$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$1$responseMatched$1$0': Const('response0', EnumeratedSort('response', ('response0',))), 'node$0$response_sent$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'response$0$response_sent$1$0': Const('response0', EnumeratedSort('response', ('response0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_sent$0$0; node$1$responseMatched$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_sent$1$0; response$1$responseMatched$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_sent$0$0; node$1$responseMatched$0$0, EnumeratedSort('response', ('response0',)): response$0$response_sent$1$0; response$1$responseMatched$1$0}
+
+part_sig: ('node$0$response_sent$0$0; node$1$responseMatched$0$0', 'response$0$response_sent$1$0; response$1$responseMatched$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~responseMatched(node0,response0)', 'response_sent(node0,response0)']
+
+func_name2symbol:  {'responseMatched': Const('responseMatched', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort())), 'response_sent': Const('response_sent', FunctionSort(EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)), BooleanSort()))}
+
+func_name2args_sort:  {'responseMatched': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',))), 'response_sent': (EnumeratedSort('node', ('node0',)), EnumeratedSort('response', ('response0',)))}
+
+sign_func_name2count:  {'1$responseMatched': 1, '0$response_sent': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$response_sent$0$0; node$1$responseMatched$0$0], EnumeratedSort('response', ('response0',)): [response$0$response_sent$1$0; response$1$responseMatched$1$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$response_sent$0$0; node$1$responseMatched$0$0, EnumeratedSort('response', ('response0',)): response$0$response_sent$1$0; response$1$responseMatched$1$0}
+
+	sort: node
+
+	identical_classes: {'node$0$response_sent$0; node$1$responseMatched$0': [node$0$response_sent$0$0; node$1$responseMatched$0$0]}
+
+	identical_single_classes: {'node$0$response_sent$0; node$1$responseMatched$0': node$0$response_sent$0$0; node$1$responseMatched$0$0}
+
+	identical_multi_classes: {}
+
+	sort: response
+
+	identical_classes: {'response$0$response_sent$1; response$1$responseMatched$1': [response$0$response_sent$1$0; response$1$responseMatched$1$0]}
+
+	identical_single_classes: {'response$0$response_sent$1; response$1$responseMatched$1': response$0$response_sent$1$0; response$1$responseMatched$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: response: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$responseMatched': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]], '0$response_sent': [[Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~responseMatched(NODE0,RESPONSE0)', 'response_sent(NODE0,RESPONSE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+
+
+===========================================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+===========================================================================================================================
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+6 (*) : ---10
+6     : ['response_received(node0,response0)', '~response_sent(node0,response0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : -0--1
+0     : ['response_sent(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   3
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_sent(NODE0,RESPONSE0)
+qcost : 5
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : -0-1-
+2     : ['response_received(node0,response0)', '~request_sent(node0,request0)']
+num_forall :   3
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_received(NODE0,RESPONSE0)
+qcost : 5
+
+
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 0---1
+4     : ['response_sent(node0,response0)', '~match(request0,response0)']
+num_forall :   3
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+qcost : 5
+
+
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+5 (*) : 0--1-
+5     : ['response_received(node0,response0)', '~match(request0,response0)']
+num_forall :   3
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+qcost : 5
+
+
+
+
+=== Prime Orbit 7 =====================
+size : 1
+num_suborbits: 1
+7 (*) : --01-
+7     : ['response_received(node0,response0)', '~responseMatched(node0,response0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 8 =====================
+size : 1
+num_suborbits: 1
+8 (*) : --0-1
+8     : ['response_sent(node0,response0)', '~responseMatched(node0,response0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.203 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.089 seconds
+
+[QRM NOTE]: Peak memory: 1808653 bytes
+
+
+==========================================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+==========================================================================================================
+
+
+New level: 1
+ pending : [0, 2, 4, 5, 7, 8]
+ solution : [6]
+
+
+Before reduction : 
+ pending  : [0, 2, 4, 5, 7, 8]
+ solution : [6]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+After removed
+ coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : [0, 2, 4, 5, 7, 8]
+ solution : [6]
+
+
+Solution : [6] has cost 4.
+
+
+Decide in level 1 among pending : [0, 2, 4, 5, 7, 8]
+
+Coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+Decide 8 with phase True at level 1
+
+After decision at level 1
+ pending : [0, 2, 4, 5, 7]
+ solution : [6, 8]
+
+
+New level: 2
+ pending : [0, 2, 4, 5, 7]
+ solution : [6, 8]
+
+
+Before reduction : 
+ pending  : [0, 2, 4, 5, 7]
+ solution : [6, 8]
+
+Essensial at level 2 : set()
+
+Before removed
+ coverage : [(0, 4), (1, -1), (2, 2), (3, -1), (4, 4), (5, 2), (6, -1), (7, 4), (8, 8), (9, -1)]
+
+After removed
+ coverage : [(0, 0), (1, -1), (2, 0), (3, -1), (4, 0), (5, 0), (6, -1), (7, 0), (8, -1), (9, -1)]
+
+Covered at level 2 : {0, 2, 4, 5, 7}
+
+After reduction : 
+ pending  : []
+ solution : [6, 8]
+
+
+Before reduction : 
+ pending  : []
+ solution : [6, 8]
+
+Essensial at level 2 : set()
+
+Before removed
+ coverage : [(0, 0), (1, -1), (2, 0), (3, -1), (4, 0), (5, 0), (6, -1), (7, 0), (8, -1), (9, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1)]
+
+Covered at level 2 : set()
+
+After reduction : 
+ pending  : []
+ solution : [6, 8]
+
+
+Solution : [6, 8] has cost 8.
+
+
+Before backtrack at level 2
+ pending : []
+ solution : [6, 8]
+
+After backtrack at level 2
+ pending : [0, 2, 4, 5, 7]
+ solution : [6, 8]
+
+
+Invert decision for 8 at level 1
+
+
+New level: 2
+ pending : [0, 2, 4, 5, 7]
+ solution : [6]
+
+
+Before reduction : 
+ pending  : [0, 2, 4, 5, 7]
+ solution : [6]
+
+Essensial at level 2 : {0, 4}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, 0), (3, -1), (4, -1), (5, 0), (6, -1), (7, 0), (8, -1), (9, -1)]
+
+Covered at level 2 : {2, 5, 7}
+
+After reduction : 
+ pending  : []
+ solution : [6, 0, 4]
+
+
+Before reduction : 
+ pending  : []
+ solution : [6, 0, 4]
+
+Essensial at level 2 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, 0), (3, -1), (4, -1), (5, 0), (6, -1), (7, 0), (8, -1), (9, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1)]
+
+Covered at level 2 : set()
+
+After reduction : 
+ pending  : []
+ solution : [6, 0, 4]
+
+
+Solution : [6, 0, 4] has cost 14.
+
+
+Before backtrack at level 2
+ pending : []
+ solution : [6, 0, 4]
+
+After backtrack at level 2
+ pending : [0, 4, 2, 5, 7]
+ solution : [6]
+
+
+Before backtrack at level 1
+ pending : [0, 4, 2, 5, 7]
+ solution : [6]
+
+After backtrack at level 1
+ pending : [0, 4, 2, 5, 7, 8]
+ solution : [6]
+
+
+=========================================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+=========================================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 8
+
+[MIN NOTE]: maximum branch and bound depth: 2
+
+[MIN NOTE]: number of definitions: 1
+
+invariant [def_responseMatched] forall P,N. responseMatched(N,P) = (exists R. (request_sent(N,R) & match(R,P))) # definition, qcost: 6
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [6, 8]
+
+[MIN NOTE]: solution length: 2
+
+invariant [invar_6] forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0) # qcost: 4
+
+invariant [invar_8] forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 3
+
+[MIN NOTE]: total qCost: 14
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.279 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.076 seconds
+
+[QRM NOTE]: Peak memory: 1797212 bytes
+
+
+**************************************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/client_server_ae.ivy: node=1,request=1,response=1]
+
+**************************************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy -s node=2,request=1,response=1 -f 2 -g -w -r -b -e -v 5 -w -l ivybench/sym/ivy/client_server_ae.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===============================================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: node=2,request=1,response=1]
+
+===============================================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 9
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 0.033 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.033 seconds
+
+[QRM NOTE]: Peak memory: 48835 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: new_request(fml:n,fml:r)
+
+building bdd for action: respond(fml:n,fml:r,fml:p)
+
+building bdd for action: receive_response(fml:n,fml:p)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 10
+
+
+====================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/client_server_ae: node=2,request=1,response=1]
+
+====================================================================================================================
+
+sort: node=['node0', 'node1']
+sort: request=['request0']
+sort: response=['response0']
+predicate: responseMatched('node', 'response')
+predicate: match('request', 'response')
+predicate: response_sent('node', 'response')
+predicate: request_sent('node', 'request')
+predicate: response_received('node', 'response')
+interpreted atoms: {}
+state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'request_sent(node1,request0)', 'responseMatched(node0,response0)', 'responseMatched(node1,response0)', 'response_received(node0,response0)', 'response_received(node1,response0)', 'response_sent(node0,response0)', 'response_sent(node1,response0)']
+
+0--000000
+100000000
+10101000-
+101010101
+1101000-0
+110101010
+1111100--
+1111101-1
+11111101-
+111111111
+
+[QRM NOTE]: Time elapsed since start: 0.163 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.130 seconds
+
+[QRM NOTE]: Peak memory: 1136812 bytes
+
+
+===========================================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: node=2,request=1,response=1]
+
+===========================================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 0.213 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.050 seconds
+
+[QRM NOTE]: Peak memory: 122072 bytes
+
+python3 qrm.py ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy -s node=1,request=2,response=1 -f 2 -g -w -r -b -e -v 5 -w -l ivybench/sym/ivy/client_server_ae.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===============================================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: node=1,request=2,response=1]
+
+===============================================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 7
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 0.030 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.030 seconds
+
+[QRM NOTE]: Peak memory: 39078 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: new_request(fml:n,fml:r)
+
+building bdd for action: respond(fml:n,fml:r,fml:p)
+
+building bdd for action: receive_response(fml:n,fml:p)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 12
+
+
+====================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/client_server_ae: node=1,request=2,response=1]
+
+====================================================================================================================
+
+sort: node=['node0']
+sort: request=['request0', 'request1']
+sort: response=['response0']
+predicate: request_sent('node', 'request')
+predicate: responseMatched('node', 'response')
+predicate: response_received('node', 'response')
+predicate: match('request', 'response')
+predicate: response_sent('node', 'response')
+interpreted atoms: {}
+state atoms: ['match(request0,response0)', 'match(request1,response0)', 'request_sent(node0,request0)', 'request_sent(node0,request1)', 'responseMatched(node0,response0)', 'response_received(node0,response0)', 'response_sent(node0,response0)']
+
+00--000
+01-0000
+01-110-
+01-1111
+100-000
+101-10-
+101-111
+1100000
+110110-
+1101111
+111-10-
+111-111
+
+[QRM NOTE]: Time elapsed since start: 0.117 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.087 seconds
+
+[QRM NOTE]: Peak memory: 1118334 bytes
+
+
+===========================================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: node=1,request=2,response=1]
+
+===========================================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 0.155 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.038 seconds
+
+[QRM NOTE]: Peak memory: 97258 bytes
+
+python3 qrm.py ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy -s node=1,request=1,response=2 -f 2 -g -w -r -b -e -v 5 -w -l ivybench/sym/ivy/client_server_ae.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===============================================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: node=1,request=1,response=2]
+
+===============================================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 9
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 0.032 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.032 seconds
+
+[QRM NOTE]: Peak memory: 44073 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: new_request(fml:n,fml:r)
+
+building bdd for action: respond(fml:n,fml:r,fml:p)
+
+building bdd for action: receive_response(fml:n,fml:p)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 12
+
+
+====================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/client_server_ae: node=1,request=1,response=2]
+
+====================================================================================================================
+
+sort: node=['node0']
+sort: request=['request0']
+sort: response=['response0', 'response1']
+predicate: match('request', 'response')
+predicate: response_sent('node', 'response')
+predicate: responseMatched('node', 'response')
+predicate: response_received('node', 'response')
+predicate: request_sent('node', 'request')
+interpreted atoms: {}
+state atoms: ['match(request0,response0)', 'match(request0,response1)', 'request_sent(node0,request0)', 'responseMatched(node0,response0)', 'responseMatched(node0,response1)', 'response_received(node0,response0)', 'response_received(node0,response1)', 'response_sent(node0,response0)', 'response_sent(node0,response1)']
+
+00-000000
+010000000
+01101000-
+011010101
+100000000
+1011000-0
+101101010
+110000000
+1111100--
+1111101-1
+11111101-
+111111111
+
+[QRM NOTE]: Time elapsed since start: 0.143 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.110 seconds
+
+[QRM NOTE]: Peak memory: 1129583 bytes
+
+
+===========================================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: node=1,request=1,response=2]
+
+===========================================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 0.199 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.056 seconds
+
+[QRM NOTE]: Peak memory: 123137 bytes
+
+
+*********************************************************************
+
+	[IVY_CHECK]: Ivy Check for Reachability Invariant
+
+*********************************************************************
+
+
+==============================================================================================================
+
+	[IVY_CHECK]: Ivy check on [ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy]
+
+==============================================================================================================
+
+ivy_check complete=fo ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy
+
+
+Isolate this:
+
+    The following definitions are used:
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 21: def1
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 54: def_responseMatched
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 55: invar_6
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 56: invar_8
+
+    The following action implementations are present:
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 30: implementation of new_request
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 40: implementation of receive_response
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 33: implementation of respond
+
+    The following initializers are present:
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 23: init[after2]
+
+    Initialization must establish the invariant
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 54: def_responseMatched ... PASS
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 55: invar_6 ... PASS
+        ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 56: invar_8 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:new_request
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 54: def_responseMatched ... PASS
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 55: invar_6 ... PASS
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 56: invar_8 ... PASS
+        (internal) ext:receive_response
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 54: def_responseMatched ... PASS
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 55: invar_6 ... PASS
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 56: invar_8 ... PASS
+        (internal) ext:respond
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 54: def_responseMatched ... PASS
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 55: invar_6 ... PASS
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 56: invar_8 ... PASS
+
+    The following program assertions are treated as assumptions:
+        in action respond when called from the environment:
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 34: assumption
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 35: assumption
+        in action receive_response when called from the environment:
+            ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy: line 41: assumption
+
+OK
+[IVY_CHECK RESULT]: PASS
+
+
+**********************************************************************************************
+
+	[QRM]: ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy
+
+**********************************************************************************************
+
+[RMIN NUM]: 1
+
+[RMIN RESULT]: ['ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy']
+
+[CUTOFF]: node=1,request=1,response=1
+
+[QRM RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 14.279 seconds
+
+[QRM NOTE]: Time elapsed since last: 14.279 seconds
+
