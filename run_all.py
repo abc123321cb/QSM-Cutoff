@@ -240,7 +240,7 @@ def run_all(ivy_name, args):
                 else:
                     fail_sol_ids.append(sol_id)
                     sizes_str.append(size_str)
-            if len(pass_sol_ids) == 1:
+            if (num_solution == 1) and (len(pass_sol_ids) == 1):
                 vprint_instance_banner(options, f'[IVY_CHECK]: Ivy Check for Reachability Invariant', 0)
                 ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{pass_sol_ids[0]}'+ '.ivy'
                 ivy_result = run_ivy_check(ivy_name, options)
