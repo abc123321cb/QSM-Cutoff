@@ -26,8 +26,8 @@ class ConstraintMerger():
         self.const2var    = {const: qvar for qvar,const in self.var2const.items()}
         self.member_terms = set()
         # filenames
-        self.smt_filename = self.options.instance_name + f'.merge{orbit_id}.smt2'
-        self.mus_filename = self.options.instance_name + f'.merge{orbit_id}.mus'
+        self.smt_filename = self.options.instance_name + '.' + options.instance_suffix + f'.merge{orbit_id}.smt2'
+        self.mus_filename = self.options.instance_name + '.' + options.instance_suffix + f'.merge{orbit_id}.mus'
 
         # for minimization
         self.eq_vars      = []
