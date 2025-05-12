@@ -60,5 +60,5 @@ invariant leader(P1) & leader(P2) -> P1 = P2
 #invariant [manual_1] promise(A, P1) & promise(A, P2) -> P1 = P2
 #invariant [manual_2] leader(P) -> ( exists Q. forall A. (member(A,Q) -> promise(A, P)) )
 
-invariant [invar_7] forall PROPOSER0,PROPOSER1,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER1) | ~promise(ACCEPTOR0,PROPOSER0) | PROPOSER0 = PROPOSER1 # qcost: 6
-invariant [invar_24] forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0)) # qcost: 4
+invariant [invar_9] forall PROPOSER0,ACCEPTOR0,PROPOSER1. ~promise(ACCEPTOR0,PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | PROPOSER0 = PROPOSER1 # qcost: 6
+invariant [invar_28] forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0)) # qcost: 4

@@ -35,5 +35,5 @@ invariant [safety] sent(S,D) & internal(D) -> exists I. internal(I) & sent(I,S)
 
 #invariant [manual_1] allowed_in(D) -> exists I. internal(I) & sent(I,D)
 
-invariant [invar_13] forall NODE1. ~allowed_in(NODE1) | (exists NODE0. (sent(NODE0,NODE1) & NODE0 ~= NODE1)) # qcost: 5
-invariant [invar_4] forall NODE0,NODE1. internal(NODE1) | ~sent(NODE0,NODE1) | internal(NODE0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_15] forall NODE1. ~allowed_in(NODE1) | (exists NODE0. (sent(NODE0,NODE1) & NODE0 ~= NODE1)) # qcost: 5
+invariant [invar_9] forall NODE0,NODE1. internal(NODE0) | ~sent(NODE0,NODE1) | internal(NODE1) | NODE0 = NODE1 # qcost: 6

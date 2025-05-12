@@ -1,4 +1,4 @@
-#include "toy_consensus_forall.node_3_value_3.finite.h"
+#include "toy_consensus_forall.node_5_value_3.finite.h"
 
 #include <sstream>
 #include <algorithm>
@@ -29,7 +29,7 @@
 #else
 #include <cstdint>
 #endif
-typedef toy_consensus_forall__node_3_value_3__finite ivy_class;
+typedef toy_consensus_forall__node_5_value_3__finite ivy_class;
 std::ofstream __ivy_out;
 std::ofstream __ivy_modelfile;
 void __ivy_exit(int code){exit(code);}
@@ -97,7 +97,7 @@ void * _thread_timer( void *tmr_void )
 } 
 #endif 
 
-void toy_consensus_forall__node_3_value_3__finite::install_reader(reader *r) {
+void toy_consensus_forall__node_5_value_3__finite::install_reader(reader *r) {
     #ifdef _WIN32
 
         DWORD dummy;
@@ -124,11 +124,11 @@ void toy_consensus_forall__node_3_value_3__finite::install_reader(reader *r) {
     #endif
 }      
 
-void toy_consensus_forall__node_3_value_3__finite::install_thread(reader *r) {
+void toy_consensus_forall__node_5_value_3__finite::install_thread(reader *r) {
     install_reader(r);
 }
 
-void toy_consensus_forall__node_3_value_3__finite::install_timer(timer *r) {
+void toy_consensus_forall__node_5_value_3__finite::install_timer(timer *r) {
     #ifdef _WIN32
 
         DWORD dummy;
@@ -157,11 +157,11 @@ void toy_consensus_forall__node_3_value_3__finite::install_timer(timer *r) {
 
 
 #ifdef _WIN32
-    void toy_consensus_forall__node_3_value_3__finite::__lock() { WaitForSingleObject(mutex,INFINITE); }
-    void toy_consensus_forall__node_3_value_3__finite::__unlock() { ReleaseMutex(mutex); }
+    void toy_consensus_forall__node_5_value_3__finite::__lock() { WaitForSingleObject(mutex,INFINITE); }
+    void toy_consensus_forall__node_5_value_3__finite::__unlock() { ReleaseMutex(mutex); }
 #else
-    void toy_consensus_forall__node_3_value_3__finite::__lock() { pthread_mutex_lock(&mutex); }
-    void toy_consensus_forall__node_3_value_3__finite::__unlock() { pthread_mutex_unlock(&mutex); }
+    void toy_consensus_forall__node_5_value_3__finite::__lock() { pthread_mutex_lock(&mutex); }
+    void toy_consensus_forall__node_5_value_3__finite::__unlock() { pthread_mutex_unlock(&mutex); }
 #endif
 
 /*++
@@ -590,51 +590,51 @@ void __deser(ivy_deser &inp, std::vector<bool>::reference res) {
 
 class gen;
 
-std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_3_value_3__finite::node &t);
+std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_5_value_3__finite::node &t);
 template <>
-toy_consensus_forall__node_3_value_3__finite::node _arg<toy_consensus_forall__node_3_value_3__finite::node>(std::vector<ivy_value> &args, unsigned idx, long long bound);
+toy_consensus_forall__node_5_value_3__finite::node _arg<toy_consensus_forall__node_5_value_3__finite::node>(std::vector<ivy_value> &args, unsigned idx, long long bound);
 template <>
-void  __ser<toy_consensus_forall__node_3_value_3__finite::node>(ivy_ser &res, const toy_consensus_forall__node_3_value_3__finite::node&);
+void  __ser<toy_consensus_forall__node_5_value_3__finite::node>(ivy_ser &res, const toy_consensus_forall__node_5_value_3__finite::node&);
 template <>
-void  __deser<toy_consensus_forall__node_3_value_3__finite::node>(ivy_deser &inp, toy_consensus_forall__node_3_value_3__finite::node &res);
-std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_3_value_3__finite::quorum &t);
+void  __deser<toy_consensus_forall__node_5_value_3__finite::node>(ivy_deser &inp, toy_consensus_forall__node_5_value_3__finite::node &res);
+std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_5_value_3__finite::quorum &t);
 template <>
-toy_consensus_forall__node_3_value_3__finite::quorum _arg<toy_consensus_forall__node_3_value_3__finite::quorum>(std::vector<ivy_value> &args, unsigned idx, long long bound);
+toy_consensus_forall__node_5_value_3__finite::quorum _arg<toy_consensus_forall__node_5_value_3__finite::quorum>(std::vector<ivy_value> &args, unsigned idx, long long bound);
 template <>
-void  __ser<toy_consensus_forall__node_3_value_3__finite::quorum>(ivy_ser &res, const toy_consensus_forall__node_3_value_3__finite::quorum&);
+void  __ser<toy_consensus_forall__node_5_value_3__finite::quorum>(ivy_ser &res, const toy_consensus_forall__node_5_value_3__finite::quorum&);
 template <>
-void  __deser<toy_consensus_forall__node_3_value_3__finite::quorum>(ivy_deser &inp, toy_consensus_forall__node_3_value_3__finite::quorum &res);
-std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_3_value_3__finite::value &t);
+void  __deser<toy_consensus_forall__node_5_value_3__finite::quorum>(ivy_deser &inp, toy_consensus_forall__node_5_value_3__finite::quorum &res);
+std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_5_value_3__finite::value &t);
 template <>
-toy_consensus_forall__node_3_value_3__finite::value _arg<toy_consensus_forall__node_3_value_3__finite::value>(std::vector<ivy_value> &args, unsigned idx, long long bound);
+toy_consensus_forall__node_5_value_3__finite::value _arg<toy_consensus_forall__node_5_value_3__finite::value>(std::vector<ivy_value> &args, unsigned idx, long long bound);
 template <>
-void  __ser<toy_consensus_forall__node_3_value_3__finite::value>(ivy_ser &res, const toy_consensus_forall__node_3_value_3__finite::value&);
+void  __ser<toy_consensus_forall__node_5_value_3__finite::value>(ivy_ser &res, const toy_consensus_forall__node_5_value_3__finite::value&);
 template <>
-void  __deser<toy_consensus_forall__node_3_value_3__finite::value>(ivy_deser &inp, toy_consensus_forall__node_3_value_3__finite::value &res);
-int toy_consensus_forall__node_3_value_3__finite::___ivy_choose(int rng,const char *name,int id) {
+void  __deser<toy_consensus_forall__node_5_value_3__finite::value>(ivy_deser &inp, toy_consensus_forall__node_5_value_3__finite::value &res);
+int toy_consensus_forall__node_5_value_3__finite::___ivy_choose(int rng,const char *name,int id) {
         return 0;
     }
 struct ivy_nondet_except {}; // lauren-yrluo added
-void toy_consensus_forall__node_3_value_3__finite::__init(){
+void toy_consensus_forall__node_5_value_3__finite::__init(){
     /** QRM enumerates all satisfying model for reachability **/
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
-        bool __tmp0[3];
-        for (int N = 0; N < 3; N++) {
+        bool __tmp0[5];
+        for (int N = 0; N < 5; N++) {
             __tmp0[N] = false;
         }
-        for (int N = 0; N < 3; N++) {
+        for (int N = 0; N < 5; N++) {
             voted[N] = __tmp0[N];
         }
-        bool __tmp1[3][3];
+        bool __tmp1[3][5];
         for (int V = 0; V < 3; V++) {
-            for (int N = 0; N < 3; N++) {
+            for (int N = 0; N < 5; N++) {
                 __tmp1[V][N] = false;
             }
         }
         for (int V = 0; V < 3; V++) {
-            for (int N = 0; N < 3; N++) {
+            for (int N = 0; N < 5; N++) {
                 vote[N][V] = __tmp1[V][N];
             }
         }
@@ -647,88 +647,129 @@ void toy_consensus_forall__node_3_value_3__finite::__init(){
         }
         member[0][0] = true;
         member[0][1] = true;
-        member[0][2] = false;
+        member[0][2] = true;
+        member[0][3] = true;
+        member[0][4] = true;
+        member[0][5] = true;
+        member[0][6] = false;
+        member[0][7] = false;
+        member[0][8] = false;
+        member[0][9] = false;
         member[1][0] = true;
-        member[1][1] = false;
+        member[1][1] = true;
         member[1][2] = true;
-        member[2][0] = false;
-        member[2][1] = true;
-        member[2][2] = true;
-        voting_quorum = quorum__node1_node2;
+        member[1][3] = false;
+        member[1][4] = false;
+        member[1][5] = false;
+        member[1][6] = true;
+        member[1][7] = true;
+        member[1][8] = true;
+        member[1][9] = false;
+        member[2][0] = true;
+        member[2][1] = false;
+        member[2][2] = false;
+        member[2][3] = true;
+        member[2][4] = true;
+        member[2][5] = false;
+        member[2][6] = true;
+        member[2][7] = true;
+        member[2][8] = false;
+        member[2][9] = true;
+        member[3][0] = false;
+        member[3][1] = true;
+        member[3][2] = false;
+        member[3][3] = true;
+        member[3][4] = false;
+        member[3][5] = true;
+        member[3][6] = true;
+        member[3][7] = false;
+        member[3][8] = true;
+        member[3][9] = true;
+        member[4][0] = false;
+        member[4][1] = false;
+        member[4][2] = true;
+        member[4][3] = false;
+        member[4][4] = true;
+        member[4][5] = true;
+        member[4][6] = false;
+        member[4][7] = true;
+        member[4][8] = true;
+        member[4][9] = true;
+        voting_quorum = quorum__node0_node3_node4;
     }
     ++ qrm_solution_count;
     if (qrm_solution_count != max_qrm_solution_count)
         throw (ivy_nondet_except());
     else qrm_solution_count = 0;  // reset
 }
-void toy_consensus_forall__node_3_value_3__finite::ext__cast_vote(node n, value v){
-        ivy_assume(!voted[n], "toy_consensus_forall.node_3_value_3.finite.ivy: line 22");
+void toy_consensus_forall__node_5_value_3__finite::ext__cast_vote(node n, value v){
+        ivy_assume(!voted[n], "toy_consensus_forall.node_5_value_3.finite.ivy: line 22");
         vote[n][v] = true;
         voted[n] = true;
 }
-void toy_consensus_forall__node_3_value_3__finite::ext__decide(value v, quorum q){
+void toy_consensus_forall__node_5_value_3__finite::ext__decide(value v, quorum q){
         int __tmp3;
         __tmp3 = 1;
-        for (int N = 0; N < 3; N++) {
+        for (int N = 0; N < 5; N++) {
             if (!(!member[N][q] || vote[N][v])) __tmp3 = 0;
         }
-        ivy_assume(__tmp3, "toy_consensus_forall.node_3_value_3.finite.ivy: line 29");
+        ivy_assume(__tmp3, "toy_consensus_forall.node_5_value_3.finite.ivy: line 29");
         decided[v] = true;
         voting_quorum = q;
 }
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_voted(node n0){
-    bool qrm_result;
-    qrm_result = voted[n0];
-    return qrm_result;
-}
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_bool_voted(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (voted[n0] == result);
-    return qrm_result;
-}
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_decided(value v0){
-    bool qrm_result;
-    qrm_result = decided[v0];
-    return qrm_result;
-}
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_bool_decided(value v0, bool result){
-    bool qrm_result;
-    qrm_result = (decided[v0] == result);
-    return qrm_result;
-}
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_vote(node n0, value v1){
-    bool qrm_result;
-    qrm_result = vote[n0][v1];
-    return qrm_result;
-}
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_bool_vote(node n0, value v1, bool result){
-    bool qrm_result;
-    qrm_result = (vote[n0][v1] == result);
-    return qrm_result;
-}
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_member(node n0, quorum q1){
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_member(node n0, quorum q1){
     bool qrm_result;
     qrm_result = member[n0][q1];
     return qrm_result;
 }
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_bool_member(node n0, quorum q1, bool result){
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_bool_member(node n0, quorum q1, bool result){
     bool qrm_result;
     qrm_result = (member[n0][q1] == result);
     return qrm_result;
 }
-toy_consensus_forall__node_3_value_3__finite::quorum toy_consensus_forall__node_3_value_3__finite::ext__get_voting_quorum(){
-    toy_consensus_forall__node_3_value_3__finite::quorum qrm_result;
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_vote(node n0, value v1){
+    bool qrm_result;
+    qrm_result = vote[n0][v1];
+    return qrm_result;
+}
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_bool_vote(node n0, value v1, bool result){
+    bool qrm_result;
+    qrm_result = (vote[n0][v1] == result);
+    return qrm_result;
+}
+toy_consensus_forall__node_5_value_3__finite::quorum toy_consensus_forall__node_5_value_3__finite::ext__get_voting_quorum(){
+    toy_consensus_forall__node_5_value_3__finite::quorum qrm_result;
     qrm_result = voting_quorum;
     return qrm_result;
 }
-bool toy_consensus_forall__node_3_value_3__finite::ext__get_bool_voting_quorum(quorum result){
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_bool_voting_quorum(quorum result){
     bool qrm_result;
     qrm_result = (voting_quorum == result);
     return qrm_result;
 }
-void toy_consensus_forall__node_3_value_3__finite::__tick(int __timeout){
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_voted(node n0){
+    bool qrm_result;
+    qrm_result = voted[n0];
+    return qrm_result;
 }
-toy_consensus_forall__node_3_value_3__finite::toy_consensus_forall__node_3_value_3__finite(){
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_bool_voted(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (voted[n0] == result);
+    return qrm_result;
+}
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_decided(value v0){
+    bool qrm_result;
+    qrm_result = decided[v0];
+    return qrm_result;
+}
+bool toy_consensus_forall__node_5_value_3__finite::ext__get_bool_decided(value v0, bool result){
+    bool qrm_result;
+    qrm_result = (decided[v0] == result);
+    return qrm_result;
+}
+void toy_consensus_forall__node_5_value_3__finite::__tick(int __timeout){
+}
+toy_consensus_forall__node_5_value_3__finite::toy_consensus_forall__node_5_value_3__finite(){
 #ifdef _WIN32
 mutex = CreateMutex(NULL,FALSE,NULL);
 #else
@@ -737,17 +778,58 @@ pthread_mutex_init(&mutex,NULL);
 __lock();
 member[0][0] = true;
 member[0][1] = true;
-member[0][2] = false;
+member[0][2] = true;
+member[0][3] = true;
+member[0][4] = true;
+member[0][5] = true;
+member[0][6] = false;
+member[0][7] = false;
+member[0][8] = false;
+member[0][9] = false;
 member[1][0] = true;
-member[1][1] = false;
+member[1][1] = true;
 member[1][2] = true;
-member[2][0] = false;
-member[2][1] = true;
-member[2][2] = true;
-for (node X__0 = (node)0; (int) X__0 < 3; X__0 = (node)(((int)X__0) + 1)) {
+member[1][3] = false;
+member[1][4] = false;
+member[1][5] = false;
+member[1][6] = true;
+member[1][7] = true;
+member[1][8] = true;
+member[1][9] = false;
+member[2][0] = true;
+member[2][1] = false;
+member[2][2] = false;
+member[2][3] = true;
+member[2][4] = true;
+member[2][5] = false;
+member[2][6] = true;
+member[2][7] = true;
+member[2][8] = false;
+member[2][9] = true;
+member[3][0] = false;
+member[3][1] = true;
+member[3][2] = false;
+member[3][3] = true;
+member[3][4] = false;
+member[3][5] = true;
+member[3][6] = true;
+member[3][7] = false;
+member[3][8] = true;
+member[3][9] = true;
+member[4][0] = false;
+member[4][1] = false;
+member[4][2] = true;
+member[4][3] = false;
+member[4][4] = true;
+member[4][5] = true;
+member[4][6] = false;
+member[4][7] = true;
+member[4][8] = true;
+member[4][9] = true;
+for (node X__0 = (node)0; (int) X__0 < 5; X__0 = (node)(((int)X__0) + 1)) {
 voted[X__0] = (bool)___ivy_choose(0,"init",0);
 }
-for (node X__0 = (node)0; (int) X__0 < 3; X__0 = (node)(((int)X__0) + 1)) {
+for (node X__0 = (node)0; (int) X__0 < 5; X__0 = (node)(((int)X__0) + 1)) {
     for (value X__1 = (value)0; (int) X__1 < 3; X__1 = (value)(((int)X__1) + 1)) {
 vote[X__0][X__1] = (bool)___ivy_choose(0,"init",0);
     }
@@ -757,7 +839,7 @@ decided[X__0] = (bool)___ivy_choose(0,"init",0);
 }
 voting_quorum = (quorum)___ivy_choose(0,"init",0);
 }
-toy_consensus_forall__node_3_value_3__finite::~toy_consensus_forall__node_3_value_3__finite(){
+toy_consensus_forall__node_5_value_3__finite::~toy_consensus_forall__node_5_value_3__finite(){
     __lock(); // otherwise, thread may die holding lock!
     for (unsigned i = 0; i < thread_ids.size(); i++){
 #ifdef _WIN32
@@ -771,34 +853,43 @@ toy_consensus_forall__node_3_value_3__finite::~toy_consensus_forall__node_3_valu
     }
     __unlock();
 }
-std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_3_value_3__finite::node &t){
-    if (t == toy_consensus_forall__node_3_value_3__finite::node0) s<<"node0";
-    if (t == toy_consensus_forall__node_3_value_3__finite::node1) s<<"node1";
-    if (t == toy_consensus_forall__node_3_value_3__finite::node2) s<<"node2";
+std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_5_value_3__finite::node &t){
+    if (t == toy_consensus_forall__node_5_value_3__finite::node0) s<<"node0";
+    if (t == toy_consensus_forall__node_5_value_3__finite::node1) s<<"node1";
+    if (t == toy_consensus_forall__node_5_value_3__finite::node2) s<<"node2";
+    if (t == toy_consensus_forall__node_5_value_3__finite::node3) s<<"node3";
+    if (t == toy_consensus_forall__node_5_value_3__finite::node4) s<<"node4";
     return s;
 }
 template <>
-void  __ser<toy_consensus_forall__node_3_value_3__finite::node>(ivy_ser &res, const toy_consensus_forall__node_3_value_3__finite::node&t){
+void  __ser<toy_consensus_forall__node_5_value_3__finite::node>(ivy_ser &res, const toy_consensus_forall__node_5_value_3__finite::node&t){
     __ser(res,(int)t);
 }
-std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_3_value_3__finite::quorum &t){
-    if (t == toy_consensus_forall__node_3_value_3__finite::quorum__node0_node1) s<<"quorum__node0_node1";
-    if (t == toy_consensus_forall__node_3_value_3__finite::quorum__node0_node2) s<<"quorum__node0_node2";
-    if (t == toy_consensus_forall__node_3_value_3__finite::quorum__node1_node2) s<<"quorum__node1_node2";
+std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_5_value_3__finite::quorum &t){
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node0_node1_node2) s<<"quorum__node0_node1_node2";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node0_node1_node3) s<<"quorum__node0_node1_node3";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node0_node1_node4) s<<"quorum__node0_node1_node4";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node0_node2_node3) s<<"quorum__node0_node2_node3";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node0_node2_node4) s<<"quorum__node0_node2_node4";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node0_node3_node4) s<<"quorum__node0_node3_node4";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node1_node2_node3) s<<"quorum__node1_node2_node3";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node1_node2_node4) s<<"quorum__node1_node2_node4";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node1_node3_node4) s<<"quorum__node1_node3_node4";
+    if (t == toy_consensus_forall__node_5_value_3__finite::quorum__node2_node3_node4) s<<"quorum__node2_node3_node4";
     return s;
 }
 template <>
-void  __ser<toy_consensus_forall__node_3_value_3__finite::quorum>(ivy_ser &res, const toy_consensus_forall__node_3_value_3__finite::quorum&t){
+void  __ser<toy_consensus_forall__node_5_value_3__finite::quorum>(ivy_ser &res, const toy_consensus_forall__node_5_value_3__finite::quorum&t){
     __ser(res,(int)t);
 }
-std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_3_value_3__finite::value &t){
-    if (t == toy_consensus_forall__node_3_value_3__finite::value0) s<<"value0";
-    if (t == toy_consensus_forall__node_3_value_3__finite::value1) s<<"value1";
-    if (t == toy_consensus_forall__node_3_value_3__finite::value2) s<<"value2";
+std::ostream &operator <<(std::ostream &s, const toy_consensus_forall__node_5_value_3__finite::value &t){
+    if (t == toy_consensus_forall__node_5_value_3__finite::value0) s<<"value0";
+    if (t == toy_consensus_forall__node_5_value_3__finite::value1) s<<"value1";
+    if (t == toy_consensus_forall__node_5_value_3__finite::value2) s<<"value2";
     return s;
 }
 template <>
-void  __ser<toy_consensus_forall__node_3_value_3__finite::value>(ivy_ser &res, const toy_consensus_forall__node_3_value_3__finite::value&t){
+void  __ser<toy_consensus_forall__node_5_value_3__finite::value>(ivy_ser &res, const toy_consensus_forall__node_5_value_3__finite::value&t){
     __ser(res,(int)t);
 }
 
@@ -817,7 +908,7 @@ int ask_ret(long long bound) {
 
     struct ivy_assume_err {};    // lauren-yrluo added
 
-    class toy_consensus_forall__node_3_value_3__finite_repl : public toy_consensus_forall__node_3_value_3__finite {
+    class toy_consensus_forall__node_5_value_3__finite_repl : public toy_consensus_forall__node_5_value_3__finite {
 
     public:
 
@@ -838,7 +929,7 @@ int ask_ret(long long bound) {
             throw (ivy_assume_err());   // lauren-yrluo modified
         }
     }
-        toy_consensus_forall__node_3_value_3__finite_repl() : toy_consensus_forall__node_3_value_3__finite(){}
+        toy_consensus_forall__node_5_value_3__finite_repl() : toy_consensus_forall__node_5_value_3__finite(){}
 
     };
 
@@ -978,49 +1069,58 @@ void check_arity(std::vector<ivy_value> &args, unsigned num, std::string &action
 }
 
 template <>
-toy_consensus_forall__node_3_value_3__finite::node _arg<toy_consensus_forall__node_3_value_3__finite::node>(std::vector<ivy_value> &args, unsigned idx, long long bound){
+toy_consensus_forall__node_5_value_3__finite::node _arg<toy_consensus_forall__node_5_value_3__finite::node>(std::vector<ivy_value> &args, unsigned idx, long long bound){
     ivy_value &arg = args[idx];
     if (arg.atom.size() == 0 || arg.fields.size() != 0) throw out_of_bounds(idx,arg.pos);
-    if(arg.atom == "node0") return toy_consensus_forall__node_3_value_3__finite::node0;
-    if(arg.atom == "node1") return toy_consensus_forall__node_3_value_3__finite::node1;
-    if(arg.atom == "node2") return toy_consensus_forall__node_3_value_3__finite::node2;
+    if(arg.atom == "node0") return toy_consensus_forall__node_5_value_3__finite::node0;
+    if(arg.atom == "node1") return toy_consensus_forall__node_5_value_3__finite::node1;
+    if(arg.atom == "node2") return toy_consensus_forall__node_5_value_3__finite::node2;
+    if(arg.atom == "node3") return toy_consensus_forall__node_5_value_3__finite::node3;
+    if(arg.atom == "node4") return toy_consensus_forall__node_5_value_3__finite::node4;
     throw out_of_bounds("bad value: " + arg.atom,arg.pos);
 }
 template <>
-void __deser<toy_consensus_forall__node_3_value_3__finite::node>(ivy_deser &inp, toy_consensus_forall__node_3_value_3__finite::node &res){
+void __deser<toy_consensus_forall__node_5_value_3__finite::node>(ivy_deser &inp, toy_consensus_forall__node_5_value_3__finite::node &res){
     int __res;
     __deser(inp,__res);
-    res = (toy_consensus_forall__node_3_value_3__finite::node)__res;
+    res = (toy_consensus_forall__node_5_value_3__finite::node)__res;
 }
 template <>
-toy_consensus_forall__node_3_value_3__finite::quorum _arg<toy_consensus_forall__node_3_value_3__finite::quorum>(std::vector<ivy_value> &args, unsigned idx, long long bound){
+toy_consensus_forall__node_5_value_3__finite::quorum _arg<toy_consensus_forall__node_5_value_3__finite::quorum>(std::vector<ivy_value> &args, unsigned idx, long long bound){
     ivy_value &arg = args[idx];
     if (arg.atom.size() == 0 || arg.fields.size() != 0) throw out_of_bounds(idx,arg.pos);
-    if(arg.atom == "quorum__node0_node1") return toy_consensus_forall__node_3_value_3__finite::quorum__node0_node1;
-    if(arg.atom == "quorum__node0_node2") return toy_consensus_forall__node_3_value_3__finite::quorum__node0_node2;
-    if(arg.atom == "quorum__node1_node2") return toy_consensus_forall__node_3_value_3__finite::quorum__node1_node2;
+    if(arg.atom == "quorum__node0_node1_node2") return toy_consensus_forall__node_5_value_3__finite::quorum__node0_node1_node2;
+    if(arg.atom == "quorum__node0_node1_node3") return toy_consensus_forall__node_5_value_3__finite::quorum__node0_node1_node3;
+    if(arg.atom == "quorum__node0_node1_node4") return toy_consensus_forall__node_5_value_3__finite::quorum__node0_node1_node4;
+    if(arg.atom == "quorum__node0_node2_node3") return toy_consensus_forall__node_5_value_3__finite::quorum__node0_node2_node3;
+    if(arg.atom == "quorum__node0_node2_node4") return toy_consensus_forall__node_5_value_3__finite::quorum__node0_node2_node4;
+    if(arg.atom == "quorum__node0_node3_node4") return toy_consensus_forall__node_5_value_3__finite::quorum__node0_node3_node4;
+    if(arg.atom == "quorum__node1_node2_node3") return toy_consensus_forall__node_5_value_3__finite::quorum__node1_node2_node3;
+    if(arg.atom == "quorum__node1_node2_node4") return toy_consensus_forall__node_5_value_3__finite::quorum__node1_node2_node4;
+    if(arg.atom == "quorum__node1_node3_node4") return toy_consensus_forall__node_5_value_3__finite::quorum__node1_node3_node4;
+    if(arg.atom == "quorum__node2_node3_node4") return toy_consensus_forall__node_5_value_3__finite::quorum__node2_node3_node4;
     throw out_of_bounds("bad value: " + arg.atom,arg.pos);
 }
 template <>
-void __deser<toy_consensus_forall__node_3_value_3__finite::quorum>(ivy_deser &inp, toy_consensus_forall__node_3_value_3__finite::quorum &res){
+void __deser<toy_consensus_forall__node_5_value_3__finite::quorum>(ivy_deser &inp, toy_consensus_forall__node_5_value_3__finite::quorum &res){
     int __res;
     __deser(inp,__res);
-    res = (toy_consensus_forall__node_3_value_3__finite::quorum)__res;
+    res = (toy_consensus_forall__node_5_value_3__finite::quorum)__res;
 }
 template <>
-toy_consensus_forall__node_3_value_3__finite::value _arg<toy_consensus_forall__node_3_value_3__finite::value>(std::vector<ivy_value> &args, unsigned idx, long long bound){
+toy_consensus_forall__node_5_value_3__finite::value _arg<toy_consensus_forall__node_5_value_3__finite::value>(std::vector<ivy_value> &args, unsigned idx, long long bound){
     ivy_value &arg = args[idx];
     if (arg.atom.size() == 0 || arg.fields.size() != 0) throw out_of_bounds(idx,arg.pos);
-    if(arg.atom == "value0") return toy_consensus_forall__node_3_value_3__finite::value0;
-    if(arg.atom == "value1") return toy_consensus_forall__node_3_value_3__finite::value1;
-    if(arg.atom == "value2") return toy_consensus_forall__node_3_value_3__finite::value2;
+    if(arg.atom == "value0") return toy_consensus_forall__node_5_value_3__finite::value0;
+    if(arg.atom == "value1") return toy_consensus_forall__node_5_value_3__finite::value1;
+    if(arg.atom == "value2") return toy_consensus_forall__node_5_value_3__finite::value2;
     throw out_of_bounds("bad value: " + arg.atom,arg.pos);
 }
 template <>
-void __deser<toy_consensus_forall__node_3_value_3__finite::value>(ivy_deser &inp, toy_consensus_forall__node_3_value_3__finite::value &res){
+void __deser<toy_consensus_forall__node_5_value_3__finite::value>(ivy_deser &inp, toy_consensus_forall__node_5_value_3__finite::value &res){
     int __res;
     __deser(inp,__res);
-    res = (toy_consensus_forall__node_3_value_3__finite::value)__res;
+    res = (toy_consensus_forall__node_5_value_3__finite::value)__res;
 }
 
 
@@ -1060,9 +1160,9 @@ public:
 class cmd_reader: public stdin_reader {
     int lineno;
 public:
-    toy_consensus_forall__node_3_value_3__finite_repl &ivy;    
+    toy_consensus_forall__node_5_value_3__finite_repl &ivy;    
 
-    cmd_reader(toy_consensus_forall__node_3_value_3__finite_repl &_ivy) : ivy(_ivy) {
+    cmd_reader(toy_consensus_forall__node_5_value_3__finite_repl &_ivy) : ivy(_ivy) {
         lineno = 1;
         if (isatty(fdes()))
             __ivy_out << "> "; __ivy_out.flush();
@@ -1077,67 +1177,67 @@ public:
 
                 if (action == "cast_vote") {
                     check_arity(args,2,action);
-                    ivy.ext__cast_vote(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3),_arg<toy_consensus_forall__node_3_value_3__finite::value>(args,1,3));
+                    ivy.ext__cast_vote(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5),_arg<toy_consensus_forall__node_5_value_3__finite::value>(args,1,3));
                 }
                 else
     
                 if (action == "decide") {
                     check_arity(args,2,action);
-                    ivy.ext__decide(_arg<toy_consensus_forall__node_3_value_3__finite::value>(args,0,3),_arg<toy_consensus_forall__node_3_value_3__finite::quorum>(args,1,3));
+                    ivy.ext__decide(_arg<toy_consensus_forall__node_5_value_3__finite::value>(args,0,3),_arg<toy_consensus_forall__node_5_value_3__finite::quorum>(args,1,10));
                 }
                 else
     
                 if (action == "get_bool_decided") {
                     check_arity(args,2,action);
-                    __ivy_out  << "= " << ivy.ext__get_bool_decided(_arg<toy_consensus_forall__node_3_value_3__finite::value>(args,0,3),_arg<bool>(args,1,2)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_bool_decided(_arg<toy_consensus_forall__node_5_value_3__finite::value>(args,0,3),_arg<bool>(args,1,2)) << std::endl;
                 }
                 else
     
                 if (action == "get_bool_member") {
                     check_arity(args,3,action);
-                    __ivy_out  << "= " << ivy.ext__get_bool_member(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3),_arg<toy_consensus_forall__node_3_value_3__finite::quorum>(args,1,3),_arg<bool>(args,2,2)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_bool_member(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5),_arg<toy_consensus_forall__node_5_value_3__finite::quorum>(args,1,10),_arg<bool>(args,2,2)) << std::endl;
                 }
                 else
     
                 if (action == "get_bool_vote") {
                     check_arity(args,3,action);
-                    __ivy_out  << "= " << ivy.ext__get_bool_vote(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3),_arg<toy_consensus_forall__node_3_value_3__finite::value>(args,1,3),_arg<bool>(args,2,2)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_bool_vote(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5),_arg<toy_consensus_forall__node_5_value_3__finite::value>(args,1,3),_arg<bool>(args,2,2)) << std::endl;
                 }
                 else
     
                 if (action == "get_bool_voted") {
                     check_arity(args,2,action);
-                    __ivy_out  << "= " << ivy.ext__get_bool_voted(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3),_arg<bool>(args,1,2)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_bool_voted(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5),_arg<bool>(args,1,2)) << std::endl;
                 }
                 else
     
                 if (action == "get_bool_voting_quorum") {
                     check_arity(args,1,action);
-                    __ivy_out  << "= " << ivy.ext__get_bool_voting_quorum(_arg<toy_consensus_forall__node_3_value_3__finite::quorum>(args,0,3)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_bool_voting_quorum(_arg<toy_consensus_forall__node_5_value_3__finite::quorum>(args,0,10)) << std::endl;
                 }
                 else
     
                 if (action == "get_decided") {
                     check_arity(args,1,action);
-                    __ivy_out  << "= " << ivy.ext__get_decided(_arg<toy_consensus_forall__node_3_value_3__finite::value>(args,0,3)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_decided(_arg<toy_consensus_forall__node_5_value_3__finite::value>(args,0,3)) << std::endl;
                 }
                 else
     
                 if (action == "get_member") {
                     check_arity(args,2,action);
-                    __ivy_out  << "= " << ivy.ext__get_member(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3),_arg<toy_consensus_forall__node_3_value_3__finite::quorum>(args,1,3)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_member(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5),_arg<toy_consensus_forall__node_5_value_3__finite::quorum>(args,1,10)) << std::endl;
                 }
                 else
     
                 if (action == "get_vote") {
                     check_arity(args,2,action);
-                    __ivy_out  << "= " << ivy.ext__get_vote(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3),_arg<toy_consensus_forall__node_3_value_3__finite::value>(args,1,3)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_vote(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5),_arg<toy_consensus_forall__node_5_value_3__finite::value>(args,1,3)) << std::endl;
                 }
                 else
     
                 if (action == "get_voted") {
                     check_arity(args,1,action);
-                    __ivy_out  << "= " << ivy.ext__get_voted(_arg<toy_consensus_forall__node_3_value_3__finite::node>(args,0,3)) << std::endl;
+                    __ivy_out  << "= " << ivy.ext__get_voted(_arg<toy_consensus_forall__node_5_value_3__finite::node>(args,0,5)) << std::endl;
                 }
                 else
     
@@ -1241,7 +1341,7 @@ int main(int argc, char **argv){
         _dup2(fd, 0);
     }
     if (argc != 1){
-        std::cerr << "usage: toy_consensus_forall__node_3_value_3__finite \n";
+        std::cerr << "usage: toy_consensus_forall__node_5_value_3__finite \n";
         __ivy_exit(1);
     }
     std::vector<std::string> args;
@@ -1282,7 +1382,7 @@ int main(int argc, char **argv){
         }
     }
 #endif
-    toy_consensus_forall__node_3_value_3__finite_repl ivy;
+    toy_consensus_forall__node_5_value_3__finite_repl ivy;
     for(unsigned i = 0; i < argc; i++) {ivy.__argv.push_back(argv[i]);}
     ivy.__init();
 
@@ -1305,13 +1405,13 @@ int main(int argc, char **argv){
 /***********************************************************/
 
 #include <vector>
-toy_consensus_forall__node_3_value_3__finite_repl * ivy_exec;
+toy_consensus_forall__node_5_value_3__finite_repl * ivy_exec;
 cmd_reader* ivy_exec_cr;
 std::ostringstream ivy_exec_stream;
 
 void ivy_exec_init(){
 	__ivy_out.basic_ios<char>::rdbuf(ivy_exec_stream.rdbuf());
-	ivy_exec = new toy_consensus_forall__node_3_value_3__finite_repl;
+	ivy_exec = new toy_consensus_forall__node_5_value_3__finite_repl;
 	ivy_exec -> __unlock();
 	ivy_exec_cr = new cmd_reader(*ivy_exec);
 }
@@ -1341,13 +1441,21 @@ void ivy_exec_set_state(std::vector<std::string> state_values){
 	std::stringstream(state_values[9]) >> ivy_exec -> vote[2][0];
 	std::stringstream(state_values[10]) >> ivy_exec -> vote[2][1];
 	std::stringstream(state_values[11]) >> ivy_exec -> vote[2][2];
-	std::stringstream(state_values[12]) >> ivy_exec -> voted[0];
-	std::stringstream(state_values[13]) >> ivy_exec -> voted[1];
-	std::stringstream(state_values[14]) >> ivy_exec -> voted[2];
+	std::stringstream(state_values[12]) >> ivy_exec -> vote[3][0];
+	std::stringstream(state_values[13]) >> ivy_exec -> vote[3][1];
+	std::stringstream(state_values[14]) >> ivy_exec -> vote[3][2];
+	std::stringstream(state_values[15]) >> ivy_exec -> vote[4][0];
+	std::stringstream(state_values[16]) >> ivy_exec -> vote[4][1];
+	std::stringstream(state_values[17]) >> ivy_exec -> vote[4][2];
+	std::stringstream(state_values[18]) >> ivy_exec -> voted[0];
+	std::stringstream(state_values[19]) >> ivy_exec -> voted[1];
+	std::stringstream(state_values[20]) >> ivy_exec -> voted[2];
+	std::stringstream(state_values[21]) >> ivy_exec -> voted[3];
+	std::stringstream(state_values[22]) >> ivy_exec -> voted[4];
 	{
-		ivy_value arg; arg.pos = 0; arg.atom = state_values[15];
+		ivy_value arg; arg.pos = 0; arg.atom = state_values[23];
 		std::vector<ivy_value> args; args.push_back(arg);
-		ivy_exec -> voting_quorum = _arg<toy_consensus_forall__node_3_value_3__finite::quorum>(args, 0, 0);
+		ivy_exec -> voting_quorum = _arg<toy_consensus_forall__node_5_value_3__finite::quorum>(args, 0, 0);
 	}
 }
 

@@ -602,9 +602,9 @@ struct hash_thunk {
     class reader;
     class timer;
 
-class toy_consensus_forall__node_3_value_3__finite {
+class toy_consensus_forall__node_5_value_3__finite {
   public:
-    typedef toy_consensus_forall__node_3_value_3__finite ivy_class;
+    typedef toy_consensus_forall__node_5_value_3__finite ivy_class;
 
     std::vector<std::string> __argv;
 #ifdef _WIN32
@@ -625,33 +625,33 @@ class toy_consensus_forall__node_3_value_3__finite {
     void install_reader(reader *);
     void install_thread(reader *);
     void install_timer(timer *);
-    virtual ~toy_consensus_forall__node_3_value_3__finite();
+    virtual ~toy_consensus_forall__node_5_value_3__finite();
     std::vector<int> ___ivy_stack;
     int ___ivy_choose(int rng,const char *name,int id);
     virtual void ivy_assert(bool,const char *){}
     virtual void ivy_assume(bool,const char *){}
     virtual void ivy_check_progress(int,int){}
-    enum node{node0,node1,node2};
-    enum quorum{quorum__node0_node1,quorum__node0_node2,quorum__node1_node2};
+    enum node{node0,node1,node2,node3,node4};
+    enum quorum{quorum__node0_node1_node2,quorum__node0_node1_node3,quorum__node0_node1_node4,quorum__node0_node2_node3,quorum__node0_node2_node4,quorum__node0_node3_node4,quorum__node1_node2_node3,quorum__node1_node2_node4,quorum__node1_node3_node4,quorum__node2_node3_node4};
     enum value{value0,value1,value2};
-    bool member[3][3];
-    bool voted[3];
-    bool vote[3][3];
+    bool member[5][10];
+    bool voted[5];
+    bool vote[5][3];
     bool decided[3];
     quorum voting_quorum;
-    toy_consensus_forall__node_3_value_3__finite();
+    toy_consensus_forall__node_5_value_3__finite();
 void __init();
     virtual void ext__cast_vote(node n, value v);
     virtual void ext__decide(value v, quorum q);
+    virtual bool ext__get_member(node n0, quorum q1);
+    virtual bool ext__get_bool_member(node n0, quorum q1, bool result);
+    virtual bool ext__get_vote(node n0, value v1);
+    virtual bool ext__get_bool_vote(node n0, value v1, bool result);
+    virtual quorum ext__get_voting_quorum();
+    virtual bool ext__get_bool_voting_quorum(quorum result);
     virtual bool ext__get_voted(node n0);
     virtual bool ext__get_bool_voted(node n0, bool result);
     virtual bool ext__get_decided(value v0);
     virtual bool ext__get_bool_decided(value v0, bool result);
-    virtual bool ext__get_vote(node n0, value v1);
-    virtual bool ext__get_bool_vote(node n0, value v1, bool result);
-    virtual bool ext__get_member(node n0, quorum q1);
-    virtual bool ext__get_bool_member(node n0, quorum q1, bool result);
-    virtual quorum ext__get_voting_quorum();
-    virtual bool ext__get_bool_voting_quorum(quorum result);
     void __tick(int timeout);
 };

@@ -23,11 +23,23 @@ quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~t
 qcost : 3
 
 
-=== Prime Orbit 12 =====================
+=== Prime Orbit 8 =====================
 size : 1
 num_suborbits: 1
-12 (*) : --11-------
-12     : ['msg_abort()', 'msg_commit()']
+8 (*) : ---1----1--
+8     : ['msg_commit()', 'tm_init()']
+num_forall :   0
+num_exists :   0
+num_literals : 2
+quantified form : ~msg_commit | ~tm_init
+qcost : 2
+
+
+=== Prime Orbit 10 =====================
+size : 1
+num_suborbits: 1
+10 (*) : --11-------
+10     : ['msg_abort()', 'msg_commit()']
 num_forall :   0
 num_exists :   0
 num_literals : 2
@@ -35,35 +47,23 @@ quantified form : ~msg_commit | ~msg_abort
 qcost : 2
 
 
-=== Prime Orbit 16 =====================
+=== Prime Orbit 12 =====================
 size : 1
 num_suborbits: 1
-16 (*) : ---1----1--
-16     : ['msg_commit()', 'tm_init()']
+12 (*) : --1-----1--
+12     : ['msg_abort()', 'tm_init()']
 num_forall :   0
 num_exists :   0
 num_literals : 2
-quantified form : ~tm_init | ~msg_commit
+quantified form : ~msg_abort | ~tm_init
 qcost : 2
 
 
-=== Prime Orbit 17 =====================
+=== Prime Orbit 14 =====================
 size : 1
 num_suborbits: 1
-17 (*) : --1-----1--
-17     : ['msg_abort()', 'tm_init()']
-num_forall :   0
-num_exists :   0
-num_literals : 2
-quantified form : ~tm_init | ~msg_abort
-qcost : 2
-
-
-=== Prime Orbit 19 =====================
-size : 1
-num_suborbits: 1
-19 (*) : 1----1-----
-19     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
+14 (*) : 1----1-----
+14     : ['aborted(resource_manager0)', 'prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
@@ -79,7 +79,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)
 qcost : 3
 
 
@@ -91,7 +91,7 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   0
 num_literals : 3
-quantified form : msg_commit | msg_abort | tm_init
+quantified form : msg_abort | tm_init | msg_commit
 qcost : 3
 
 
@@ -115,7 +115,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0)
 qcost : 3
 
 
@@ -127,7 +127,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~msg_commit | ~working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~msg_commit
 qcost : 3
 
 
@@ -139,7 +139,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)
 qcost : 3
 
 
@@ -151,51 +151,15 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
 qcost : 3
 
 
 === Prime Orbit 7 =====================
 size : 1
 num_suborbits: 1
-7 (*) : -1--0------
-7     : ['committed(resource_manager0)', '~msg_prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)
-qcost : 3
-
-
-=== Prime Orbit 8 =====================
-size : 1
-num_suborbits: 1
-8 (*) : -1-------0-
-8     : ['committed(resource_manager0)', '~tm_prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)
-qcost : 3
-
-
-=== Prime Orbit 9 =====================
-size : 1
-num_suborbits: 1
-9 (*) : -1-0-------
-9     : ['committed(resource_manager0)', '~msg_commit()']
-num_forall :   1
-num_exists :   0
-num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. msg_commit | ~committed(RESOURCE_MANAGER0)
-qcost : 3
-
-
-=== Prime Orbit 10 =====================
-size : 1
-num_suborbits: 1
-10 (*) : ---1-----0-
-10     : ['msg_commit()', '~tm_prepared(resource_manager0)']
+7 (*) : ---1-----0-
+7     : ['msg_commit()', '~tm_prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
@@ -203,47 +167,35 @@ quantified form : forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | ~ms
 qcost : 3
 
 
-=== Prime Orbit 11 =====================
+=== Prime Orbit 9 =====================
 size : 1
 num_suborbits: 1
-11 (*) : ---10------
-11     : ['msg_commit()', '~msg_prepared(resource_manager0)']
+9 (*) : ---10------
+9     : ['msg_commit()', '~msg_prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~msg_commit
+quantified form : forall RESOURCE_MANAGER0. ~msg_commit | msg_prepared(RESOURCE_MANAGER0)
+qcost : 3
+
+
+=== Prime Orbit 11 =====================
+size : 1
+num_suborbits: 1
+11 (*) : ----01-----
+11     : ['prepared(resource_manager0)', '~msg_prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0)
 qcost : 3
 
 
 === Prime Orbit 13 =====================
 size : 1
 num_suborbits: 1
-13 (*) : -11--------
-13     : ['committed(resource_manager0)', 'msg_abort()']
-num_forall :   1
-num_exists :   0
-num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~msg_abort
-qcost : 3
-
-
-=== Prime Orbit 14 =====================
-size : 1
-num_suborbits: 1
-14 (*) : 11---------
-14     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
-qcost : 3
-
-
-=== Prime Orbit 15 =====================
-size : 1
-num_suborbits: 1
-15 (*) : 1--1-------
-15     : ['aborted(resource_manager0)', 'msg_commit()']
+13 (*) : 1--1-------
+13     : ['aborted(resource_manager0)', 'msg_commit()']
 num_forall :   1
 num_exists :   0
 num_literals : 2
@@ -251,27 +203,75 @@ quantified form : forall RESOURCE_MANAGER0. ~msg_commit | ~aborted(RESOURCE_MANA
 qcost : 3
 
 
-=== Prime Orbit 18 =====================
+=== Prime Orbit 15 =====================
 size : 1
 num_suborbits: 1
-18 (*) : -1------1--
-18     : ['committed(resource_manager0)', 'tm_init()']
+15 (*) : 11---------
+15     : ['aborted(resource_manager0)', 'committed(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. ~tm_init | ~committed(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
+qcost : 3
+
+
+=== Prime Orbit 16 =====================
+size : 1
+num_suborbits: 1
+16 (*) : -1-0-------
+16     : ['committed(resource_manager0)', '~msg_commit()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | msg_commit
+qcost : 3
+
+
+=== Prime Orbit 17 =====================
+size : 1
+num_suborbits: 1
+17 (*) : -11--------
+17     : ['committed(resource_manager0)', 'msg_abort()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall RESOURCE_MANAGER0. ~msg_abort | ~committed(RESOURCE_MANAGER0)
+qcost : 3
+
+
+=== Prime Orbit 18 =====================
+size : 1
+num_suborbits: 1
+18 (*) : -1--0------
+18     : ['committed(resource_manager0)', '~msg_prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)
+qcost : 3
+
+
+=== Prime Orbit 19 =====================
+size : 1
+num_suborbits: 1
+19 (*) : -1-------0-
+19     : ['committed(resource_manager0)', '~tm_prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0)
 qcost : 3
 
 
 === Prime Orbit 20 =====================
 size : 1
 num_suborbits: 1
-20 (*) : ----01-----
-20     : ['prepared(resource_manager0)', '~msg_prepared(resource_manager0)']
+20 (*) : -1------1--
+20     : ['committed(resource_manager0)', 'tm_init()']
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~tm_init
 qcost : 3
 
 
@@ -283,43 +283,43 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | ~msg_commit | prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | ~msg_commit | committed(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 24 =====================
 size : 1
 num_suborbits: 1
-24 (*) : --0-----00-
-24     : ['~msg_abort()', '~tm_init()', '~tm_prepared(resource_manager0)']
+24 (*) : --0-----0-1
+24     : ['working(resource_manager0)', '~msg_abort()', '~tm_init()']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | msg_abort | tm_init
+quantified form : forall RESOURCE_MANAGER0. msg_abort | tm_init | ~working(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 25 =====================
 size : 1
 num_suborbits: 1
-25 (*) : --0-0---0--
-25     : ['~msg_abort()', '~msg_prepared(resource_manager0)', '~tm_init()']
+25 (*) : --0-----00-
+25     : ['~msg_abort()', '~tm_init()', '~tm_prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | msg_abort | tm_init
+quantified form : forall RESOURCE_MANAGER0. msg_abort | tm_init | tm_prepared(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 26 =====================
 size : 1
 num_suborbits: 1
-26 (*) : 0---0-----0
-26     : ['~aborted(resource_manager0)', '~msg_prepared(resource_manager0)', '~working(resource_manager0)']
+26 (*) : -----0--11-
+26     : ['tm_init()', 'tm_prepared(resource_manager0)', '~prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. msg_prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~tm_prepared(RESOURCE_MANAGER0) | ~tm_init | prepared(RESOURCE_MANAGER0)
 qcost : 4
 
 
@@ -338,56 +338,44 @@ qcost : 4
 === Prime Orbit 28 =====================
 size : 1
 num_suborbits: 1
-28 (*) : -----0--11-
-28     : ['tm_init()', 'tm_prepared(resource_manager0)', '~prepared(resource_manager0)']
+28 (*) : --0-0---0--
+28     : ['~msg_abort()', '~msg_prepared(resource_manager0)', '~tm_init()']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. ~tm_init | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. msg_abort | tm_init | msg_prepared(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 29 =====================
 size : 1
 num_suborbits: 1
-29 (*) : --0-----0-1
-29     : ['working(resource_manager0)', '~msg_abort()', '~tm_init()']
+29 (*) : 0---0-----0
+29     : ['~aborted(resource_manager0)', '~msg_prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. msg_abort | tm_init | ~working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 30 =====================
 size : 1
 num_suborbits: 1
-30 (*) : 1---1---1--
-30     : ['aborted(resource_manager0)', 'msg_prepared(resource_manager0)', 'tm_init()']
+30 (*) : 1-0-1------
+30     : ['aborted(resource_manager0)', 'msg_prepared(resource_manager0)', '~msg_abort()']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. ~tm_init | ~msg_prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. msg_abort | ~msg_prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 31 =====================
 size : 1
 num_suborbits: 1
-31 (*) : 1-------11-
-31     : ['aborted(resource_manager0)', 'tm_init()', 'tm_prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. ~tm_init | ~aborted(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
-qcost : 4
-
-
-=== Prime Orbit 32 =====================
-size : 1
-num_suborbits: 1
-32 (*) : 1-0-----0--
-32     : ['aborted(resource_manager0)', '~msg_abort()', '~tm_init()']
+31 (*) : 1-0-----0--
+31     : ['aborted(resource_manager0)', '~msg_abort()', '~tm_init()']
 num_forall :   1
 num_exists :   0
 num_literals : 3
@@ -395,15 +383,27 @@ quantified form : forall RESOURCE_MANAGER0. msg_abort | tm_init | ~aborted(RESOU
 qcost : 4
 
 
-=== Prime Orbit 33 =====================
+=== Prime Orbit 32 =====================
 size : 1
 num_suborbits: 1
-33 (*) : 1-0-1------
-33     : ['aborted(resource_manager0)', 'msg_prepared(resource_manager0)', '~msg_abort()']
+32 (*) : 1---1---1--
+32     : ['aborted(resource_manager0)', 'msg_prepared(resource_manager0)', 'tm_init()']
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | msg_abort | ~aborted(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | ~tm_init | ~aborted(RESOURCE_MANAGER0)
+qcost : 4
+
+
+=== Prime Orbit 33 =====================
+size : 1
+num_suborbits: 1
+33 (*) : 1-------11-
+33     : ['aborted(resource_manager0)', 'tm_init()', 'tm_prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall RESOURCE_MANAGER0. ~tm_prepared(RESOURCE_MANAGER0) | ~tm_init | ~aborted(RESOURCE_MANAGER0)
 qcost : 4
 
 
@@ -415,207 +415,111 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 3
-quantified form : forall RESOURCE_MANAGER0. msg_abort | ~aborted(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. msg_abort | ~tm_prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0)
 qcost : 4
 
 
 === Prime Orbit 35 =====================
 size : 1
 num_suborbits: 1
-35 (*) : -00--0---1-
-35     : ['tm_prepared(resource_manager0)', '~committed(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)']
+35 (*) : 0-1--0----0
+35     : ['msg_abort()', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | msg_abort | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | ~msg_abort | prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
 qcost : 5
 
 
 === Prime Orbit 36 =====================
 size : 1
 num_suborbits: 1
-36 (*) : --00-0---1-
-36     : ['tm_prepared(resource_manager0)', '~msg_abort()', '~msg_commit()', '~prepared(resource_manager0)']
+36 (*) : 0-1-10-----
+36     : ['msg_abort()', 'msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. msg_commit | msg_abort | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | ~msg_abort | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
 qcost : 5
 
 
 === Prime Orbit 37 =====================
 size : 1
 num_suborbits: 1
-37 (*) : 00---0---1-
-37     : ['tm_prepared(resource_manager0)', '~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
+37 (*) : -00-10-----
+37     : ['msg_prepared(resource_manager0)', '~committed(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. msg_abort | prepared(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0)
 qcost : 5
 
 
 === Prime Orbit 38 =====================
 size : 1
 num_suborbits: 1
-38 (*) : 0--0-0---1-
-38     : ['tm_prepared(resource_manager0)', '~aborted(resource_manager0)', '~msg_commit()', '~prepared(resource_manager0)']
+38 (*) : --0010-----
+38     : ['msg_prepared(resource_manager0)', '~msg_abort()', '~msg_commit()', '~prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. msg_commit | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. msg_abort | prepared(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | msg_commit
 qcost : 5
 
 
 === Prime Orbit 39 =====================
 size : 1
 num_suborbits: 1
-39 (*) : 0-1--0---1-
-39     : ['msg_abort()', 'tm_prepared(resource_manager0)', '~aborted(resource_manager0)', '~prepared(resource_manager0)']
+39 (*) : --0-10---0-
+39     : ['msg_prepared(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)', '~tm_prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | ~msg_abort | ~tm_prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. msg_abort | tm_prepared(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
 qcost : 5
 
 
 === Prime Orbit 40 =====================
 size : 1
 num_suborbits: 1
-40 (*) : 0-1--0----0
-40     : ['msg_abort()', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+40 (*) : 00--10-----
+40     : ['msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | ~msg_abort | working(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0)
 qcost : 5
 
 
 === Prime Orbit 41 =====================
 size : 1
 num_suborbits: 1
-41 (*) : 0-1-10-----
-41     : ['msg_abort()', 'msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~prepared(resource_manager0)']
+41 (*) : 0--010-----
+41     : ['msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~msg_commit()', '~prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | ~msg_abort
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | msg_commit
 qcost : 5
 
 
 === Prime Orbit 42 =====================
 size : 1
 num_suborbits: 1
-42 (*) : -00-10-----
-42     : ['msg_prepared(resource_manager0)', '~committed(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)']
+42 (*) : 0---10---0-
+42     : ['msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~tm_prepared(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | msg_abort | prepared(RESOURCE_MANAGER0)
+quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | tm_prepared(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
 qcost : 5
 
 
 === Prime Orbit 43 =====================
 size : 1
 num_suborbits: 1
-43 (*) : --0010-----
-43     : ['msg_prepared(resource_manager0)', '~msg_abort()', '~msg_commit()', '~prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. msg_commit | ~msg_prepared(RESOURCE_MANAGER0) | msg_abort | prepared(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 44 =====================
-size : 1
-num_suborbits: 1
-44 (*) : --0-10---0-
-44     : ['msg_prepared(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)', '~tm_prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | tm_prepared(RESOURCE_MANAGER0) | msg_abort | prepared(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 45 =====================
-size : 1
-num_suborbits: 1
-45 (*) : -00--0--0--
-45     : ['~committed(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)', '~tm_init()']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | msg_abort | prepared(RESOURCE_MANAGER0) | tm_init
-qcost : 5
-
-
-=== Prime Orbit 46 =====================
-size : 1
-num_suborbits: 1
-46 (*) : 00---0----0
-46     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 47 =====================
-size : 1
-num_suborbits: 1
-47 (*) : 0--0-0----0
-47     : ['~aborted(resource_manager0)', '~msg_commit()', '~prepared(resource_manager0)', '~working(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. msg_commit | aborted(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 48 =====================
-size : 1
-num_suborbits: 1
-48 (*) : 00--10-----
-48     : ['msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 49 =====================
-size : 1
-num_suborbits: 1
-49 (*) : 0--010-----
-49     : ['msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~msg_commit()', '~prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. msg_commit | aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 50 =====================
-size : 1
-num_suborbits: 1
-50 (*) : 0---10---0-
-50     : ['msg_prepared(resource_manager0)', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~tm_prepared(resource_manager0)']
-num_forall :   1
-num_exists :   0
-num_literals : 4
-quantified form : forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
-qcost : 5
-
-
-=== Prime Orbit 51 =====================
-size : 1
-num_suborbits: 1
-51 (*) : 0----0---00
-51     : ['~aborted(resource_manager0)', '~prepared(resource_manager0)', '~tm_prepared(resource_manager0)', '~working(resource_manager0)']
+43 (*) : 0----0---00
+43     : ['~aborted(resource_manager0)', '~prepared(resource_manager0)', '~tm_prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
@@ -623,14 +527,110 @@ quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | tm_prep
 qcost : 5
 
 
-=== Prime Orbit 52 =====================
+=== Prime Orbit 44 =====================
 size : 1
 num_suborbits: 1
-52 (*) : 0----0--1-0
-52     : ['tm_init()', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+44 (*) : 00---0----0
+44     : ['~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
+qcost : 5
+
+
+=== Prime Orbit 45 =====================
+size : 1
+num_suborbits: 1
+45 (*) : 0--0-0----0
+45     : ['~aborted(resource_manager0)', '~msg_commit()', '~prepared(resource_manager0)', '~working(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | msg_commit | working(RESOURCE_MANAGER0)
+qcost : 5
+
+
+=== Prime Orbit 46 =====================
+size : 1
+num_suborbits: 1
+46 (*) : -00--0--0--
+46     : ['~committed(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)', '~tm_init()']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. msg_abort | prepared(RESOURCE_MANAGER0) | tm_init | committed(RESOURCE_MANAGER0)
+qcost : 5
+
+
+=== Prime Orbit 47 =====================
+size : 1
+num_suborbits: 1
+47 (*) : 0----0--1-0
+47     : ['tm_init()', '~aborted(resource_manager0)', '~prepared(resource_manager0)', '~working(resource_manager0)']
 num_forall :   1
 num_exists :   0
 num_literals : 4
 quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | ~tm_init | prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0)
+qcost : 5
+
+
+=== Prime Orbit 48 =====================
+size : 1
+num_suborbits: 1
+48 (*) : 00---0---1-
+48     : ['tm_prepared(resource_manager0)', '~aborted(resource_manager0)', '~committed(resource_manager0)', '~prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0)
+qcost : 5
+
+
+=== Prime Orbit 49 =====================
+size : 1
+num_suborbits: 1
+49 (*) : 0--0-0---1-
+49     : ['tm_prepared(resource_manager0)', '~aborted(resource_manager0)', '~msg_commit()', '~prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0) | msg_commit
+qcost : 5
+
+
+=== Prime Orbit 50 =====================
+size : 1
+num_suborbits: 1
+50 (*) : -00--0---1-
+50     : ['tm_prepared(resource_manager0)', '~committed(resource_manager0)', '~msg_abort()', '~prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. msg_abort | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0)
+qcost : 5
+
+
+=== Prime Orbit 51 =====================
+size : 1
+num_suborbits: 1
+51 (*) : --00-0---1-
+51     : ['tm_prepared(resource_manager0)', '~msg_abort()', '~msg_commit()', '~prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. msg_abort | prepared(RESOURCE_MANAGER0) | ~tm_prepared(RESOURCE_MANAGER0) | msg_commit
+qcost : 5
+
+
+=== Prime Orbit 52 =====================
+size : 1
+num_suborbits: 1
+52 (*) : 0-1--0---1-
+52     : ['msg_abort()', 'tm_prepared(resource_manager0)', '~aborted(resource_manager0)', '~prepared(resource_manager0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall RESOURCE_MANAGER0. aborted(RESOURCE_MANAGER0) | ~msg_abort | ~tm_prepared(RESOURCE_MANAGER0) | prepared(RESOURCE_MANAGER0)
 qcost : 5
 

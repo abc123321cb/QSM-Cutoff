@@ -41,6 +41,6 @@ invariant [safety] decided(V1) & decided(V2) -> V1 = V2
 #invariant [manual_2] vote(N, V1) & vote(N, V2) -> V1 = V2
 #invariant [manual_3] forall V. decided(V) -> exists Q. forall N. member(N, Q) -> vote(N, V)
 
-invariant [invar_0] forall NODE0,VALUE0,VALUE1. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
-invariant [invar_2] forall NODE0,VALUE0. voted(NODE0) | ~vote(NODE0,VALUE0) # qcost: 4
-invariant [invar_20] forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)) # qcost: 4
+invariant [invar_0] forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
+invariant [invar_2] forall VALUE0,NODE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
+invariant [invar_21] forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)) # qcost: 4

@@ -83,13 +83,13 @@ export recv_unlock
 #    (forall N1, N2. unlock_msg(N1) & unlock_msg(N2) -> N1 = N2)
 #)
 
-invariant [invar_0] forall NODE0,NODE1. ~grant_msg(NODE0) | ~holds_lock(NODE1) # qcost: 4
-invariant [invar_1] forall NODE0,NODE1. ~holds_lock(NODE0) | ~unlock_msg(NODE1) # qcost: 4
-invariant [invar_2] forall NODE0. held | ~holds_lock(NODE0) # qcost: 3
-invariant [invar_3] forall NODE0,NODE1. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_4] forall NODE0,NODE1. ~grant_msg(NODE0) | ~unlock_msg(NODE1) # qcost: 4
-invariant [invar_5] forall NODE0,NODE1. ~grant_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_6] forall NODE0. held | ~grant_msg(NODE0) # qcost: 3
+invariant [invar_0] forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) # qcost: 4
+invariant [invar_1] forall NODE0. held | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_2] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~holds_lock(NODE0) # qcost: 4
+invariant [invar_3] forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_4] forall NODE0. held | ~grant_msg(NODE0) # qcost: 3
+invariant [invar_5] forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_6] forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) # qcost: 4
 invariant [invar_7] forall NODE0. held | ~unlock_msg(NODE0) # qcost: 3
-invariant [invar_8] forall NODE0,NODE1. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_9] exists NODE0. grant_msg(NODE0) | ~held | unlock_msg(NODE0) | holds_lock(NODE0) # qcost: 5
+invariant [invar_8] forall NODE1,NODE0. ~unlock_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_9] exists NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | ~held | holds_lock(NODE0) # qcost: 5

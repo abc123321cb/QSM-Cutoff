@@ -74,12 +74,12 @@ export decide
 ##invariant [manual_6] decided(N, V) -> leader(N)
 
 invariant [def_chosen] forall N. chosen(N) = (exists Q. (forall Nv. member(Nv,Q) -> votes(N,Nv))) # definition, qcost: 6
-invariant [invar_4] forall NODE0,NODE1. voted(NODE0) | ~vote_msg(NODE0,NODE1) # qcost: 4
-invariant [invar_5] forall VALUE1,NODE0,NODE1,VALUE0. ~decided(NODE0,VALUE0) | ~decided(NODE1,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1) # qcost: 8
-invariant [invar_103] forall NODE1. ~voted(NODE1) | vote_msg(NODE1,NODE1) | (exists NODE0. (vote_msg(NODE1,NODE0) & NODE0 ~= NODE1)) # qcost: 6
-invariant [invar_7] forall NODE0,VALUE0. ~decided(NODE0,VALUE0) | leader(NODE0) # qcost: 4
-invariant [invar_10] forall NODE0,NODE2,NODE1. ~vote_msg(NODE0,NODE1) | ~vote_msg(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE1 & NODE0 = NODE2)) # qcost: 9
-invariant [invar_1] forall NODE0,NODE1. vote_msg(NODE1,NODE0) | ~votes(NODE0,NODE1) # qcost: 4
-invariant [invar_11] forall NODE0. ~leader(NODE0) | chosen(NODE0) # qcost: 3
-invariant [invar_84] forall NODE0,NODE1. vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | vote_request_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
-invariant [invar_59] forall NODE0,NODE1. vote_msg(NODE1,NODE0) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
+invariant [invar_5] forall VALUE1,NODE1,VALUE0,NODE0. ~decided(NODE0,VALUE0) | ~decided(NODE1,VALUE1) | (NODE0 = NODE1 & VALUE0 = VALUE1) # qcost: 8
+invariant [invar_6] forall VALUE0,NODE0. leader(NODE0) | ~decided(NODE0,VALUE0) # qcost: 4
+invariant [invar_9] forall NODE1,NODE2,NODE0. ~vote_msg(NODE0,NODE2) | ~vote_msg(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1)) # qcost: 9
+invariant [invar_11] forall NODE1,NODE0. voted(NODE0) | ~vote_msg(NODE0,NODE1) # qcost: 4
+invariant [invar_93] forall NODE1. ~voted(NODE1) | vote_msg(NODE1,NODE1) | (exists NODE0. (vote_msg(NODE1,NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_2] forall NODE1,NODE0. ~votes(NODE0,NODE1) | vote_msg(NODE1,NODE0) # qcost: 4
+invariant [invar_10] forall NODE0. ~leader(NODE0) | chosen(NODE0) # qcost: 3
+invariant [invar_75] forall NODE1,NODE0. vote_request_msg(NODE0,NODE1) | vote_request_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
+invariant [invar_66] forall NODE1,NODE0. vote_request_msg(NODE1,NODE0) | vote_msg(NODE1,NODE0) | ~vote_msg(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
