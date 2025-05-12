@@ -175,6 +175,39 @@ class FormulaUtility():
             flat.add(cube)
         return list(flat)
 
+
+    def count_equiv_invar_quantifiers_and_literals(formula, pol=True, inF=0, inE=0, inL=0):
+        outF = inF
+        outE = inE
+        outL = inL
+        if isinstance(formula, il.Not):
+            outF, outE, outL = FormulaUtility.count_equiv_invar_quantifiers_and_literals(formula.args[0], not pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if isinstance(formula, lg.Eq):
+            outF, outE, outL = FormulaUtility.count_equiv_invar_quantifiers_and_literals(formula.args[0], not pol, outF, outE, outL)
+            outF, outE, outL = FormulaUtility.count_equiv_invar_quantifiers_and_literals(formula.args[1], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        is_e = isinstance(formula, il.Exists)
+        is_a = isinstance(formula, il.ForAll)
+        if (is_e and pol) or (is_a and not pol):
+            qvars = il.quantifier_vars(formula)
+            outE += len(qvars)
+            outF, outE, outL = FormulaUtility.count_equiv_invar_quantifiers_and_literals(formula.args[0], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if (is_e and not pol) or (is_a and pol):
+            qvars = il.quantifier_vars(formula)
+            outF += len(qvars)
+            outF, outE, outL = FormulaUtility.count_equiv_invar_quantifiers_and_literals(formula.args[0], pol, outF, outE, outL)
+            return (outF, outE, outL)
+        if isinstance(formula, il.And) or isinstance(formula, il.Or):
+            for arg in formula.args:
+                outF, outE, outL = FormulaUtility.count_equiv_invar_quantifiers_and_literals(arg, pol, outF, outE, outL)
+        elif ilu.is_true(formula) or ilu.is_false(formula):
+            pass
+        else:
+            outL += 1
+        return (outF, outE, outL) 
+
     def count_quantifiers_and_literals(formula, pol=True, inF=0, inE=0, inL=0):
         outF = inF
         outE = inE

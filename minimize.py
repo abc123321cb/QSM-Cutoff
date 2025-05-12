@@ -36,7 +36,7 @@ class Rmin():
             Rmin.def_lines.append(line)
             Rmin.def_qcost += qcost
         for i, atom_equiv in enumerate(tran_sys.closed_atom_equivalence_constraints):
-            (num_forall, num_exists, num_lits) = futil.count_quantifiers_and_literals(atom_equiv)
+            (num_forall, num_exists, num_lits) = futil.count_equiv_invar_quantifiers_and_literals(atom_equiv)
             qcost = num_forall + num_exists + num_lits
             line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation, qcost: {qcost}'
             Rmin.eq_lines.append(line)
