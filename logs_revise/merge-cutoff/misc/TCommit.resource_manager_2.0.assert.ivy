@@ -50,4 +50,4 @@ invariant [safety] (forall R1, R2. ~(aborted(R1) & committed(R2)) )
 
 #invariant [manual_ic3po2]	(forall R0 . (aborted(R0) -> ~prepared(R0)))
 
-invariant [invar_3] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_3] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3

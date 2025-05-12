@@ -73,8 +73,8 @@ invariant [safety] decided(N1, V1) & decided(N2, V2) -> V1 = V2
 #invariant [manual_5] exists Q. forall N, M. leader(N) & member(M, Q) -> votes(N, M)
 #invariant [manual_6] decided(N, V) -> leader(N)
 
-invariant [invar_6] forall VALUE0,NODE0. leader(NODE0) | ~decided(NODE0,VALUE0) # qcost: 4
-invariant [invar_9] forall NODE1,NODE2,NODE0. ~vote_msg(NODE0,NODE2) | ~vote_msg(NODE0,NODE1) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1)) # qcost: 9
-invariant [invar_11] forall NODE1,NODE0. voted(NODE0) | ~vote_msg(NODE0,NODE1) # qcost: 4
-invariant [invar_2] forall NODE1,NODE0. ~votes(NODE0,NODE1) | vote_msg(NODE1,NODE0) # qcost: 4
-invariant [invar_10] forall NODE0. ~leader(NODE0) | chosen(NODE0) # qcost: 3
+invariant [invar_11] forall VALUE0,NODE0. leader(NODE0) | ~decided(NODE0,VALUE0) # qcost: 4
+invariant [invar_12] forall NODE1,NODE0. ~vote_msg(NODE0,NODE1) | voted(NODE0) # qcost: 4
+invariant [invar_13] forall NODE2,NODE1,NODE0. ~vote_msg(NODE0,NODE1) | ~vote_msg(NODE0,NODE2) | ((NODE1 = NODE2 & NODE0 ~= NODE1) | (NODE0 = NODE2 & NODE0 = NODE1)) # qcost: 9
+invariant [invar_1] forall NODE1,NODE0. ~votes(NODE0,NODE1) | vote_msg(NODE1,NODE0) # qcost: 4
+invariant [invar_4] forall NODE0. ~leader(NODE0) | chosen(NODE0) # qcost: 3

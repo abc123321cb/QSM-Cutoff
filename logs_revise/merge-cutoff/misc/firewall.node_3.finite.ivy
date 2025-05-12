@@ -40,16 +40,6 @@ invariant [safety] sent(S,D) & internal(D) -> exists I. internal(I) & sent(I,S)
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_allowed_in(n0: node) returns(qrm_result: bool) = {
-    qrm_result := allowed_in(n0)
-}
-export get_allowed_in
-
-action get_bool_allowed_in(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (allowed_in(n0) = result)
-}
-export get_bool_allowed_in
-
 action get_sent(n0: node, n1: node) returns(qrm_result: bool) = {
     qrm_result := sent(n0, n1)
 }
@@ -69,4 +59,14 @@ action get_bool_internal(n0: node, result: bool) returns(qrm_result: bool) = {
     qrm_result := (internal(n0) = result)
 }
 export get_bool_internal
+
+action get_allowed_in(n0: node) returns(qrm_result: bool) = {
+    qrm_result := allowed_in(n0)
+}
+export get_allowed_in
+
+action get_bool_allowed_in(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (allowed_in(n0) = result)
+}
+export get_bool_allowed_in
 
