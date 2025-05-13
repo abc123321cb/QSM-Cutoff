@@ -685,6 +685,16 @@ void simple_election__acceptor_2_proposer_1__finite::ext__decide(proposer p, quo
         ivy_assume(chosenAt(q,p), "simple-election.acceptor_2_proposer_1.finite.ivy: line 49");
         leader[p] = true;
 }
+bool simple_election__acceptor_2_proposer_1__finite::ext__get_member(acceptor a0, quorum q1){
+    bool qrm_result;
+    qrm_result = member[a0][q1];
+    return qrm_result;
+}
+bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_member(acceptor a0, quorum q1, bool result){
+    bool qrm_result;
+    qrm_result = (member[a0][q1] == result);
+    return qrm_result;
+}
 bool simple_election__acceptor_2_proposer_1__finite::ext__get_start(proposer p0){
     bool qrm_result;
     qrm_result = start[p0];
@@ -695,16 +705,6 @@ bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_start(propose
     qrm_result = (start[p0] == result);
     return qrm_result;
 }
-bool simple_election__acceptor_2_proposer_1__finite::ext__get_promise(acceptor a0, proposer p1){
-    bool qrm_result;
-    qrm_result = promise[a0][p1];
-    return qrm_result;
-}
-bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_promise(acceptor a0, proposer p1, bool result){
-    bool qrm_result;
-    qrm_result = (promise[a0][p1] == result);
-    return qrm_result;
-}
 bool simple_election__acceptor_2_proposer_1__finite::ext__get_didNotPromise(acceptor a0){
     bool qrm_result;
     qrm_result = didNotPromise(a0);
@@ -713,6 +713,16 @@ bool simple_election__acceptor_2_proposer_1__finite::ext__get_didNotPromise(acce
 bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_didNotPromise(acceptor a0, bool result){
     bool qrm_result;
     qrm_result = (didNotPromise(a0) == result);
+    return qrm_result;
+}
+bool simple_election__acceptor_2_proposer_1__finite::ext__get_promise(acceptor a0, proposer p1){
+    bool qrm_result;
+    qrm_result = promise[a0][p1];
+    return qrm_result;
+}
+bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_promise(acceptor a0, proposer p1, bool result){
+    bool qrm_result;
+    qrm_result = (promise[a0][p1] == result);
     return qrm_result;
 }
 bool simple_election__acceptor_2_proposer_1__finite::ext__get_chosenAt(quorum q0, proposer p1){
@@ -733,16 +743,6 @@ bool simple_election__acceptor_2_proposer_1__finite::ext__get_leader(proposer p0
 bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_leader(proposer p0, bool result){
     bool qrm_result;
     qrm_result = (leader[p0] == result);
-    return qrm_result;
-}
-bool simple_election__acceptor_2_proposer_1__finite::ext__get_member(acceptor a0, quorum q1){
-    bool qrm_result;
-    qrm_result = member[a0][q1];
-    return qrm_result;
-}
-bool simple_election__acceptor_2_proposer_1__finite::ext__get_bool_member(acceptor a0, quorum q1, bool result){
-    bool qrm_result;
-    qrm_result = (member[a0][q1] == result);
     return qrm_result;
 }
 void simple_election__acceptor_2_proposer_1__finite::__tick(int __timeout){

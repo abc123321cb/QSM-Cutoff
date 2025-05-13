@@ -627,15 +627,15 @@ void toy_consensus_forall__node_2_value_1__finite::__init(){
         for (int N = 0; N < 2; N++) {
             voted[N] = __tmp0[N];
         }
-        bool __tmp1[2][1];
-        for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 1; V++) {
-                __tmp1[N][V] = false;
+        bool __tmp1[1][2];
+        for (int V = 0; V < 1; V++) {
+            for (int N = 0; N < 2; N++) {
+                __tmp1[V][N] = false;
             }
         }
-        for (int N = 0; N < 2; N++) {
-            for (int V = 0; V < 1; V++) {
-                vote[N][V] = __tmp1[N][V];
+        for (int V = 0; V < 1; V++) {
+            for (int N = 0; N < 2; N++) {
+                vote[N][V] = __tmp1[V][N];
             }
         }
         bool __tmp2[1];
@@ -669,16 +669,6 @@ void toy_consensus_forall__node_2_value_1__finite::ext__decide(value v, quorum q
         decided[v] = true;
         voting_quorum = q;
 }
-toy_consensus_forall__node_2_value_1__finite::quorum toy_consensus_forall__node_2_value_1__finite::ext__get_voting_quorum(){
-    toy_consensus_forall__node_2_value_1__finite::quorum qrm_result;
-    qrm_result = voting_quorum;
-    return qrm_result;
-}
-bool toy_consensus_forall__node_2_value_1__finite::ext__get_bool_voting_quorum(quorum result){
-    bool qrm_result;
-    qrm_result = (voting_quorum == result);
-    return qrm_result;
-}
 bool toy_consensus_forall__node_2_value_1__finite::ext__get_vote(node n0, value v1){
     bool qrm_result;
     qrm_result = vote[n0][v1];
@@ -687,6 +677,16 @@ bool toy_consensus_forall__node_2_value_1__finite::ext__get_vote(node n0, value 
 bool toy_consensus_forall__node_2_value_1__finite::ext__get_bool_vote(node n0, value v1, bool result){
     bool qrm_result;
     qrm_result = (vote[n0][v1] == result);
+    return qrm_result;
+}
+bool toy_consensus_forall__node_2_value_1__finite::ext__get_decided(value v0){
+    bool qrm_result;
+    qrm_result = decided[v0];
+    return qrm_result;
+}
+bool toy_consensus_forall__node_2_value_1__finite::ext__get_bool_decided(value v0, bool result){
+    bool qrm_result;
+    qrm_result = (decided[v0] == result);
     return qrm_result;
 }
 bool toy_consensus_forall__node_2_value_1__finite::ext__get_member(node n0, quorum q1){
@@ -699,14 +699,14 @@ bool toy_consensus_forall__node_2_value_1__finite::ext__get_bool_member(node n0,
     qrm_result = (member[n0][q1] == result);
     return qrm_result;
 }
-bool toy_consensus_forall__node_2_value_1__finite::ext__get_decided(value v0){
-    bool qrm_result;
-    qrm_result = decided[v0];
+toy_consensus_forall__node_2_value_1__finite::quorum toy_consensus_forall__node_2_value_1__finite::ext__get_voting_quorum(){
+    toy_consensus_forall__node_2_value_1__finite::quorum qrm_result;
+    qrm_result = voting_quorum;
     return qrm_result;
 }
-bool toy_consensus_forall__node_2_value_1__finite::ext__get_bool_decided(value v0, bool result){
+bool toy_consensus_forall__node_2_value_1__finite::ext__get_bool_voting_quorum(quorum result){
     bool qrm_result;
-    qrm_result = (decided[v0] == result);
+    qrm_result = (voting_quorum == result);
     return qrm_result;
 }
 bool toy_consensus_forall__node_2_value_1__finite::ext__get_voted(node n0){

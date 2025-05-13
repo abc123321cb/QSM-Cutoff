@@ -45,9 +45,9 @@ export put
 
 ##invariant [manual_1] forall K. (exists N. owner(N, K)) | (exists N, V. transfer_msg(N, K, V))
 
-invariant [invar_1] forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
-invariant [invar_3] forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
-invariant [invar_0] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_1] forall KEY0,VALUE0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_3] forall KEY0,VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_0] forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
 
 ### For QRM DFS reachability ###
 
@@ -64,16 +64,6 @@ action get_bool_owner(n0: node, k1: key, result: bool) returns(qrm_result: bool)
 }
 export get_bool_owner
 
-action get_transfer_msg(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
-    qrm_result := transfer_msg(n0, k1, v2)
-}
-export get_transfer_msg
-
-action get_bool_transfer_msg(n0: node, k1: key, v2: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (transfer_msg(n0, k1, v2) = result)
-}
-export get_bool_transfer_msg
-
 action get_table(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
     qrm_result := table(n0, k1, v2)
 }
@@ -83,4 +73,14 @@ action get_bool_table(n0: node, k1: key, v2: value, result: bool) returns(qrm_re
     qrm_result := (table(n0, k1, v2) = result)
 }
 export get_bool_table
+
+action get_transfer_msg(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
+    qrm_result := transfer_msg(n0, k1, v2)
+}
+export get_transfer_msg
+
+action get_bool_transfer_msg(n0: node, k1: key, v2: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (transfer_msg(n0, k1, v2) = result)
+}
+export get_bool_transfer_msg
 

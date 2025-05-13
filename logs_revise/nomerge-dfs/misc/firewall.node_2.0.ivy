@@ -36,7 +36,7 @@ export send_to_internal
 ##invariant [manual_1] allowed_in(D) -> exists I. internal(I) & sent(I,D)
 
 invariant [invar_0] forall NODE0. ~sent(NODE0,NODE0) # qcost: 2
-invariant [invar_3] forall NODE1,NODE0. sent(NODE1,NODE0) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_1] forall NODE0. ~internal(NODE0) | ~allowed_in(NODE0) # qcost: 3
-invariant [invar_9] forall NODE1,NODE0. allowed_in(NODE1) | allowed_in(NODE0) | ~sent(NODE0,NODE1) | NODE0 = NODE1 # qcost: 6
-invariant [invar_2] forall NODE1,NODE0. internal(NODE1) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_1] forall NODE1,NODE0. sent(NODE1,NODE0) | ~allowed_in(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_2] forall NODE0. ~allowed_in(NODE0) | ~internal(NODE0) # qcost: 3
+invariant [invar_3] forall NODE1,NODE0. ~allowed_in(NODE0) | internal(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_12] forall NODE1,NODE0. allowed_in(NODE1) | ~sent(NODE0,NODE1) | allowed_in(NODE0) | NODE0 = NODE1 # qcost: 6

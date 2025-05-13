@@ -54,16 +54,6 @@ invariant [safety_keys_unique] table(N1, K, V1) & table(N2, K, V2) -> N1 = N2 & 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_table(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
-    qrm_result := table(n0, k1, v2)
-}
-export get_table
-
-action get_bool_table(n0: node, k1: key, v2: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (table(n0, k1, v2) = result)
-}
-export get_bool_table
-
 action get_owner(n0: node, k1: key) returns(qrm_result: bool) = {
     qrm_result := owner(n0, k1)
 }
@@ -73,6 +63,16 @@ action get_bool_owner(n0: node, k1: key, result: bool) returns(qrm_result: bool)
     qrm_result := (owner(n0, k1) = result)
 }
 export get_bool_owner
+
+action get_table(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
+    qrm_result := table(n0, k1, v2)
+}
+export get_table
+
+action get_bool_table(n0: node, k1: key, v2: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (table(n0, k1, v2) = result)
+}
+export get_bool_table
 
 action get_transfer_msg(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
     qrm_result := transfer_msg(n0, k1, v2)

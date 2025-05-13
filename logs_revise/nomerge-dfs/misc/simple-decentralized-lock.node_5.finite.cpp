@@ -603,14 +603,14 @@ int simple_decentralized_lock__node_5__finite::___ivy_choose(int rng,const char 
 struct ivy_nondet_except {}; // lauren-yrluo added
 void simple_decentralized_lock__node_5__finite::__init(){
         bool __tmp0[5][5];
-        for (int Dst = 0; Dst < 5; Dst++) {
-            for (int Src = 0; Src < 5; Src++) {
-                __tmp0[Dst][Src] = false;
+        for (int Src = 0; Src < 5; Src++) {
+            for (int Dst = 0; Dst < 5; Dst++) {
+                __tmp0[Src][Dst] = false;
             }
         }
-        for (int Dst = 0; Dst < 5; Dst++) {
-            for (int Src = 0; Src < 5; Src++) {
-                message[Src][Dst] = __tmp0[Dst][Src];
+        for (int Src = 0; Src < 5; Src++) {
+            for (int Dst = 0; Dst < 5; Dst++) {
+                message[Src][Dst] = __tmp0[Src][Dst];
             }
         }
         bool __tmp1[5];
@@ -631,14 +631,14 @@ void simple_decentralized_lock__node_5__finite::ext__recv(node src, node dst){
         message[src][dst] = false;
         has_lock[dst] = true;
 }
-bool simple_decentralized_lock__node_5__finite::ext__get_message(node n0, node n1){
+bool simple_decentralized_lock__node_5__finite::ext__get_has_lock(node n0){
     bool qrm_result;
-    qrm_result = message[n0][n1];
+    qrm_result = has_lock[n0];
     return qrm_result;
 }
-bool simple_decentralized_lock__node_5__finite::ext__get_bool_message(node n0, node n1, bool result){
+bool simple_decentralized_lock__node_5__finite::ext__get_bool_has_lock(node n0, bool result){
     bool qrm_result;
-    qrm_result = (message[n0][n1] == result);
+    qrm_result = (has_lock[n0] == result);
     return qrm_result;
 }
 simple_decentralized_lock__node_5__finite::node simple_decentralized_lock__node_5__finite::ext__get_start_node(){
@@ -651,14 +651,14 @@ bool simple_decentralized_lock__node_5__finite::ext__get_bool_start_node(node re
     qrm_result = (start_node == result);
     return qrm_result;
 }
-bool simple_decentralized_lock__node_5__finite::ext__get_has_lock(node n0){
+bool simple_decentralized_lock__node_5__finite::ext__get_message(node n0, node n1){
     bool qrm_result;
-    qrm_result = has_lock[n0];
+    qrm_result = message[n0][n1];
     return qrm_result;
 }
-bool simple_decentralized_lock__node_5__finite::ext__get_bool_has_lock(node n0, bool result){
+bool simple_decentralized_lock__node_5__finite::ext__get_bool_message(node n0, node n1, bool result){
     bool qrm_result;
-    qrm_result = (has_lock[n0] == result);
+    qrm_result = (message[n0][n1] == result);
     return qrm_result;
 }
 void simple_decentralized_lock__node_5__finite::__tick(int __timeout){

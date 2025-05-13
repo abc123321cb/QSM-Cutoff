@@ -36,11 +36,11 @@ export become_leader
 ##invariant [manual_1] voted(N,M) & voted(N,O) -> M = O
 ##invariant [manual_2] isleader(N) -> (majority(quorum) & (member(M,quorum) -> voted(M, N)))
 
-invariant [invar_0] forall NODE0,NODE2,NODE1. ~voted(NODE0,NODE1) | ~voted(NODE0,NODE2) | (NODE0 = NODE2 | NODE0 = NODE1 | NODE1 = NODE2) # qcost: 8
-invariant [invar_1] forall NODE0,NODE1. ~voted(NODE0,NODE1) | ~voted(NODE0,NODE0) | NODE0 = NODE1 # qcost: 5
-invariant [invar_8] forall NSET0,NODE0,NODE1. voted(NODE1,NODE0) | ~isleader(NODE0) | ~member(NODE1,NSET0) | quorum ~= NSET0 | member(NODE0,NSET0) | NODE0 = NODE1 # qcost: 9
-invariant [invar_5] forall NSET0,NODE0,NODE1. voted(NODE1,NODE0) | ~isleader(NODE0) | ~member(NODE1,NSET0) | ~member(NODE0,NSET0) | quorum ~= NSET0 | NODE0 = NODE1 # qcost: 9
-invariant [invar_7] forall NSET0,NODE0. ~member(NODE0,NSET0) | quorum ~= NSET0 | voted(NODE0,NODE0) | ~isleader(NODE0) # qcost: 6
+invariant [invar_0] forall NODE1,NODE0. ~voted(NODE0,NODE1) | ~voted(NODE0,NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_1] forall NODE1,NODE0,NODE2. ~voted(NODE0,NODE2) | ~voted(NODE0,NODE1) | (NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) # qcost: 8
+invariant [invar_8] forall NODE1,NODE0,NSET0. member(NODE0,NSET0) | ~member(NODE1,NSET0) | ~isleader(NODE0) | voted(NODE1,NODE0) | quorum ~= NSET0 | NODE0 = NODE1 # qcost: 9
+invariant [invar_9] forall NODE1,NODE0,NSET0. ~member(NODE1,NSET0) | ~isleader(NODE0) | ~member(NODE0,NSET0) | voted(NODE1,NODE0) | quorum ~= NSET0 | NODE0 = NODE1 # qcost: 9
+invariant [invar_6] forall NODE0,NSET0. ~member(NODE0,NSET0) | ~isleader(NODE0) | quorum ~= NSET0 | voted(NODE0,NODE0) # qcost: 6
 
 ### For QRM DFS reachability ###
 
@@ -137,16 +137,6 @@ axiom member(node4,nset__node2_node3_node4_node5)
 axiom member(node5,nset__node2_node3_node4_node5)
 
 ## Access actions ##
-action get_quorum returns(qrm_result: nset) = {
-    qrm_result := quorum
-}
-export get_quorum
-
-action get_bool_quorum(result: nset) returns(qrm_result: bool) = {
-    qrm_result := (quorum = result)
-}
-export get_bool_quorum
-
 action get_voted(n0: node, n1: node) returns(qrm_result: bool) = {
     qrm_result := voted(n0, n1)
 }
@@ -157,15 +147,15 @@ action get_bool_voted(n0: node, n1: node, result: bool) returns(qrm_result: bool
 }
 export get_bool_voted
 
-action get_isleader(n0: node) returns(qrm_result: bool) = {
-    qrm_result := isleader(n0)
+action get_quorum returns(qrm_result: nset) = {
+    qrm_result := quorum
 }
-export get_isleader
+export get_quorum
 
-action get_bool_isleader(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (isleader(n0) = result)
+action get_bool_quorum(result: nset) returns(qrm_result: bool) = {
+    qrm_result := (quorum = result)
 }
-export get_bool_isleader
+export get_bool_quorum
 
 action get_member(n0: node, n1: nset) returns(qrm_result: bool) = {
     qrm_result := member(n0, n1)
@@ -176,4 +166,14 @@ action get_bool_member(n0: node, n1: nset, result: bool) returns(qrm_result: boo
     qrm_result := (member(n0, n1) = result)
 }
 export get_bool_member
+
+action get_isleader(n0: node) returns(qrm_result: bool) = {
+    qrm_result := isleader(n0)
+}
+export get_isleader
+
+action get_bool_isleader(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (isleader(n0) = result)
+}
+export get_bool_isleader
 

@@ -631,15 +631,15 @@ void naive_consensus__node_4_value_2__finite::__init(){
                 vote[N][V] = __tmp0[N][V];
             }
         }
-        bool __tmp1[4][2];
-        for (int Q = 0; Q < 4; Q++) {
-            for (int V = 0; V < 2; V++) {
-                __tmp1[Q][V] = false;
+        bool __tmp1[2][4];
+        for (int V = 0; V < 2; V++) {
+            for (int Q = 0; Q < 4; Q++) {
+                __tmp1[V][Q] = false;
             }
         }
-        for (int Q = 0; Q < 4; Q++) {
-            for (int V = 0; V < 2; V++) {
-                decide[Q][V] = __tmp1[Q][V];
+        for (int V = 0; V < 2; V++) {
+            for (int Q = 0; Q < 4; Q++) {
+                decide[Q][V] = __tmp1[V][Q];
             }
         }
         bool __tmp2[2];

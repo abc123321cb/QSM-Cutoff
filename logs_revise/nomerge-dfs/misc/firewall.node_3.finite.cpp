@@ -634,14 +634,14 @@ void firewall__node_3__finite::__init(){
         internal[2] = true;
     }
     else if (qrm_solution_count == 2){
-        internal[0] = true;
+        internal[0] = false;
         internal[1] = true;
-        internal[2] = false;
+        internal[2] = true;
     }
     else if (qrm_solution_count == 3){
-        internal[0] = true;
+        internal[0] = false;
         internal[1] = false;
-        internal[2] = false;
+        internal[2] = true;
     }
     ++ qrm_solution_count;
     if (qrm_solution_count != max_qrm_solution_count)

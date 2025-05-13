@@ -42,5 +42,5 @@ export decide
 ##invariant [manual_3] decided(V) & member(N, voting_quorum) -> vote(N, V)
 
 invariant [invar_1] forall VALUE0,NODE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
-invariant [invar_3] forall VALUE0,NODE0. vote(NODE0,VALUE0) | ~voted(NODE0) # qcost: 4
-invariant [invar_2] forall VALUE0,NODE0. ~decided(VALUE0) | voted(NODE0) # qcost: 4
+invariant [invar_3] forall VALUE0,NODE0. ~voted(NODE0) | vote(NODE0,VALUE0) # qcost: 4
+invariant [invar_2] forall VALUE0,NODE0. voted(NODE0) | ~decided(VALUE0) # qcost: 4

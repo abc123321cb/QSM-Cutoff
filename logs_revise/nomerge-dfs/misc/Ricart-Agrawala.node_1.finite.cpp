@@ -666,16 +666,6 @@ void Ricart_Agrawala__node_1__finite::ext__leave(node requester){
             replied[requester][N] = __tmp4[N];
         }
 }
-bool Ricart_Agrawala__node_1__finite::ext__get_replied(node n0, node n1){
-    bool qrm_result;
-    qrm_result = replied[n0][n1];
-    return qrm_result;
-}
-bool Ricart_Agrawala__node_1__finite::ext__get_bool_replied(node n0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (replied[n0][n1] == result);
-    return qrm_result;
-}
 bool Ricart_Agrawala__node_1__finite::ext__get_requested(node n0, node n1){
     bool qrm_result;
     qrm_result = requested[n0][n1];
@@ -684,6 +674,16 @@ bool Ricart_Agrawala__node_1__finite::ext__get_requested(node n0, node n1){
 bool Ricart_Agrawala__node_1__finite::ext__get_bool_requested(node n0, node n1, bool result){
     bool qrm_result;
     qrm_result = (requested[n0][n1] == result);
+    return qrm_result;
+}
+bool Ricart_Agrawala__node_1__finite::ext__get_replied(node n0, node n1){
+    bool qrm_result;
+    qrm_result = replied[n0][n1];
+    return qrm_result;
+}
+bool Ricart_Agrawala__node_1__finite::ext__get_bool_replied(node n0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (replied[n0][n1] == result);
     return qrm_result;
 }
 bool Ricart_Agrawala__node_1__finite::ext__get_holds(node n0){

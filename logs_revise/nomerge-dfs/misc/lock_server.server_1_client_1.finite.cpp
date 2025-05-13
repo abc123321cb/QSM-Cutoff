@@ -638,16 +638,6 @@ void lock_server__server_1_client_1__finite::ext__disconnect(client c, server s)
         link[c][s] = false;
         semaphore[s] = true;
 }
-bool lock_server__server_1_client_1__finite::ext__get_semaphore(server s0){
-    bool qrm_result;
-    qrm_result = semaphore[s0];
-    return qrm_result;
-}
-bool lock_server__server_1_client_1__finite::ext__get_bool_semaphore(server s0, bool result){
-    bool qrm_result;
-    qrm_result = (semaphore[s0] == result);
-    return qrm_result;
-}
 bool lock_server__server_1_client_1__finite::ext__get_link(client c0, server s1){
     bool qrm_result;
     qrm_result = link[c0][s1];
@@ -656,6 +646,16 @@ bool lock_server__server_1_client_1__finite::ext__get_link(client c0, server s1)
 bool lock_server__server_1_client_1__finite::ext__get_bool_link(client c0, server s1, bool result){
     bool qrm_result;
     qrm_result = (link[c0][s1] == result);
+    return qrm_result;
+}
+bool lock_server__server_1_client_1__finite::ext__get_semaphore(server s0){
+    bool qrm_result;
+    qrm_result = semaphore[s0];
+    return qrm_result;
+}
+bool lock_server__server_1_client_1__finite::ext__get_bool_semaphore(server s0, bool result){
+    bool qrm_result;
+    qrm_result = (semaphore[s0] == result);
     return qrm_result;
 }
 void lock_server__server_1_client_1__finite::__tick(int __timeout){

@@ -49,7 +49,7 @@ export leave
 # safety property
 #invariant [1000000] holds(N1) & holds(N2) -> N1 = N2
 
-invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation, qcost: 2
+invariant [eq_0] forall NODE. replied(NODE,NODE) = requested(NODE,NODE) # equivalence relation, qcost: 3
 invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
 
 ### For QRM DFS reachability ###
@@ -57,16 +57,6 @@ invariant [invar_0] forall NODE0. ~replied(NODE0,NODE0) # qcost: 2
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_holds(n0: node) returns(qrm_result: bool) = {
-    qrm_result := holds(n0)
-}
-export get_holds
-
-action get_bool_holds(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (holds(n0) = result)
-}
-export get_bool_holds
-
 action get_replied(n0: node, n1: node) returns(qrm_result: bool) = {
     qrm_result := replied(n0, n1)
 }
@@ -76,6 +66,16 @@ action get_bool_replied(n0: node, n1: node, result: bool) returns(qrm_result: bo
     qrm_result := (replied(n0, n1) = result)
 }
 export get_bool_replied
+
+action get_holds(n0: node) returns(qrm_result: bool) = {
+    qrm_result := holds(n0)
+}
+export get_holds
+
+action get_bool_holds(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (holds(n0) = result)
+}
+export get_bool_holds
 
 action get_requested(n0: node, n1: node) returns(qrm_result: bool) = {
     qrm_result := requested(n0, n1)

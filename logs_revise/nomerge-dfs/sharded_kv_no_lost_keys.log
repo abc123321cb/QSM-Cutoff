@@ -60,11 +60,11 @@ g++ -shared sharded_kv_no_lost_keys.node_1_key_1_value_1.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.816 seconds
+[QRM NOTE]: Time elapsed since start: 7.120 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.816 seconds
+[QRM NOTE]: Time elapsed since last: 7.120 seconds
 
-[QRM NOTE]: Peak memory: 1172758 bytes
+[QRM NOTE]: Peak memory: 1176061 bytes
 
 
 ===================================
@@ -128,11 +128,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.900 seconds
+[QRM NOTE]: Time elapsed since start: 7.203 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.084 seconds
+[QRM NOTE]: Time elapsed since last: 0.083 seconds
 
-[QRM NOTE]: Peak memory: 1198225 bytes
+[QRM NOTE]: Peak memory: 1201637 bytes
 
 
 ======================================
@@ -147,11 +147,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 6.904 seconds
+[QRM NOTE]: Time elapsed since start: 7.207 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.003 seconds
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
 
-[QRM NOTE]: Peak memory: 148833 bytes
+[QRM NOTE]: Peak memory: 152187 bytes
 
 
 ========================================================================================================================
@@ -223,11 +223,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 4
 
-[QRM NOTE]: Time elapsed since start: 6.915 seconds
+[QRM NOTE]: Time elapsed since start: 7.218 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.011 seconds
 
-[QRM NOTE]: Peak memory: 1206801 bytes
+[QRM NOTE]: Peak memory: 1210143 bytes
 
 
 =============================================================================================================
@@ -281,11 +281,11 @@ After reduction :
  pending  : [0, 2]
  solution : [1, 3]
 
-[QRM NOTE]: Time elapsed since start: 6.917 seconds
+[QRM NOTE]: Time elapsed since start: 7.220 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.002 seconds
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 158381 bytes
+[QRM NOTE]: Peak memory: 161721 bytes
 
 
 =================================================================================================================
@@ -393,7 +393,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
 exists_qvars: set()
 
@@ -410,7 +410,7 @@ qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall KEY0,VALUE0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 3 =====================
@@ -508,7 +508,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
 exists_qvars: set()
 
@@ -520,12 +520,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~owner(NODE0,KEY0)', '~transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['~transfer_msg(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall KEY0,VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
 
 
 === Prime Orbit 0 =====================
@@ -623,7 +623,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
 exists_qvars: set()
 
@@ -640,7 +640,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+qclause: forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
 
 
 === Prime Orbit 2 =====================
@@ -738,7 +738,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
 exists_qvars: set()
 
@@ -755,7 +755,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 
 
 ===========================================================================================================================
@@ -773,7 +773,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall KEY0,VALUE0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -787,7 +787,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall KEY0,VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
 qcost : 5
 
 
@@ -801,7 +801,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
 qcost : 5
 
 
@@ -815,16 +815,16 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.984 seconds
+[QRM NOTE]: Time elapsed since start: 7.324 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.067 seconds
+[QRM NOTE]: Time elapsed since last: 0.104 seconds
 
-[QRM NOTE]: Peak memory: 1892447 bytes
+[QRM NOTE]: Peak memory: 1898326 bytes
 
 
 ==========================================================================================================
@@ -1014,11 +1014,11 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_1] forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_1] forall KEY0,VALUE0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
-invariant [invar_3] forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_3] forall KEY0,VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
 
-invariant [invar_0] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_0] forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 3
 
@@ -1031,11 +1031,11 @@ invariant [invar_0] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_1] forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_1] forall KEY0,VALUE0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
-invariant [invar_3] forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_3] forall KEY0,VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
 
-invariant [invar_2] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_2] forall KEY0,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 3
 
@@ -1044,11 +1044,11 @@ invariant [invar_2] forall KEY0,NODE0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~trans
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.045 seconds
+[QRM NOTE]: Time elapsed since start: 7.396 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.062 seconds
+[QRM NOTE]: Time elapsed since last: 0.072 seconds
 
-[QRM NOTE]: Peak memory: 1877757 bytes
+[QRM NOTE]: Peak memory: 1883577 bytes
 
 
 **************************************************************************************************************************
@@ -1105,11 +1105,11 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_1_value_1.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.411 seconds
+[QRM NOTE]: Time elapsed since start: 7.403 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.411 seconds
+[QRM NOTE]: Time elapsed since last: 7.403 seconds
 
-[QRM NOTE]: Peak memory: 1174738 bytes
+[QRM NOTE]: Peak memory: 1178204 bytes
 
 
 ===================================
@@ -1176,11 +1176,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.482 seconds
+[QRM NOTE]: Time elapsed since start: 7.486 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.071 seconds
+[QRM NOTE]: Time elapsed since last: 0.082 seconds
 
-[QRM NOTE]: Peak memory: 1201333 bytes
+[QRM NOTE]: Peak memory: 1204919 bytes
 
 
 ====================================================================================================================================================================
@@ -1207,11 +1207,11 @@ Representatitive states in reachability not in Rmin
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 6.492 seconds
+[QRM NOTE]: Time elapsed since start: 7.498 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.010 seconds
+[QRM NOTE]: Time elapsed since last: 0.012 seconds
 
-[QRM NOTE]: Peak memory: 156331 bytes
+[QRM NOTE]: Peak memory: 157264 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_1_key_1_value_1.0.ivy -s node=1,key=2,value=1 -f 2 -g -w -r -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -1261,11 +1261,11 @@ g++ -shared sharded_kv_no_lost_keys.node_1_key_2_value_1.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 7.118 seconds
+[QRM NOTE]: Time elapsed since start: 6.570 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.118 seconds
+[QRM NOTE]: Time elapsed since last: 6.570 seconds
 
-[QRM NOTE]: Peak memory: 1174630 bytes
+[QRM NOTE]: Peak memory: 1178202 bytes
 
 
 ===================================
@@ -1292,9 +1292,9 @@ g++ -shared sharded_kv_no_lost_keys.node_1_key_2_value_1.finite.o sharded_kv_no_
 sort: key=['key0', 'key1']
 sort: value=['value0']
 sort: node=['node0']
-predicate: owner('node', 'key')
-predicate: table('node', 'key', 'value')
 predicate: transfer_msg('node', 'key', 'value')
+predicate: table('node', 'key', 'value')
+predicate: owner('node', 'key')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'table(node0,key0,value0)', 'table(node0,key1,value0)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key1,value0)']
 representative states : 48, 52, 18, 22, 3, 60
@@ -1326,8 +1326,8 @@ size : 2
 repr state: 010010
 lex min decimal: 18
 states:
-100001
 010010
+100001
 
 
 
@@ -1337,8 +1337,8 @@ size : 2
 repr state: 010110
 lex min decimal: 22
 states:
-101001
 010110
+101001
 
 
 
@@ -1362,11 +1362,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.199 seconds
+[QRM NOTE]: Time elapsed since start: 6.661 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.082 seconds
+[QRM NOTE]: Time elapsed since last: 0.091 seconds
 
-[QRM NOTE]: Peak memory: 1204075 bytes
+[QRM NOTE]: Peak memory: 1205179 bytes
 
 
 ====================================================================================================================================================================
@@ -1377,11 +1377,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 7.209 seconds
+[QRM NOTE]: Time elapsed since start: 6.674 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.009 seconds
+[QRM NOTE]: Time elapsed since last: 0.013 seconds
 
-[QRM NOTE]: Peak memory: 158822 bytes
+[QRM NOTE]: Peak memory: 159879 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_1_key_1_value_1.0.ivy -s node=1,key=1,value=2 -f 2 -g -w -r -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -1431,11 +1431,11 @@ g++ -shared sharded_kv_no_lost_keys.node_1_key_1_value_2.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.222 seconds
+[QRM NOTE]: Time elapsed since start: 7.432 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.222 seconds
+[QRM NOTE]: Time elapsed since last: 7.432 seconds
 
-[QRM NOTE]: Peak memory: 1174205 bytes
+[QRM NOTE]: Peak memory: 1177714 bytes
 
 
 ===================================
@@ -1463,8 +1463,8 @@ sort: key=['key0']
 sort: value=['value0', 'value1']
 sort: node=['node0']
 predicate: owner('node', 'key')
-predicate: transfer_msg('node', 'key', 'value')
 predicate: table('node', 'key', 'value')
+predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)']
 representative states : 16, 20, 1
@@ -1485,8 +1485,8 @@ size : 2
 repr state: 11000
 lex min decimal: 20
 states:
-11000
 10100
+11000
 
 
 
@@ -1501,11 +1501,11 @@ states:
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.298 seconds
+[QRM NOTE]: Time elapsed since start: 7.516 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.076 seconds
+[QRM NOTE]: Time elapsed since last: 0.084 seconds
 
-[QRM NOTE]: Peak memory: 1200687 bytes
+[QRM NOTE]: Peak memory: 1204303 bytes
 
 
 ====================================================================================================================================================================
@@ -1524,11 +1524,11 @@ Representatitive states in reachability not in Rmin
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 6.308 seconds
+[QRM NOTE]: Time elapsed since start: 7.529 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.010 seconds
+[QRM NOTE]: Time elapsed since last: 0.013 seconds
 
-[QRM NOTE]: Peak memory: 155518 bytes
+[QRM NOTE]: Peak memory: 156481 bytes
 
 next size: node=2,key=1,value=2
 
@@ -1609,9 +1609,9 @@ OK
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.028 seconds
+[QRM NOTE]: Time elapsed since start: 0.035 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.028 seconds
+[QRM NOTE]: Time elapsed since last: 0.035 seconds
 
 [QRM NOTE]: Peak memory: 6673 bytes
 
@@ -1647,9 +1647,9 @@ Representatitive states in reachability not in Rmin
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.027 seconds
+[QRM NOTE]: Time elapsed since start: 0.039 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.027 seconds
+[QRM NOTE]: Time elapsed since last: 0.039 seconds
 
 [QRM NOTE]: Peak memory: 6369 bytes
 
@@ -1710,11 +1710,11 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_1_value_2.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.224 seconds
+[QRM NOTE]: Time elapsed since start: 7.762 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.224 seconds
+[QRM NOTE]: Time elapsed since last: 7.762 seconds
 
-[QRM NOTE]: Peak memory: 1176623 bytes
+[QRM NOTE]: Peak memory: 1179992 bytes
 
 
 ===================================
@@ -1741,9 +1741,9 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_1_value_2.finite.o sharded_kv_no_
 sort: key=['key0']
 sort: value=['value0', 'value1']
 sort: node=['node0', 'node1']
+predicate: transfer_msg('node', 'key', 'value')
 predicate: owner('node', 'key')
 predicate: table('node', 'key', 'value')
-predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)']
 representative states : 256, 272, 1
@@ -1765,10 +1765,10 @@ size : 4
 repr state: 0100100000
 lex min decimal: 272
 states:
-1010000000
-1001000000
 0100100000
+1010000000
 0100010000
+1001000000
 
 
 
@@ -1778,18 +1778,18 @@ size : 4
 repr state: 0000001000
 lex min decimal: 1
 states:
-0000000100
-0000001000
 0000000001
 0000000010
+0000000100
+0000001000
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.298 seconds
+[QRM NOTE]: Time elapsed since start: 7.848 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.074 seconds
+[QRM NOTE]: Time elapsed since last: 0.086 seconds
 
-[QRM NOTE]: Peak memory: 1204495 bytes
+[QRM NOTE]: Peak memory: 1207926 bytes
 
 
 ======================================
@@ -1804,11 +1804,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 6.299 seconds
+[QRM NOTE]: Time elapsed since start: 7.850 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.001 seconds
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 155051 bytes
+[QRM NOTE]: Peak memory: 158527 bytes
 
 
 ========================================================================================================================
@@ -2084,11 +2084,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 46
 
-[QRM NOTE]: Time elapsed since start: 6.315 seconds
+[QRM NOTE]: Time elapsed since start: 7.867 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.016 seconds
+[QRM NOTE]: Time elapsed since last: 0.018 seconds
 
-[QRM NOTE]: Peak memory: 1277742 bytes
+[QRM NOTE]: Peak memory: 1281039 bytes
 
 
 =============================================================================================================
@@ -2142,11 +2142,11 @@ After reduction :
  pending  : [2, 3, 4, 5, 10, 11, 12, 14]
  solution : [0, 1, 6, 7, 8, 9, 13, 15]
 
-[QRM NOTE]: Time elapsed since start: 6.318 seconds
+[QRM NOTE]: Time elapsed since start: 7.871 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.003 seconds
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
 
-[QRM NOTE]: Peak memory: 227841 bytes
+[QRM NOTE]: Peak memory: 231142 bytes
 
 
 =================================================================================================================
@@ -2260,7 +2260,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -2277,7 +2277,7 @@ qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall KEY0,NODE0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 1 =====================
@@ -2381,7 +2381,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -2398,7 +2398,7 @@ qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 6 =====================
@@ -2498,7 +2498,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -2510,12 +2510,12 @@ signed_func_name2args: {'0$transfer_msg': [[Var('NODE0', EnumeratedSort('node', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['transfer_msg(NODE1,KEY0,VALUE1)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 
 
 === Prime Orbit 7 =====================
@@ -2615,7 +2615,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
@@ -2632,7 +2632,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
+qclause: forall KEY0,VALUE0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
 
 
 === Prime Orbit 8 =====================
@@ -2732,7 +2732,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
@@ -2954,7 +2954,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
@@ -3071,7 +3071,7 @@ constraint mode: ConstraintMode.no_merge
 
 forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
-exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
@@ -3086,7 +3086,7 @@ qterms: ['~owner(NODE0,KEY0)', '~transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
+qclause: forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 
 
 === Prime Orbit 2 =====================
@@ -3190,7 +3190,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3202,12 +3202,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall KEY0,NODE0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 3 =====================
@@ -3311,7 +3311,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3328,7 +3328,7 @@ qterms: ['transfer_msg(NODE1,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 
 
 === Prime Orbit 4 =====================
@@ -3432,7 +3432,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3444,12 +3444,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE1,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE1,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 5 =====================
@@ -3553,7 +3553,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3570,7 +3570,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,VALUE1,KEY0,NODE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
+qclause: forall KEY0,NODE0,VALUE1,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
 
 
 === Prime Orbit 10 =====================
@@ -3674,7 +3674,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3691,7 +3691,7 @@ qterms: ['~owner(NODE0,KEY0)', 'table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0,NODE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
+qclause: forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 11 =====================
@@ -3795,7 +3795,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3812,7 +3812,7 @@ qterms: ['owner(NODE0,KEY0)', 'table(NODE1,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall KEY0,NODE0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 12 =====================
@@ -3912,7 +3912,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3924,12 +3924,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE1,KEY0,VALUE1)']
+qterms: ['table(NODE1,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~table(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 
 
 === Prime Orbit 14 =====================
@@ -4029,7 +4029,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
@@ -4046,7 +4046,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
+qclause: forall KEY0,VALUE0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
 
 
 ===========================================================================================================================
@@ -4070,7 +4070,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall KEY0,NODE0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -4090,7 +4090,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -4106,7 +4106,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -4122,7 +4122,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   1
 num_literals : 1
-quantified form : forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
+quantified form : forall KEY0,VALUE0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
 qcost : 4
 
 
@@ -4182,7 +4182,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   2
 num_literals : 2
-quantified form : forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
+quantified form : forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 qcost : 5
 
 
@@ -4202,7 +4202,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall KEY0,NODE0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -4222,7 +4222,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -4242,7 +4242,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,NODE1,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -4262,7 +4262,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,VALUE1,KEY0,NODE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
+quantified form : forall KEY0,NODE0,VALUE1,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -4282,7 +4282,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,KEY0,NODE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
+quantified form : forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -4302,7 +4302,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall KEY0,NODE0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -4318,7 +4318,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~table(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -4334,16 +4334,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   1
 num_literals : 1
-quantified form : forall VALUE0,KEY0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
+quantified form : forall KEY0,VALUE0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.445 seconds
+[QRM NOTE]: Time elapsed since start: 8.038 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.127 seconds
+[QRM NOTE]: Time elapsed since last: 0.167 seconds
 
-[QRM NOTE]: Peak memory: 1995229 bytes
+[QRM NOTE]: Peak memory: 2004760 bytes
 
 
 ==========================================================================================================
@@ -4533,13 +4533,13 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 9
 
-invariant [invar_0] forall VALUE0,NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_0] forall KEY0,NODE0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
 
-invariant [invar_1] forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_1] forall KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
-invariant [invar_6] forall KEY0,NODE1,VALUE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
+invariant [invar_6] forall NODE0,VALUE1,VALUE0,KEY0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
 
-invariant [invar_7] forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
+invariant [invar_7] forall KEY0,VALUE0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
 
 invariant [invar_8] forall KEY0,NODE0. (exists VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
 
@@ -4547,9 +4547,9 @@ invariant [invar_9] forall KEY0. (exists NODE0. ~owner(NODE0,KEY0)) # qcost: 3
 
 invariant [invar_13] forall KEY0,NODE0. (exists VALUE0. ~table(NODE0,KEY0,VALUE0)) # qcost: 4
 
-invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
+invariant [invar_15] forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
 
-invariant [invar_10] forall VALUE0,KEY0,NODE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_10] forall KEY0,NODE0,VALUE0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 9
 
@@ -4558,11 +4558,11 @@ invariant [invar_10] forall VALUE0,KEY0,NODE0. owner(NODE0,KEY0) | ~table(NODE0,
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.486 seconds
+[QRM NOTE]: Time elapsed since start: 8.085 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.041 seconds
+[QRM NOTE]: Time elapsed since last: 0.047 seconds
 
-[QRM NOTE]: Peak memory: 1970043 bytes
+[QRM NOTE]: Peak memory: 1979470 bytes
 
 
 **************************************************************************************************************************
@@ -4619,11 +4619,11 @@ g++ -shared sharded_kv_no_lost_keys.node_3_key_1_value_2.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.187 seconds
+[QRM NOTE]: Time elapsed since start: 6.873 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.187 seconds
+[QRM NOTE]: Time elapsed since last: 6.873 seconds
 
-[QRM NOTE]: Peak memory: 1179601 bytes
+[QRM NOTE]: Peak memory: 1165843 bytes
 
 
 ===================================
@@ -4650,9 +4650,9 @@ g++ -shared sharded_kv_no_lost_keys.node_3_key_1_value_2.finite.o sharded_kv_no_
 sort: key=['key0']
 sort: value=['value0', 'value1']
 sort: node=['node0', 'node1', 'node2']
-predicate: transfer_msg('node', 'key', 'value')
-predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: table('node', 'key', 'value')
+predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)']
 representative states : 4096, 4160, 1
@@ -4675,11 +4675,11 @@ size : 6
 repr state: 100100000000000
 lex min decimal: 4160
 states:
-100100000000000
 010000100000000
-010001000000000
 001000010000000
+100100000000000
 001000001000000
+010001000000000
 100010000000000
 
 
@@ -4692,18 +4692,18 @@ lex min decimal: 1
 states:
 000000000001000
 000000000000010
-000000000010000
-000000000000001
-000000000100000
 000000000000100
+000000000010000
+000000000100000
+000000000000001
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.498 seconds
+[QRM NOTE]: Time elapsed since start: 6.965 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.311 seconds
+[QRM NOTE]: Time elapsed since last: 0.092 seconds
 
-[QRM NOTE]: Peak memory: 1209800 bytes
+[QRM NOTE]: Peak memory: 1202428 bytes
 
 
 ====================================================================================================================================================================
@@ -4724,11 +4724,11 @@ Found a representative state in Rmin not in reachability: decimal: 12672, binary
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 6.605 seconds
+[QRM NOTE]: Time elapsed since start: 7.069 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.107 seconds
+[QRM NOTE]: Time elapsed since last: 0.105 seconds
 
-[QRM NOTE]: Peak memory: 230511 bytes
+[QRM NOTE]: Peak memory: 231629 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_2_key_1_value_2.0.ivy -s node=2,key=2,value=2 -f 2 -g -w -r -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -4778,11 +4778,11 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_2_value_2.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.135 seconds
+[QRM NOTE]: Time elapsed since start: 7.119 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.135 seconds
+[QRM NOTE]: Time elapsed since last: 7.119 seconds
 
-[QRM NOTE]: Peak memory: 1182208 bytes
+[QRM NOTE]: Peak memory: 1167907 bytes
 
 
 ===================================
@@ -4809,9 +4809,9 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_2_value_2.finite.o sharded_kv_no_
 sort: key=['key0', 'key1']
 sort: value=['value0', 'value1']
 sort: node=['node0', 'node1']
+predicate: transfer_msg('node', 'key', 'value')
 predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
-predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'owner(node1,key1)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key1,value0)', 'table(node0,key1,value1)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key1,value0)', 'table(node1,key1,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value1)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value1)']
 representative states : 196608, 393216, 196864, 65600, 394240, 65540, 65796, 20, 65856, 5, 398336, 399360, 65800, 6, 24, 65920, 198144, 197888
@@ -4830,7 +4830,7 @@ states:
 
 === State Orbit 1 =====================
 size : 2
-repr state: 10010000000000000000
+repr state: 01100000000000000000
 lex min decimal: 393216
 states:
 01100000000000000000
@@ -4844,14 +4844,14 @@ size : 8
 repr state: 00110000100000000000
 lex min decimal: 196864
 states:
-11000001000000000000
-11000100000000000000
 00110000001000000000
+11000100000000000000
+00110000100000000000
+00110000010000000000
+11000001000000000000
+11000010000000000000
 11001000000000000000
 00110000000100000000
-00110000010000000000
-11000010000000000000
-00110000100000000000
 
 
 
@@ -4861,14 +4861,14 @@ size : 8
 repr state: 00010000000010000000
 lex min decimal: 65600
 states:
-00010000000001000000
-00010000000010000000
-10000000000000000010
-00100000000000010000
+01000000000000000100
+00100000000000100000
 10000000000000000001
 01000000000000001000
-00100000000000100000
-01000000000000000100
+00100000000000010000
+00010000000010000000
+10000000000000000010
+00010000000001000000
 
 
 
@@ -4878,14 +4878,14 @@ size : 8
 repr state: 10011000000000000000
 lex min decimal: 394240
 states:
-10010000001000000000
-10011000000000000000
-10010000000100000000
-01100000100000000000
-01100000010000000000
 10010100000000000000
-01100010000000000000
+10010000000100000000
+10010000001000000000
 01100001000000000000
+10011000000000000000
+01100000100000000000
+01100010000000000000
+01100000010000000000
 
 
 
@@ -4896,13 +4896,13 @@ repr state: 00010000000000001000
 lex min decimal: 65540
 states:
 00010000000000000100
+00010000000000001000
+01000000000001000000
+10000000000000100000
+00100000000000000001
 10000000000000010000
 00100000000000000010
 01000000000010000000
-10000000000000100000
-00100000000000000001
-00010000000000001000
-01000000000001000000
 
 
 
@@ -4912,14 +4912,14 @@ size : 8
 repr state: 00010000001000001000
 lex min decimal: 65796
 states:
+00100000010000000001
+00010000000100000100
 10000100000000010000
 00100000100000000010
-10001000000000100000
-00010000000100000100
-01000010000010000000
-00010000001000001000
 01000001000001000000
-00100000010000000001
+10001000000000100000
+00010000001000001000
+01000010000010000000
 
 
 
@@ -4929,10 +4929,10 @@ size : 4
 repr state: 00000000000000101000
 lex min decimal: 20
 states:
+00000000000001000001
 00000000000000101000
 00000000000010000010
 00000000000000010100
-00000000000001000001
 
 
 
@@ -4942,14 +4942,14 @@ size : 8
 repr state: 01000010000000001000
 lex min decimal: 65856
 states:
-00010000001010000000
 00010000000101000000
-00100000100000100000
 00100000010000010000
-10001000000000000010
-01000001000000000100
-01000010000000001000
 10000100000000000001
+01000010000000001000
+01000001000000000100
+00100000100000100000
+10001000000000000010
+00010000001010000000
 
 
 
@@ -4959,10 +4959,10 @@ size : 4
 repr state: 00000000000000001010
 lex min decimal: 5
 states:
+00000000000001010000
 00000000000000000101
 00000000000010100000
 00000000000000001010
-00000000000001010000
 
 
 
@@ -4972,10 +4972,10 @@ size : 4
 repr state: 01100010100000000000
 lex min decimal: 398336
 states:
-01100001010000000000
 01100010100000000000
-10010100000100000000
 10011000001000000000
+10010100000100000000
+01100001010000000000
 
 
 
@@ -4985,9 +4985,9 @@ size : 4
 repr state: 01100001100000000000
 lex min decimal: 399360
 states:
-01100001100000000000
-10010100001000000000
 01100010010000000000
+10010100001000000000
+01100001100000000000
 10011000000100000000
 
 
@@ -4998,13 +4998,13 @@ size : 8
 repr state: 01000001000010000000
 lex min decimal: 65800
 states:
-00010000000100001000
-01000010000001000000
+00010000001000000100
+00100000100000000001
 10001000000000010000
 10000100000000100000
-00100000100000000001
-00010000001000000100
+01000010000001000000
 00100000010000000010
+00010000000100001000
 01000001000010000000
 
 
@@ -5015,10 +5015,10 @@ size : 4
 repr state: 00000000000010010000
 lex min decimal: 6
 states:
-00000000000000000110
-00000000000010010000
 00000000000001100000
 00000000000000001001
+00000000000010010000
+00000000000000000110
 
 
 
@@ -5028,10 +5028,10 @@ size : 4
 repr state: 00000000000010000001
 lex min decimal: 24
 states:
-00000000000001000010
-00000000000000011000
-00000000000010000001
 00000000000000100100
+00000000000010000001
+00000000000000011000
+00000000000001000010
 
 
 
@@ -5041,13 +5041,13 @@ size : 8
 repr state: 10001000000000000001
 lex min decimal: 65920
 states:
-00100000100000010000
-00100000010000100000
-00010000001001000000
-10000100000000000010
-10001000000000000001
-01000010000000000100
 00010000000110000000
+00100000100000010000
+10001000000000000001
+00010000001001000000
+00100000010000100000
+01000010000000000100
+10000100000000000010
 01000001000000001000
 
 
@@ -5058,10 +5058,10 @@ size : 4
 repr state: 11001001000000000000
 lex min decimal: 198144
 states:
+00110000100100000000
+00110000011000000000
 11001001000000000000
 11000110000000000000
-00110000011000000000
-00110000100100000000
 
 
 
@@ -5072,17 +5072,17 @@ repr state: 11000101000000000000
 lex min decimal: 197888
 states:
 00110000101000000000
+11000101000000000000
 00110000010100000000
 11001010000000000000
-11000101000000000000
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.291 seconds
+[QRM NOTE]: Time elapsed since start: 7.275 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.156 seconds
 
-[QRM NOTE]: Peak memory: 1247343 bytes
+[QRM NOTE]: Peak memory: 1240397 bytes
 
 
 ====================================================================================================================================================================
@@ -5093,11 +5093,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.408 seconds
+[QRM NOTE]: Time elapsed since start: 7.397 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.117 seconds
+[QRM NOTE]: Time elapsed since last: 0.122 seconds
 
-[QRM NOTE]: Peak memory: 261865 bytes
+[QRM NOTE]: Peak memory: 260476 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_2_key_1_value_2.0.ivy -s node=2,key=1,value=3 -f 2 -g -w -r -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -5147,11 +5147,11 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_1_value_3.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.008 seconds
+[QRM NOTE]: Time elapsed since start: 7.319 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.008 seconds
+[QRM NOTE]: Time elapsed since last: 7.319 seconds
 
-[QRM NOTE]: Peak memory: 1179260 bytes
+[QRM NOTE]: Peak memory: 1165513 bytes
 
 
 ===================================
@@ -5178,9 +5178,9 @@ g++ -shared sharded_kv_no_lost_keys.node_2_key_1_value_3.finite.o sharded_kv_no_
 sort: key=['key0']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1']
-predicate: transfer_msg('node', 'key', 'value')
-predicate: owner('node', 'key')
 predicate: table('node', 'key', 'value')
+predicate: owner('node', 'key')
+predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)']
 representative states : 4096, 4160, 1
@@ -5203,11 +5203,11 @@ repr state: 01000100000000
 lex min decimal: 4160
 states:
 10100000000000
+01000010000000
 10010000000000
-10001000000000
 01000100000000
 01000001000000
-01000010000000
+10001000000000
 
 
 
@@ -5217,20 +5217,20 @@ size : 6
 repr state: 00000000100000
 lex min decimal: 1
 states:
-00000000010000
-00000000000100
+00000000001000
 00000000000010
 00000000100000
 00000000000001
-00000000001000
+00000000010000
+00000000000100
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.087 seconds
+[QRM NOTE]: Time elapsed since start: 7.412 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.079 seconds
+[QRM NOTE]: Time elapsed since last: 0.093 seconds
 
-[QRM NOTE]: Peak memory: 1209134 bytes
+[QRM NOTE]: Peak memory: 1202067 bytes
 
 
 ====================================================================================================================================================================
@@ -5245,11 +5245,11 @@ Found a representative state in Rmin not in reachability: decimal: 3, binary: 00
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 6.166 seconds
+[QRM NOTE]: Time elapsed since start: 7.495 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.079 seconds
+[QRM NOTE]: Time elapsed since last: 0.083 seconds
 
-[QRM NOTE]: Peak memory: 222460 bytes
+[QRM NOTE]: Peak memory: 222772 bytes
 
 next size: node=3,key=1,value=3
 
@@ -5308,11 +5308,11 @@ g++ -shared sharded_kv_no_lost_keys.node_3_key_1_value_3.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.298 seconds
+[QRM NOTE]: Time elapsed since start: 7.199 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.298 seconds
+[QRM NOTE]: Time elapsed since last: 7.199 seconds
 
-[QRM NOTE]: Peak memory: 1184057 bytes
+[QRM NOTE]: Peak memory: 1186959 bytes
 
 
 ===================================
@@ -5340,8 +5340,8 @@ sort: key=['key0']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1', 'node2']
 predicate: transfer_msg('node', 'key', 'value')
-predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: table('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)']
 representative states : 262144, 262656, 1
@@ -5352,9 +5352,9 @@ size : 3
 repr state: 100000000000000000000
 lex min decimal: 262144
 states:
-100000000000000000000
-001000000000000000000
 010000000000000000000
+001000000000000000000
+100000000000000000000
 
 
 
@@ -5364,15 +5364,15 @@ size : 9
 repr state: 100100000000000000000
 lex min decimal: 262656
 states:
-010000001000000000000
-100010000000000000000
-001000000001000000000
-100001000000000000000
-010000100000000000000
 001000000100000000000
-010000010000000000000
-100100000000000000000
 001000000010000000000
+010000010000000000000
+100001000000000000000
+001000000001000000000
+010000001000000000000
+010000100000000000000
+100100000000000000000
+100010000000000000000
 
 
 
@@ -5382,23 +5382,23 @@ size : 9
 repr state: 000000000000100000000
 lex min decimal: 1
 states:
-000000000000000000100
-000000000000000001000
-000000000000010000000
-000000000000000010000
-000000000000100000000
-000000000000000000010
-000000000000000100000
 000000000000001000000
+000000000000000100000
+000000000000000000010
+000000000000010000000
+000000000000100000000
+000000000000000001000
+000000000000000010000
 000000000000000000001
+000000000000000000100
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.409 seconds
+[QRM NOTE]: Time elapsed since start: 7.324 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.110 seconds
+[QRM NOTE]: Time elapsed since last: 0.126 seconds
 
-[QRM NOTE]: Peak memory: 1217708 bytes
+[QRM NOTE]: Peak memory: 1220720 bytes
 
 
 ======================================
@@ -5413,11 +5413,11 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 6.412 seconds
+[QRM NOTE]: Time elapsed since start: 7.327 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.003 seconds
 
-[QRM NOTE]: Peak memory: 171660 bytes
+[QRM NOTE]: Peak memory: 174672 bytes
 
 
 ========================================================================================================================
@@ -6023,11 +6023,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 211
 
-[QRM NOTE]: Time elapsed since start: 6.483 seconds
+[QRM NOTE]: Time elapsed since start: 7.411 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.071 seconds
+[QRM NOTE]: Time elapsed since last: 0.084 seconds
 
-[QRM NOTE]: Peak memory: 1504706 bytes
+[QRM NOTE]: Peak memory: 1505844 bytes
 
 
 =============================================================================================================
@@ -6081,11 +6081,11 @@ After reduction :
  pending  : [2, 3, 4, 5, 10, 11, 12, 14]
  solution : [0, 1, 6, 7, 8, 9, 13, 15]
 
-[QRM NOTE]: Time elapsed since start: 6.487 seconds
+[QRM NOTE]: Time elapsed since start: 7.437 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.005 seconds
+[QRM NOTE]: Time elapsed since last: 0.026 seconds
 
-[QRM NOTE]: Peak memory: 449641 bytes
+[QRM NOTE]: Peak memory: 445561 bytes
 
 
 =================================================================================================================
@@ -6227,7 +6227,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6244,7 +6244,7 @@ qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall NODE1,KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 1 =====================
@@ -6358,7 +6358,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6375,7 +6375,7 @@ qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall VALUE0,NODE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 6 =====================
@@ -6507,7 +6507,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
 exists_qvars: set()
 
@@ -6519,12 +6519,12 @@ signed_func_name2args: {'0$transfer_msg': [[Var('NODE0', EnumeratedSort('node', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['transfer_msg(NODE1,KEY0,VALUE1)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 7 =====================
@@ -6638,7 +6638,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6655,7 +6655,7 @@ qterms: ['transfer_msg(NODE1,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 8 =====================
@@ -6769,7 +6769,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6781,12 +6781,12 @@ signed_func_name2args: {'0$transfer_msg': [[Var('NODE0', EnumeratedSort('node', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['transfer_msg(NODE0,KEY0,VALUE1)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
+qclause: forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 
 
 === Prime Orbit 9 =====================
@@ -6878,7 +6878,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6895,7 +6895,7 @@ qterms: ['owner(NODE0,KEY0)', 'owner(NODE1,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
+qclause: forall NODE1,NODE0,KEY0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
 
 
 === Prime Orbit 13 =====================
@@ -7009,7 +7009,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7026,7 +7026,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 
 
 === Prime Orbit 15 =====================
@@ -7136,12 +7136,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~transfer_msg(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', '~transfer_msg(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0. (exists VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0))
+qclause: forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 
 
 === Prime Orbit 2 =====================
@@ -7255,7 +7255,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7272,7 +7272,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 3 =====================
@@ -7440,7 +7440,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
 exists_qvars: set()
 
@@ -7457,7 +7457,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 4 =====================
@@ -7589,7 +7589,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7601,12 +7601,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE1,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 5 =====================
@@ -7738,7 +7738,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7755,7 +7755,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 
 
 === Prime Orbit 10 =====================
@@ -7887,7 +7887,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7899,12 +7899,12 @@ signed_func_name2args: {'0$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['owner(NODE0,KEY0)', 'table(NODE1,KEY0,VALUE0)']
+qterms: ['table(NODE1,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall NODE1,KEY0,NODE0,VALUE0. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 
 
 === Prime Orbit 11 =====================
@@ -8018,7 +8018,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -8030,12 +8030,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+qclause: forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 12 =====================
@@ -8167,7 +8167,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
 exists_qvars: set()
 
@@ -8184,7 +8184,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE1,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 14 =====================
@@ -8298,7 +8298,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -8310,12 +8310,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE1,KEY0,VALUE0)']
+qterms: ['table(NODE1,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall NODE1,KEY0,NODE0,VALUE0. ~table(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 
 
 ===========================================================================================================================
@@ -8367,7 +8367,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8397,7 +8397,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall VALUE0,NODE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -8445,7 +8445,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -8475,7 +8475,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8505,7 +8505,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
+quantified form : forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -8523,7 +8523,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0,KEY0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -8553,7 +8553,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -8567,7 +8567,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   2
 num_literals : 2
-quantified form : forall KEY0. (exists VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0))
+quantified form : forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 qcost : 5
 
 
@@ -8597,7 +8597,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -8681,7 +8681,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -8729,7 +8729,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8777,7 +8777,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -8825,7 +8825,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,KEY0,NODE0,VALUE0. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8855,7 +8855,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -8903,7 +8903,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -8933,16 +8933,16 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,KEY0,NODE0,VALUE0. ~table(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.635 seconds
+[QRM NOTE]: Time elapsed since start: 7.578 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.147 seconds
+[QRM NOTE]: Time elapsed since last: 0.141 seconds
 
-[QRM NOTE]: Peak memory: 2218741 bytes
+[QRM NOTE]: Peak memory: 2235040 bytes
 
 
 ==========================================================================================================
@@ -9132,23 +9132,23 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 9
 
-invariant [invar_0] forall NODE1,VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_0] forall NODE1,KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
 
-invariant [invar_1] forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_1] forall VALUE0,NODE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
-invariant [invar_6] forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
+invariant [invar_6] forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
 
-invariant [invar_7] forall NODE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_7] forall NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
 
-invariant [invar_8] forall VALUE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_8] forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
 
-invariant [invar_9] forall NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_9] forall NODE1,NODE0,KEY0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1 # qcost: 6
 
-invariant [invar_13] forall VALUE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_13] forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
 
-invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)) # qcost: 5
+invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
 
-invariant [invar_11] forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_11] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 9
 
@@ -9157,11 +9157,11 @@ invariant [invar_11] forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.674 seconds
+[QRM NOTE]: Time elapsed since start: 7.624 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.040 seconds
+[QRM NOTE]: Time elapsed since last: 0.046 seconds
 
-[QRM NOTE]: Peak memory: 2193743 bytes
+[QRM NOTE]: Peak memory: 2209970 bytes
 
 
 **************************************************************************************************************************
@@ -9218,11 +9218,11 @@ g++ -shared sharded_kv_no_lost_keys.node_4_key_1_value_3.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.844 seconds
+[QRM NOTE]: Time elapsed since start: 7.267 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.844 seconds
+[QRM NOTE]: Time elapsed since last: 7.267 seconds
 
-[QRM NOTE]: Peak memory: 1194781 bytes
+[QRM NOTE]: Peak memory: 1179759 bytes
 
 
 ===================================
@@ -9249,9 +9249,9 @@ g++ -shared sharded_kv_no_lost_keys.node_4_key_1_value_3.finite.o sharded_kv_no_
 sort: key=['key0']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1', 'node2', 'node3']
-predicate: transfer_msg('node', 'key', 'value')
 predicate: owner('node', 'key')
 predicate: table('node', 'key', 'value')
+predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'owner(node3,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'table(node3,key0,value0)', 'table(node3,key0,value1)', 'table(node3,key0,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)', 'transfer_msg(node3,key0,value0)', 'transfer_msg(node3,key0,value1)', 'transfer_msg(node3,key0,value2)']
 representative states : 16777216, 16781312, 1
@@ -9262,10 +9262,10 @@ size : 4
 repr state: 0001000000000000000000000000
 lex min decimal: 16777216
 states:
-0100000000000000000000000000
-1000000000000000000000000000
-0010000000000000000000000000
 0001000000000000000000000000
+0100000000000000000000000000
+0010000000000000000000000000
+1000000000000000000000000000
 
 
 
@@ -9275,18 +9275,18 @@ size : 12
 repr state: 0001000000000100000000000000
 lex min decimal: 16781312
 states:
-0100000001000000000000000000
-0100000100000000000000000000
-0010000000010000000000000000
-0010000000100000000000000000
-1000100000000000000000000000
-0001000000000100000000000000
 0001000000000001000000000000
-1000010000000000000000000000
+0100000001000000000000000000
 1000001000000000000000000000
+1000100000000000000000000000
+0010000000010000000000000000
 0100000010000000000000000000
 0010000000001000000000000000
+0010000000100000000000000000
+0001000000000100000000000000
 0001000000000010000000000000
+1000010000000000000000000000
+0100000100000000000000000000
 
 
 
@@ -9296,26 +9296,26 @@ size : 12
 repr state: 0000000000000000100000000000
 lex min decimal: 1
 states:
-0000000000000000000000000100
 0000000000000000010000000000
 0000000000000000100000000000
-0000000000000000000000100000
-0000000000000000000000001000
 0000000000000000000000010000
-0000000000000000000000000010
-0000000000000000000100000000
 0000000000000000000010000000
-0000000000000000000000000001
-0000000000000000000001000000
 0000000000000000001000000000
+0000000000000000000000001000
+0000000000000000000000100000
+0000000000000000000001000000
+0000000000000000000000000010
+0000000000000000000000000001
+0000000000000000000000000100
+0000000000000000000100000000
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.287 seconds
+[QRM NOTE]: Time elapsed since start: 7.518 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.444 seconds
+[QRM NOTE]: Time elapsed since last: 0.251 seconds
 
-[QRM NOTE]: Peak memory: 1230967 bytes
+[QRM NOTE]: Peak memory: 1222533 bytes
 
 
 ====================================================================================================================================================================
@@ -9326,11 +9326,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 7.812 seconds
+[QRM NOTE]: Time elapsed since start: 8.018 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.525 seconds
+[QRM NOTE]: Time elapsed since last: 0.499 seconds
 
-[QRM NOTE]: Peak memory: 486236 bytes
+[QRM NOTE]: Peak memory: 512063 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_3_key_1_value_3.0.ivy -s node=3,key=2,value=3 -f 2 -g -w -r -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -9380,11 +9380,11 @@ g++ -shared sharded_kv_no_lost_keys.node_3_key_2_value_3.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.375 seconds
+[QRM NOTE]: Time elapsed since start: 6.707 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.375 seconds
+[QRM NOTE]: Time elapsed since last: 6.707 seconds
 
-[QRM NOTE]: Peak memory: 1196191 bytes
+[QRM NOTE]: Peak memory: 1216017 bytes
 
 
 ===================================
@@ -9411,9 +9411,9 @@ g++ -shared sharded_kv_no_lost_keys.node_3_key_2_value_3.finite.o sharded_kv_no_
 sort: key=['key0', 'key1']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1', 'node2']
+predicate: transfer_msg('node', 'key', 'value')
 predicate: owner('node', 'key')
 predicate: table('node', 'key', 'value')
-predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'owner(node1,key1)', 'owner(node2,key0)', 'owner(node2,key1)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node0,key1,value0)', 'table(node0,key1,value1)', 'table(node0,key1,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node1,key1,value0)', 'table(node1,key1,value1)', 'table(node1,key1,value2)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'table(node2,key1,value0)', 'table(node2,key1,value1)', 'table(node2,key1,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value1)', 'transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value1)', 'transfer_msg(node1,key1,value2)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)', 'transfer_msg(node2,key1,value0)', 'transfer_msg(node2,key1,value1)', 'transfer_msg(node2,key1,value2)']
 representative states : 206158430208, 412316860416, 206158692352, 68719476744, 68719738888, 9, 72, 68719739392, 412335734784, 412337831936, 68719739904, 10, 68719738896, 80, 206161051648, 206160789504, 68719477248, 412318957568
@@ -9425,22 +9425,22 @@ repr state: 110000000000000000000000000000000000000000
 lex min decimal: 206158430208
 states:
 000011000000000000000000000000000000000000
-001100000000000000000000000000000000000000
 110000000000000000000000000000000000000000
+001100000000000000000000000000000000000000
 
 
 
 
 === State Orbit 1 =====================
 size : 6
-repr state: 011000000000000000000000000000000000000000
+repr state: 000110000000000000000000000000000000000000
 lex min decimal: 412316860416
 states:
-011000000000000000000000000000000000000000
-000110000000000000000000000000000000000000
-010010000000000000000000000000000000000000
 100100000000000000000000000000000000000000
 100001000000000000000000000000000000000000
+011000000000000000000000000000000000000000
+010010000000000000000000000000000000000000
+000110000000000000000000000000000000000000
 001001000000000000000000000000000000000000
 
 
@@ -9451,24 +9451,24 @@ size : 18
 repr state: 110000100000000000000000000000000000000000
 lex min decimal: 206158692352
 states:
-110000100000000000000000000000000000000000
-001100000000010000000000000000000000000000
-110000000100000000000000000000000000000000
-001100000000000010000000000000000000000000
-000011000000000000000001000000000000000000
-000011000000000000001000000000000000000000
 000011000000000000000100000000000000000000
-000011000000000000010000000000000000000000
-000011000000000000100000000000000000000000
-110000010000000000000000000000000000000000
-110000001000000000000000000000000000000000
-001100000000000100000000000000000000000000
-110000000010000000000000000000000000000000
 110000000001000000000000000000000000000000
-001100000000000001000000000000000000000000
-000011000000000000000010000000000000000000
+110000010000000000000000000000000000000000
+000011000000000000001000000000000000000000
+110000000100000000000000000000000000000000
+001100000000000100000000000000000000000000
+001100000000000010000000000000000000000000
 001100000000100000000000000000000000000000
 001100000000001000000000000000000000000000
+000011000000000000010000000000000000000000
+110000001000000000000000000000000000000000
+110000000010000000000000000000000000000000
+001100000000010000000000000000000000000000
+110000100000000000000000000000000000000000
+001100000000000001000000000000000000000000
+000011000000000000000001000000000000000000
+000011000000000000000010000000000000000000
+000011000000000000100000000000000000000000
 
 
 
@@ -9478,24 +9478,24 @@ size : 18
 repr state: 010000000000000000000000100000000000000000
 lex min decimal: 68719476744
 states:
-100000000000000000000000000100000000000000
-010000000000000000000000100000000000000000
-001000000000000000000000000000000010000000
-000010000000000000000000000000000000000010
-001000000000000000000000000000000001000000
-000100000000000000000000000000100000000000
-100000000000000000000000000010000000000000
 100000000000000000000000000001000000000000
-000010000000000000000000000000000000000001
-000010000000000000000000000000000000000100
-000100000000000000000000000000001000000000
-001000000000000000000000000000000100000000
-010000000000000000000000001000000000000000
-000100000000000000000000000000010000000000
-000001000000000000000000000000000000010000
-000001000000000000000000000000000000001000
-010000000000000000000000010000000000000000
 000001000000000000000000000000000000100000
+010000000000000000000000001000000000000000
+010000000000000000000000100000000000000000
+100000000000000000000000000100000000000000
+001000000000000000000000000000000100000000
+000100000000000000000000000000001000000000
+000010000000000000000000000000000000000010
+000010000000000000000000000000000000000001
+000001000000000000000000000000000000001000
+000001000000000000000000000000000000010000
+000100000000000000000000000000100000000000
+001000000000000000000000000000000001000000
+010000000000000000000000010000000000000000
+000100000000000000000000000000010000000000
+000010000000000000000000000000000000000100
+001000000000000000000000000000000010000000
+100000000000000000000000000010000000000000
 
 
 
@@ -9505,24 +9505,24 @@ size : 18
 repr state: 010000000100000000000000100000000000000000
 lex min decimal: 68719738888
 states:
-001000000000100000000000000000000100000000
-001000000000001000000000000000000001000000
-000010000000000000001000000000000000000001
 000001000000000000000100000000000000100000
-000001000000000000000010000000000000010000
-000001000000000000000001000000000000001000
-000100000000000001000000000000001000000000
-000100000000000010000000000000010000000000
-100000100000000000000000000100000000000000
-010000000001000000000000001000000000000000
-010000000010000000000000010000000000000000
-100000010000000000000000000010000000000000
-001000000000010000000000000000000010000000
-000010000000000000010000000000000000000010
-100000001000000000000000000001000000000000
-000010000000000000100000000000000000000100
 000100000000000100000000000000100000000000
+010000000001000000000000001000000000000000
 010000000100000000000000100000000000000000
+001000000000001000000000000000000001000000
+001000000000100000000000000000000100000000
+000001000000000000000010000000000000010000
+100000100000000000000000000100000000000000
+000010000000000000001000000000000000000001
+000010000000000000010000000000000000000010
+000100000000000001000000000000001000000000
+100000001000000000000000000001000000000000
+010000000010000000000000010000000000000000
+000001000000000000000001000000000000001000
+100000010000000000000000000010000000000000
+000010000000000000100000000000000000000100
+001000000000010000000000000000000010000000
+000100000000000010000000000000010000000000
 
 
 
@@ -9532,14 +9532,14 @@ size : 9
 repr state: 000000000000000000000000100100000000000000
 lex min decimal: 9
 states:
-000000000000000000000000001001000000000000
-000000000000000000000000000000000000100100
-000000000000000000000000010010000000000000
-000000000000000000000000000000100100000000
-000000000000000000000000000000010010000000
 000000000000000000000000000000000000010010
+000000000000000000000000001001000000000000
+000000000000000000000000000000010010000000
 000000000000000000000000100100000000000000
+000000000000000000000000010010000000000000
 000000000000000000000000000000001001000000
+000000000000000000000000000000100100000000
+000000000000000000000000000000000000100100
 000000000000000000000000000000000000001001
 
 
@@ -9550,24 +9550,24 @@ size : 18
 repr state: 000000000000000000000000100000000100000000
 lex min decimal: 72
 states:
-000000000000000000000000010000000010000000
-000000000000000000000000100000000100000000
-000000000000000000000000000000000001001000
-000000000000000000000000010000000000000010
-000000000000000000000000000000010000000010
+000000000000000000000000000010000000010000
 000000000000000000000000000100100000000000
-000000000000000000000000000000000010010000
-000000000000000000000000100000000000000100
-000000000000000000000000000000001000000001
 000000000000000000000000000000100000000100
 000000000000000000000000000000000100100000
+000000000000000000000000010000000010000000
+000000000000000000000000000000000010010000
+000000000000000000000000010000000000000010
+000000000000000000000000000000010000000010
+000000000000000000000000000000001000000001
+000000000000000000000000100000000000000100
 000000000000000000000000000001000000001000
-000000000000000000000000000010010000000000
-000000000000000000000000000010000000010000
-000000000000000000000000001000000001000000
+000000000000000000000000100000000100000000
+000000000000000000000000000000000001001000
 000000000000000000000000001000000000000001
-000000000000000000000000000001001000000000
 000000000000000000000000000100000000100000
+000000000000000000000000000010010000000000
+000000000000000000000000000001001000000000
+000000000000000000000000001000000001000000
 
 
 
@@ -9577,42 +9577,42 @@ size : 36
 repr state: 100000100000000000000000000000000100000000
 lex min decimal: 68719739392
 states:
-000010000000000000100000000100000000000000
-100000010000000000000000000000000000000010
-000010000000000000100000000000000100000000
-001000000000100000000000000000000000000100
-100000100000000000000000000000000000000100
+010000000001000000000000000000001000000000
 000100000000000010000000010000000000000000
-010000000001000000000000000000000000001000
-010000000010000000000000000000010000000000
-000010000000000000010000000010000000000000
-000001000000000000000100000000100000000000
-000001000000000000000010000000010000000000
 000100000000000001000000000000000000001000
-010000000100000000000000000000100000000000
-001000000000001000000000000000000000000001
-000100000000000100000000000000000000100000
-010000000100000000000000000000000000100000
-000100000000000010000000000000000000010000
-100000100000000000000000000000000100000000
-000001000000000000000010010000000000000000
-001000000000100000000000000100000000000000
-000001000000000000000001000000001000000000
-000100000000000100000000100000000000000000
-100000010000000000000000000000000010000000
-001000000000010000000000000000000000000010
-100000001000000000000000000000000001000000
-001000000000001000000000000001000000000000
-010000000010000000000000000000000000010000
-000010000000000000010000000000000010000000
 000100000000000001000000001000000000000000
-000001000000000000000001001000000000000000
+010000000100000000000000000000000000100000
+001000000000001000000000000001000000000000
+100000100000000000000000000000000000000100
+100000100000000000000000000000000100000000
+010000000010000000000000000000000000010000
+010000000001000000000000000000000000001000
+000100000000000100000000000000000000100000
+100000010000000000000000000000000000000010
+000001000000000000000100000000100000000000
 000010000000000000001000000000000001000000
+000001000000000000000001001000000000000000
 100000001000000000000000000000000000000001
 000010000000000000001000000001000000000000
-010000000001000000000000000000001000000000
+000001000000000000000010010000000000000000
+001000000000100000000000000100000000000000
 001000000000010000000000000010000000000000
+000010000000000000100000000000000100000000
+010000000100000000000000000000100000000000
+100000010000000000000000000000000010000000
+001000000000100000000000000000000000000100
+001000000000010000000000000000000000000010
+000001000000000000000001000000001000000000
+000100000000000100000000100000000000000000
+000010000000000000100000000100000000000000
+000001000000000000000010000000010000000000
+000010000000000000010000000000000010000000
+000010000000000000010000000010000000000000
+010000000010000000000000000000010000000000
 000001000000000000000100100000000000000000
+100000001000000000000000000000000001000000
+001000000000001000000000000000000000000001
+000100000000000010000000000000000000010000
 
 
 
@@ -9622,24 +9622,24 @@ size : 18
 repr state: 100100100000000100000000000000000000000000
 lex min decimal: 412335734784
 states:
-100100100000000100000000000000000000000000
 000110000000000001001000000000000000000000
-100100001000000001000000000000000000000000
-010010000100000000100000000000000000000000
 001001000000100000000100000000000000000000
-001001000000001000000001000000000000000000
-100001001000000000000001000000000000000000
-011000000001001000000000000000000000000000
-100100010000000010000000000000000000000000
-100001100000000000000100000000000000000000
-010010000001000000001000000000000000000000
 000110000000000100100000000000000000000000
+011000000001001000000000000000000000000000
+100001001000000000000001000000000000000000
 001001000000010000000010000000000000000000
+001001000000001000000001000000000000000000
+010010000001000000001000000000000000000000
 100001010000000000000010000000000000000000
-011000000100100000000000000000000000000000
+100100001000000001000000000000000000000000
+100100100000000100000000000000000000000000
+010010000100000000100000000000000000000000
 010010000010000000010000000000000000000000
+100001100000000000000100000000000000000000
 011000000010010000000000000000000000000000
 000110000000000010010000000000000000000000
+011000000100100000000000000000000000000000
+100100010000000010000000000000000000000000
 
 
 
@@ -9649,42 +9649,42 @@ size : 36
 repr state: 100100010000000100000000000000000000000000
 lex min decimal: 412337831936
 states:
-000110000000000010100000000000000000000000
-100100010000000100000000000000000000000000
-001001000000100000000001000000000000000000
+100001010000000000000100000000000000000000
+001001000000010000000001000000000000000000
 010010000100000000010000000000000000000000
-010010000001000000100000000000000000000000
-100001100000000000000010000000000000000000
-011000000100001000000000000000000000000000
-100100001000000100000000000000000000000000
-001001000000100000000010000000000000000000
-100001100000000000000001000000000000000000
-000110000000000001100000000000000000000000
-000110000000000001010000000000000000000000
-011000000100010000000000000000000000000000
-011000000001100000000000000000000000000000
+100100010000000001000000000000000000000000
+100100100000000001000000000000000000000000
+001001000000100000000001000000000000000000
 011000000001010000000000000000000000000000
+010010000001000000100000000000000000000000
+100001001000000000000100000000000000000000
+100001100000000000000001000000000000000000
+011000000010100000000000000000000000000000
+001001000000010000000100000000000000000000
+010010000010000000100000000000000000000000
+000110000000000010001000000000000000000000
+100100001000000100000000000000000000000000
+000110000000000001100000000000000000000000
+100100001000000010000000000000000000000000
+011000000100010000000000000000000000000000
+100001001000000000000010000000000000000000
+010010000010000000001000000000000000000000
+100100010000000100000000000000000000000000
+000110000000000010100000000000000000000000
 011000000010001000000000000000000000000000
 100001010000000000000001000000000000000000
-100001001000000000000010000000000000000000
-000110000000000010001000000000000000000000
-000110000000000100010000000000000000000000
-010010000100000000001000000000000000000000
-010010000001000000010000000000000000000000
-100100010000000001000000000000000000000000
-100100001000000010000000000000000000000000
-001001000000010000000100000000000000000000
-011000000010100000000000000000000000000000
-100001001000000000000100000000000000000000
-010010000010000000001000000000000000000000
-001001000000001000000100000000000000000000
-001001000000010000000001000000000000000000
-010010000010000000100000000000000000000000
-100001010000000000000100000000000000000000
-100100100000000001000000000000000000000000
-100100100000000010000000000000000000000000
+011000000100001000000000000000000000000000
+000110000000000001010000000000000000000000
 001001000000001000000010000000000000000000
+010010000100000000001000000000000000000000
+100001100000000000000010000000000000000000
+001001000000001000000100000000000000000000
+010010000001000000010000000000000000000000
+000110000000000100010000000000000000000000
+011000000001100000000000000000000000000000
 000110000000000100001000000000000000000000
+001001000000100000000010000000000000000000
+100100100000000010000000000000000000000000
 
 
 
@@ -9694,78 +9694,78 @@ size : 72
 repr state: 000100000000000100000000010000000000000000
 lex min decimal: 68719739904
 states:
+010000000100000000000000000000010000000000
+000010000000000000100000000000000001000000
+010000000100000000000000000000001000000000
+010000000001000000000000000000010000000000
+000010000000000000100000000010000000000000
+100000100000000000000000000000000001000000
+000100000000000001000000000000000000100000
+100000010000000000000000000000000000000001
+000100000000000100000000000000000000001000
+010000000100000000000000000000000000001000
+010000000010000000000000000000100000000000
+001000000000001000000000000100000000000000
+010000000001000000000000000000100000000000
+000010000000000000100000000001000000000000
+000010000000000000010000000000000001000000
+100000010000000000000000000000000100000000
 000001000000000000000001100000000000000000
-000001000000000000000010001000000000000000
-001000000000010000000000000001000000000000
-001000000000100000000000000000000000000001
+100000001000000000000000000000000000000010
+000100000000000010000000100000000000000000
+100000100000000000000000000000000010000000
+001000000000001000000000000000000000000010
+100000100000000000000000000000000000000001
+000001000000000000000001010000000000000000
+000100000000000010000000000000000000100000
+000100000000000001000000000000000000010000
+001000000000010000000000000100000000000000
 000100000000000100000000010000000000000000
 010000000010000000000000000000001000000000
+001000000000100000000000000010000000000000
+001000000000100000000000000001000000000000
+000010000000000000010000000001000000000000
+000010000000000000001000000000000010000000
+001000000000010000000000000000000000000001
+000100000000000010000000000000000000001000
+100000100000000000000000000000000000000010
 000001000000000000000100001000000000000000
 000100000000000100000000001000000000000000
-000010000000000000010000000000000001000000
-001000000000001000000000000000000000000010
-100000100000000000000000000000000001000000
-010000000001000000000000000000000000010000
-000100000000000001000000000000000000010000
-000001000000000000000001000000100000000000
-100000100000000000000000000000000010000000
-001000000000010000000000000000000000000100
-010000000001000000000000000000100000000000
-010000000001000000000000000000010000000000
-000001000000000000000100000000001000000000
-000001000000000000000001010000000000000000
-000010000000000000100000000000000010000000
-010000000100000000000000000000010000000000
-000001000000000000000010100000000000000000
-000100000000000100000000000000000000010000
-000010000000000000100000000010000000000000
-000010000000000000010000000000000100000000
-000100000000000010000000100000000000000000
-100000100000000000000000000000000000000010
 000001000000000000000100010000000000000000
-100000010000000000000000000000000000000001
-010000000100000000000000000000001000000000
-010000000001000000000000000000000000100000
-001000000000100000000000000010000000000000
-000010000000000000100000000001000000000000
-010000000100000000000000000000000000010000
-000010000000000000010000000001000000000000
-000001000000000000000001000000010000000000
-100000100000000000000000000000000000000001
-000010000000000000100000000000000001000000
-100000001000000000000000000000000010000000
-000100000000000010000000000000000000100000
-010000000010000000000000000000000000100000
-100000010000000000000000000000000000000100
-010000000010000000000000000000100000000000
+001000000000010000000000000001000000000000
 000001000000000000000010000000001000000000
-100000010000000000000000000000000001000000
-000100000000000001000000100000000000000000
-000010000000000000001000000010000000000000
-001000000000001000000000000010000000000000
-100000001000000000000000000000000000000010
+010000000100000000000000000000000000010000
+000001000000000000000001000000010000000000
+000100000000000010000000001000000000000000
 000010000000000000001000000000000100000000
-000100000000000100000000000000000000001000
-000001000000000000000100000000010000000000
-010000000010000000000000000000000000001000
+000010000000000000010000000000000100000000
+001000000000001000000000000010000000000000
+000010000000000000100000000000000010000000
+100000001000000000000000000000000100000000
 100000001000000000000000000000000000000100
-001000000000001000000000000000000000000100
-000010000000000000001000000100000000000000
+001000000000010000000000000000000000000100
 000100000000000001000000010000000000000000
 001000000000100000000000000000000000000010
-001000000000001000000000000100000000000000
-000010000000000000001000000000000010000000
-100000001000000000000000000000000100000000
-001000000000100000000000000001000000000000
-001000000000010000000000000100000000000000
-100000010000000000000000000000000100000000
-001000000000010000000000000000000000000001
-000001000000000000000010000000100000000000
-000100000000000001000000000000000000100000
+010000000010000000000000000000000000001000
+000100000000000001000000100000000000000000
+000001000000000000000010001000000000000000
+010000000001000000000000000000000000010000
 000010000000000000010000000100000000000000
-000100000000000010000000000000000000001000
-000100000000000010000000001000000000000000
-010000000100000000000000000000000000001000
+001000000000001000000000000000000000000100
+000010000000000000001000000010000000000000
+000001000000000000000100000000001000000000
+000100000000000100000000000000000000010000
+000010000000000000001000000100000000000000
+100000010000000000000000000000000001000000
+000001000000000000000001000000100000000000
+000001000000000000000010100000000000000000
+010000000001000000000000000000000000100000
+000001000000000000000100000000010000000000
+001000000000100000000000000000000000000001
+000001000000000000000010000000100000000000
+100000001000000000000000000000000010000000
+100000010000000000000000000000000000000100
+010000000010000000000000000000000000100000
 
 
 
@@ -9775,24 +9775,24 @@ size : 18
 repr state: 000000000000000000000000010100000000000000
 lex min decimal: 10
 states:
-000000000000000000000000000000100010000000
-000000000000000000000000010100000000000000
 000000000000000000000000000000000000100010
-000000000000000000000000010001000000000000
-000000000000000000000000001100000000000000
 000000000000000000000000000000100001000000
-000000000000000000000000000000000000010001
 000000000000000000000000000000001100000000
-000000000000000000000000100001000000000000
-000000000000000000000000000000010001000000
-000000000000000000000000000000000000010100
+000000000000000000000000010100000000000000
 000000000000000000000000000000000000001100
-000000000000000000000000000000001010000000
-000000000000000000000000000000010100000000
-000000000000000000000000000000000000100001
-000000000000000000000000000000000000001010
+000000000000000000000000001100000000000000
+000000000000000000000000000000000000010100
+000000000000000000000000000000010001000000
+000000000000000000000000100001000000000000
 000000000000000000000000100010000000000000
 000000000000000000000000001010000000000000
+000000000000000000000000000000000000100001
+000000000000000000000000010001000000000000
+000000000000000000000000000000000000010001
+000000000000000000000000000000000000001010
+000000000000000000000000000000010100000000
+000000000000000000000000000000100010000000
+000000000000000000000000000000001010000000
 
 
 
@@ -9802,41 +9802,41 @@ size : 36
 repr state: 100000010000000000000000000100000000000000
 lex min decimal: 68719738896
 states:
-001000000000010000000000000000000001000000
-000010000000000000100000000000000000000010
-100000100000000000000000000001000000000000
-000001000000000000000010000000000000100000
-010000000001000000000000010000000000000000
-010000000010000000000000100000000000000000
-000010000000000000010000000000000000000001
-001000000000001000000000000000000010000000
-000001000000000000000001000000000000010000
-000100000000000001000000000000100000000000
-100000010000000000000000000100000000000000
-010000000100000000000000001000000000000000
-001000000000001000000000000000000100000000
-000010000000000000001000000000000000000100
-000001000000000000000010000000000000001000
-000010000000000000010000000000000000000100
 100000100000000000000000000010000000000000
-000001000000000000000001000000000000100000
-000010000000000000001000000000000000000010
-100000010000000000000000000001000000000000
-001000000000100000000000000000000010000000
-100000001000000000000000000010000000000000
-000001000000000000000100000000000000001000
-000100000000000010000000000000001000000000
-000010000000000000100000000000000000000001
-000100000000000010000000000000100000000000
-001000000000100000000000000000000001000000
-100000001000000000000000000100000000000000
-000100000000000100000000000000010000000000
-010000000100000000000000010000000000000000
-000100000000000001000000000000010000000000
-000100000000000100000000000000001000000000
 000001000000000000000100000000000000010000
 001000000000010000000000000000000100000000
+000001000000000000000100000000000000001000
+100000010000000000000000000100000000000000
+000010000000000000010000000000000000000100
+000100000000000010000000000000100000000000
+000010000000000000010000000000000000000001
+000100000000000010000000000000001000000000
+010000000100000000000000010000000000000000
+001000000000100000000000000000000001000000
+000001000000000000000001000000000000010000
+000100000000000001000000000000100000000000
+001000000000001000000000000000000100000000
+000100000000000001000000000000010000000000
+100000001000000000000000000010000000000000
+000010000000000000100000000000000000000001
+000001000000000000000010000000000000100000
+000100000000000100000000000000010000000000
+100000100000000000000000000001000000000000
+000010000000000000001000000000000000000010
+000001000000000000000010000000000000001000
 010000000010000000000000001000000000000000
+010000000010000000000000100000000000000000
+001000000000001000000000000000000010000000
+100000010000000000000000000001000000000000
+000010000000000000100000000000000000000010
+000100000000000100000000000000001000000000
+001000000000010000000000000000000001000000
+010000000001000000000000010000000000000000
+010000000100000000000000001000000000000000
+000001000000000000000001000000000000100000
+000010000000000000001000000000000000000100
+100000001000000000000000000100000000000000
+001000000000100000000000000000000010000000
 010000000001000000000000100000000000000000
 
 
@@ -9847,42 +9847,42 @@ size : 36
 repr state: 000000000000000000000000000100010000000000
 lex min decimal: 80
 states:
-000000000000000000000000000000000100001000
+000000000000000000000000000001100000000000
+000000000000000000000000001000000000000010
+000000000000000000000000000000001000000010
+000000000000000000000000000001010000000000
+000000000000000000000000000100010000000000
+000000000000000000000000000001000000010000
+000000000000000000000000000000000010001000
+000000000000000000000000000010100000000000
+000000000000000000000000000000100000000010
+000000000000000000000000100000000010000000
+000000000000000000000000000000000001100000
+000000000000000000000000000000000010100000
+000000000000000000000000100000000000000001
+000000000000000000000000010000000000000001
 000000000000000000000000010000000001000000
+000000000000000000000000010000000000000100
 000000000000000000000000000010000000001000
 000000000000000000000000000100000000010000
-000000000000000000000000001000000100000000
-000000000000000000000000000010000000100000
-000000000000000000000000000001000000010000
-000000000000000000000000100000000000000010
-000000000000000000000000000000100000000010
-000000000000000000000000000000001000000010
-000000000000000000000000100000000000000001
-000000000000000000000000000100000000001000
-000000000000000000000000010000000000000001
-000000000000000000000000000000000001100000
-000000000000000000000000000100001000000000
-000000000000000000000000000010001000000000
-000000000000000000000000000000100000000001
-000000000000000000000000000100010000000000
-000000000000000000000000001000000010000000
 000000000000000000000000001000000000000100
-000000000000000000000000001000000000000010
-000000000000000000000000000000000001010000
-000000000000000000000000000000010000000100
-000000000000000000000000000001010000000000
-000000000000000000000000100000000010000000
-000000000000000000000000000000001000000100
-000000000000000000000000010000000000000100
-000000000000000000000000000000000100010000
-000000000000000000000000000010100000000000
-000000000000000000000000000000000010100000
-000000000000000000000000000001000000100000
-000000000000000000000000000001100000000000
-000000000000000000000000010000000100000000
-000000000000000000000000000000010000000001
 000000000000000000000000100000000001000000
-000000000000000000000000000000000010001000
+000000000000000000000000000010000000100000
+000000000000000000000000001000000100000000
+000000000000000000000000000000010000000100
+000000000000000000000000100000000000000010
+000000000000000000000000000000100000000001
+000000000000000000000000000000000100010000
+000000000000000000000000000100001000000000
+000000000000000000000000000000010000000001
+000000000000000000000000001000000010000000
+000000000000000000000000000000000001010000
+000000000000000000000000000000001000000100
+000000000000000000000000000001000000100000
+000000000000000000000000000100000000001000
+000000000000000000000000000000000100001000
+000000000000000000000000010000000100000000
+000000000000000000000000000010001000000000
 
 
 
@@ -9892,24 +9892,24 @@ size : 18
 repr state: 110000010100000000000000000000000000000000
 lex min decimal: 206161051648
 states:
-110000010100000000000000000000000000000000
-000011000000000000100010000000000000000000
-001100000000100010000000000000000000000000
-001100000000010001000000000000000000000000
-000011000000000000001010000000000000000000
-001100000000001010000000000000000000000000
+110000100010000000000000000000000000000000
+000011000000000000001100000000000000000000
 110000001100000000000000000000000000000000
-000011000000000000100001000000000000000000
-110000100001000000000000000000000000000000
-001100000000001100000000000000000000000000
 000011000000000000010100000000000000000000
 110000001010000000000000000000000000000000
-001100000000100001000000000000000000000000
-000011000000000000001100000000000000000000
-000011000000000000010001000000000000000000
-110000010001000000000000000000000000000000
-110000100010000000000000000000000000000000
+110000010100000000000000000000000000000000
+000011000000000000001010000000000000000000
 001100000000010100000000000000000000000000
+000011000000000000100010000000000000000000
+001100000000010001000000000000000000000000
+001100000000001100000000000000000000000000
+000011000000000000010001000000000000000000
+001100000000100001000000000000000000000000
+001100000000100010000000000000000000000000
+001100000000001010000000000000000000000000
+000011000000000000100001000000000000000000
+110000100001000000000000000000000000000000
+110000010001000000000000000000000000000000
 
 
 
@@ -9919,15 +9919,15 @@ size : 9
 repr state: 110000100100000000000000000000000000000000
 lex min decimal: 206160789504
 states:
-000011000000000000100100000000000000000000
-110000010010000000000000000000000000000000
-110000100100000000000000000000000000000000
 000011000000000000010010000000000000000000
-000011000000000000001001000000000000000000
-001100000000001001000000000000000000000000
 001100000000100100000000000000000000000000
-110000001001000000000000000000000000000000
 001100000000010010000000000000000000000000
+001100000000001001000000000000000000000000
+110000100100000000000000000000000000000000
+110000001001000000000000000000000000000000
+110000010010000000000000000000000000000000
+000011000000000000001001000000000000000000
+000011000000000000100100000000000000000000
 
 
 
@@ -9937,42 +9937,42 @@ size : 36
 repr state: 010000000000000000000000000000100000000000
 lex min decimal: 68719477248
 states:
-001000000000000000000000000001000000000000
-000001000000000000000000000000100000000000
-000001000000000000000000010000000000000000
-010000000000000000000000000000000000100000
-000100000000000000000000000000000000001000
-000001000000000000000000100000000000000000
-000010000000000000000000000000000010000000
-100000000000000000000000000000000000000100
-010000000000000000000000000000100000000000
-000100000000000000000000000000000000010000
-100000000000000000000000000000000000000001
-010000000000000000000000000000000000001000
-000010000000000000000000000000000001000000
-000100000000000000000000000000000000100000
-100000000000000000000000000000000100000000
-100000000000000000000000000000000001000000
-001000000000000000000000000000000000000100
-000010000000000000000000000100000000000000
-100000000000000000000000000000000000000010
-000100000000000000000000100000000000000000
-100000000000000000000000000000000010000000
-000010000000000000000000000001000000000000
-001000000000000000000000000000000000000010
-001000000000000000000000000000000000000001
-000001000000000000000000001000000000000000
 000100000000000000000000010000000000000000
-001000000000000000000000000100000000000000
+000001000000000000000000100000000000000000
+000010000000000000000000000100000000000000
 010000000000000000000000000000000000010000
-000010000000000000000000000010000000000000
-000001000000000000000000000000010000000000
-000001000000000000000000000000001000000000
-000100000000000000000000001000000000000000
-010000000000000000000000000000010000000000
-001000000000000000000000000010000000000000
+001000000000000000000000000100000000000000
+001000000000000000000000000000000000000001
 000010000000000000000000000000000100000000
+001000000000000000000000000001000000000000
+100000000000000000000000000000000100000000
+000001000000000000000000000000100000000000
+100000000000000000000000000000000001000000
+000010000000000000000000000010000000000000
+001000000000000000000000000000000000000010
+100000000000000000000000000000000010000000
+000100000000000000000000100000000000000000
+100000000000000000000000000000000000000010
+000001000000000000000000010000000000000000
+000100000000000000000000001000000000000000
+001000000000000000000000000000000000000100
+010000000000000000000000000000000000001000
+000001000000000000000000001000000000000000
+000010000000000000000000000001000000000000
+000001000000000000000000000000010000000000
+100000000000000000000000000000000000000100
+001000000000000000000000000010000000000000
+000010000000000000000000000000000010000000
+010000000000000000000000000000000000100000
+010000000000000000000000000000100000000000
+000100000000000000000000000000000000001000
+000010000000000000000000000000000001000000
+000001000000000000000000000000001000000000
+000100000000000000000000000000000000100000
 010000000000000000000000000000001000000000
+000100000000000000000000000000000000010000
+010000000000000000000000000000010000000000
+100000000000000000000000000000000000000001
 
 
 
@@ -9982,50 +9982,50 @@ size : 36
 repr state: 011000000000100000000000000000000000000000
 lex min decimal: 412318957568
 states:
-001001000000000000000010000000000000000000
-100100100000000000000000000000000000000000
-100100010000000000000000000000000000000000
-011000000000010000000000000000000000000000
-000110000000000000010000000000000000000000
 100001100000000000000000000000000000000000
-100001001000000000000000000000000000000000
-000110000000000010000000000000000000000000
-011000000001000000000000000000000000000000
-000110000000000100000000000000000000000000
-001001000000001000000000000000000000000000
-001001000000100000000000000000000000000000
-010010000000000000100000000000000000000000
-000110000000000000100000000000000000000000
-100001000000000000000100000000000000000000
-010010000000000000001000000000000000000000
-011000000010000000000000000000000000000000
-000110000000000001000000000000000000000000
-010010000000000000010000000000000000000000
-100001000000000000000010000000000000000000
-010010000010000000000000000000000000000000
 011000000000100000000000000000000000000000
-100100000000000001000000000000000000000000
+100001010000000000000000000000000000000000
+010010000000000000010000000000000000000000
+001001000000000000000001000000000000000000
+011000000000010000000000000000000000000000
 001001000000000000000100000000000000000000
 100001000000000000000001000000000000000000
-100100001000000000000000000000000000000000
-100001010000000000000000000000000000000000
-001001000000010000000000000000000000000000
-011000000100000000000000000000000000000000
-010010000100000000000000000000000000000000
+100001001000000000000000000000000000000000
+001001000000100000000000000000000000000000
+010010000000000000100000000000000000000000
+010010000000000000001000000000000000000000
+000110000000000001000000000000000000000000
+100100100000000000000000000000000000000000
+001001000000000000000010000000000000000000
+000110000000000000010000000000000000000000
+000110000000000000100000000000000000000000
 011000000000001000000000000000000000000000
-010010000001000000000000000000000000000000
-000110000000000000001000000000000000000000
-001001000000000000000001000000000000000000
+000110000000000100000000000000000000000000
+000110000000000010000000000000000000000000
+100001000000000000000100000000000000000000
 100100000000000010000000000000000000000000
 100100000000000100000000000000000000000000
+010010000010000000000000000000000000000000
+100001000000000000000010000000000000000000
+010010000100000000000000000000000000000000
+010010000001000000000000000000000000000000
+100100010000000000000000000000000000000000
+000110000000000000001000000000000000000000
+011000000001000000000000000000000000000000
+100100000000000001000000000000000000000000
+011000000010000000000000000000000000000000
+001001000000010000000000000000000000000000
+100100001000000000000000000000000000000000
+011000000100000000000000000000000000000000
+001001000000001000000000000000000000000000
 
 
 
-[QRM NOTE]: Time elapsed since start: 7.377 seconds
+[QRM NOTE]: Time elapsed since start: 7.766 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.001 seconds
+[QRM NOTE]: Time elapsed since last: 1.059 seconds
 
-[QRM NOTE]: Peak memory: 1352856 bytes
+[QRM NOTE]: Peak memory: 1372718 bytes
 
 
 ====================================================================================================================================================================
@@ -10036,11 +10036,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 8.542 seconds
+[QRM NOTE]: Time elapsed since start: 8.930 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.166 seconds
+[QRM NOTE]: Time elapsed since last: 1.164 seconds
 
-[QRM NOTE]: Peak memory: 648317 bytes
+[QRM NOTE]: Peak memory: 701263 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_3_key_1_value_3.0.ivy -s node=3,key=1,value=4 -f 2 -g -w -r -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -10090,11 +10090,11 @@ g++ -shared sharded_kv_no_lost_keys.node_3_key_1_value_4.finite.o sharded_kv_no_
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 6.168 seconds
+[QRM NOTE]: Time elapsed since start: 7.197 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.168 seconds
+[QRM NOTE]: Time elapsed since last: 7.197 seconds
 
-[QRM NOTE]: Peak memory: 1195248 bytes
+[QRM NOTE]: Peak memory: 1180210 bytes
 
 
 ===================================
@@ -10122,8 +10122,8 @@ sort: key=['key0']
 sort: value=['value0', 'value1', 'value2', 'value3']
 sort: node=['node0', 'node1', 'node2']
 predicate: transfer_msg('node', 'key', 'value')
-predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: table('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node0,key0,value3)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node1,key0,value3)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'table(node2,key0,value3)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node0,key0,value3)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node1,key0,value3)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)', 'transfer_msg(node2,key0,value3)']
 representative states : 16777216, 16781312, 1
@@ -10146,18 +10146,18 @@ size : 12
 repr state: 100100000000000000000000000
 lex min decimal: 16781312
 states:
-010000001000000000000000000
-001000000000100000000000000
-001000000000010000000000000
-100000100000000000000000000
-001000000000001000000000000
-100010000000000000000000000
-001000000001000000000000000
-100001000000000000000000000
 010000000010000000000000000
-010000010000000000000000000
+001000000000010000000000000
 100100000000000000000000000
+010000010000000000000000000
+100010000000000000000000000
+001000000000100000000000000
+001000000001000000000000000
 010000000100000000000000000
+001000000000001000000000000
+100000100000000000000000000
+010000001000000000000000000
+100001000000000000000000000
 
 
 
@@ -10167,26 +10167,26 @@ size : 12
 repr state: 000000000000000100000000000
 lex min decimal: 1
 states:
-000000000000000000001000000
-000000000000000000000001000
-000000000000000100000000000
-000000000000000000000100000
-000000000000000000000010000
+000000000000000010000000000
 000000000000000000000000100
 000000000000000000000000001
-000000000000000000010000000
-000000000000000010000000000
 000000000000000000100000000
+000000000000000000001000000
 000000000000000000000000010
+000000000000000000000001000
+000000000000000100000000000
 000000000000000001000000000
+000000000000000000000100000
+000000000000000000010000000
+000000000000000000000010000
 
 
 
-[QRM NOTE]: Time elapsed since start: 6.436 seconds
+[QRM NOTE]: Time elapsed since start: 7.448 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.268 seconds
+[QRM NOTE]: Time elapsed since last: 0.252 seconds
 
-[QRM NOTE]: Peak memory: 1231121 bytes
+[QRM NOTE]: Peak memory: 1222777 bytes
 
 
 ====================================================================================================================================================================
@@ -10197,11 +10197,11 @@ states:
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.962 seconds
+[QRM NOTE]: Time elapsed since start: 7.958 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.526 seconds
+[QRM NOTE]: Time elapsed since last: 0.510 seconds
 
-[QRM NOTE]: Peak memory: 483110 bytes
+[QRM NOTE]: Peak memory: 507305 bytes
 
 
 *********************************************************************
@@ -10310,7 +10310,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 127.181 seconds
+[QRM NOTE]: Time elapsed since start: 135.903 seconds
 
-[QRM NOTE]: Time elapsed since last: 127.181 seconds
+[QRM NOTE]: Time elapsed since last: 135.903 seconds
 

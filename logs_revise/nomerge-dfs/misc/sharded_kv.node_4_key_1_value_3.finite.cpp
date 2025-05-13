@@ -620,33 +620,33 @@ void sharded_kv__node_4_key_1_value_3__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 2;
     if (qrm_solution_count == 0){
-        bool __tmp0[1][3][4];
+        bool __tmp0[1][4][3];
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 3; V++) {
-                for (int N = 0; N < 4; N++) {
-                    __tmp0[K][V][N] = false;
+            for (int N = 0; N < 4; N++) {
+                for (int V = 0; V < 3; V++) {
+                    __tmp0[K][N][V] = false;
                 }
             }
         }
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 3; V++) {
-                for (int N = 0; N < 4; N++) {
-                    table[N][K][V] = __tmp0[K][V][N];
+            for (int N = 0; N < 4; N++) {
+                for (int V = 0; V < 3; V++) {
+                    table[N][K][V] = __tmp0[K][N][V];
                 }
             }
         }
-        bool __tmp1[1][3][4];
+        bool __tmp1[1][4][3];
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 3; V++) {
-                for (int N = 0; N < 4; N++) {
-                    __tmp1[K][V][N] = false;
+            for (int N = 0; N < 4; N++) {
+                for (int V = 0; V < 3; V++) {
+                    __tmp1[K][N][V] = false;
                 }
             }
         }
         for (int K = 0; K < 1; K++) {
-            for (int V = 0; V < 3; V++) {
-                for (int N = 0; N < 4; N++) {
-                    transfer_msg[N][K][V] = __tmp1[K][V][N];
+            for (int N = 0; N < 4; N++) {
+                for (int V = 0; V < 3; V++) {
+                    transfer_msg[N][K][V] = __tmp1[K][N][V];
                 }
             }
         }
@@ -656,8 +656,8 @@ void sharded_kv__node_4_key_1_value_3__finite::__init(){
         owner[3][0] = false;
     }
     else if (qrm_solution_count == 1){
-        owner[0][0] = true;
-        owner[1][0] = false;
+        owner[0][0] = false;
+        owner[1][0] = true;
         owner[2][0] = false;
         owner[3][0] = false;
     }

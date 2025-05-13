@@ -45,15 +45,15 @@ export put
 
 ##invariant [manual_1] forall K. (exists N. owner(N, K)) | (exists N, V. transfer_msg(N, K, V))
 
-invariant [invar_0] forall NODE1,VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
-invariant [invar_1] forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
-invariant [invar_6] forall VALUE1,NODE1,VALUE0,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
-invariant [invar_7] forall NODE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
-invariant [invar_8] forall VALUE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1 # qcost: 7
-invariant [invar_9] forall NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1 # qcost: 6
-invariant [invar_13] forall VALUE1,VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
-invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)) # qcost: 5
-invariant [invar_11] forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_0] forall NODE1,KEY0,NODE0,VALUE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_1] forall VALUE0,NODE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_6] forall VALUE0,KEY0,NODE0,NODE1,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
+invariant [invar_7] forall NODE1,KEY0,NODE0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_8] forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_9] forall NODE1,NODE0,KEY0. ~owner(NODE0,KEY0) | ~owner(NODE1,KEY0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_13] forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
+invariant [invar_11] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
 
 ### For QRM DFS reachability ###
 
@@ -70,16 +70,6 @@ action get_bool_transfer_msg(n0: node, k1: key, v2: value, result: bool) returns
 }
 export get_bool_transfer_msg
 
-action get_table(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
-    qrm_result := table(n0, k1, v2)
-}
-export get_table
-
-action get_bool_table(n0: node, k1: key, v2: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (table(n0, k1, v2) = result)
-}
-export get_bool_table
-
 action get_owner(n0: node, k1: key) returns(qrm_result: bool) = {
     qrm_result := owner(n0, k1)
 }
@@ -89,4 +79,14 @@ action get_bool_owner(n0: node, k1: key, result: bool) returns(qrm_result: bool)
     qrm_result := (owner(n0, k1) = result)
 }
 export get_bool_owner
+
+action get_table(n0: node, k1: key, v2: value) returns(qrm_result: bool) = {
+    qrm_result := table(n0, k1, v2)
+}
+export get_table
+
+action get_bool_table(n0: node, k1: key, v2: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (table(n0, k1, v2) = result)
+}
+export get_bool_table
 

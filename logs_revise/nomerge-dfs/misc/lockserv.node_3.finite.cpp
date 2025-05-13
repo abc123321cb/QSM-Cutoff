@@ -681,14 +681,14 @@ void lockserv__node_3__finite::ext__recv_unlock(node n){
         }
         server_holds_lock = true;
 }
-bool lockserv__node_3__finite::ext__get_holds_lock(node n0){
+bool lockserv__node_3__finite::ext__get_lock_msg(node n0){
     bool qrm_result;
-    qrm_result = holds_lock[n0];
+    qrm_result = lock_msg[n0];
     return qrm_result;
 }
-bool lockserv__node_3__finite::ext__get_bool_holds_lock(node n0, bool result){
+bool lockserv__node_3__finite::ext__get_bool_lock_msg(node n0, bool result){
     bool qrm_result;
-    qrm_result = (holds_lock[n0] == result);
+    qrm_result = (lock_msg[n0] == result);
     return qrm_result;
 }
 bool lockserv__node_3__finite::ext__get_grant_msg(node n0){
@@ -711,14 +711,14 @@ bool lockserv__node_3__finite::ext__get_bool_server_holds_lock(bool result){
     qrm_result = (server_holds_lock == result);
     return qrm_result;
 }
-bool lockserv__node_3__finite::ext__get_lock_msg(node n0){
+bool lockserv__node_3__finite::ext__get_holds_lock(node n0){
     bool qrm_result;
-    qrm_result = lock_msg[n0];
+    qrm_result = holds_lock[n0];
     return qrm_result;
 }
-bool lockserv__node_3__finite::ext__get_bool_lock_msg(node n0, bool result){
+bool lockserv__node_3__finite::ext__get_bool_holds_lock(node n0, bool result){
     bool qrm_result;
-    qrm_result = (lock_msg[n0] == result);
+    qrm_result = (holds_lock[n0] == result);
     return qrm_result;
 }
 bool lockserv__node_3__finite::ext__get_unlock_msg(node n0){

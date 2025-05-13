@@ -49,11 +49,11 @@ export put
 ##invariant [manual_4] transfer_msg(N1, K, V1) & transfer_msg(N2, K, V2) -> N1 = N2 & V1 = V2
 
 
-invariant [invar_0] forall VALUE0,NODE1,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
-invariant [invar_1] forall VALUE0,KEY0,NODE0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
-invariant [invar_6] forall VALUE1,NODE1,VALUE0,KEY0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
+invariant [invar_0] forall NODE1,VALUE0,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_1] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
+invariant [invar_6] forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
 invariant [invar_7] forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
-invariant [invar_8] forall KEY0,NODE0. (exists VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
+invariant [invar_8] forall NODE0,KEY0. (exists VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
 invariant [invar_9] forall KEY0. (exists NODE0. ~owner(NODE0,KEY0)) # qcost: 3
-invariant [invar_10] forall VALUE0,KEY0,NODE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
-invariant [invar_13] forall KEY0,NODE0. (exists VALUE0. ~table(NODE0,KEY0,VALUE0)) # qcost: 4
+invariant [invar_10] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_13] forall NODE0,KEY0. (exists VALUE0. ~table(NODE0,KEY0,VALUE0)) # qcost: 4

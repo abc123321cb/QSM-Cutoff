@@ -112,97 +112,37 @@ export rMRcvAbortMsg
 ##invariant [manual_ic3po10]	(tm_init -> ~msg_abort)
 ##invariant [manual_ic3po11]	(tm_committed -> ~tm_aborted)
 
-invariant [eq_0] msg_commit = tm_committed # equivalence relation, qcost: 1
-invariant [eq_1] msg_abort = tm_aborted # equivalence relation, qcost: 1
+invariant [eq_0] msg_abort = tm_aborted # equivalence relation, qcost: 2
+invariant [eq_1] msg_commit = tm_committed # equivalence relation, qcost: 2
 invariant [invar_1] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
 invariant [invar_6] forall RESOURCE_MANAGER0. ~tm_prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_8] forall RESOURCE_MANAGER0. ~aborted(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_9] ~tm_init | ~msg_abort # qcost: 2
-invariant [invar_10] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | ~prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_18] ~msg_commit | ~tm_init # qcost: 2
-invariant [invar_19] ~msg_commit | ~msg_abort # qcost: 2
+invariant [invar_8] ~msg_commit | ~tm_init # qcost: 2
+invariant [invar_10] ~msg_commit | ~msg_abort # qcost: 2
+invariant [invar_12] ~tm_init | ~msg_abort # qcost: 2
+invariant [invar_14] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~aborted(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_21] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | ~committed(RESOURCE_MANAGER0) # qcost: 3
 invariant [invar_23] msg_abort | tm_init | msg_commit # qcost: 3
 invariant [invar_2] forall RESOURCE_MANAGER0. ~working(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) # qcost: 3
-invariant [invar_11] forall RESOURCE_MANAGER0. ~committed(RESOURCE_MANAGER0) | msg_commit # qcost: 3
-invariant [invar_17] forall RESOURCE_MANAGER0. tm_prepared(RESOURCE_MANAGER0) | ~msg_commit # qcost: 3
-invariant [invar_35] forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) # qcost: 5
-invariant [invar_24] forall RESOURCE_MANAGER0. msg_abort | ~aborted(RESOURCE_MANAGER0) | ~msg_prepared(RESOURCE_MANAGER0) # qcost: 4
-invariant [invar_7] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_16] forall RESOURCE_MANAGER0. msg_commit | ~committed(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_7] forall RESOURCE_MANAGER0. ~msg_commit | tm_prepared(RESOURCE_MANAGER0) # qcost: 3
+invariant [invar_44] forall RESOURCE_MANAGER0. prepared(RESOURCE_MANAGER0) | working(RESOURCE_MANAGER0) | committed(RESOURCE_MANAGER0) | aborted(RESOURCE_MANAGER0) # qcost: 5
+invariant [invar_30] forall RESOURCE_MANAGER0. ~msg_prepared(RESOURCE_MANAGER0) | msg_abort | ~aborted(RESOURCE_MANAGER0) # qcost: 4
+invariant [invar_11] forall RESOURCE_MANAGER0. ~prepared(RESOURCE_MANAGER0) | msg_prepared(RESOURCE_MANAGER0) # qcost: 3
 
 ### For QRM DFS reachability ###
 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_tm_aborted returns(qrm_result: bool) = {
-    qrm_result := tm_aborted
+action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := prepared(r0)
 }
-export get_tm_aborted
+export get_prepared
 
-action get_bool_tm_aborted(result: bool) returns(qrm_result: bool) = {
-    qrm_result := (tm_aborted = result)
+action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (prepared(r0) = result)
 }
-export get_bool_tm_aborted
-
-action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := committed(r0)
-}
-export get_committed
-
-action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (committed(r0) = result)
-}
-export get_bool_committed
-
-action get_working(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := working(r0)
-}
-export get_working
-
-action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (working(r0) = result)
-}
-export get_bool_working
-
-action get_tm_init returns(qrm_result: bool) = {
-    qrm_result := tm_init
-}
-export get_tm_init
-
-action get_bool_tm_init(result: bool) returns(qrm_result: bool) = {
-    qrm_result := (tm_init = result)
-}
-export get_bool_tm_init
-
-action get_msg_commit returns(qrm_result: bool) = {
-    qrm_result := msg_commit
-}
-export get_msg_commit
-
-action get_bool_msg_commit(result: bool) returns(qrm_result: bool) = {
-    qrm_result := (msg_commit = result)
-}
-export get_bool_msg_commit
-
-action get_msg_abort returns(qrm_result: bool) = {
-    qrm_result := msg_abort
-}
-export get_msg_abort
-
-action get_bool_msg_abort(result: bool) returns(qrm_result: bool) = {
-    qrm_result := (msg_abort = result)
-}
-export get_bool_msg_abort
-
-action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := aborted(r0)
-}
-export get_aborted
-
-action get_bool_aborted(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (aborted(r0) = result)
-}
-export get_bool_aborted
+export get_bool_prepared
 
 action get_tm_prepared(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := tm_prepared(r0)
@@ -214,15 +154,15 @@ action get_bool_tm_prepared(r0: resource_manager, result: bool) returns(qrm_resu
 }
 export get_bool_tm_prepared
 
-action get_prepared(r0: resource_manager) returns(qrm_result: bool) = {
-    qrm_result := prepared(r0)
+action get_tm_aborted returns(qrm_result: bool) = {
+    qrm_result := tm_aborted
 }
-export get_prepared
+export get_tm_aborted
 
-action get_bool_prepared(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (prepared(r0) = result)
+action get_bool_tm_aborted(result: bool) returns(qrm_result: bool) = {
+    qrm_result := (tm_aborted = result)
 }
-export get_bool_prepared
+export get_bool_tm_aborted
 
 action get_tm_committed returns(qrm_result: bool) = {
     qrm_result := tm_committed
@@ -234,6 +174,46 @@ action get_bool_tm_committed(result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_tm_committed
 
+action get_msg_commit returns(qrm_result: bool) = {
+    qrm_result := msg_commit
+}
+export get_msg_commit
+
+action get_bool_msg_commit(result: bool) returns(qrm_result: bool) = {
+    qrm_result := (msg_commit = result)
+}
+export get_bool_msg_commit
+
+action get_committed(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := committed(r0)
+}
+export get_committed
+
+action get_bool_committed(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (committed(r0) = result)
+}
+export get_bool_committed
+
+action get_msg_abort returns(qrm_result: bool) = {
+    qrm_result := msg_abort
+}
+export get_msg_abort
+
+action get_bool_msg_abort(result: bool) returns(qrm_result: bool) = {
+    qrm_result := (msg_abort = result)
+}
+export get_bool_msg_abort
+
+action get_tm_init returns(qrm_result: bool) = {
+    qrm_result := tm_init
+}
+export get_tm_init
+
+action get_bool_tm_init(result: bool) returns(qrm_result: bool) = {
+    qrm_result := (tm_init = result)
+}
+export get_bool_tm_init
+
 action get_msg_prepared(r0: resource_manager) returns(qrm_result: bool) = {
     qrm_result := msg_prepared(r0)
 }
@@ -243,4 +223,24 @@ action get_bool_msg_prepared(r0: resource_manager, result: bool) returns(qrm_res
     qrm_result := (msg_prepared(r0) = result)
 }
 export get_bool_msg_prepared
+
+action get_aborted(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := aborted(r0)
+}
+export get_aborted
+
+action get_bool_aborted(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (aborted(r0) = result)
+}
+export get_bool_aborted
+
+action get_working(r0: resource_manager) returns(qrm_result: bool) = {
+    qrm_result := working(r0)
+}
+export get_working
+
+action get_bool_working(r0: resource_manager, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (working(r0) = result)
+}
+export get_bool_working
 

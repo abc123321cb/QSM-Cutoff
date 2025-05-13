@@ -41,16 +41,6 @@ invariant [unique] forall C1, C2 : client, S: server. link(C1, S) & link(C2, S) 
 ## Dependent relation axioms ##
 
 ## Access actions ##
-action get_semaphore(s0: server) returns(qrm_result: bool) = {
-    qrm_result := semaphore(s0)
-}
-export get_semaphore
-
-action get_bool_semaphore(s0: server, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (semaphore(s0) = result)
-}
-export get_bool_semaphore
-
 action get_link(c0: client, s1: server) returns(qrm_result: bool) = {
     qrm_result := link(c0, s1)
 }
@@ -60,4 +50,14 @@ action get_bool_link(c0: client, s1: server, result: bool) returns(qrm_result: b
     qrm_result := (link(c0, s1) = result)
 }
 export get_bool_link
+
+action get_semaphore(s0: server) returns(qrm_result: bool) = {
+    qrm_result := semaphore(s0)
+}
+export get_semaphore
+
+action get_bool_semaphore(s0: server, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (semaphore(s0) = result)
+}
+export get_bool_semaphore
 

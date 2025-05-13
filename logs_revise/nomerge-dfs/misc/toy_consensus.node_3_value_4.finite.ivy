@@ -41,8 +41,8 @@ export decide
 
 invariant [def_didNotVote] forall N. didNotVote(N) = (forall V. ~vote(N,V)) # definition, qcost: 4
 invariant [def_chosenAt] forall Q,V. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
-invariant [invar_0] forall VALUE0,VALUE1,NODE0. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
-invariant [invar_23] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4
+invariant [invar_0] forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
+invariant [invar_24] forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0)) # qcost: 4
 
 ### For QRM DFS reachability ###
 
@@ -58,6 +58,16 @@ axiom member(node1,quorum__node1_node2)
 axiom member(node2,quorum__node1_node2)
 
 ## Access actions ##
+action get_didNotVote(n0: node) returns(qrm_result: bool) = {
+    qrm_result := didNotVote(n0)
+}
+export get_didNotVote
+
+action get_bool_didNotVote(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (didNotVote(n0) = result)
+}
+export get_bool_didNotVote
+
 action get_member(n0: node, q1: quorum) returns(qrm_result: bool) = {
     qrm_result := member(n0, q1)
 }
@@ -67,6 +77,16 @@ action get_bool_member(n0: node, q1: quorum, result: bool) returns(qrm_result: b
     qrm_result := (member(n0, q1) = result)
 }
 export get_bool_member
+
+action get_decision(v0: value) returns(qrm_result: bool) = {
+    qrm_result := decision(v0)
+}
+export get_decision
+
+action get_bool_decision(v0: value, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (decision(v0) = result)
+}
+export get_bool_decision
 
 action get_chosenAt(q0: quorum, v1: value) returns(qrm_result: bool) = {
     qrm_result := chosenAt(q0, v1)
@@ -87,24 +107,4 @@ action get_bool_vote(n0: node, v1: value, result: bool) returns(qrm_result: bool
     qrm_result := (vote(n0, v1) = result)
 }
 export get_bool_vote
-
-action get_didNotVote(n0: node) returns(qrm_result: bool) = {
-    qrm_result := didNotVote(n0)
-}
-export get_didNotVote
-
-action get_bool_didNotVote(n0: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (didNotVote(n0) = result)
-}
-export get_bool_didNotVote
-
-action get_decision(v0: value) returns(qrm_result: bool) = {
-    qrm_result := decision(v0)
-}
-export get_decision
-
-action get_bool_decision(v0: value, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (decision(v0) = result)
-}
-export get_bool_decision
 

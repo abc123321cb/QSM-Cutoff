@@ -620,26 +620,26 @@ void naive_consensus__node_3_value_1__finite::__init(){
     static int qrm_solution_count = 0;
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
-        bool __tmp0[3][1];
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 1; V++) {
-                __tmp0[N][V] = false;
+        bool __tmp0[1][3];
+        for (int V = 0; V < 1; V++) {
+            for (int N = 0; N < 3; N++) {
+                __tmp0[V][N] = false;
             }
         }
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 1; V++) {
-                vote[N][V] = __tmp0[N][V];
+        for (int V = 0; V < 1; V++) {
+            for (int N = 0; N < 3; N++) {
+                vote[N][V] = __tmp0[V][N];
             }
         }
-        bool __tmp1[3][1];
-        for (int Q = 0; Q < 3; Q++) {
-            for (int V = 0; V < 1; V++) {
-                __tmp1[Q][V] = false;
+        bool __tmp1[1][3];
+        for (int V = 0; V < 1; V++) {
+            for (int Q = 0; Q < 3; Q++) {
+                __tmp1[V][Q] = false;
             }
         }
-        for (int Q = 0; Q < 3; Q++) {
-            for (int V = 0; V < 1; V++) {
-                decide[Q][V] = __tmp1[Q][V];
+        for (int V = 0; V < 1; V++) {
+            for (int Q = 0; Q < 3; Q++) {
+                decide[Q][V] = __tmp1[V][Q];
             }
         }
         bool __tmp2[1];
@@ -686,14 +686,14 @@ void naive_consensus__node_3_value_1__finite::ext__learn_value(quorum q, value v
         ivy_assume(decide[q][v], "naive_consensus.node_3_value_1.finite.ivy: line 31");
         decision[v] = true;
 }
-bool naive_consensus__node_3_value_1__finite::ext__get_decide(quorum q0, value v1){
+bool naive_consensus__node_3_value_1__finite::ext__get_decision(value v0){
     bool qrm_result;
-    qrm_result = decide[q0][v1];
+    qrm_result = decision[v0];
     return qrm_result;
 }
-bool naive_consensus__node_3_value_1__finite::ext__get_bool_decide(quorum q0, value v1, bool result){
+bool naive_consensus__node_3_value_1__finite::ext__get_bool_decision(value v0, bool result){
     bool qrm_result;
-    qrm_result = (decide[q0][v1] == result);
+    qrm_result = (decision[v0] == result);
     return qrm_result;
 }
 bool naive_consensus__node_3_value_1__finite::ext__get_member(node n0, quorum q1){
@@ -706,14 +706,14 @@ bool naive_consensus__node_3_value_1__finite::ext__get_bool_member(node n0, quor
     qrm_result = (member[n0][q1] == result);
     return qrm_result;
 }
-bool naive_consensus__node_3_value_1__finite::ext__get_decision(value v0){
+bool naive_consensus__node_3_value_1__finite::ext__get_decide(quorum q0, value v1){
     bool qrm_result;
-    qrm_result = decision[v0];
+    qrm_result = decide[q0][v1];
     return qrm_result;
 }
-bool naive_consensus__node_3_value_1__finite::ext__get_bool_decision(value v0, bool result){
+bool naive_consensus__node_3_value_1__finite::ext__get_bool_decide(quorum q0, value v1, bool result){
     bool qrm_result;
-    qrm_result = (decision[v0] == result);
+    qrm_result = (decide[q0][v1] == result);
     return qrm_result;
 }
 bool naive_consensus__node_3_value_1__finite::ext__get_vote(node n0, value v1){

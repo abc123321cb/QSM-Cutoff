@@ -641,14 +641,14 @@ void toy_consensus__node_3_value_3__finite::__init(){
     const int max_qrm_solution_count = 1;
     if (qrm_solution_count == 0){
         bool __tmp2[3][3];
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 3; V++) {
-                __tmp2[N][V] = false;
+        for (int V = 0; V < 3; V++) {
+            for (int N = 0; N < 3; N++) {
+                __tmp2[V][N] = false;
             }
         }
-        for (int N = 0; N < 3; N++) {
-            for (int V = 0; V < 3; V++) {
-                vote[N][V] = __tmp2[N][V];
+        for (int V = 0; V < 3; V++) {
+            for (int N = 0; N < 3; N++) {
+                vote[N][V] = __tmp2[V][N];
             }
         }
         bool __tmp3[3];
