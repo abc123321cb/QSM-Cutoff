@@ -42,9 +42,9 @@ OK
 
 [FW NOTE]: symmetric group order: 1
 
-[QRM NOTE]: Time elapsed since start: 0.040 seconds
+[QRM NOTE]: Time elapsed since start: 0.031 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.040 seconds
+[QRM NOTE]: Time elapsed since last: 0.031 seconds
 
 [QRM NOTE]: Peak memory: 27959 bytes
 
@@ -87,8 +87,8 @@ start extracting cubes
 sort: key=['key0']
 sort: value=['value0']
 sort: node=['node0']
-predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: table('node', 'key', 'value')
 predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'transfer_msg(node0,key0,value0)']
@@ -96,9 +96,9 @@ state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'transfer_msg(nod
 001
 1-0
 
-[QRM NOTE]: Time elapsed since start: 0.088 seconds
+[QRM NOTE]: Time elapsed since start: 0.072 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.048 seconds
+[QRM NOTE]: Time elapsed since last: 0.041 seconds
 
 [QRM NOTE]: Peak memory: 1090428 bytes
 
@@ -115,9 +115,9 @@ state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'transfer_msg(nod
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.091 seconds
+[QRM NOTE]: Time elapsed since start: 0.075 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.004 seconds
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
 
 [QRM NOTE]: Peak memory: 41241 bytes
 
@@ -191,9 +191,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 4
 
-[QRM NOTE]: Time elapsed since start: 0.103 seconds
+[QRM NOTE]: Time elapsed since start: 0.086 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.012 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
 [QRM NOTE]: Peak memory: 1099251 bytes
 
@@ -249,11 +249,11 @@ After reduction :
  pending  : [2, 3]
  solution : [0, 1]
 
-[QRM NOTE]: Time elapsed since start: 0.104 seconds
+[QRM NOTE]: Time elapsed since start: 0.087 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 50874 bytes
+[QRM NOTE]: Peak memory: 50815 bytes
 
 
 =================================================================================================================
@@ -373,12 +373,12 @@ signed_func_name2args: {'0$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
 
 
 === Prime Orbit 1 =====================
@@ -488,12 +488,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~transfer_msg(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', '~transfer_msg(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+qclause: forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 2 =====================
@@ -608,7 +608,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 3 =====================
@@ -718,12 +718,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+qclause: forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 
 
 ===========================================================================================================================
@@ -741,7 +741,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
 qcost : 5
 
 
@@ -755,7 +755,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -769,7 +769,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -783,16 +783,16 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.200 seconds
+[QRM NOTE]: Time elapsed since start: 0.180 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.096 seconds
+[QRM NOTE]: Time elapsed since last: 0.093 seconds
 
-[QRM NOTE]: Peak memory: 1789373 bytes
+[QRM NOTE]: Peak memory: 1789634 bytes
 
 
 ==========================================================================================================
@@ -982,11 +982,11 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_0] forall NODE0,VALUE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_0] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
 
-invariant [invar_1] forall NODE0,VALUE0,KEY0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_1] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
-invariant [invar_2] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_2] forall VALUE0,NODE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 3
 
@@ -999,11 +999,11 @@ invariant [invar_2] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~trans
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_0] forall NODE0,VALUE0,KEY0. ~owner(NODE0,KEY0) | ~transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
+invariant [invar_0] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
 
-invariant [invar_1] forall NODE0,VALUE0,KEY0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_1] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0) # qcost: 5
 
-invariant [invar_3] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_3] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 3
 
@@ -1012,11 +1012,11 @@ invariant [invar_3] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.310 seconds
+[QRM NOTE]: Time elapsed since start: 0.269 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.110 seconds
+[QRM NOTE]: Time elapsed since last: 0.089 seconds
 
-[QRM NOTE]: Peak memory: 1776186 bytes
+[QRM NOTE]: Peak memory: 1776407 bytes
 
 
 **************************************************************************************************************************
@@ -1055,11 +1055,11 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.052 seconds
+[QRM NOTE]: Time elapsed since start: 0.048 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.052 seconds
+[QRM NOTE]: Time elapsed since last: 0.048 seconds
 
-[QRM NOTE]: Peak memory: 63995 bytes
+[QRM NOTE]: Peak memory: 63987 bytes
 
 
 ===================================
@@ -1100,9 +1100,9 @@ start extracting cubes
 sort: key=['key0']
 sort: value=['value0']
 sort: node=['node0', 'node1']
+predicate: owner('node', 'key')
 predicate: transfer_msg('node', 'key', 'value')
 predicate: table('node', 'key', 'value')
-predicate: owner('node', 'key')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0)', 'table(node1,key0,value0)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node1,key0,value0)']
 
@@ -1111,9 +1111,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0
 010-00
 10-000
 
-[QRM NOTE]: Time elapsed since start: 0.200 seconds
+[QRM NOTE]: Time elapsed since start: 0.195 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.148 seconds
+[QRM NOTE]: Time elapsed since last: 0.147 seconds
 
 [QRM NOTE]: Peak memory: 1148572 bytes
 
@@ -1126,9 +1126,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.219 seconds
+[QRM NOTE]: Time elapsed since start: 0.222 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.019 seconds
+[QRM NOTE]: Time elapsed since last: 0.027 seconds
 
 [QRM NOTE]: Peak memory: 109668 bytes
 
@@ -1162,11 +1162,11 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.047 seconds
+[QRM NOTE]: Time elapsed since start: 0.042 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.047 seconds
+[QRM NOTE]: Time elapsed since last: 0.042 seconds
 
-[QRM NOTE]: Peak memory: 51930 bytes
+[QRM NOTE]: Peak memory: 51922 bytes
 
 
 ===================================
@@ -1207,9 +1207,9 @@ start extracting cubes
 sort: key=['key0', 'key1']
 sort: value=['value0']
 sort: node=['node0']
-predicate: transfer_msg('node', 'key', 'value')
 predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'table(node0,key0,value0)', 'table(node0,key1,value0)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key1,value0)']
 
@@ -1218,9 +1218,9 @@ state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'table(node0,key0,value0
 10-001
 11--00
 
-[QRM NOTE]: Time elapsed since start: 0.178 seconds
+[QRM NOTE]: Time elapsed since start: 0.155 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.131 seconds
+[QRM NOTE]: Time elapsed since last: 0.113 seconds
 
 [QRM NOTE]: Peak memory: 1133431 bytes
 
@@ -1233,11 +1233,11 @@ state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'table(node0,key0,value0
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.196 seconds
+[QRM NOTE]: Time elapsed since start: 0.175 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.018 seconds
+[QRM NOTE]: Time elapsed since last: 0.020 seconds
 
-[QRM NOTE]: Peak memory: 92988 bytes
+[QRM NOTE]: Peak memory: 92929 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_1_key_1_value_1.0.ivy -s node=1,key=1,value=2 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -1269,9 +1269,9 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.043 seconds
+[QRM NOTE]: Time elapsed since start: 0.041 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.043 seconds
+[QRM NOTE]: Time elapsed since last: 0.041 seconds
 
 [QRM NOTE]: Peak memory: 47273 bytes
 
@@ -1315,8 +1315,8 @@ sort: key=['key0']
 sort: value=['value0', 'value1']
 sort: node=['node0']
 predicate: transfer_msg('node', 'key', 'value')
-predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: table('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)']
 
@@ -1325,9 +1325,9 @@ state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'table(node0,key0
 10-00
 11000
 
-[QRM NOTE]: Time elapsed since start: 0.133 seconds
+[QRM NOTE]: Time elapsed since start: 0.122 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.090 seconds
+[QRM NOTE]: Time elapsed since last: 0.082 seconds
 
 [QRM NOTE]: Peak memory: 1123359 bytes
 
@@ -1340,9 +1340,9 @@ state atoms: ['owner(node0,key0)', 'table(node0,key0,value0)', 'table(node0,key0
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.158 seconds
+[QRM NOTE]: Time elapsed since start: 0.141 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.025 seconds
+[QRM NOTE]: Time elapsed since last: 0.019 seconds
 
 [QRM NOTE]: Peak memory: 82672 bytes
 
@@ -1379,9 +1379,9 @@ OK
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.042 seconds
+[QRM NOTE]: Time elapsed since start: 0.035 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.042 seconds
+[QRM NOTE]: Time elapsed since last: 0.035 seconds
 
 [QRM NOTE]: Peak memory: 12800 bytes
 
@@ -1409,9 +1409,9 @@ OK
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.038 seconds
+[QRM NOTE]: Time elapsed since start: 0.047 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.038 seconds
+[QRM NOTE]: Time elapsed since last: 0.047 seconds
 
 [QRM NOTE]: Peak memory: 11243 bytes
 
@@ -1439,9 +1439,9 @@ OK
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.046 seconds
+[QRM NOTE]: Time elapsed since start: 0.039 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.046 seconds
+[QRM NOTE]: Time elapsed since last: 0.039 seconds
 
 [QRM NOTE]: Peak memory: 10993 bytes
 
@@ -1484,9 +1484,9 @@ OK
 
 [FW NOTE]: symmetric group order: 4
 
-[QRM NOTE]: Time elapsed since start: 0.104 seconds
+[QRM NOTE]: Time elapsed since start: 0.115 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.104 seconds
+[QRM NOTE]: Time elapsed since last: 0.115 seconds
 
 [QRM NOTE]: Peak memory: 138421 bytes
 
@@ -1530,8 +1530,8 @@ sort: key=['key0']
 sort: value=['value0', 'value1']
 sort: node=['node0', 'node1']
 predicate: transfer_msg('node', 'key', 'value')
-predicate: table('node', 'key', 'value')
 predicate: owner('node', 'key')
+predicate: table('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)']
 
@@ -1544,9 +1544,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0
 100-000000
 1010000000
 
-[QRM NOTE]: Time elapsed since start: 0.517 seconds
+[QRM NOTE]: Time elapsed since start: 0.534 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.413 seconds
+[QRM NOTE]: Time elapsed since last: 0.419 seconds
 
 [QRM NOTE]: Peak memory: 1264156 bytes
 
@@ -1563,7 +1563,7 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.518 seconds
+[QRM NOTE]: Time elapsed since start: 0.535 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
@@ -1843,9 +1843,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 46
 
-[QRM NOTE]: Time elapsed since start: 0.534 seconds
+[QRM NOTE]: Time elapsed since start: 0.552 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.016 seconds
+[QRM NOTE]: Time elapsed since last: 0.017 seconds
 
 [QRM NOTE]: Peak memory: 1337889 bytes
 
@@ -1901,7 +1901,7 @@ After reduction :
  pending  : [2, 3, 4, 5, 10, 11, 12, 14]
  solution : [0, 1, 6, 7, 8, 9, 13, 15]
 
-[QRM NOTE]: Time elapsed since start: 0.537 seconds
+[QRM NOTE]: Time elapsed since start: 0.555 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.003 seconds
 
@@ -2019,7 +2019,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -2036,7 +2036,7 @@ qterms: ['transfer_msg(NODE1,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0,KEY0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+qclause: forall NODE0,VALUE0,NODE1,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 
 
 === Prime Orbit 1 =====================
@@ -2140,7 +2140,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -2157,7 +2157,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
+qclause: forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
 
 
 === Prime Orbit 6 =====================
@@ -2257,7 +2257,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -2269,12 +2269,12 @@ signed_func_name2args: {'0$transfer_msg': [[Var('NODE0', EnumeratedSort('node', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['transfer_msg(NODE1,KEY0,VALUE1)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 7 =====================
@@ -2374,7 +2374,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
@@ -2391,7 +2391,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,VALUE0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
+qclause: forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
 
 
 === Prime Orbit 8 =====================
@@ -2830,7 +2830,7 @@ constraint mode: ConstraintMode.no_merge
 
 forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
-exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
@@ -2840,12 +2840,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~transfer_msg(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', '~transfer_msg(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0))
+qclause: forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 
 
 === Prime Orbit 2 =====================
@@ -2949,7 +2949,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -2961,12 +2961,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+qclause: forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 3 =====================
@@ -3070,7 +3070,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3082,12 +3082,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
+qterms: ['transfer_msg(NODE1,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 4 =====================
@@ -3191,7 +3191,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3208,7 +3208,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall NODE0,VALUE0,NODE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 5 =====================
@@ -3312,7 +3312,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3324,12 +3324,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['transfer_msg(NODE0,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
+qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE0,KEY0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
+qclause: forall VALUE1,NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 
 
 === Prime Orbit 10 =====================
@@ -3433,7 +3433,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3445,12 +3445,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+qclause: forall NODE0,VALUE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 11 =====================
@@ -3554,7 +3554,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3566,12 +3566,12 @@ signed_func_name2args: {'0$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE1,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
+qterms: ['owner(NODE0,KEY0)', 'table(NODE1,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0,KEY0,VALUE0. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+qclause: forall NODE0,VALUE0,NODE1,KEY0. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 12 =====================
@@ -3671,7 +3671,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))}
 
 exists_qvars: set()
 
@@ -3688,7 +3688,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE1,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 14 =====================
@@ -3788,7 +3788,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
 
@@ -3805,7 +3805,7 @@ qterms: ['table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,VALUE0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
+qclause: forall VALUE0,KEY0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
 
 
 ===========================================================================================================================
@@ -3829,7 +3829,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0,KEY0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+quantified form : forall NODE0,VALUE0,NODE1,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -3849,7 +3849,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,KEY0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
+quantified form : forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
 qcost : 5
 
 
@@ -3865,7 +3865,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -3881,7 +3881,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   1
 num_literals : 1
-quantified form : forall KEY0,VALUE0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
+quantified form : forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0))
 qcost : 4
 
 
@@ -3941,7 +3941,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   2
 num_literals : 2
-quantified form : forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0))
+quantified form : forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 qcost : 5
 
 
@@ -3961,7 +3961,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE0)
+quantified form : forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -3981,7 +3981,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -4001,7 +4001,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE0,VALUE0,NODE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -4021,7 +4021,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE1,NODE0,KEY0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
+quantified form : forall VALUE1,NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -4041,7 +4041,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall NODE0,VALUE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -4061,7 +4061,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0,KEY0,VALUE0. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+quantified form : forall NODE0,VALUE0,NODE1,KEY0. ~owner(NODE0,KEY0) | ~table(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -4077,7 +4077,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -4093,16 +4093,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   1
 num_literals : 1
-quantified form : forall KEY0,VALUE0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
+quantified form : forall VALUE0,KEY0. (exists NODE0. ~table(NODE0,KEY0,VALUE0))
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.686 seconds
+[QRM NOTE]: Time elapsed since start: 0.704 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.149 seconds
 
-[QRM NOTE]: Peak memory: 2033157 bytes
+[QRM NOTE]: Peak memory: 2033433 bytes
 
 
 ==========================================================================================================
@@ -4292,13 +4292,13 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 9
 
-invariant [invar_0] forall NODE1,NODE0,KEY0,VALUE0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_0] forall NODE0,VALUE0,NODE1,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 7
 
-invariant [invar_1] forall NODE0,KEY0,VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
+invariant [invar_1] forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
 
-invariant [invar_6] forall KEY0,VALUE1,NODE1,VALUE0,NODE0. ~transfer_msg(NODE1,KEY0,VALUE1) | ~transfer_msg(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
+invariant [invar_6] forall VALUE1,KEY0,NODE0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
 
-invariant [invar_7] forall KEY0,VALUE0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
+invariant [invar_7] forall VALUE0,KEY0. (exists NODE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
 
 invariant [invar_8] forall NODE0,KEY0. (exists VALUE0. ~transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 4
 
@@ -4306,9 +4306,9 @@ invariant [invar_9] forall KEY0. (exists NODE0. ~owner(NODE0,KEY0)) # qcost: 3
 
 invariant [invar_13] forall NODE0,KEY0. (exists VALUE0. ~table(NODE0,KEY0,VALUE0)) # qcost: 4
 
-invariant [invar_15] forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)) # qcost: 5
+invariant [invar_15] forall KEY0. (exists NODE0,VALUE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
 
-invariant [invar_10] forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_10] forall NODE0,VALUE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 9
 
@@ -4317,11 +4317,11 @@ invariant [invar_10] forall NODE0,KEY0,VALUE0. ~table(NODE0,KEY0,VALUE0) | owner
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.780 seconds
+[QRM NOTE]: Time elapsed since start: 0.779 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.094 seconds
+[QRM NOTE]: Time elapsed since last: 0.075 seconds
 
-[QRM NOTE]: Peak memory: 2007971 bytes
+[QRM NOTE]: Peak memory: 2008247 bytes
 
 
 **************************************************************************************************************************
@@ -4360,9 +4360,9 @@ OK
 
 [FW NOTE]: symmetric group order: 12
 
-[QRM NOTE]: Time elapsed since start: 0.227 seconds
+[QRM NOTE]: Time elapsed since start: 0.234 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.227 seconds
+[QRM NOTE]: Time elapsed since last: 0.234 seconds
 
 [QRM NOTE]: Peak memory: 371481 bytes
 
@@ -4405,8 +4405,8 @@ start extracting cubes
 sort: key=['key0']
 sort: value=['value0', 'value1']
 sort: node=['node0', 'node1', 'node2']
-predicate: transfer_msg('node', 'key', 'value')
 predicate: table('node', 'key', 'value')
+predicate: transfer_msg('node', 'key', 'value')
 predicate: owner('node', 'key')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)']
@@ -4424,9 +4424,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ta
 1000-0000000000
 100100000000000
 
-[QRM NOTE]: Time elapsed since start: 1.391 seconds
+[QRM NOTE]: Time elapsed since start: 1.336 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.164 seconds
+[QRM NOTE]: Time elapsed since last: 1.102 seconds
 
 [QRM NOTE]: Peak memory: 1567075 bytes
 
@@ -4439,9 +4439,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ta
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 1.574 seconds
+[QRM NOTE]: Time elapsed since start: 1.524 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.182 seconds
+[QRM NOTE]: Time elapsed since last: 0.189 seconds
 
 [QRM NOTE]: Peak memory: 649815 bytes
 
@@ -4475,9 +4475,9 @@ OK
 
 [FW NOTE]: symmetric group order: 8
 
-[QRM NOTE]: Time elapsed since start: 0.275 seconds
+[QRM NOTE]: Time elapsed since start: 0.273 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.275 seconds
+[QRM NOTE]: Time elapsed since last: 0.273 seconds
 
 [QRM NOTE]: Peak memory: 479587 bytes
 
@@ -4591,9 +4591,9 @@ state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'ow
 1100100-000000000000
 11001010000000000000
 
-[QRM NOTE]: Time elapsed since start: 1.944 seconds
+[QRM NOTE]: Time elapsed since start: 1.843 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.669 seconds
+[QRM NOTE]: Time elapsed since last: 1.571 seconds
 
 [QRM NOTE]: Peak memory: 1734158 bytes
 
@@ -4606,9 +4606,9 @@ state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'ow
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 2.631 seconds
+[QRM NOTE]: Time elapsed since start: 2.513 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.687 seconds
+[QRM NOTE]: Time elapsed since last: 0.670 seconds
 
 [QRM NOTE]: Peak memory: 1447016 bytes
 
@@ -4642,11 +4642,11 @@ OK
 
 [FW NOTE]: symmetric group order: 12
 
-[QRM NOTE]: Time elapsed since start: 0.185 seconds
+[QRM NOTE]: Time elapsed since start: 0.179 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.185 seconds
+[QRM NOTE]: Time elapsed since last: 0.179 seconds
 
-[QRM NOTE]: Peak memory: 288335 bytes
+[QRM NOTE]: Peak memory: 287639 bytes
 
 
 ===================================
@@ -4687,9 +4687,9 @@ start extracting cubes
 sort: key=['key0']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1']
-predicate: owner('node', 'key')
-predicate: transfer_msg('node', 'key', 'value')
 predicate: table('node', 'key', 'value')
+predicate: transfer_msg('node', 'key', 'value')
+predicate: owner('node', 'key')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)']
 
@@ -4706,9 +4706,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0
 10010000000000
 10100000000000
 
-[QRM NOTE]: Time elapsed since start: 1.033 seconds
+[QRM NOTE]: Time elapsed since start: 0.976 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.848 seconds
+[QRM NOTE]: Time elapsed since last: 0.797 seconds
 
 [QRM NOTE]: Peak memory: 1460664 bytes
 
@@ -4721,9 +4721,9 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'table(node0,key0,value0
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 1.190 seconds
+[QRM NOTE]: Time elapsed since start: 1.139 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.157 seconds
+[QRM NOTE]: Time elapsed since last: 0.163 seconds
 
 [QRM NOTE]: Peak memory: 533322 bytes
 
@@ -4766,11 +4766,11 @@ OK
 
 [FW NOTE]: symmetric group order: 36
 
-[QRM NOTE]: Time elapsed since start: 0.413 seconds
+[QRM NOTE]: Time elapsed since start: 0.435 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.413 seconds
+[QRM NOTE]: Time elapsed since last: 0.435 seconds
 
-[QRM NOTE]: Peak memory: 633459 bytes
+[QRM NOTE]: Peak memory: 632395 bytes
 
 
 ===================================
@@ -4811,9 +4811,9 @@ start extracting cubes
 sort: key=['key0']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1', 'node2']
-predicate: owner('node', 'key')
-predicate: table('node', 'key', 'value')
 predicate: transfer_msg('node', 'key', 'value')
+predicate: table('node', 'key', 'value')
+predicate: owner('node', 'key')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)']
 
@@ -4836,11 +4836,11 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ta
 100010000000000000000
 100100000000000000000
 
-[QRM NOTE]: Time elapsed since start: 2.784 seconds
+[QRM NOTE]: Time elapsed since start: 2.740 seconds
 
-[QRM NOTE]: Time elapsed since last: 2.371 seconds
+[QRM NOTE]: Time elapsed since last: 2.305 seconds
 
-[QRM NOTE]: Peak memory: 1933758 bytes
+[QRM NOTE]: Peak memory: 1933702 bytes
 
 
 ======================================
@@ -4855,11 +4855,11 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ta
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 2.787 seconds
+[QRM NOTE]: Time elapsed since start: 2.743 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.002 seconds
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
 
-[QRM NOTE]: Peak memory: 887030 bytes
+[QRM NOTE]: Peak memory: 886974 bytes
 
 
 ========================================================================================================================
@@ -5465,11 +5465,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 211
 
-[QRM NOTE]: Time elapsed since start: 2.873 seconds
+[QRM NOTE]: Time elapsed since start: 2.823 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.086 seconds
+[QRM NOTE]: Time elapsed since last: 0.080 seconds
 
-[QRM NOTE]: Peak memory: 2221814 bytes
+[QRM NOTE]: Peak memory: 2221803 bytes
 
 
 =============================================================================================================
@@ -5523,11 +5523,11 @@ After reduction :
  pending  : [2, 3, 4, 5, 10, 11, 12, 13]
  solution : [0, 1, 6, 7, 8, 9, 14, 15]
 
-[QRM NOTE]: Time elapsed since start: 2.879 seconds
+[QRM NOTE]: Time elapsed since start: 2.828 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.006 seconds
+[QRM NOTE]: Time elapsed since last: 0.005 seconds
 
-[QRM NOTE]: Peak memory: 1165837 bytes
+[QRM NOTE]: Peak memory: 1165826 bytes
 
 
 =================================================================================================================
@@ -5669,7 +5669,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -5681,12 +5681,12 @@ signed_func_name2args: {'0$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['owner(NODE0,KEY0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE1,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 
 
 === Prime Orbit 1 =====================
@@ -5800,7 +5800,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -5817,7 +5817,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
+qclause: forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
 
 
 === Prime Orbit 6 =====================
@@ -5949,7 +5949,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
 exists_qvars: set()
 
@@ -5966,7 +5966,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 
 
 === Prime Orbit 7 =====================
@@ -6080,7 +6080,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6097,7 +6097,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 8 =====================
@@ -6211,7 +6211,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6228,7 +6228,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,VALUE1,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 
 
 === Prime Orbit 9 =====================
@@ -6320,7 +6320,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6337,7 +6337,7 @@ qterms: ['owner(NODE1,KEY0)', 'owner(NODE0,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,NODE1. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+qclause: forall KEY0,NODE1,NODE0. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 
 
 === Prime Orbit 14 =====================
@@ -6451,7 +6451,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6463,12 +6463,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE1)']
+qterms: ['table(NODE0,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
 
 
 === Prime Orbit 15 =====================
@@ -6568,7 +6568,7 @@ constraint mode: ConstraintMode.no_merge
 
 forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',)))}
 
-exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
@@ -6578,12 +6578,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~transfer_msg(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', '~transfer_msg(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0))
+qclause: forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 
 
 === Prime Orbit 2 =====================
@@ -6697,7 +6697,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -6714,7 +6714,7 @@ qterms: ['transfer_msg(NODE0,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
+qclause: forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 3 =====================
@@ -6882,7 +6882,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
 exists_qvars: set()
 
@@ -6894,12 +6894,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['transfer_msg(NODE1,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
+qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 
 
 === Prime Orbit 4 =====================
@@ -7031,7 +7031,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7043,12 +7043,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE1,KEY0,VALUE0)']
+qterms: ['transfer_msg(NODE1,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0,NODE1. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 5 =====================
@@ -7180,7 +7180,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7192,12 +7192,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'transfer_msg(NODE0,KEY0,VALUE1)']
+qterms: ['transfer_msg(NODE0,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
 
 
 === Prime Orbit 10 =====================
@@ -7311,7 +7311,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7328,7 +7328,7 @@ qterms: ['table(NODE1,KEY0,VALUE0)', 'table(NODE0,KEY0,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0,NODE1. ~table(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0,KEY0. ~table(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 11 =====================
@@ -7442,7 +7442,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7454,12 +7454,12 @@ signed_func_name2args: {'1$owner': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', '~owner(NODE0,KEY0)']
+qterms: ['~owner(NODE0,KEY0)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+qclause: forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 
 
 === Prime Orbit 12 =====================
@@ -7591,7 +7591,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -7608,7 +7608,7 @@ qterms: ['table(NODE1,KEY0,VALUE0)', 'owner(NODE0,KEY0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,KEY0,VALUE0,NODE1. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0,KEY0. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 
 
 === Prime Orbit 13 =====================
@@ -7740,7 +7740,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('KEY0', EnumeratedSort('key', ('key0',))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+forall_qvars: {Var('KEY0', EnumeratedSort('key', ('key0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
 exists_qvars: set()
 
@@ -7752,12 +7752,12 @@ signed_func_name2args: {'0$table': [[Var('NODE0', EnumeratedSort('node', ('node0
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['table(NODE0,KEY0,VALUE0)', 'table(NODE1,KEY0,VALUE1)']
+qterms: ['table(NODE1,KEY0,VALUE1)', 'table(NODE0,KEY0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~table(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 
 
 ===========================================================================================================================
@@ -7809,7 +7809,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,KEY0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -7839,7 +7839,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0)
 qcost : 5
 
 
@@ -7887,7 +7887,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -7917,7 +7917,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,KEY0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -7947,7 +7947,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,VALUE0,VALUE1,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -7965,7 +7965,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,KEY0,NODE1. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+quantified form : forall KEY0,NODE1,NODE0. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -7995,7 +7995,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,VALUE0,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -8009,7 +8009,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   2
 num_literals : 2
-quantified form : forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0))
+quantified form : forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0))
 qcost : 5
 
 
@@ -8039,7 +8039,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
+quantified form : forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -8123,7 +8123,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -8171,7 +8171,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,KEY0,VALUE0,NODE1. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8219,7 +8219,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,VALUE0,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1
 qcost : 7
 
 
@@ -8249,7 +8249,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,KEY0,VALUE0,NODE1. ~table(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0,KEY0. ~table(NODE1,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8279,7 +8279,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)
+quantified form : forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0)
 qcost : 5
 
 
@@ -8327,7 +8327,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,KEY0,VALUE0,NODE1. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0,KEY0. ~table(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -8375,16 +8375,16 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 4
-quantified form : forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~table(NODE0,KEY0,VALUE0) | ~table(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~table(NODE1,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
 
-[QRM NOTE]: Time elapsed since start: 3.054 seconds
+[QRM NOTE]: Time elapsed since start: 3.001 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.175 seconds
+[QRM NOTE]: Time elapsed since last: 0.172 seconds
 
-[QRM NOTE]: Peak memory: 2909099 bytes
+[QRM NOTE]: Peak memory: 2909157 bytes
 
 
 ==========================================================================================================
@@ -8574,23 +8574,23 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 9
 
-invariant [invar_0] forall NODE0,KEY0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_0] forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 7
 
-invariant [invar_1] forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
+invariant [invar_1] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
 
-invariant [invar_6] forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
+invariant [invar_6] forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
 
-invariant [invar_7] forall NODE0,KEY0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_7] forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
 
-invariant [invar_8] forall NODE0,VALUE0,VALUE1,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_8] forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
 
-invariant [invar_9] forall NODE0,KEY0,NODE1. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_9] forall KEY0,NODE1,NODE0. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 6
 
-invariant [invar_14] forall NODE0,VALUE0,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_14] forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1 # qcost: 7
 
-invariant [invar_15] forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)) # qcost: 5
+invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
 
-invariant [invar_11] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_11] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 9
 
@@ -8599,11 +8599,11 @@ invariant [invar_11] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner
 
 
 
-[QRM NOTE]: Time elapsed since start: 3.142 seconds
+[QRM NOTE]: Time elapsed since start: 3.077 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.088 seconds
+[QRM NOTE]: Time elapsed since last: 0.076 seconds
 
-[QRM NOTE]: Peak memory: 2882944 bytes
+[QRM NOTE]: Peak memory: 2883002 bytes
 
 
 **************************************************************************************************************************
@@ -8642,11 +8642,11 @@ OK
 
 [FW NOTE]: symmetric group order: 144
 
-[QRM NOTE]: Time elapsed since start: 0.865 seconds
+[QRM NOTE]: Time elapsed since start: 0.823 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.865 seconds
+[QRM NOTE]: Time elapsed since last: 0.823 seconds
 
-[QRM NOTE]: Peak memory: 1038103 bytes
+[QRM NOTE]: Peak memory: 1036855 bytes
 
 
 ===================================
@@ -8688,8 +8688,8 @@ sort: key=['key0']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1', 'node2', 'node3']
 predicate: table('node', 'key', 'value')
-predicate: owner('node', 'key')
 predicate: transfer_msg('node', 'key', 'value')
+predicate: owner('node', 'key')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'owner(node3,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'table(node3,key0,value0)', 'table(node3,key0,value1)', 'table(node3,key0,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)', 'transfer_msg(node3,key0,value0)', 'transfer_msg(node3,key0,value1)', 'transfer_msg(node3,key0,value2)']
 
@@ -8718,11 +8718,11 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ow
 1000010000000000000000000000
 1000100000000000000000000000
 
-[QRM NOTE]: Time elapsed since start: 5.618 seconds
+[QRM NOTE]: Time elapsed since start: 5.466 seconds
 
-[QRM NOTE]: Time elapsed since last: 4.752 seconds
+[QRM NOTE]: Time elapsed since last: 4.643 seconds
 
-[QRM NOTE]: Peak memory: 2550082 bytes
+[QRM NOTE]: Peak memory: 2550146 bytes
 
 
 ====================================================================================================================================================================
@@ -8733,11 +8733,11 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ow
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 6.357 seconds
+[QRM NOTE]: Time elapsed since start: 6.197 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.739 seconds
+[QRM NOTE]: Time elapsed since last: 0.731 seconds
 
-[QRM NOTE]: Peak memory: 1972148 bytes
+[QRM NOTE]: Peak memory: 1972212 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_3_key_1_value_3.0.ivy -s node=3,key=2,value=3 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -8769,11 +8769,11 @@ OK
 
 [FW NOTE]: symmetric group order: 72
 
-[QRM NOTE]: Time elapsed since start: 1.361 seconds
+[QRM NOTE]: Time elapsed since start: 1.373 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.361 seconds
+[QRM NOTE]: Time elapsed since last: 1.373 seconds
 
-[QRM NOTE]: Peak memory: 1647252 bytes
+[QRM NOTE]: Peak memory: 1647380 bytes
 
 
 ===================================
@@ -8815,8 +8815,8 @@ sort: key=['key0', 'key1']
 sort: value=['value0', 'value1', 'value2']
 sort: node=['node0', 'node1', 'node2']
 predicate: owner('node', 'key')
-predicate: table('node', 'key', 'value')
 predicate: transfer_msg('node', 'key', 'value')
+predicate: table('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'owner(node1,key1)', 'owner(node2,key0)', 'owner(node2,key1)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node0,key1,value0)', 'table(node0,key1,value1)', 'table(node0,key1,value2)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node1,key1,value0)', 'table(node1,key1,value1)', 'table(node1,key1,value2)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'table(node2,key1,value0)', 'table(node2,key1,value1)', 'table(node2,key1,value2)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node0,key1,value0)', 'transfer_msg(node0,key1,value1)', 'transfer_msg(node0,key1,value2)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node1,key1,value0)', 'transfer_msg(node1,key1,value1)', 'transfer_msg(node1,key1,value2)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)', 'transfer_msg(node2,key1,value0)', 'transfer_msg(node2,key1,value1)', 'transfer_msg(node2,key1,value2)']
 
@@ -9145,11 +9145,11 @@ state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'ow
 110000100010000000000000000000000000000000
 110000100100000000000000000000000000000000
 
-[QRM NOTE]: Time elapsed since start: 10.895 seconds
+[QRM NOTE]: Time elapsed since start: 10.447 seconds
 
-[QRM NOTE]: Time elapsed since last: 9.534 seconds
+[QRM NOTE]: Time elapsed since last: 9.075 seconds
 
-[QRM NOTE]: Peak memory: 3605038 bytes
+[QRM NOTE]: Peak memory: 3605166 bytes
 
 
 ====================================================================================================================================================================
@@ -9160,11 +9160,11 @@ state atoms: ['owner(node0,key0)', 'owner(node0,key1)', 'owner(node1,key0)', 'ow
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 18.393 seconds
+[QRM NOTE]: Time elapsed since start: 17.358 seconds
 
-[QRM NOTE]: Time elapsed since last: 7.498 seconds
+[QRM NOTE]: Time elapsed since last: 6.911 seconds
 
-[QRM NOTE]: Peak memory: 9261529 bytes
+[QRM NOTE]: Peak memory: 9261657 bytes
 
 python3 qrm.py ivybench/sym/ivy/sharded_kv_no_lost_keys.node_3_key_1_value_3.0.ivy -s node=3,key=1,value=4 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/sharded_kv_no_lost_keys.log
 
@@ -9196,11 +9196,11 @@ OK
 
 [FW NOTE]: symmetric group order: 144
 
-[QRM NOTE]: Time elapsed since start: 0.639 seconds
+[QRM NOTE]: Time elapsed since start: 0.625 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.639 seconds
+[QRM NOTE]: Time elapsed since last: 0.625 seconds
 
-[QRM NOTE]: Peak memory: 900517 bytes
+[QRM NOTE]: Peak memory: 899581 bytes
 
 
 ===================================
@@ -9241,9 +9241,9 @@ start extracting cubes
 sort: key=['key0']
 sort: value=['value0', 'value1', 'value2', 'value3']
 sort: node=['node0', 'node1', 'node2']
+predicate: transfer_msg('node', 'key', 'value')
 predicate: owner('node', 'key')
 predicate: table('node', 'key', 'value')
-predicate: transfer_msg('node', 'key', 'value')
 interpreted atoms: {}
 state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'table(node0,key0,value0)', 'table(node0,key0,value1)', 'table(node0,key0,value2)', 'table(node0,key0,value3)', 'table(node1,key0,value0)', 'table(node1,key0,value1)', 'table(node1,key0,value2)', 'table(node1,key0,value3)', 'table(node2,key0,value0)', 'table(node2,key0,value1)', 'table(node2,key0,value2)', 'table(node2,key0,value3)', 'transfer_msg(node0,key0,value0)', 'transfer_msg(node0,key0,value1)', 'transfer_msg(node0,key0,value2)', 'transfer_msg(node0,key0,value3)', 'transfer_msg(node1,key0,value0)', 'transfer_msg(node1,key0,value1)', 'transfer_msg(node1,key0,value2)', 'transfer_msg(node1,key0,value3)', 'transfer_msg(node2,key0,value0)', 'transfer_msg(node2,key0,value1)', 'transfer_msg(node2,key0,value2)', 'transfer_msg(node2,key0,value3)']
 
@@ -9272,11 +9272,11 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ta
 100010000000000000000000000
 100100000000000000000000000
 
-[QRM NOTE]: Time elapsed since start: 4.394 seconds
+[QRM NOTE]: Time elapsed since start: 4.589 seconds
 
-[QRM NOTE]: Time elapsed since last: 3.755 seconds
+[QRM NOTE]: Time elapsed since last: 3.964 seconds
 
-[QRM NOTE]: Peak memory: 2350825 bytes
+[QRM NOTE]: Peak memory: 2350897 bytes
 
 
 ====================================================================================================================================================================
@@ -9287,11 +9287,11 @@ state atoms: ['owner(node0,key0)', 'owner(node1,key0)', 'owner(node2,key0)', 'ta
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 5.118 seconds
+[QRM NOTE]: Time elapsed since start: 5.352 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.724 seconds
+[QRM NOTE]: Time elapsed since last: 0.763 seconds
 
-[QRM NOTE]: Peak memory: 1761305 bytes
+[QRM NOTE]: Peak memory: 1761377 bytes
 
 
 *********************************************************************
@@ -9400,7 +9400,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 83.729 seconds
+[QRM NOTE]: Time elapsed since start: 88.742 seconds
 
-[QRM NOTE]: Time elapsed since last: 83.729 seconds
+[QRM NOTE]: Time elapsed since last: 88.742 seconds
 

@@ -42,7 +42,7 @@ invariant [invar_3] forall NODE1,NODE0. ~has_lock(NODE0) | ~message(NODE1,NODE0)
 invariant [invar_4] forall NODE1,NODE0. ~message(NODE0,NODE0) | ~message(NODE1,NODE0) | NODE0 = NODE1 # qcost: 5
 invariant [invar_5] forall NODE1,NODE0. ~message(NODE1,NODE0) | ~message(NODE0,NODE1) | NODE0 = NODE1 # qcost: 5
 invariant [invar_7] exists NODE0. ~has_lock(NODE0) # qcost: 2
-invariant [invar_8] forall NODE0. ~has_lock(NODE0) | ~message(NODE0,NODE0) # qcost: 3
+invariant [invar_8] forall NODE0. ~message(NODE0,NODE0) | ~has_lock(NODE0) # qcost: 3
 invariant [invar_9] forall NODE1,NODE0. ~has_lock(NODE0) | ~message(NODE1,NODE1) | NODE0 = NODE1 # qcost: 5
 invariant [invar_10] forall NODE1,NODE0. ~message(NODE0,NODE0) | ~message(NODE1,NODE1) | NODE0 = NODE1 # qcost: 5
-invariant [invar_11] exists NODE1,NODE0. has_lock(NODE0) | message(NODE0,NODE1) # qcost: 4
+invariant [invar_11] exists NODE1,NODE0. message(NODE0,NODE1) | has_lock(NODE0) # qcost: 4

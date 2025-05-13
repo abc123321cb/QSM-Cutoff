@@ -42,9 +42,9 @@ OK
 
 [FW NOTE]: symmetric group order: 1
 
-[QRM NOTE]: Time elapsed since start: 0.040 seconds
+[QRM NOTE]: Time elapsed since start: 0.020 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.040 seconds
+[QRM NOTE]: Time elapsed since last: 0.020 seconds
 
 [QRM NOTE]: Peak memory: 18283 bytes
 
@@ -84,17 +84,17 @@ start extracting cubes
 
 sort: client=['client0']
 sort: server=['server0']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'semaphore(server0)']
 
 01
 10
 
-[QRM NOTE]: Time elapsed since start: 0.070 seconds
+[QRM NOTE]: Time elapsed since start: 0.063 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.030 seconds
+[QRM NOTE]: Time elapsed since last: 0.043 seconds
 
 [QRM NOTE]: Peak memory: 1073974 bytes
 
@@ -111,9 +111,9 @@ state atoms: ['link(client0,server0)', 'semaphore(server0)']
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.074 seconds
+[QRM NOTE]: Time elapsed since start: 0.067 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.003 seconds
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
 
 [QRM NOTE]: Peak memory: 24451 bytes
 
@@ -163,9 +163,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 2
 
-[QRM NOTE]: Time elapsed since start: 0.087 seconds
+[QRM NOTE]: Time elapsed since start: 0.078 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.013 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
 [QRM NOTE]: Peak memory: 1079075 bytes
 
@@ -221,7 +221,7 @@ After reduction :
  pending  : []
  solution : [0, 1]
 
-[QRM NOTE]: Time elapsed since start: 0.090 seconds
+[QRM NOTE]: Time elapsed since start: 0.081 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.003 seconds
 
@@ -335,12 +335,12 @@ signed_func_name2args: {'1$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~semaphore(SERVER0)', '~link(CLIENT0,SERVER0)']
+qterms: ['~link(CLIENT0,SERVER0)', '~semaphore(SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)
+qclause: forall CLIENT0,SERVER0. link(CLIENT0,SERVER0) | semaphore(SERVER0)
 
 
 === Prime Orbit 1 =====================
@@ -440,12 +440,12 @@ signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
+qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+qclause: forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
 
 
 ============================================================================================================
@@ -463,7 +463,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall SERVER0,CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)
+quantified form : forall CLIENT0,SERVER0. link(CLIENT0,SERVER0) | semaphore(SERVER0)
 qcost : 4
 
 
@@ -477,16 +477,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+quantified form : forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.158 seconds
+[QRM NOTE]: Time elapsed since start: 0.153 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.068 seconds
+[QRM NOTE]: Time elapsed since last: 0.072 seconds
 
-[QRM NOTE]: Peak memory: 1765602 bytes
+[QRM NOTE]: Peak memory: 1765606 bytes
 
 
 ===========================================================================================
@@ -552,9 +552,9 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 2
 
-invariant [invar_0] forall SERVER0,CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_0] forall CLIENT0,SERVER0. link(CLIENT0,SERVER0) | semaphore(SERVER0) # qcost: 4
 
-invariant [invar_1] forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
+invariant [invar_1] forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 2
 
@@ -563,11 +563,11 @@ invariant [invar_1] forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.229 seconds
+[QRM NOTE]: Time elapsed since start: 0.218 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.072 seconds
+[QRM NOTE]: Time elapsed since last: 0.065 seconds
 
-[QRM NOTE]: Peak memory: 1754221 bytes
+[QRM NOTE]: Peak memory: 1754225 bytes
 
 
 ***********************************************************************************************************
@@ -658,9 +658,9 @@ state atoms: ['link(client0,server0)', 'link(client0,server1)', 'semaphore(serve
 1001
 1100
 
-[QRM NOTE]: Time elapsed since start: 0.113 seconds
+[QRM NOTE]: Time elapsed since start: 0.074 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.089 seconds
+[QRM NOTE]: Time elapsed since last: 0.052 seconds
 
 [QRM NOTE]: Peak memory: 1096818 bytes
 
@@ -673,9 +673,9 @@ state atoms: ['link(client0,server0)', 'link(client0,server1)', 'semaphore(serve
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.128 seconds
+[QRM NOTE]: Time elapsed since start: 0.088 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.016 seconds
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
 
 [QRM NOTE]: Peak memory: 53624 bytes
 
@@ -709,9 +709,9 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.021 seconds
+[QRM NOTE]: Time elapsed since start: 0.029 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.021 seconds
+[QRM NOTE]: Time elapsed since last: 0.029 seconds
 
 [QRM NOTE]: Peak memory: 27073 bytes
 
@@ -751,8 +751,8 @@ start extracting cubes
 
 sort: client=['client0', 'client1']
 sort: server=['server0']
-predicate: semaphore('server',)
 predicate: link('client', 'server')
+predicate: semaphore('server',)
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client1,server0)', 'semaphore(server0)']
 
@@ -760,9 +760,9 @@ state atoms: ['link(client0,server0)', 'link(client1,server0)', 'semaphore(serve
 010
 100
 
-[QRM NOTE]: Time elapsed since start: 0.059 seconds
+[QRM NOTE]: Time elapsed since start: 0.069 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.038 seconds
+[QRM NOTE]: Time elapsed since last: 0.040 seconds
 
 [QRM NOTE]: Peak memory: 1089396 bytes
 
@@ -775,9 +775,9 @@ state atoms: ['link(client0,server0)', 'link(client1,server0)', 'semaphore(serve
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.069 seconds
+[QRM NOTE]: Time elapsed since start: 0.080 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.010 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
 [QRM NOTE]: Peak memory: 44591 bytes
 
@@ -888,7 +888,7 @@ qcost : 0
 
 [QRM NOTE]: Time elapsed since last: 0.008 seconds
 
-[QRM NOTE]: Peak memory: 1058923 bytes
+[QRM NOTE]: Peak memory: 1058864 bytes
 
 
 ==============================================================================================
@@ -1326,11 +1326,11 @@ qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.094 seconds
+[QRM NOTE]: Time elapsed since start: 0.090 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.072 seconds
+[QRM NOTE]: Time elapsed since last: 0.069 seconds
 
-[QRM NOTE]: Peak memory: 1754598 bytes
+[QRM NOTE]: Peak memory: 1754712 bytes
 
 
 ===========================================================================================
@@ -1409,11 +1409,11 @@ invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(C
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.164 seconds
+[QRM NOTE]: Time elapsed since start: 0.158 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.070 seconds
+[QRM NOTE]: Time elapsed since last: 0.068 seconds
 
-[QRM NOTE]: Peak memory: 1741042 bytes
+[QRM NOTE]: Peak memory: 1741156 bytes
 
 
 ***********************************************************************************************************
@@ -1452,9 +1452,9 @@ OK
 
 [FW NOTE]: symmetric group order: 4
 
-[QRM NOTE]: Time elapsed since start: 0.043 seconds
+[QRM NOTE]: Time elapsed since start: 0.035 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.043 seconds
+[QRM NOTE]: Time elapsed since last: 0.035 seconds
 
 [QRM NOTE]: Peak memory: 55799 bytes
 
@@ -1509,9 +1509,9 @@ state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,se
 100100
 110000
 
-[QRM NOTE]: Time elapsed since start: 0.174 seconds
+[QRM NOTE]: Time elapsed since start: 0.151 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.132 seconds
+[QRM NOTE]: Time elapsed since last: 0.116 seconds
 
 [QRM NOTE]: Peak memory: 1132481 bytes
 
@@ -1524,9 +1524,9 @@ state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,se
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.213 seconds
+[QRM NOTE]: Time elapsed since start: 0.191 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.038 seconds
+[QRM NOTE]: Time elapsed since last: 0.040 seconds
 
 [QRM NOTE]: Peak memory: 108569 bytes
 
@@ -1560,9 +1560,9 @@ OK
 
 [FW NOTE]: symmetric group order: 6
 
-[QRM NOTE]: Time elapsed since start: 0.025 seconds
+[QRM NOTE]: Time elapsed since start: 0.031 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.025 seconds
+[QRM NOTE]: Time elapsed since last: 0.031 seconds
 
 [QRM NOTE]: Peak memory: 37911 bytes
 
@@ -1602,8 +1602,8 @@ start extracting cubes
 
 sort: client=['client0', 'client1', 'client2']
 sort: server=['server0']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,server0)', 'semaphore(server0)']
 
@@ -1612,9 +1612,9 @@ state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,se
 0100
 1000
 
-[QRM NOTE]: Time elapsed since start: 0.094 seconds
+[QRM NOTE]: Time elapsed since start: 0.097 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.069 seconds
+[QRM NOTE]: Time elapsed since last: 0.066 seconds
 
 [QRM NOTE]: Peak memory: 1104234 bytes
 
@@ -1627,11 +1627,11 @@ state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,se
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.112 seconds
+[QRM NOTE]: Time elapsed since start: 0.116 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.018 seconds
+[QRM NOTE]: Time elapsed since last: 0.019 seconds
 
-[QRM NOTE]: Peak memory: 63653 bytes
+[QRM NOTE]: Peak memory: 63712 bytes
 
 next size: server=1,client=3
 
@@ -1742,9 +1742,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 7
 
-[QRM NOTE]: Time elapsed since start: 0.022 seconds
+[QRM NOTE]: Time elapsed since start: 0.024 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.009 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
 [QRM NOTE]: Peak memory: 1063922 bytes
 
@@ -1800,7 +1800,7 @@ After reduction :
  pending  : []
  solution : [0, 1, 2]
 
-[QRM NOTE]: Time elapsed since start: 0.023 seconds
+[QRM NOTE]: Time elapsed since start: 0.025 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
@@ -1918,12 +1918,12 @@ signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('cl
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
+qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+qclause: forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
 
 
 === Prime Orbit 1 =====================
@@ -2015,7 +2015,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2')))}
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2')))}
 
 exists_qvars: set()
 
@@ -2032,7 +2032,7 @@ qterms: ['link(CLIENT0,SERVER0)', 'link(CLIENT1,SERVER0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall SERVER0,CLIENT1,CLIENT0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
+qclause: forall CLIENT0,CLIENT1,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
 
 
 === Prime Orbit 2 =====================
@@ -2159,7 +2159,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+quantified form : forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
 qcost : 4
 
 
@@ -2177,7 +2177,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall SERVER0,CLIENT1,CLIENT0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
+quantified form : forall CLIENT0,CLIENT1,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
 qcost : 6
 
 
@@ -2196,11 +2196,11 @@ qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.094 seconds
+[QRM NOTE]: Time elapsed since start: 0.351 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.072 seconds
+[QRM NOTE]: Time elapsed since last: 0.326 seconds
 
-[QRM NOTE]: Peak memory: 1763497 bytes
+[QRM NOTE]: Peak memory: 1763420 bytes
 
 
 ===========================================================================================
@@ -2266,9 +2266,9 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_0] forall SERVER0,CLIENT0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
+invariant [invar_0] forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
 
-invariant [invar_1] forall SERVER0,CLIENT1,CLIENT0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
+invariant [invar_1] forall CLIENT0,CLIENT1,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
 
 invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)) # qcost: 4
 
@@ -2279,11 +2279,11 @@ invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(C
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.169 seconds
+[QRM NOTE]: Time elapsed since start: 0.425 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.075 seconds
+[QRM NOTE]: Time elapsed since last: 0.074 seconds
 
-[QRM NOTE]: Peak memory: 1747561 bytes
+[QRM NOTE]: Peak memory: 1747529 bytes
 
 
 ***********************************************************************************************************
@@ -2322,9 +2322,9 @@ OK
 
 [FW NOTE]: symmetric group order: 12
 
-[QRM NOTE]: Time elapsed since start: 0.049 seconds
+[QRM NOTE]: Time elapsed since start: 0.048 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.049 seconds
+[QRM NOTE]: Time elapsed since last: 0.048 seconds
 
 [QRM NOTE]: Peak memory: 90648 bytes
 
@@ -2364,8 +2364,8 @@ start extracting cubes
 
 sort: client=['client0', 'client1', 'client2']
 sort: server=['server0', 'server1']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,server0)', 'link(client1,server1)', 'link(client2,server0)', 'link(client2,server1)', 'semaphore(server0)', 'semaphore(server1)']
 
@@ -2386,9 +2386,9 @@ state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,se
 10010000
 11000000
 
-[QRM NOTE]: Time elapsed since start: 0.274 seconds
+[QRM NOTE]: Time elapsed since start: 0.278 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.225 seconds
+[QRM NOTE]: Time elapsed since last: 0.230 seconds
 
 [QRM NOTE]: Peak memory: 1180468 bytes
 
@@ -2401,11 +2401,11 @@ state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,se
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.363 seconds
+[QRM NOTE]: Time elapsed since start: 0.367 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.089 seconds
+[QRM NOTE]: Time elapsed since last: 0.088 seconds
 
-[QRM NOTE]: Peak memory: 198560 bytes
+[QRM NOTE]: Peak memory: 198619 bytes
 
 python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy -s server=1,client=4 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lock_server.log
 
@@ -2437,9 +2437,9 @@ OK
 
 [FW NOTE]: symmetric group order: 24
 
-[QRM NOTE]: Time elapsed since start: 0.032 seconds
+[QRM NOTE]: Time elapsed since start: 0.036 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.032 seconds
+[QRM NOTE]: Time elapsed since last: 0.036 seconds
 
 [QRM NOTE]: Peak memory: 53901 bytes
 
@@ -2479,8 +2479,8 @@ start extracting cubes
 
 sort: client=['client0', 'client1', 'client2', 'client3']
 sort: server=['server0']
-predicate: link('client', 'server')
 predicate: semaphore('server',)
+predicate: link('client', 'server')
 interpreted atoms: {}
 state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,server0)', 'link(client3,server0)', 'semaphore(server0)']
 
@@ -2490,9 +2490,9 @@ state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,se
 01000
 10000
 
-[QRM NOTE]: Time elapsed since start: 0.158 seconds
+[QRM NOTE]: Time elapsed since start: 0.141 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.125 seconds
+[QRM NOTE]: Time elapsed since last: 0.106 seconds
 
 [QRM NOTE]: Peak memory: 1125566 bytes
 
@@ -2505,7 +2505,7 @@ state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,se
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.202 seconds
+[QRM NOTE]: Time elapsed since start: 0.187 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.045 seconds
 
@@ -2581,7 +2581,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 29.288 seconds
+[QRM NOTE]: Time elapsed since start: 32.671 seconds
 
-[QRM NOTE]: Time elapsed since last: 29.288 seconds
+[QRM NOTE]: Time elapsed since last: 32.671 seconds
 

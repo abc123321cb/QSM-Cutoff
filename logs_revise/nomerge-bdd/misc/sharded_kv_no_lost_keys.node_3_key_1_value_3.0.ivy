@@ -45,12 +45,12 @@ export put
 
 ##invariant [manual_1] forall K. (exists N. owner(N, K)) | (exists N, V. transfer_msg(N, K, V))
 
-invariant [invar_0] forall NODE0,KEY0,VALUE0,NODE1. ~owner(NODE0,KEY0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
-invariant [invar_1] forall NODE0,VALUE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
-invariant [invar_6] forall KEY0,NODE0,NODE1,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1) # qcost: 9
-invariant [invar_7] forall NODE0,KEY0,VALUE0,NODE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
-invariant [invar_8] forall NODE0,VALUE0,VALUE1,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
-invariant [invar_9] forall NODE0,KEY0,NODE1. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 6
-invariant [invar_14] forall NODE0,VALUE0,VALUE1,KEY0. ~table(NODE0,KEY0,VALUE0) | ~table(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
-invariant [invar_15] forall KEY0. (exists NODE0,VALUE0. transfer_msg(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0)) # qcost: 5
-invariant [invar_11] forall NODE0,VALUE0,KEY0. ~table(NODE0,KEY0,VALUE0) | owner(NODE0,KEY0) # qcost: 5
+invariant [invar_0] forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE1,KEY0,VALUE0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_1] forall VALUE0,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~owner(NODE0,KEY0) # qcost: 5
+invariant [invar_6] forall NODE0,NODE1,KEY0,VALUE0,VALUE1. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1) # qcost: 9
+invariant [invar_7] forall VALUE0,NODE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE1,KEY0,VALUE0) | NODE0 = NODE1 # qcost: 7
+invariant [invar_8] forall VALUE0,VALUE1,NODE0,KEY0. ~transfer_msg(NODE0,KEY0,VALUE0) | ~transfer_msg(NODE0,KEY0,VALUE1) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_9] forall KEY0,NODE1,NODE0. ~owner(NODE1,KEY0) | ~owner(NODE0,KEY0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_14] forall VALUE0,VALUE1,NODE0,KEY0. ~table(NODE0,KEY0,VALUE1) | ~table(NODE0,KEY0,VALUE0) | VALUE0 = VALUE1 # qcost: 7
+invariant [invar_15] forall KEY0. (exists VALUE0,NODE0. owner(NODE0,KEY0) | transfer_msg(NODE0,KEY0,VALUE0)) # qcost: 5
+invariant [invar_11] forall VALUE0,NODE0,KEY0. owner(NODE0,KEY0) | ~table(NODE0,KEY0,VALUE0) # qcost: 5

@@ -9,7 +9,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -23,7 +23,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE0,NODE1. ~grant_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
 qcost : 5
 
 
@@ -51,7 +51,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~unlock_msg(NODE0) | held
+quantified form : forall NODE0. held | ~unlock_msg(NODE0)
 qcost : 3
 
 
@@ -65,7 +65,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE0)
 qcost : 3
 
 
@@ -91,7 +91,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0)
 qcost : 3
 
 
@@ -131,7 +131,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~grant_msg(NODE0) | held
+quantified form : forall NODE0. held | ~grant_msg(NODE0)
 qcost : 3
 
 
@@ -145,7 +145,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~holds_lock(NODE0) | held
+quantified form : forall NODE0. held | ~holds_lock(NODE0)
 qcost : 3
 
 
@@ -169,6 +169,6 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | ~held | unlock_msg(NODE0)
+quantified form : exists NODE0. unlock_msg(NODE0) | grant_msg(NODE0) | holds_lock(NODE0) | ~held
 qcost : 5
 

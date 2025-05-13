@@ -33,7 +33,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall QUORUM0,VALUE0,VALUE1. ~chosenAt(QUORUM0,VALUE0) | ~decision(VALUE1) | VALUE0 = VALUE1
+quantified form : forall QUORUM0,VALUE1,VALUE0. ~decision(VALUE1) | ~chosenAt(QUORUM0,VALUE0) | VALUE0 = VALUE1
 qcost : 6
 
 
@@ -67,7 +67,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall QUORUM0,VALUE0,VALUE1,NODE0. chosenAt(QUORUM0,VALUE0) | ~vote(NODE0,VALUE1) | ~decision(VALUE0) | member(NODE0,QUORUM0) | VALUE0 = VALUE1
+quantified form : forall QUORUM0,NODE0,VALUE1,VALUE0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~vote(NODE0,VALUE1) | member(NODE0,QUORUM0) | VALUE0 = VALUE1
 qcost : 9
 
 
@@ -89,7 +89,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall QUORUM0,VALUE0,NODE0. ~didNotVote(NODE0) | chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0) | member(NODE0,QUORUM0)
+quantified form : forall QUORUM0,NODE0,VALUE0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~didNotVote(NODE0) | member(NODE0,QUORUM0)
 qcost : 7
 
 
@@ -111,7 +111,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall QUORUM0,VALUE0,NODE0. member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0) | vote(NODE0,VALUE0)
+quantified form : forall QUORUM0,NODE0,VALUE0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | member(NODE0,QUORUM0)
 qcost : 7
 
 
@@ -133,7 +133,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE1,NODE0. ~decision(VALUE0) | vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0,VALUE0. ~decision(VALUE0) | vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -167,7 +167,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE1,NODE0. ~didNotVote(NODE0) | ~decision(VALUE0) | vote(NODE1,VALUE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0,VALUE0. ~decision(VALUE0) | vote(NODE1,VALUE0) | ~didNotVote(NODE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -189,7 +189,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE1,NODE0. ~didNotVote(NODE0) | ~decision(VALUE0) | ~didNotVote(NODE1) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0,VALUE0. ~decision(VALUE0) | ~didNotVote(NODE1) | ~didNotVote(NODE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -223,7 +223,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,VALUE1,NODE1,NODE0. vote(NODE1,VALUE0) | ~decision(VALUE0) | ~vote(NODE0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall NODE1,VALUE1,NODE0,VALUE0. ~decision(VALUE0) | vote(NODE1,VALUE0) | ~vote(NODE0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -257,7 +257,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,VALUE1,NODE1,NODE0. ~didNotVote(NODE0) | ~vote(NODE1,VALUE1) | ~decision(VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall NODE1,VALUE1,NODE0,VALUE0. ~decision(VALUE0) | ~vote(NODE1,VALUE1) | ~didNotVote(NODE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -279,7 +279,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE0,VALUE1,NODE1,NODE0. ~vote(NODE1,VALUE1) | ~decision(VALUE0) | ~vote(NODE0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall NODE1,VALUE1,NODE0,VALUE0. ~decision(VALUE0) | ~vote(NODE1,VALUE1) | ~vote(NODE0,VALUE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
 qcost : 9
 
 
@@ -301,7 +301,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall QUORUM0,QUORUM1,VALUE0,NODE0. ~member(NODE0,QUORUM1) | ~vote(NODE0,VALUE0) | ~decision(VALUE0) | ~member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | chosenAt(QUORUM1,VALUE0) | QUORUM0 = QUORUM1
+quantified form : forall QUORUM0,NODE0,QUORUM1,VALUE0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | chosenAt(QUORUM1,VALUE0) | ~member(NODE0,QUORUM1) | ~vote(NODE0,VALUE0) | QUORUM0 = QUORUM1
 qcost : 11
 
 
@@ -315,7 +315,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decision(VALUE0))
+quantified form : forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | chosenAt(QUORUM0,VALUE0))
 qcost : 4
 
 
@@ -337,6 +337,6 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 9
-quantified form : forall QUORUM0,NODE0,QUORUM1,VALUE0,VALUE1. ~member(NODE0,QUORUM1) | vote(NODE0,VALUE1) | didNotVote(NODE0) | ~decision(VALUE0) | ~member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | chosenAt(QUORUM1,VALUE0) | (VALUE0 = VALUE1 | QUORUM0 = QUORUM1)
+quantified form : forall QUORUM1,QUORUM0,NODE0,VALUE1,VALUE0. ~decision(VALUE0) | didNotVote(NODE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | chosenAt(QUORUM1,VALUE0) | vote(NODE0,VALUE1) | ~member(NODE0,QUORUM1) | (QUORUM0 = QUORUM1 | VALUE0 = VALUE1)
 qcost : 14
 
