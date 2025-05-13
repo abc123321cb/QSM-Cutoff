@@ -36,30 +36,30 @@ qcost : 0
 === Prime Orbit 2 =====================
 size : 12
 num_suborbits: 1
-7 (*) : 1--------1----
-7     : ['decide(quorum__node0_node1,value0)', 'vote(node0,value1)']
-8     : -1------1-----
-8     : ['decide(quorum__node0_node1,value1)', 'vote(node0,value0)']
-9     : --1------1----
-9     : ['decide(quorum__node0_node2,value0)', 'vote(node0,value1)']
-10     : ---1----1-----
-10     : ['decide(quorum__node0_node2,value1)', 'vote(node0,value0)']
-11     : 1----------1--
-11     : ['decide(quorum__node0_node1,value0)', 'vote(node1,value1)']
-12     : -1--------1---
-12     : ['decide(quorum__node0_node1,value1)', 'vote(node1,value0)']
-13     : ----1------1--
-13     : ['decide(quorum__node1_node2,value0)', 'vote(node1,value1)']
-14     : -----1----1---
-14     : ['decide(quorum__node1_node2,value1)', 'vote(node1,value0)']
-15     : --1----------1
-15     : ['decide(quorum__node0_node2,value0)', 'vote(node2,value1)']
-16     : ---1--------1-
-16     : ['decide(quorum__node0_node2,value1)', 'vote(node2,value0)']
-17     : ----1--------1
-17     : ['decide(quorum__node1_node2,value0)', 'vote(node2,value1)']
-18     : -----1------1-
-18     : ['decide(quorum__node1_node2,value1)', 'vote(node2,value0)']
+7 (*) : --1---------0-
+7     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+8     : ---1---------0
+8     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+9     : 1---------0---
+9     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+10     : -1---------0--
+10     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+11     : ----1-------0-
+11     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+12     : -----1-------0
+12     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+13     : 1-------0-----
+13     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+14     : -1-------0----
+14     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+15     : ----1-----0---
+15     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+16     : -----1-----0--
+16     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+17     : --1-----0-----
+17     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+18     : ---1-----0----
+18     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -68,14 +68,26 @@ qcost : 0
 
 
 === Prime Orbit 3 =====================
-size : 3
-num_suborbits: 1
-19 (*) : --------11----
-19     : ['vote(node0,value0)', 'vote(node0,value1)']
-20     : ----------11--
-20     : ['vote(node1,value0)', 'vote(node1,value1)']
-21     : ------------11
-21     : ['vote(node2,value0)', 'vote(node2,value1)']
+size : 9
+num_suborbits: 2
+19 (*) : -11-----------
+19     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value0)']
+20     : 1--1----------
+20     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value1)']
+21     : -1--1---------
+21     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node1_node2,value0)']
+22     : 1----1--------
+22     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node1_node2,value1)']
+23     : ---11---------
+23     : ['decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value0)']
+24     : --1--1--------
+24     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value1)']
+37 (*) : --11----------
+37     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)']
+38     : 11------------
+38     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)']
+39     : ----11--------
+39     : ['decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -84,26 +96,32 @@ qcost : 0
 
 
 === Prime Orbit 4 =====================
-size : 9
-num_suborbits: 2
-22 (*) : -1--1---------
-22     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node1_node2,value0)']
-23     : 1----1--------
-23     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node1_node2,value1)']
-24     : ---11---------
-24     : ['decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value0)']
-25     : --1--1--------
-25     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value1)']
-26     : -11-----------
-26     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value0)']
-27     : 1--1----------
-27     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value1)']
-40 (*) : ----11--------
-40     : ['decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)']
-41     : --11----------
-41     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)']
-42     : 11------------
-42     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)']
+size : 12
+num_suborbits: 1
+25 (*) : --1----------1
+25     : ['decide(quorum__node0_node2,value0)', 'vote(node2,value1)']
+26     : ---1--------1-
+26     : ['decide(quorum__node0_node2,value1)', 'vote(node2,value0)']
+27     : 1----------1--
+27     : ['decide(quorum__node0_node1,value0)', 'vote(node1,value1)']
+28     : -1--------1---
+28     : ['decide(quorum__node0_node1,value1)', 'vote(node1,value0)']
+29     : ----1--------1
+29     : ['decide(quorum__node1_node2,value0)', 'vote(node2,value1)']
+30     : -----1------1-
+30     : ['decide(quorum__node1_node2,value1)', 'vote(node2,value0)']
+31     : 1--------1----
+31     : ['decide(quorum__node0_node1,value0)', 'vote(node0,value1)']
+32     : -1------1-----
+32     : ['decide(quorum__node0_node1,value1)', 'vote(node0,value0)']
+33     : ----1------1--
+33     : ['decide(quorum__node1_node2,value0)', 'vote(node1,value1)']
+34     : -----1----1---
+34     : ['decide(quorum__node1_node2,value1)', 'vote(node1,value0)']
+35     : --1------1----
+35     : ['decide(quorum__node0_node2,value0)', 'vote(node0,value1)']
+36     : ---1----1-----
+36     : ['decide(quorum__node0_node2,value1)', 'vote(node0,value0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -112,32 +130,14 @@ qcost : 0
 
 
 === Prime Orbit 5 =====================
-size : 12
+size : 3
 num_suborbits: 1
-28 (*) : ----1-----0---
-28     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
-29     : -----1-----0--
-29     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
-30     : ----1-------0-
-30     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
-31     : -----1-------0
-31     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
-32     : --1-----0-----
-32     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
-33     : ---1-----0----
-33     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
-34     : --1---------0-
-34     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
-35     : ---1---------0
-35     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
-36     : 1-------0-----
-36     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
-37     : -1-------0----
-37     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
-38     : 1---------0---
-38     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
-39     : -1---------0--
-39     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+40 (*) : --------11----
+40     : ['vote(node0,value0)', 'vote(node0,value1)']
+41     : ----------11--
+41     : ['vote(node1,value0)', 'vote(node1,value1)']
+42     : ------------11
+42     : ['vote(node2,value0)', 'vote(node2,value1)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -146,32 +146,20 @@ qcost : 0
 
 
 === Prime Orbit 6 =====================
-size : 12
+size : 6
 num_suborbits: 1
-43 (*) : -------1-01---
-43     : ['decision(value1)', 'vote(node1,value0)', '~vote(node0,value1)']
-44     : ------1-0--1--
-44     : ['decision(value0)', 'vote(node1,value1)', '~vote(node0,value0)']
-45     : -------1-0--1-
-45     : ['decision(value1)', 'vote(node2,value0)', '~vote(node0,value1)']
-46     : ------1-0----1
-46     : ['decision(value0)', 'vote(node2,value1)', '~vote(node0,value0)']
-47     : -------11--0--
-47     : ['decision(value1)', 'vote(node0,value0)', '~vote(node1,value1)']
-48     : ------1--10---
-48     : ['decision(value0)', 'vote(node0,value1)', '~vote(node1,value0)']
-49     : -------1---01-
-49     : ['decision(value1)', 'vote(node2,value0)', '~vote(node1,value1)']
-50     : ------1---0--1
-50     : ['decision(value0)', 'vote(node2,value1)', '~vote(node1,value0)']
-51     : -------11----0
-51     : ['decision(value1)', 'vote(node0,value0)', '~vote(node2,value1)']
-52     : ------1--1--0-
-52     : ['decision(value0)', 'vote(node0,value1)', '~vote(node2,value0)']
-53     : -------1--1--0
-53     : ['decision(value1)', 'vote(node1,value0)', '~vote(node2,value1)']
-54     : ------1----10-
-54     : ['decision(value0)', 'vote(node1,value1)', '~vote(node2,value0)']
+43 (*) : -0-----1----1-
+43     : ['decision(value1)', 'vote(node2,value0)', '~decide(quorum__node0_node1,value1)']
+44     : 0-----1------1
+44     : ['decision(value0)', 'vote(node2,value1)', '~decide(quorum__node0_node1,value0)']
+45     : ---0---1--1---
+45     : ['decision(value1)', 'vote(node1,value0)', '~decide(quorum__node0_node2,value1)']
+46     : --0---1----1--
+46     : ['decision(value0)', 'vote(node1,value1)', '~decide(quorum__node0_node2,value0)']
+47     : -----0-11-----
+47     : ['decision(value1)', 'vote(node0,value0)', '~decide(quorum__node1_node2,value1)']
+48     : ----0-1--1----
+48     : ['decision(value0)', 'vote(node0,value1)', '~decide(quorum__node1_node2,value0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -180,20 +168,32 @@ qcost : 0
 
 
 === Prime Orbit 7 =====================
-size : 6
+size : 12
 num_suborbits: 1
-55 (*) : ---0---1--1---
-55     : ['decision(value1)', 'vote(node1,value0)', '~decide(quorum__node0_node2,value1)']
-56     : --0---1----1--
-56     : ['decision(value0)', 'vote(node1,value1)', '~decide(quorum__node0_node2,value0)']
-57     : -0-----1----1-
-57     : ['decision(value1)', 'vote(node2,value0)', '~decide(quorum__node0_node1,value1)']
-58     : 0-----1------1
-58     : ['decision(value0)', 'vote(node2,value1)', '~decide(quorum__node0_node1,value0)']
-59     : -----0-11-----
-59     : ['decision(value1)', 'vote(node0,value0)', '~decide(quorum__node1_node2,value1)']
-60     : ----0-1--1----
-60     : ['decision(value0)', 'vote(node0,value1)', '~decide(quorum__node1_node2,value0)']
+49 (*) : -------1---01-
+49     : ['decision(value1)', 'vote(node2,value0)', '~vote(node1,value1)']
+50     : ------1---0--1
+50     : ['decision(value0)', 'vote(node2,value1)', '~vote(node1,value0)']
+51     : -------1--1--0
+51     : ['decision(value1)', 'vote(node1,value0)', '~vote(node2,value1)']
+52     : ------1----10-
+52     : ['decision(value0)', 'vote(node1,value1)', '~vote(node2,value0)']
+53     : -------1-0--1-
+53     : ['decision(value1)', 'vote(node2,value0)', '~vote(node0,value1)']
+54     : ------1-0----1
+54     : ['decision(value0)', 'vote(node2,value1)', '~vote(node0,value0)']
+55     : -------11----0
+55     : ['decision(value1)', 'vote(node0,value0)', '~vote(node2,value1)']
+56     : ------1--1--0-
+56     : ['decision(value0)', 'vote(node0,value1)', '~vote(node2,value0)']
+57     : -------1-01---
+57     : ['decision(value1)', 'vote(node1,value0)', '~vote(node0,value1)']
+58     : ------1-0--1--
+58     : ['decision(value0)', 'vote(node1,value1)', '~vote(node0,value0)']
+59     : -------11--0--
+59     : ['decision(value1)', 'vote(node0,value0)', '~vote(node1,value1)']
+60     : ------1--10---
+60     : ['decision(value0)', 'vote(node0,value1)', '~vote(node1,value0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -226,18 +226,18 @@ qcost : 0
 === Prime Orbit 9 =====================
 size : 6
 num_suborbits: 1
-67 (*) : -0-----1-----0
-67     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~vote(node2,value1)']
-68     : 0-----1-----0-
-68     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~vote(node2,value0)']
-69     : ---0---1---0--
-69     : ['decision(value1)', '~decide(quorum__node0_node2,value1)', '~vote(node1,value1)']
-70     : --0---1---0---
-70     : ['decision(value0)', '~decide(quorum__node0_node2,value0)', '~vote(node1,value0)']
-71     : -----0-1-0----
-71     : ['decision(value1)', '~decide(quorum__node1_node2,value1)', '~vote(node0,value1)']
-72     : ----0-1-0-----
-72     : ['decision(value0)', '~decide(quorum__node1_node2,value0)', '~vote(node0,value0)']
+67 (*) : -------1---0-0
+67     : ['decision(value1)', '~vote(node1,value1)', '~vote(node2,value1)']
+68     : ------1---0-0-
+68     : ['decision(value0)', '~vote(node1,value0)', '~vote(node2,value0)']
+69     : -------1-0---0
+69     : ['decision(value1)', '~vote(node0,value1)', '~vote(node2,value1)']
+70     : ------1-0---0-
+70     : ['decision(value0)', '~vote(node0,value0)', '~vote(node2,value0)']
+71     : -------1-0-0--
+71     : ['decision(value1)', '~vote(node0,value1)', '~vote(node1,value1)']
+72     : ------1-0-0---
+72     : ['decision(value0)', '~vote(node0,value0)', '~vote(node1,value0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -248,18 +248,18 @@ qcost : 0
 === Prime Orbit 10 =====================
 size : 6
 num_suborbits: 1
-73 (*) : -------1-0---0
-73     : ['decision(value1)', '~vote(node0,value1)', '~vote(node2,value1)']
-74     : ------1-0---0-
-74     : ['decision(value0)', '~vote(node0,value0)', '~vote(node2,value0)']
-75     : -------1-0-0--
-75     : ['decision(value1)', '~vote(node0,value1)', '~vote(node1,value1)']
-76     : ------1-0-0---
-76     : ['decision(value0)', '~vote(node0,value0)', '~vote(node1,value0)']
-77     : -------1---0-0
-77     : ['decision(value1)', '~vote(node1,value1)', '~vote(node2,value1)']
-78     : ------1---0-0-
-78     : ['decision(value0)', '~vote(node1,value0)', '~vote(node2,value0)']
+73 (*) : ---0---1---0--
+73     : ['decision(value1)', '~decide(quorum__node0_node2,value1)', '~vote(node1,value1)']
+74     : --0---1---0---
+74     : ['decision(value0)', '~decide(quorum__node0_node2,value0)', '~vote(node1,value0)']
+75     : -0-----1-----0
+75     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~vote(node2,value1)']
+76     : 0-----1-----0-
+76     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~vote(node2,value0)']
+77     : -----0-1-0----
+77     : ['decision(value1)', '~decide(quorum__node1_node2,value1)', '~vote(node0,value1)']
+78     : ----0-1-0-----
+78     : ['decision(value0)', '~decide(quorum__node1_node2,value0)', '~vote(node0,value0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0

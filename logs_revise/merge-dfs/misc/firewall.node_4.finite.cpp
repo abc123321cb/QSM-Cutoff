@@ -607,14 +607,14 @@ void firewall__node_4__finite::__init(){
     const int max_qrm_solution_count = 5;
     if (qrm_solution_count == 0){
         bool __tmp0[4][4];
-        for (int D = 0; D < 4; D++) {
-            for (int S = 0; S < 4; S++) {
-                __tmp0[D][S] = false;
+        for (int S = 0; S < 4; S++) {
+            for (int D = 0; D < 4; D++) {
+                __tmp0[S][D] = false;
             }
         }
-        for (int D = 0; D < 4; D++) {
-            for (int S = 0; S < 4; S++) {
-                sent[S][D] = __tmp0[D][S];
+        for (int S = 0; S < 4; S++) {
+            for (int D = 0; D < 4; D++) {
+                sent[S][D] = __tmp0[S][D];
             }
         }
         bool __tmp1[4];
@@ -636,9 +636,9 @@ void firewall__node_4__finite::__init(){
         internal[3] = true;
     }
     else if (qrm_solution_count == 2){
-        internal[0] = true;
+        internal[0] = false;
         internal[1] = true;
-        internal[2] = false;
+        internal[2] = true;
         internal[3] = true;
     }
     else if (qrm_solution_count == 3){
@@ -648,9 +648,9 @@ void firewall__node_4__finite::__init(){
         internal[3] = true;
     }
     else if (qrm_solution_count == 4){
-        internal[0] = false;
+        internal[0] = true;
         internal[1] = false;
-        internal[2] = true;
+        internal[2] = false;
         internal[3] = true;
     }
     ++ qrm_solution_count;
@@ -680,16 +680,6 @@ bool firewall__node_4__finite::ext__get_bool_sent(node n0, node n1, bool result)
     qrm_result = (sent[n0][n1] == result);
     return qrm_result;
 }
-bool firewall__node_4__finite::ext__get_internal(node n0){
-    bool qrm_result;
-    qrm_result = internal[n0];
-    return qrm_result;
-}
-bool firewall__node_4__finite::ext__get_bool_internal(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (internal[n0] == result);
-    return qrm_result;
-}
 bool firewall__node_4__finite::ext__get_allowed_in(node n0){
     bool qrm_result;
     qrm_result = allowed_in[n0];
@@ -698,6 +688,16 @@ bool firewall__node_4__finite::ext__get_allowed_in(node n0){
 bool firewall__node_4__finite::ext__get_bool_allowed_in(node n0, bool result){
     bool qrm_result;
     qrm_result = (allowed_in[n0] == result);
+    return qrm_result;
+}
+bool firewall__node_4__finite::ext__get_internal(node n0){
+    bool qrm_result;
+    qrm_result = internal[n0];
+    return qrm_result;
+}
+bool firewall__node_4__finite::ext__get_bool_internal(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (internal[n0] == result);
     return qrm_result;
 }
 void firewall__node_4__finite::__tick(int __timeout){

@@ -741,14 +741,14 @@ void consensus_epr__node_2_value_2__finite::ext__decide(node n, value v){
         ivy_assume(__tmp8, "consensus_epr.node_2_value_2.finite.ivy: line 55");
         decided[n][v] = true;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_leader(node n0){
+bool consensus_epr__node_2_value_2__finite::ext__get_member(node n0, quorum q1){
     bool qrm_result;
-    qrm_result = leader[n0];
+    qrm_result = member[n0][q1];
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_bool_leader(node n0, bool result){
+bool consensus_epr__node_2_value_2__finite::ext__get_bool_member(node n0, quorum q1, bool result){
     bool qrm_result;
-    qrm_result = (leader[n0] == result);
+    qrm_result = (member[n0][q1] == result);
     return qrm_result;
 }
 bool consensus_epr__node_2_value_2__finite::ext__get_votes(node n0, node n1){
@@ -761,14 +761,24 @@ bool consensus_epr__node_2_value_2__finite::ext__get_bool_votes(node n0, node n1
     qrm_result = (votes[n0][n1] == result);
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_vote_msg(node n0, node n1){
+bool consensus_epr__node_2_value_2__finite::ext__get_voted(node n0){
     bool qrm_result;
-    qrm_result = vote_msg[n0][n1];
+    qrm_result = voted[n0];
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_bool_vote_msg(node n0, node n1, bool result){
+bool consensus_epr__node_2_value_2__finite::ext__get_bool_voted(node n0, bool result){
     bool qrm_result;
-    qrm_result = (vote_msg[n0][n1] == result);
+    qrm_result = (voted[n0] == result);
+    return qrm_result;
+}
+bool consensus_epr__node_2_value_2__finite::ext__get_leader(node n0){
+    bool qrm_result;
+    qrm_result = leader[n0];
+    return qrm_result;
+}
+bool consensus_epr__node_2_value_2__finite::ext__get_bool_leader(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (leader[n0] == result);
     return qrm_result;
 }
 bool consensus_epr__node_2_value_2__finite::ext__get_decided(node n0, value v1){
@@ -781,24 +791,14 @@ bool consensus_epr__node_2_value_2__finite::ext__get_bool_decided(node n0, value
     qrm_result = (decided[n0][v1] == result);
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_member(node n0, quorum q1){
+bool consensus_epr__node_2_value_2__finite::ext__get_vote_request_msg(node n0, node n1){
     bool qrm_result;
-    qrm_result = member[n0][q1];
+    qrm_result = vote_request_msg[n0][n1];
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_bool_member(node n0, quorum q1, bool result){
+bool consensus_epr__node_2_value_2__finite::ext__get_bool_vote_request_msg(node n0, node n1, bool result){
     bool qrm_result;
-    qrm_result = (member[n0][q1] == result);
-    return qrm_result;
-}
-bool consensus_epr__node_2_value_2__finite::ext__get_voted(node n0){
-    bool qrm_result;
-    qrm_result = voted[n0];
-    return qrm_result;
-}
-bool consensus_epr__node_2_value_2__finite::ext__get_bool_voted(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (voted[n0] == result);
+    qrm_result = (vote_request_msg[n0][n1] == result);
     return qrm_result;
 }
 bool consensus_epr__node_2_value_2__finite::ext__get_chosen(node n0){
@@ -811,14 +811,14 @@ bool consensus_epr__node_2_value_2__finite::ext__get_bool_chosen(node n0, bool r
     qrm_result = (chosen(n0) == result);
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_vote_request_msg(node n0, node n1){
+bool consensus_epr__node_2_value_2__finite::ext__get_vote_msg(node n0, node n1){
     bool qrm_result;
-    qrm_result = vote_request_msg[n0][n1];
+    qrm_result = vote_msg[n0][n1];
     return qrm_result;
 }
-bool consensus_epr__node_2_value_2__finite::ext__get_bool_vote_request_msg(node n0, node n1, bool result){
+bool consensus_epr__node_2_value_2__finite::ext__get_bool_vote_msg(node n0, node n1, bool result){
     bool qrm_result;
-    qrm_result = (vote_request_msg[n0][n1] == result);
+    qrm_result = (vote_msg[n0][n1] == result);
     return qrm_result;
 }
 void consensus_epr__node_2_value_2__finite::__tick(int __timeout){

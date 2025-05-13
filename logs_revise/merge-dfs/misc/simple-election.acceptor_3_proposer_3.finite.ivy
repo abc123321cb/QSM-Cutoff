@@ -61,10 +61,10 @@ export decide
 ##invariant [manual_2] leader(P) -> ( exists Q. forall A. (member(A,Q) -> promise(A, P)) )
 
 invariant [def_didNotPromise] forall A. didNotPromise(A) = (forall P. ~promise(A,P)) # definition, qcost: 4
-invariant [def_chosenAt] forall Q,P. chosenAt(Q,P) = (forall A. member(A,Q) -> promise(A,P)) # definition, qcost: 6
-invariant [invar_3] forall ACCEPTOR0. (exists PROPOSER0. ~promise(ACCEPTOR0,PROPOSER0)) # qcost: 3
-invariant [invar_32] forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0)) # qcost: 4
-invariant [invar_0] forall ACCEPTOR0,PROPOSER0. start(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER0) # qcost: 4
+invariant [def_chosenAt] forall P,Q. chosenAt(Q,P) = (forall A. member(A,Q) -> promise(A,P)) # definition, qcost: 6
+invariant [invar_0] forall ACCEPTOR0. (exists PROPOSER0. ~promise(ACCEPTOR0,PROPOSER0)) # qcost: 3
+invariant [invar_27] forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0)) # qcost: 4
+invariant [invar_3] forall PROPOSER0,ACCEPTOR0. start(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER0) # qcost: 4
 
 ### For QRM DFS reachability ###
 
@@ -80,6 +80,16 @@ axiom member(acceptor1,quorum__acceptor1_acceptor2)
 axiom member(acceptor2,quorum__acceptor1_acceptor2)
 
 ## Access actions ##
+action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
+    qrm_result := promise(a0, p1)
+}
+export get_promise
+
+action get_bool_promise(a0: acceptor, p1: proposer, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (promise(a0, p1) = result)
+}
+export get_bool_promise
+
 action get_member(a0: acceptor, q1: quorum) returns(qrm_result: bool) = {
     qrm_result := member(a0, q1)
 }
@@ -110,15 +120,15 @@ action get_bool_leader(p0: proposer, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_leader
 
-action get_promise(a0: acceptor, p1: proposer) returns(qrm_result: bool) = {
-    qrm_result := promise(a0, p1)
+action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
+    qrm_result := didNotPromise(a0)
 }
-export get_promise
+export get_didNotPromise
 
-action get_bool_promise(a0: acceptor, p1: proposer, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (promise(a0, p1) = result)
+action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (didNotPromise(a0) = result)
 }
-export get_bool_promise
+export get_bool_didNotPromise
 
 action get_chosenAt(q0: quorum, p1: proposer) returns(qrm_result: bool) = {
     qrm_result := chosenAt(q0, p1)
@@ -129,14 +139,4 @@ action get_bool_chosenAt(q0: quorum, p1: proposer, result: bool) returns(qrm_res
     qrm_result := (chosenAt(q0, p1) = result)
 }
 export get_bool_chosenAt
-
-action get_didNotPromise(a0: acceptor) returns(qrm_result: bool) = {
-    qrm_result := didNotPromise(a0)
-}
-export get_didNotPromise
-
-action get_bool_didNotPromise(a0: acceptor, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (didNotPromise(a0) = result)
-}
-export get_bool_didNotPromise
 

@@ -689,16 +689,6 @@ bool naive_consensus__node_2_value_1__finite::ext__get_bool_decision(value v0, b
     qrm_result = (decision[v0] == result);
     return qrm_result;
 }
-bool naive_consensus__node_2_value_1__finite::ext__get_decide(quorum q0, value v1){
-    bool qrm_result;
-    qrm_result = decide[q0][v1];
-    return qrm_result;
-}
-bool naive_consensus__node_2_value_1__finite::ext__get_bool_decide(quorum q0, value v1, bool result){
-    bool qrm_result;
-    qrm_result = (decide[q0][v1] == result);
-    return qrm_result;
-}
 bool naive_consensus__node_2_value_1__finite::ext__get_vote(node n0, value v1){
     bool qrm_result;
     qrm_result = vote[n0][v1];
@@ -707,6 +697,16 @@ bool naive_consensus__node_2_value_1__finite::ext__get_vote(node n0, value v1){
 bool naive_consensus__node_2_value_1__finite::ext__get_bool_vote(node n0, value v1, bool result){
     bool qrm_result;
     qrm_result = (vote[n0][v1] == result);
+    return qrm_result;
+}
+bool naive_consensus__node_2_value_1__finite::ext__get_decide(quorum q0, value v1){
+    bool qrm_result;
+    qrm_result = decide[q0][v1];
+    return qrm_result;
+}
+bool naive_consensus__node_2_value_1__finite::ext__get_bool_decide(quorum q0, value v1, bool result){
+    bool qrm_result;
+    qrm_result = (decide[q0][v1] == result);
     return qrm_result;
 }
 bool naive_consensus__node_2_value_1__finite::ext__get_member(node n0, quorum q1){

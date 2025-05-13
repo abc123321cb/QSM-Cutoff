@@ -686,6 +686,36 @@ void toy_consensus_epr__node_4_value_3__finite::ext__decide(value v, quorum q){
         ivy_assume(chosenAt(q,v), "toy_consensus_epr.node_4_value_3.finite.ivy: line 30");
         decided[v] = true;
 }
+bool toy_consensus_epr__node_4_value_3__finite::ext__get_voted(node n0){
+    bool qrm_result;
+    qrm_result = voted[n0];
+    return qrm_result;
+}
+bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_voted(node n0, bool result){
+    bool qrm_result;
+    qrm_result = (voted[n0] == result);
+    return qrm_result;
+}
+bool toy_consensus_epr__node_4_value_3__finite::ext__get_decided(value v0){
+    bool qrm_result;
+    qrm_result = decided[v0];
+    return qrm_result;
+}
+bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_decided(value v0, bool result){
+    bool qrm_result;
+    qrm_result = (decided[v0] == result);
+    return qrm_result;
+}
+bool toy_consensus_epr__node_4_value_3__finite::ext__get_member(node n0, quorum q1){
+    bool qrm_result;
+    qrm_result = member[n0][q1];
+    return qrm_result;
+}
+bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_member(node n0, quorum q1, bool result){
+    bool qrm_result;
+    qrm_result = (member[n0][q1] == result);
+    return qrm_result;
+}
 bool toy_consensus_epr__node_4_value_3__finite::ext__get_chosenAt(quorum q0, value v1){
     bool qrm_result;
     qrm_result = chosenAt(q0,v1);
@@ -704,36 +734,6 @@ bool toy_consensus_epr__node_4_value_3__finite::ext__get_vote(node n0, value v1)
 bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_vote(node n0, value v1, bool result){
     bool qrm_result;
     qrm_result = (vote[n0][v1] == result);
-    return qrm_result;
-}
-bool toy_consensus_epr__node_4_value_3__finite::ext__get_member(node n0, quorum q1){
-    bool qrm_result;
-    qrm_result = member[n0][q1];
-    return qrm_result;
-}
-bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_member(node n0, quorum q1, bool result){
-    bool qrm_result;
-    qrm_result = (member[n0][q1] == result);
-    return qrm_result;
-}
-bool toy_consensus_epr__node_4_value_3__finite::ext__get_decided(value v0){
-    bool qrm_result;
-    qrm_result = decided[v0];
-    return qrm_result;
-}
-bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_decided(value v0, bool result){
-    bool qrm_result;
-    qrm_result = (decided[v0] == result);
-    return qrm_result;
-}
-bool toy_consensus_epr__node_4_value_3__finite::ext__get_voted(node n0){
-    bool qrm_result;
-    qrm_result = voted[n0];
-    return qrm_result;
-}
-bool toy_consensus_epr__node_4_value_3__finite::ext__get_bool_voted(node n0, bool result){
-    bool qrm_result;
-    qrm_result = (voted[n0] == result);
     return qrm_result;
 }
 void toy_consensus_epr__node_4_value_3__finite::__tick(int __timeout){

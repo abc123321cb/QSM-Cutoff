@@ -12,13 +12,13 @@
 (assert
  (let (($x34 (= |VALUE0:value| |VALUE1:value|)))
  (let (($x35 (not $x34)))
+ (let (($x38 (= |VALUE0:value| |VALUE2:value|)))
+ (let (($x39 (not $x38)))
  (let (($x32 (= |VALUE1:value| |VALUE2:value|)))
- (let (($x39 (not $x32)))
- (let (($x37 (= |VALUE0:value| |VALUE2:value|)))
- (let (($x38 (not $x37)))
+ (let (($x37 (not $x32)))
  (let (($x25 (= |NODE0:node| |NODE1:node|)))
  (let (($x26 (not $x25)))
- (and (member node0 quorum__node0_node1) (member node1 quorum__node0_node1) (not (member node2 quorum__node0_node1)) (member node0 quorum__node0_node2) (not (member node1 quorum__node0_node2)) (member node2 quorum__node0_node2) (not (member node0 quorum__node1_node2)) (member node1 quorum__node1_node2) (member node2 quorum__node1_node2) (not (or (and $x26 $x32 $x35) (and $x26 $x38 $x39 $x35)))))))))))))
+ (and (member node0 quorum__node0_node1) (member node1 quorum__node0_node1) (not (member node2 quorum__node0_node1)) (member node0 quorum__node0_node2) (not (member node1 quorum__node0_node2)) (member node2 quorum__node0_node2) (not (member node0 quorum__node1_node2)) (member node1 quorum__node1_node2) (member node2 quorum__node1_node2) (not (or (and $x26 $x32 $x35) (and $x26 $x37 $x39 $x35)))))))))))))
 (assert
  (= |VALUE0:value| |VALUE1:value|))
 (assert
@@ -27,8 +27,8 @@
 (assert
  (= |VALUE0:value| |VALUE2:value|))
 (assert
- (let (($x37 (= |VALUE0:value| |VALUE2:value|)))
- (not $x37)))
+ (let (($x38 (= |VALUE0:value| |VALUE2:value|)))
+ (not $x38)))
 (assert
  (= |VALUE1:value| |VALUE2:value|))
 (assert
