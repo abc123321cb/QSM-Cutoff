@@ -42,9 +42,9 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.027 seconds
+[QRM NOTE]: Time elapsed since start: 0.030 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.027 seconds
+[QRM NOTE]: Time elapsed since last: 0.030 seconds
 
 [QRM NOTE]: Peak memory: 28709 bytes
 
@@ -85,10 +85,10 @@ start extracting cubes
 sort: node=['node0', 'node1']
 sort: value=['value0']
 sort: quorum=['quorum__node0_node1']
-predicate: decided('value',)
+predicate: chosenAt('quorum', 'value')
 predicate: member('node', 'quorum')
 predicate: voted('node',)
-predicate: chosenAt('quorum', 'value')
+predicate: decided('value',)
 predicate: vote('node', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node1)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1,value0)', 'decided(value0)', 'vote(node0,value0)', 'vote(node1,value0)', 'voted(node0)', 'voted(node1)']
@@ -98,9 +98,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'decided(value0)', 'vote(n
 001010
 1-1111
 
-[QRM NOTE]: Time elapsed since start: 0.128 seconds
+[QRM NOTE]: Time elapsed since start: 0.167 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.101 seconds
+[QRM NOTE]: Time elapsed since last: 0.137 seconds
 
 [QRM NOTE]: Peak memory: 1106961 bytes
 
@@ -117,9 +117,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'decided(value0)', 'vote(n
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.133 seconds
+[QRM NOTE]: Time elapsed since start: 0.171 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.005 seconds
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
 
 [QRM NOTE]: Peak memory: 56574 bytes
 
@@ -279,11 +279,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 17
 
-[QRM NOTE]: Time elapsed since start: 0.151 seconds
+[QRM NOTE]: Time elapsed since start: 0.185 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.018 seconds
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
 
-[QRM NOTE]: Peak memory: 1137760 bytes
+[QRM NOTE]: Peak memory: 1137819 bytes
 
 
 ========================================================================================================
@@ -337,11 +337,11 @@ After reduction :
  pending  : [3, 5, 6]
  solution : [2, 4]
 
-[QRM NOTE]: Time elapsed since start: 0.158 seconds
+[QRM NOTE]: Time elapsed since start: 0.193 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.008 seconds
 
-[QRM NOTE]: Peak memory: 91967 bytes
+[QRM NOTE]: Peak memory: 92026 bytes
 
 
 ============================================================================================================
@@ -667,12 +667,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~vote(NODE0,VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'decided(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,VALUE0. ~decided(VALUE0) | vote(NODE0,VALUE0)
+qclause: forall NODE0,VALUE0. vote(NODE0,VALUE0) | ~decided(VALUE0)
 
 
 === Prime Orbit 5 =====================
@@ -879,12 +879,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~chosenAt(QUORUM0,VALUE0)', 'decided(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall QUORUM0,VALUE0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)
+qclause: forall QUORUM0,VALUE0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0)
 
 
 ======================================================================================================================
@@ -936,7 +936,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,VALUE0. ~decided(VALUE0) | vote(NODE0,VALUE0)
+quantified form : forall NODE0,VALUE0. vote(NODE0,VALUE0) | ~decided(VALUE0)
 qcost : 4
 
 
@@ -966,16 +966,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall QUORUM0,VALUE0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)
+quantified form : forall QUORUM0,VALUE0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0)
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.250 seconds
+[QRM NOTE]: Time elapsed since start: 0.284 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.092 seconds
+[QRM NOTE]: Time elapsed since last: 0.091 seconds
 
-[QRM NOTE]: Peak memory: 1828873 bytes
+[QRM NOTE]: Peak memory: 1829184 bytes
 
 
 =====================================================================================================
@@ -1264,7 +1264,7 @@ After backtrack at level 1
 
 [MIN NOTE]: number of definitions: 1
 
-invariant [def_chosenAt] forall Q,V. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
+invariant [def_chosenAt] forall V,Q. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
 
 [MIN NOTE]: number of equality relations: 0
 
@@ -1276,7 +1276,7 @@ invariant [invar_2] forall NODE0,VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0) # qc
 
 invariant [invar_4] forall NODE0,VALUE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
 
-invariant [invar_6] forall QUORUM0,VALUE0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) # qcost: 4
+invariant [invar_6] forall QUORUM0,VALUE0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 4
 
@@ -1293,7 +1293,7 @@ invariant [invar_2] forall NODE0,VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0) # qc
 
 invariant [invar_4] forall NODE0,VALUE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
 
-invariant [invar_3] forall NODE0,VALUE0. ~decided(VALUE0) | vote(NODE0,VALUE0) # qcost: 4
+invariant [invar_3] forall NODE0,VALUE0. vote(NODE0,VALUE0) | ~decided(VALUE0) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 4
 
@@ -1319,11 +1319,11 @@ invariant [invar_5] forall NODE0,VALUE0. ~decided(VALUE0) | voted(NODE0) # qcost
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.380 seconds
+[QRM NOTE]: Time elapsed since start: 0.618 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.130 seconds
+[QRM NOTE]: Time elapsed since last: 0.334 seconds
 
-[QRM NOTE]: Peak memory: 1823592 bytes
+[QRM NOTE]: Peak memory: 1823876 bytes
 
 
 *********************************************************************************************************************
@@ -1362,9 +1362,9 @@ OK
 
 [FW NOTE]: symmetric group order: 6
 
-[QRM NOTE]: Time elapsed since start: 0.034 seconds
+[QRM NOTE]: Time elapsed since start: 0.037 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.034 seconds
+[QRM NOTE]: Time elapsed since last: 0.037 seconds
 
 [QRM NOTE]: Peak memory: 50361 bytes
 
@@ -1405,11 +1405,11 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: chosenAt('quorum', 'value')
-predicate: member('node', 'quorum')
-predicate: decided('value',)
 predicate: voted('node',)
 predicate: vote('node', 'value')
+predicate: chosenAt('quorum', 'value')
+predicate: decided('value',)
+predicate: member('node', 'quorum')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_node2,value0)', 'chosenAt(quorum__node1_node2,value0)', 'decided(value0)', 'vote(node0,value0)', 'vote(node1,value0)', 'vote(node2,value0)', 'voted(node0)', 'voted(node1)', 'voted(node2)']
 
@@ -1422,9 +1422,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 100-110110
 111-111111
 
-[QRM NOTE]: Time elapsed since start: 0.383 seconds
+[QRM NOTE]: Time elapsed since start: 0.404 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.349 seconds
+[QRM NOTE]: Time elapsed since last: 0.367 seconds
 
 [QRM NOTE]: Peak memory: 1183004 bytes
 
@@ -1437,9 +1437,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.497 seconds
+[QRM NOTE]: Time elapsed since start: 0.529 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.114 seconds
+[QRM NOTE]: Time elapsed since last: 0.125 seconds
 
 [QRM NOTE]: Peak memory: 178788 bytes
 
@@ -1473,9 +1473,9 @@ OK
 
 [FW NOTE]: symmetric group order: 4
 
-[QRM NOTE]: Time elapsed since start: 0.035 seconds
+[QRM NOTE]: Time elapsed since start: 0.037 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.035 seconds
+[QRM NOTE]: Time elapsed since last: 0.037 seconds
 
 [QRM NOTE]: Peak memory: 51481 bytes
 
@@ -1516,11 +1516,11 @@ start extracting cubes
 sort: node=['node0', 'node1']
 sort: value=['value0', 'value1']
 sort: quorum=['quorum__node0_node1']
-predicate: decided('value',)
-predicate: chosenAt('quorum', 'value')
+predicate: member('node', 'quorum')
 predicate: vote('node', 'value')
 predicate: voted('node',)
-predicate: member('node', 'quorum')
+predicate: decided('value',)
+predicate: chosenAt('quorum', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node1)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_node1,value1)', 'decided(value0)', 'decided(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'voted(node0)', 'voted(node1)']
 
@@ -1534,9 +1534,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 010-010111
 10-0101011
 
-[QRM NOTE]: Time elapsed since start: 0.227 seconds
+[QRM NOTE]: Time elapsed since start: 0.234 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.192 seconds
+[QRM NOTE]: Time elapsed since last: 0.198 seconds
 
 [QRM NOTE]: Peak memory: 1148540 bytes
 
@@ -1549,9 +1549,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.298 seconds
+[QRM NOTE]: Time elapsed since start: 0.308 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.072 seconds
+[QRM NOTE]: Time elapsed since last: 0.073 seconds
 
 [QRM NOTE]: Peak memory: 144888 bytes
 
@@ -1588,9 +1588,9 @@ OK
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.114 seconds
+[QRM NOTE]: Time elapsed since start: 0.129 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.114 seconds
+[QRM NOTE]: Time elapsed since last: 0.129 seconds
 
 [QRM NOTE]: Peak memory: 70950 bytes
 
@@ -1618,9 +1618,9 @@ OK
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.082 seconds
+[QRM NOTE]: Time elapsed since start: 0.093 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.082 seconds
+[QRM NOTE]: Time elapsed since last: 0.093 seconds
 
 [QRM NOTE]: Peak memory: 53624 bytes
 
@@ -1657,9 +1657,9 @@ OK
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.118 seconds
+[QRM NOTE]: Time elapsed since start: 0.177 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.118 seconds
+[QRM NOTE]: Time elapsed since last: 0.177 seconds
 
 [QRM NOTE]: Peak memory: 71030 bytes
 
@@ -1687,9 +1687,9 @@ OK
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.079 seconds
+[QRM NOTE]: Time elapsed since start: 0.083 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.079 seconds
+[QRM NOTE]: Time elapsed since last: 0.083 seconds
 
 [QRM NOTE]: Peak memory: 54152 bytes
 
@@ -1732,11 +1732,11 @@ OK
 
 [FW NOTE]: symmetric group order: 12
 
-[QRM NOTE]: Time elapsed since start: 0.071 seconds
+[QRM NOTE]: Time elapsed since start: 0.083 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.071 seconds
+[QRM NOTE]: Time elapsed since last: 0.083 seconds
 
-[QRM NOTE]: Peak memory: 103334 bytes
+[QRM NOTE]: Peak memory: 103438 bytes
 
 
 ===================================
@@ -1775,11 +1775,11 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0', 'value1']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: member('node', 'quorum')
 predicate: vote('node', 'value')
+predicate: chosenAt('quorum', 'value')
+predicate: member('node', 'quorum')
 predicate: voted('node',)
 predicate: decided('value',)
-predicate: chosenAt('quorum', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_node1,value1)', 'chosenAt(quorum__node0_node2,value0)', 'chosenAt(quorum__node0_node2,value1)', 'chosenAt(quorum__node1_node2,value0)', 'chosenAt(quorum__node1_node2,value1)', 'decided(value0)', 'decided(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node2,value0)', 'vote(node2,value1)', 'voted(node0)', 'voted(node1)', 'voted(node2)']
 
@@ -1811,9 +1811,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 100000-0101001111
 101010-0101010111
 
-[QRM NOTE]: Time elapsed since start: 0.737 seconds
+[QRM NOTE]: Time elapsed since start: 0.764 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.666 seconds
+[QRM NOTE]: Time elapsed since last: 0.681 seconds
 
 [QRM NOTE]: Peak memory: 1270499 bytes
 
@@ -1830,7 +1830,7 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.738 seconds
+[QRM NOTE]: Time elapsed since start: 0.765 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
@@ -2670,11 +2670,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 241
 
-[QRM NOTE]: Time elapsed since start: 0.812 seconds
+[QRM NOTE]: Time elapsed since start: 0.838 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.074 seconds
 
-[QRM NOTE]: Peak memory: 1563180 bytes
+[QRM NOTE]: Peak memory: 1563121 bytes
 
 
 ========================================================================================================
@@ -2728,11 +2728,11 @@ After reduction :
  pending  : [3, 4, 11, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 26]
  solution : [1, 12, 7]
 
-[QRM NOTE]: Time elapsed since start: 0.873 seconds
+[QRM NOTE]: Time elapsed since start: 0.901 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.061 seconds
+[QRM NOTE]: Time elapsed since last: 0.063 seconds
 
-[QRM NOTE]: Peak memory: 524142 bytes
+[QRM NOTE]: Peak memory: 524083 bytes
 
 
 ============================================================================================================
@@ -2852,12 +2852,12 @@ signed_func_name2args: {'0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0'
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~voted(NODE0)', 'vote(NODE0,VALUE0)']
+qterms: ['vote(NODE0,VALUE0)', '~voted(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0)
+qclause: forall NODE0,VALUE0. ~vote(NODE0,VALUE0) | voted(NODE0)
 
 
 === Prime Orbit 12 =====================
@@ -2961,12 +2961,12 @@ signed_func_name2args: {'1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0'
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~vote(NODE0,VALUE0)', 'voted(NODE0)']
+qterms: ['voted(NODE0)', '~vote(NODE0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0))
+qclause: forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0))
 
 
 === Prime Orbit 7 =====================
@@ -3173,7 +3173,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3190,7 +3190,7 @@ qterms: ['chosenAt(QUORUM0,VALUE0)', 'decided(VALUE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,VALUE1,QUORUM0. ~chosenAt(QUORUM0,VALUE0) | ~decided(VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE1,VALUE0,QUORUM0. ~chosenAt(QUORUM0,VALUE0) | ~decided(VALUE1) | VALUE0 = VALUE1
 
 
 === Prime Orbit 4 =====================
@@ -3393,7 +3393,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3405,12 +3405,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~member(NODE0,QUORUM0)', '~vote(NODE0,VALUE0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~chosenAt(QUORUM0,VALUE0)', '~vote(NODE0,VALUE0)', 'decided(VALUE0)', '~member(NODE0,QUORUM0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | vote(NODE0,VALUE0) | chosenAt(QUORUM0,VALUE0)
+qclause: forall QUORUM0,NODE0,VALUE0. chosenAt(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | member(NODE0,QUORUM0)
 
 
 === Prime Orbit 13 =====================
@@ -3518,7 +3518,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3530,12 +3530,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~member(NODE0,QUORUM0)', '~chosenAt(QUORUM0,VALUE0)', 'vote(NODE0,VALUE1)']
+qterms: ['~chosenAt(QUORUM0,VALUE0)', 'vote(NODE0,VALUE1)', 'decided(VALUE0)', '~member(NODE0,QUORUM0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE1,VALUE0,NODE0,QUORUM0. chosenAt(QUORUM0,VALUE0) | ~vote(NODE0,VALUE1) | ~decided(VALUE0) | member(NODE0,QUORUM0) | VALUE0 = VALUE1
 
 
 === Prime Orbit 14 =====================
@@ -3645,7 +3645,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3657,12 +3657,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~vote(NODE1,VALUE0)', 'decided(VALUE0)', 'vote(NODE0,VALUE1)']
+qterms: ['~vote(NODE1,VALUE0)', 'vote(NODE0,VALUE1)', 'decided(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE1,NODE0,VALUE0. vote(NODE1,VALUE0) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall VALUE1,NODE0,VALUE0,NODE1. vote(NODE1,VALUE0) | ~vote(NODE0,VALUE1) | ~decided(VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 15 =====================
@@ -3760,7 +3760,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3777,7 +3777,7 @@ qterms: ['~vote(NODE1,VALUE0)', '~vote(NODE0,VALUE0)', 'decided(VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,NODE0. vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
+qclause: forall NODE0,VALUE0,NODE1. vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 16 =====================
@@ -3875,7 +3875,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -3887,12 +3887,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['vote(NODE1,VALUE1)', 'decided(VALUE0)', 'vote(NODE0,VALUE1)']
+qterms: ['vote(NODE0,VALUE1)', 'decided(VALUE0)', 'vote(NODE1,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE1,NODE0,VALUE0. ~vote(NODE1,VALUE1) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall VALUE1,NODE0,VALUE0,NODE1. ~vote(NODE0,VALUE1) | ~decided(VALUE0) | ~vote(NODE1,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 17 =====================
@@ -4002,7 +4002,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -4014,12 +4014,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~voted(NODE1)', 'decided(VALUE0)', 'vote(NODE0,VALUE1)']
+qterms: ['vote(NODE0,VALUE1)', '~voted(NODE1)', 'decided(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE1,NODE0,VALUE0. voted(NODE1) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+qclause: forall VALUE1,NODE0,VALUE0,NODE1. ~vote(NODE0,VALUE1) | voted(NODE1) | ~decided(VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 18 =====================
@@ -4127,7 +4127,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -4139,12 +4139,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~voted(NODE0)', '~member(NODE0,QUORUM0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~voted(NODE0)', '~chosenAt(QUORUM0,VALUE0)', 'decided(VALUE0)', '~member(NODE0,QUORUM0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | voted(NODE0) | member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0)
+qclause: forall QUORUM0,NODE0,VALUE0. voted(NODE0) | chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0) | member(NODE0,QUORUM0)
 
 
 === Prime Orbit 19 =====================
@@ -4254,7 +4254,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -4266,12 +4266,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~voted(NODE1)', '~vote(NODE0,VALUE0)', 'decided(VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'decided(VALUE0)', '~voted(NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,NODE0. voted(NODE1) | vote(NODE0,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
+qclause: forall NODE0,VALUE0,NODE1. vote(NODE0,VALUE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
 
 
 === Prime Orbit 20 =====================
@@ -4369,7 +4369,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
 
 exists_qvars: set()
 
@@ -4386,7 +4386,7 @@ qterms: ['~voted(NODE0)', '~voted(NODE1)', 'decided(VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,NODE0. voted(NODE0) | voted(NODE1) | ~decided(VALUE0) | NODE0 = NODE1
+qclause: forall NODE0,VALUE0,NODE1. voted(NODE0) | voted(NODE1) | ~decided(VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 23 =====================
@@ -4418,27 +4418,27 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)', 'decided(value0)', 'vote(node0,value0)', 'member(node0,quorum__node0_node1)', 'member(node0,quorum__node0_node2)']
+terms: ['~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)', 'decided(value0)', 'vote(node0,value0)', 'member(node0,quorum__node0_node2)', 'member(node0,quorum__node0_node1)']
 
-sign_func_name2args: {'1$chosenAt': [(Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1')))), (Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$decided': [(Const('value0', EnumeratedSort('value', ('value0', 'value1'))),)], '0$vote': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$member': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))), (Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))))]}
+sign_func_name2args: {'1$chosenAt': [(Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1')))), (Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$decided': [(Const('value0', EnumeratedSort('value', ('value0', 'value1'))),)], '0$vote': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$member': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))), (Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))))]}
 
-const2sigs: {Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$0, quorum$0$member$1$0], Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$1$chosenAt$1$0, value$1$chosenAt$1$1, value$0$decided$0$0, value$0$vote$1$0], Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$1, quorum$0$member$1$1], Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$vote$0$0, node$0$member$0$0, node$0$member$0$1]}
+const2sigs: {Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$0, quorum$0$member$1$1], Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$1$chosenAt$1$0, value$1$chosenAt$1$1, value$0$decided$0$0, value$0$vote$1$0], Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$1, quorum$0$member$1$0], Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$vote$0$0, node$0$member$0$0, node$0$member$0$1]}
 
-sig2const: {'quorum$1$chosenAt$0$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'quorum$1$chosenAt$0$1': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$1': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'value$0$decided$0$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$vote$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$0$vote$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$member$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'node$0$member$0$1': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$1': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+sig2const: {'quorum$1$chosenAt$0$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'quorum$1$chosenAt$0$1': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$1': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'value$0$decided$0$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$vote$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$0$vote$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$member$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$0': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'node$0$member$0$1': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$1': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 
 ---------- ArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$0, quorum$0$member$1$1; quorum$1$chosenAt$0$1], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0]}
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$1, quorum$0$member$1$1; quorum$1$chosenAt$0$0], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0]}
 
-sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$0 | quorum$0$member$1$1; quorum$1$chosenAt$0$1, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0}
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$1 | quorum$0$member$1$1; quorum$1$chosenAt$0$0, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0}
 
-part_sig: ('node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0', 'quorum$0$member$1$0; quorum$1$chosenAt$0$0 | quorum$0$member$1$1; quorum$1$chosenAt$0$1', 'value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1')
+part_sig: ('node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0', 'quorum$0$member$1$0; quorum$1$chosenAt$0$1 | quorum$0$member$1$1; quorum$1$chosenAt$0$0', 'value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1')
 
 
 ---------- SigGenerator ----------
 
-terms:  ['~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)', 'decided(value0)', 'vote(node0,value0)', 'member(node0,quorum__node0_node1)', 'member(node0,quorum__node0_node2)']
+terms:  ['~chosenAt(quorum__node0_node1,value0)', '~chosenAt(quorum__node0_node2,value0)', 'decided(value0)', 'vote(node0,value0)', 'member(node0,quorum__node0_node2)', 'member(node0,quorum__node0_node1)']
 
 func_name2symbol:  {'chosenAt': Const('chosenAt', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'decided': Const('decided', FunctionSort(EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'member': Const('member', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), BooleanSort()))}
 
@@ -4449,17 +4449,17 @@ sign_func_name2count:  {'1$chosenAt': 2, '0$decided': 1, '0$vote': 1, '0$member'
 
 ---------- ProductArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$0, quorum$0$member$1$1; quorum$1$chosenAt$0$1], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0]}
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$1, quorum$0$member$1$1; quorum$1$chosenAt$0$0], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0]}
 
-sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$0 | quorum$0$member$1$1; quorum$1$chosenAt$0$1, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0}
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$1 | quorum$0$member$1$1; quorum$1$chosenAt$0$0, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$0$vote$1$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$vote$0$0}
 
 	sort: quorum
 
-	identical_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0; quorum$1$chosenAt$0$0, quorum$0$member$1$1; quorum$1$chosenAt$0$1]}
+	identical_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0; quorum$1$chosenAt$0$1, quorum$0$member$1$1; quorum$1$chosenAt$0$0]}
 
 	identical_single_classes: {}
 
-	identical_multi_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0, quorum$1$chosenAt$0$0, quorum$0$member$1$1, quorum$1$chosenAt$0$1]}
+	identical_multi_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0, quorum$1$chosenAt$0$1, quorum$0$member$1$1, quorum$1$chosenAt$0$0]}
 
 	sort: value
 
@@ -4494,24 +4494,24 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
 
-signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$decided': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))]]}
+signed_func_name2args: {'1$chosenAt': [[Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$decided': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))]]}
 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['vote(NODE0,VALUE0)', '~chosenAt(QUORUM1,VALUE0)', '~chosenAt(QUORUM0,VALUE0)', 'member(NODE0,QUORUM1)', 'member(NODE0,QUORUM0)', 'decided(VALUE0)']
+qterms: ['member(NODE0,QUORUM1)', 'decided(VALUE0)', '~chosenAt(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)', 'vote(NODE0,VALUE0)', '~chosenAt(QUORUM1,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall QUORUM1,VALUE0,NODE0,QUORUM0. ~vote(NODE0,VALUE0) | chosenAt(QUORUM1,VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM1) | ~member(NODE0,QUORUM0) | ~decided(VALUE0) | QUORUM0 = QUORUM1
+qclause: forall QUORUM0,QUORUM1,NODE0,VALUE0. ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~vote(NODE0,VALUE0) | chosenAt(QUORUM1,VALUE0) | QUORUM0 = QUORUM1
 
 
 === Prime Orbit 24 =====================
@@ -4613,12 +4613,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~chosenAt(QUORUM0,VALUE0)', 'decided(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0))
+qclause: forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0))
 
 
 === Prime Orbit 26 =====================
@@ -4650,27 +4650,27 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['~chosenAt(quorum__node0_node2,value1)', '~chosenAt(quorum__node1_node2,value1)', 'decided(value1)', '~vote(node2,value0)', 'voted(node2)', 'member(node2,quorum__node1_node2)', 'member(node2,quorum__node0_node2)']
+terms: ['~chosenAt(quorum__node0_node2,value1)', '~chosenAt(quorum__node1_node2,value1)', 'decided(value1)', '~vote(node2,value0)', 'voted(node2)', 'member(node2,quorum__node0_node2)', 'member(node2,quorum__node1_node2)']
 
-sign_func_name2args: {'1$chosenAt': [(Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1')))), (Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1'))))], '0$decided': [(Const('value1', EnumeratedSort('value', ('value0', 'value1'))),)], '1$vote': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$voted': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$member': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))))]}
+sign_func_name2args: {'1$chosenAt': [(Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1')))), (Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1'))))], '0$decided': [(Const('value1', EnumeratedSort('value', ('value0', 'value1'))),)], '1$vote': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$voted': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$member': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))))]}
 
-const2sigs: {Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$0, quorum$0$member$1$1], Const('value1', EnumeratedSort('value', ('value0', 'value1'))): [value$1$chosenAt$1$0, value$1$chosenAt$1$1, value$0$decided$0$0], Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$1, quorum$0$member$1$0], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$vote$0$0, node$0$voted$0$0, node$0$member$0$0, node$0$member$0$1], Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$1$vote$1$0]}
+const2sigs: {Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$0, quorum$0$member$1$0], Const('value1', EnumeratedSort('value', ('value0', 'value1'))): [value$1$chosenAt$1$0, value$1$chosenAt$1$1, value$0$decided$0$0], Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$chosenAt$0$1, quorum$0$member$1$1], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$vote$0$0, node$0$voted$0$0, node$0$member$0$0, node$0$member$0$1], Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$1$vote$1$0]}
 
-sig2const: {'quorum$1$chosenAt$0$0': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$0': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'quorum$1$chosenAt$0$1': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$1': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'value$0$decided$0$0': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'node$1$vote$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$1$vote$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$voted$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$member$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$0': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'node$0$member$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$1': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+sig2const: {'quorum$1$chosenAt$0$0': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$0': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'quorum$1$chosenAt$0$1': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$chosenAt$1$1': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'value$0$decided$0$0': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'node$1$vote$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$1$vote$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$voted$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$member$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$0': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'node$0$member$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$1': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 
 ---------- ArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$1, quorum$0$member$1$1; quorum$1$chosenAt$0$0], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0]}
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$0, quorum$0$member$1$1; quorum$1$chosenAt$0$1], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0]}
 
-sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$1 | quorum$0$member$1$1; quorum$1$chosenAt$0$0, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1 | value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0}
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$0 | quorum$0$member$1$1; quorum$1$chosenAt$0$1, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1 | value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0}
 
-part_sig: ('node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0', 'quorum$0$member$1$0; quorum$1$chosenAt$0$1 | quorum$0$member$1$1; quorum$1$chosenAt$0$0', 'value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1 | value$1$vote$1$0')
+part_sig: ('node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0', 'quorum$0$member$1$0; quorum$1$chosenAt$0$0 | quorum$0$member$1$1; quorum$1$chosenAt$0$1', 'value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1 | value$1$vote$1$0')
 
 
 ---------- SigGenerator ----------
 
-terms:  ['~chosenAt(quorum__node0_node2,value1)', '~chosenAt(quorum__node1_node2,value1)', 'decided(value1)', '~vote(node2,value0)', 'voted(node2)', 'member(node2,quorum__node1_node2)', 'member(node2,quorum__node0_node2)']
+terms:  ['~chosenAt(quorum__node0_node2,value1)', '~chosenAt(quorum__node1_node2,value1)', 'decided(value1)', '~vote(node2,value0)', 'voted(node2)', 'member(node2,quorum__node0_node2)', 'member(node2,quorum__node1_node2)']
 
 func_name2symbol:  {'chosenAt': Const('chosenAt', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'decided': Const('decided', FunctionSort(EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'voted': Const('voted', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'member': Const('member', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), BooleanSort()))}
 
@@ -4681,17 +4681,17 @@ sign_func_name2count:  {'1$chosenAt': 2, '0$decided': 1, '1$vote': 1, '0$voted':
 
 ---------- ProductArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$1, quorum$0$member$1$1; quorum$1$chosenAt$0$0], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0]}
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$member$1$0; quorum$1$chosenAt$0$0, quorum$0$member$1$1; quorum$1$chosenAt$0$1], EnumeratedSort('value', ('value0', 'value1')): [value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1, value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0]}
 
-sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$1 | quorum$0$member$1$1; quorum$1$chosenAt$0$0, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1 | value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0}
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$member$1$0; quorum$1$chosenAt$0$0 | quorum$0$member$1$1; quorum$1$chosenAt$0$1, EnumeratedSort('value', ('value0', 'value1')): value$0$decided$0$0; value$1$chosenAt$1$0; value$1$chosenAt$1$1 | value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$0$member$0$1; node$0$voted$0$0; node$1$vote$0$0}
 
 	sort: quorum
 
-	identical_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0; quorum$1$chosenAt$0$1, quorum$0$member$1$1; quorum$1$chosenAt$0$0]}
+	identical_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0; quorum$1$chosenAt$0$0, quorum$0$member$1$1; quorum$1$chosenAt$0$1]}
 
 	identical_single_classes: {}
 
-	identical_multi_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0, quorum$1$chosenAt$0$1, quorum$0$member$1$1, quorum$1$chosenAt$0$0]}
+	identical_multi_classes: {'quorum$0$member$1; quorum$1$chosenAt$0': [quorum$0$member$1$0, quorum$1$chosenAt$0$0, quorum$0$member$1$1, quorum$1$chosenAt$0$1]}
 
 	sort: value
 
@@ -4726,24 +4726,24 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
 
 ---------- QFormula: _set_signed_func_name_to_args ----------
 
-signed_func_name2args: {'1$chosenAt': [[Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$decided': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))]], '0$voted': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))]]}
+signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$decided': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1')))]], '0$voted': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))]]}
 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['member(NODE0,QUORUM1)', '~chosenAt(QUORUM0,VALUE0)', '~chosenAt(QUORUM1,VALUE0)', '~vote(NODE0,VALUE1)', 'voted(NODE0)', 'member(NODE0,QUORUM0)', 'decided(VALUE0)']
+qterms: ['member(NODE0,QUORUM1)', 'decided(VALUE0)', '~chosenAt(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)', 'voted(NODE0)', '~vote(NODE0,VALUE1)', '~chosenAt(QUORUM1,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE0,QUORUM0,QUORUM1,VALUE0. ~member(NODE0,QUORUM1) | chosenAt(QUORUM0,VALUE0) | chosenAt(QUORUM1,VALUE0) | vote(NODE0,VALUE1) | ~voted(NODE0) | ~member(NODE0,QUORUM0) | ~decided(VALUE0) | (VALUE0 = VALUE1 | QUORUM0 = QUORUM1)
+qclause: forall NODE0,QUORUM1,VALUE0,VALUE1,QUORUM0. ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~voted(NODE0) | vote(NODE0,VALUE1) | chosenAt(QUORUM1,VALUE0) | (VALUE0 = VALUE1 | QUORUM0 = QUORUM1)
 
 
 ======================================================================================================================
@@ -4771,7 +4771,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0)
+quantified form : forall NODE0,VALUE0. ~vote(NODE0,VALUE0) | voted(NODE0)
 qcost : 4
 
 
@@ -4789,7 +4789,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0))
+quantified form : forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0))
 qcost : 4
 
 
@@ -4831,7 +4831,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,VALUE1,QUORUM0. ~chosenAt(QUORUM0,VALUE0) | ~decided(VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE1,VALUE0,QUORUM0. ~chosenAt(QUORUM0,VALUE0) | ~decided(VALUE1) | VALUE0 = VALUE1
 qcost : 6
 
 
@@ -4869,7 +4869,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | vote(NODE0,VALUE0) | chosenAt(QUORUM0,VALUE0)
+quantified form : forall QUORUM0,NODE0,VALUE0. chosenAt(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | member(NODE0,QUORUM0)
 qcost : 7
 
 
@@ -4893,7 +4893,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE1,VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE1,VALUE0,NODE0,QUORUM0. chosenAt(QUORUM0,VALUE0) | ~vote(NODE0,VALUE1) | ~decided(VALUE0) | member(NODE0,QUORUM0) | VALUE0 = VALUE1
 qcost : 9
 
 
@@ -4929,7 +4929,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE1,NODE1,NODE0,VALUE0. vote(NODE1,VALUE0) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall VALUE1,NODE0,VALUE0,NODE1. vote(NODE1,VALUE0) | ~vote(NODE0,VALUE1) | ~decided(VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -4953,7 +4953,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,VALUE0,NODE0. vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
+quantified form : forall NODE0,VALUE0,NODE1. vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -4977,7 +4977,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE1,NODE1,NODE0,VALUE0. ~vote(NODE1,VALUE1) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall VALUE1,NODE0,VALUE0,NODE1. ~vote(NODE0,VALUE1) | ~decided(VALUE0) | ~vote(NODE1,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -5013,7 +5013,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE1,NODE1,NODE0,VALUE0. voted(NODE1) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
+quantified form : forall VALUE1,NODE0,VALUE0,NODE1. ~vote(NODE0,VALUE1) | voted(NODE1) | ~decided(VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -5037,7 +5037,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | voted(NODE0) | member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0)
+quantified form : forall QUORUM0,NODE0,VALUE0. voted(NODE0) | chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0) | member(NODE0,QUORUM0)
 qcost : 7
 
 
@@ -5073,7 +5073,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,VALUE0,NODE0. voted(NODE1) | vote(NODE0,VALUE0) | ~decided(VALUE0) | NODE0 = NODE1
+quantified form : forall NODE0,VALUE0,NODE1. vote(NODE0,VALUE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5097,7 +5097,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,VALUE0,NODE0. voted(NODE0) | voted(NODE1) | ~decided(VALUE0) | NODE0 = NODE1
+quantified form : forall NODE0,VALUE0,NODE1. voted(NODE0) | voted(NODE1) | ~decided(VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -5121,7 +5121,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall QUORUM1,VALUE0,NODE0,QUORUM0. ~vote(NODE0,VALUE0) | chosenAt(QUORUM1,VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM1) | ~member(NODE0,QUORUM0) | ~decided(VALUE0) | QUORUM0 = QUORUM1
+quantified form : forall QUORUM0,QUORUM1,NODE0,VALUE0. ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~vote(NODE0,VALUE0) | chosenAt(QUORUM1,VALUE0) | QUORUM0 = QUORUM1
 qcost : 11
 
 
@@ -5137,7 +5137,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0))
+quantified form : forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0))
 qcost : 4
 
 
@@ -5161,16 +5161,16 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 9
-quantified form : forall VALUE1,NODE0,QUORUM0,QUORUM1,VALUE0. ~member(NODE0,QUORUM1) | chosenAt(QUORUM0,VALUE0) | chosenAt(QUORUM1,VALUE0) | vote(NODE0,VALUE1) | ~voted(NODE0) | ~member(NODE0,QUORUM0) | ~decided(VALUE0) | (VALUE0 = VALUE1 | QUORUM0 = QUORUM1)
+quantified form : forall NODE0,QUORUM1,VALUE0,VALUE1,QUORUM0. ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~voted(NODE0) | vote(NODE0,VALUE1) | chosenAt(QUORUM1,VALUE0) | (VALUE0 = VALUE1 | QUORUM0 = QUORUM1)
 qcost : 14
 
 
 
-[QRM NOTE]: Time elapsed since start: 1.240 seconds
+[QRM NOTE]: Time elapsed since start: 1.070 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.367 seconds
+[QRM NOTE]: Time elapsed since last: 0.169 seconds
 
-[QRM NOTE]: Peak memory: 2305944 bytes
+[QRM NOTE]: Peak memory: 2305813 bytes
 
 
 =====================================================================================================
@@ -6824,7 +6824,7 @@ After backtrack at level 1
 
 [MIN NOTE]: number of definitions: 1
 
-invariant [def_chosenAt] forall V,Q. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
+invariant [def_chosenAt] forall Q,V. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
 
 [MIN NOTE]: number of equality relations: 0
 
@@ -6832,13 +6832,13 @@ invariant [def_chosenAt] forall V,Q. chosenAt(Q,V) = (forall N. member(N,Q) -> v
 
 [MIN NOTE]: solution length: 4
 
-invariant [invar_1] forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0) # qcost: 4
+invariant [invar_1] forall NODE0,VALUE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
 
-invariant [invar_12] forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0)) # qcost: 4
+invariant [invar_12] forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0)) # qcost: 4
 
 invariant [invar_7] forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0)) # qcost: 3
 
-invariant [invar_24] forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)) # qcost: 4
+invariant [invar_24] forall VALUE0. (exists QUORUM0. chosenAt(QUORUM0,VALUE0) | ~decided(VALUE0)) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 5
 
@@ -6847,11 +6847,11 @@ invariant [invar_24] forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt
 
 
 
-[QRM NOTE]: Time elapsed since start: 1.392 seconds
+[QRM NOTE]: Time elapsed since start: 1.234 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.152 seconds
+[QRM NOTE]: Time elapsed since last: 0.164 seconds
 
-[QRM NOTE]: Peak memory: 2273725 bytes
+[QRM NOTE]: Peak memory: 2273594 bytes
 
 
 *********************************************************************************************************************
@@ -6890,11 +6890,11 @@ OK
 
 [FW NOTE]: symmetric group order: 48
 
-[QRM NOTE]: Time elapsed since start: 0.095 seconds
+[QRM NOTE]: Time elapsed since start: 0.103 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.095 seconds
+[QRM NOTE]: Time elapsed since last: 0.103 seconds
 
-[QRM NOTE]: Peak memory: 164182 bytes
+[QRM NOTE]: Peak memory: 164878 bytes
 
 
 ===================================
@@ -6933,11 +6933,11 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2', 'node3']
 sort: value=['value0', 'value1']
 sort: quorum=['quorum__node0_node1_node2', 'quorum__node0_node1_node3', 'quorum__node0_node2_node3', 'quorum__node1_node2_node3']
-predicate: vote('node', 'value')
-predicate: decided('value',)
 predicate: chosenAt('quorum', 'value')
-predicate: member('node', 'quorum')
+predicate: vote('node', 'value')
 predicate: voted('node',)
+predicate: member('node', 'quorum')
+predicate: decided('value',)
 interpreted atoms: {'member(node0,quorum__node0_node1_node2)': '1', 'member(node0,quorum__node0_node1_node3)': '1', 'member(node0,quorum__node0_node2_node3)': '1', 'member(node0,quorum__node1_node2_node3)': '0', 'member(node1,quorum__node0_node1_node2)': '1', 'member(node1,quorum__node0_node1_node3)': '1', 'member(node1,quorum__node0_node2_node3)': '0', 'member(node1,quorum__node1_node2_node3)': '1', 'member(node2,quorum__node0_node1_node2)': '1', 'member(node2,quorum__node0_node1_node3)': '0', 'member(node2,quorum__node0_node2_node3)': '1', 'member(node2,quorum__node1_node2_node3)': '1', 'member(node3,quorum__node0_node1_node2)': '0', 'member(node3,quorum__node0_node1_node3)': '1', 'member(node3,quorum__node0_node2_node3)': '1', 'member(node3,quorum__node1_node2_node3)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1_node2,value0)', 'chosenAt(quorum__node0_node1_node2,value1)', 'chosenAt(quorum__node0_node1_node3,value0)', 'chosenAt(quorum__node0_node1_node3,value1)', 'chosenAt(quorum__node0_node2_node3,value0)', 'chosenAt(quorum__node0_node2_node3,value1)', 'chosenAt(quorum__node1_node2_node3,value0)', 'chosenAt(quorum__node1_node2_node3,value1)', 'decided(value0)', 'decided(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node3,value0)', 'vote(node3,value1)', 'voted(node0)', 'voted(node1)', 'voted(node2)', 'voted(node3)']
 
@@ -7023,9 +7023,9 @@ state atoms: ['chosenAt(quorum__node0_node1_node2,value0)', 'chosenAt(quorum__no
 10000000-0101010011111
 10101010-0101010101111
 
-[QRM NOTE]: Time elapsed since start: 1.418 seconds
+[QRM NOTE]: Time elapsed since start: 1.514 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.324 seconds
+[QRM NOTE]: Time elapsed since last: 1.412 seconds
 
 [QRM NOTE]: Peak memory: 1446729 bytes
 
@@ -7038,9 +7038,9 @@ state atoms: ['chosenAt(quorum__node0_node1_node2,value0)', 'chosenAt(quorum__no
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 2.381 seconds
+[QRM NOTE]: Time elapsed since start: 2.515 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.963 seconds
+[QRM NOTE]: Time elapsed since last: 1.001 seconds
 
 [QRM NOTE]: Peak memory: 1280691 bytes
 
@@ -7074,11 +7074,11 @@ OK
 
 [FW NOTE]: symmetric group order: 36
 
-[QRM NOTE]: Time elapsed since start: 0.106 seconds
+[QRM NOTE]: Time elapsed since start: 0.128 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.106 seconds
+[QRM NOTE]: Time elapsed since last: 0.128 seconds
 
-[QRM NOTE]: Peak memory: 183071 bytes
+[QRM NOTE]: Peak memory: 184031 bytes
 
 
 ===================================
@@ -7117,10 +7117,10 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0', 'value1', 'value2']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: member('node', 'quorum')
-predicate: chosenAt('quorum', 'value')
 predicate: voted('node',)
+predicate: member('node', 'quorum')
 predicate: decided('value',)
+predicate: chosenAt('quorum', 'value')
 predicate: vote('node', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_node1,value1)', 'chosenAt(quorum__node0_node1,value2)', 'chosenAt(quorum__node0_node2,value0)', 'chosenAt(quorum__node0_node2,value1)', 'chosenAt(quorum__node0_node2,value2)', 'chosenAt(quorum__node1_node2,value0)', 'chosenAt(quorum__node1_node2,value1)', 'chosenAt(quorum__node1_node2,value2)', 'decided(value0)', 'decided(value1)', 'decided(value2)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'voted(node0)', 'voted(node1)', 'voted(node2)']
@@ -7190,9 +7190,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 100000000-00100100010111
 100100100-00100100100111
 
-[QRM NOTE]: Time elapsed since start: 1.182 seconds
+[QRM NOTE]: Time elapsed since start: 1.357 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.076 seconds
+[QRM NOTE]: Time elapsed since last: 1.229 seconds
 
 [QRM NOTE]: Peak memory: 1416922 bytes
 
@@ -7205,11 +7205,11 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 1.973 seconds
+[QRM NOTE]: Time elapsed since start: 2.168 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.791 seconds
+[QRM NOTE]: Time elapsed since last: 0.810 seconds
 
-[QRM NOTE]: Peak memory: 1117880 bytes
+[QRM NOTE]: Peak memory: 1117939 bytes
 
 next size: node=3,value=3
 
@@ -7248,9 +7248,9 @@ OK
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.023 seconds
+[QRM NOTE]: Time elapsed since start: 0.022 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.023 seconds
+[QRM NOTE]: Time elapsed since last: 0.022 seconds
 
 [QRM NOTE]: Peak memory: 24860 bytes
 
@@ -8674,9 +8674,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 534
 
-[QRM NOTE]: Time elapsed since start: 0.247 seconds
+[QRM NOTE]: Time elapsed since start: 0.238 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.223 seconds
+[QRM NOTE]: Time elapsed since last: 0.216 seconds
 
 [QRM NOTE]: Peak memory: 1727612 bytes
 
@@ -8732,9 +8732,9 @@ After reduction :
  pending  : [3, 6, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 26]
  solution : [0, 2, 22]
 
-[QRM NOTE]: Time elapsed since start: 0.338 seconds
+[QRM NOTE]: Time elapsed since start: 0.335 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.091 seconds
+[QRM NOTE]: Time elapsed since last: 0.096 seconds
 
 [QRM NOTE]: Peak memory: 665636 bytes
 
@@ -8983,12 +8983,12 @@ signed_func_name2args: {'0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0'
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['vote(NODE0,VALUE0)', '~voted(NODE0)']
+qterms: ['~voted(NODE0)', 'vote(NODE0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0. ~vote(NODE0,VALUE0) | voted(NODE0)
+qclause: forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0)
 
 
 === Prime Orbit 22 =====================
@@ -9092,12 +9092,12 @@ signed_func_name2args: {'1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0'
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['voted(NODE0)', '~vote(NODE0,VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'voted(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0))
+qclause: forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0))
 
 
 === Prime Orbit 3 =====================
@@ -9219,7 +9219,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
@@ -9467,7 +9467,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
@@ -9479,12 +9479,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', 'vote(NODE0,VALUE1)', '~member(NODE0,QUORUM0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~member(NODE0,QUORUM0)', 'decided(VALUE0)', 'vote(NODE0,VALUE1)', '~chosenAt(QUORUM0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | VALUE0 = VALUE1
+qclause: forall QUORUM0,VALUE1,VALUE0,NODE0. member(NODE0,QUORUM0) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | chosenAt(QUORUM0,VALUE0) | VALUE0 = VALUE1
 
 
 === Prime Orbit 11 =====================
@@ -9642,7 +9642,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -9659,7 +9659,7 @@ qterms: ['decided(VALUE0)', 'vote(NODE0,VALUE1)', '~vote(NODE1,VALUE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE1,VALUE0,NODE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | vote(NODE1,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall VALUE0,VALUE1,NODE1,NODE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | vote(NODE1,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 12 =====================
@@ -9840,7 +9840,7 @@ constraint mode: ConstraintMode.merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE2', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE2', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -9852,12 +9852,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', 'vote(NODE0,VALUE1)', 'vote(NODE1,VALUE2)']
+qterms: ['vote(NODE1,VALUE2)', 'decided(VALUE0)', 'vote(NODE0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE0,VALUE2,NODE1,VALUE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | ~vote(NODE1,VALUE2) | (VALUE0 = VALUE1 | VALUE0 = VALUE2 | NODE0 = NODE1)
+qclause: forall VALUE0,VALUE1,NODE0,VALUE2,NODE1. ~vote(NODE1,VALUE2) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | VALUE0 = VALUE2 | NODE0 = NODE1)
 
 
 === Prime Orbit 13 =====================
@@ -10015,7 +10015,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -10027,12 +10027,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', 'vote(NODE0,VALUE1)', '~voted(NODE1)']
+qterms: ['decided(VALUE0)', '~voted(NODE1)', 'vote(NODE0,VALUE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE1,VALUE0,NODE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | voted(NODE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+qclause: forall VALUE0,VALUE1,NODE1,NODE0. ~decided(VALUE0) | voted(NODE1) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 
 
 === Prime Orbit 15 =====================
@@ -10166,12 +10166,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~vote(NODE0,VALUE0)', '~voted(NODE1)']
+qterms: ['~vote(NODE0,VALUE0)', 'decided(VALUE0)', '~voted(NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,NODE0. ~decided(VALUE0) | vote(NODE0,VALUE0) | voted(NODE1) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
 
 
 === Prime Orbit 16 =====================
@@ -10285,7 +10285,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
@@ -10297,12 +10297,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~member(NODE0,QUORUM0)', '~voted(NODE0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~member(NODE0,QUORUM0)', '~voted(NODE0)', 'decided(VALUE0)', '~chosenAt(QUORUM0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | voted(NODE0) | chosenAt(QUORUM0,VALUE0)
+qclause: forall QUORUM0,VALUE0,NODE0. member(NODE0,QUORUM0) | voted(NODE0) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)
 
 
 === Prime Orbit 17 =====================
@@ -10418,12 +10418,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~voted(NODE0)', '~voted(NODE1)']
+qterms: ['~voted(NODE0)', 'decided(VALUE0)', '~voted(NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,NODE0. ~decided(VALUE0) | voted(NODE0) | voted(NODE1) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0. voted(NODE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
 
 
 === Prime Orbit 18 =====================
@@ -10537,7 +10537,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
@@ -10549,12 +10549,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~member(NODE0,QUORUM0)', '~vote(NODE0,VALUE0)', '~chosenAt(QUORUM0,VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'decided(VALUE0)', '~chosenAt(QUORUM0,VALUE0)', '~member(NODE0,QUORUM0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | vote(NODE0,VALUE0) | chosenAt(QUORUM0,VALUE0)
+qclause: forall QUORUM0,VALUE0,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) | member(NODE0,QUORUM0)
 
 
 === Prime Orbit 19 =====================
@@ -10670,12 +10670,12 @@ signed_func_name2args: {'0$decided': [[Var('VALUE0', EnumeratedSort('value', ('v
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~vote(NODE1,VALUE0)', '~vote(NODE0,VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'decided(VALUE0)', '~vote(NODE1,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,VALUE0,NODE0. ~decided(VALUE0) | vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | NODE0 = NODE1
+qclause: forall VALUE0,NODE1,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | vote(NODE1,VALUE0) | NODE0 = NODE1
 
 
 === Prime Orbit 20 =====================
@@ -10898,7 +10898,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: set()
 
@@ -10910,12 +10910,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM1', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE0)', '~chosenAt(QUORUM1,VALUE0)', 'member(NODE0,QUORUM1)', '~chosenAt(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)', 'vote(NODE0,VALUE0)']
+qterms: ['member(NODE0,QUORUM0)', 'member(NODE0,QUORUM1)', 'decided(VALUE0)', '~chosenAt(QUORUM1,VALUE0)', 'vote(NODE0,VALUE0)', '~chosenAt(QUORUM0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall QUORUM1,VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM1,VALUE0) | ~member(NODE0,QUORUM1) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~vote(NODE0,VALUE0) | QUORUM0 = QUORUM1
+qclause: forall QUORUM1,QUORUM0,VALUE0,NODE0. ~member(NODE0,QUORUM0) | ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM1,VALUE0) | ~vote(NODE0,VALUE0) | chosenAt(QUORUM0,VALUE0) | QUORUM0 = QUORUM1
 
 
 === Prime Orbit 26 =====================
@@ -11029,7 +11029,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('QUORUM1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
 
 exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
 
@@ -11041,12 +11041,12 @@ signed_func_name2args: {'1$chosenAt': [[Var('QUORUM0', EnumeratedSort('quorum', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decided(VALUE1)', 'member(NODE0,QUORUM0)', 'voted(NODE0)', 'member(NODE0,QUORUM1)', '~chosenAt(QUORUM0,VALUE1)', '~chosenAt(QUORUM1,VALUE1)', '~vote(NODE0,VALUE0)']
+qterms: ['~chosenAt(QUORUM1,VALUE1)', '~chosenAt(QUORUM0,VALUE1)', '~vote(NODE0,VALUE0)', 'decided(VALUE1)', 'member(NODE0,QUORUM0)', 'member(NODE0,QUORUM1)', 'voted(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE0,QUORUM1,QUORUM0. ~decided(VALUE1) | ~member(NODE0,QUORUM0) | ~voted(NODE0) | ~member(NODE0,QUORUM1) | chosenAt(QUORUM0,VALUE1) | chosenAt(QUORUM1,VALUE1) | (exists VALUE0. (vote(NODE0,VALUE0) & VALUE0 ~= VALUE1)) | QUORUM0 = QUORUM1
+qclause: forall QUORUM1,VALUE1,QUORUM0,NODE0. chosenAt(QUORUM1,VALUE1) | chosenAt(QUORUM0,VALUE1) | ~decided(VALUE1) | ~member(NODE0,QUORUM0) | ~member(NODE0,QUORUM1) | ~voted(NODE0) | (exists VALUE0. (vote(NODE0,VALUE0) & VALUE0 ~= VALUE1)) | QUORUM0 = QUORUM1
 
 
 ======================================================================================================================
@@ -11110,7 +11110,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,NODE0. ~vote(NODE0,VALUE0) | voted(NODE0)
+quantified form : forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0)
 qcost : 4
 
 
@@ -11128,7 +11128,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0))
+quantified form : forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0))
 qcost : 4
 
 
@@ -11242,7 +11242,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall VALUE1,VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | member(NODE0,QUORUM0) | chosenAt(QUORUM0,VALUE0) | VALUE0 = VALUE1
+quantified form : forall QUORUM0,VALUE1,VALUE0,NODE0. member(NODE0,QUORUM0) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | chosenAt(QUORUM0,VALUE0) | VALUE0 = VALUE1
 qcost : 9
 
 
@@ -11326,7 +11326,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,VALUE1,VALUE0,NODE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | vote(NODE1,VALUE0) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall VALUE0,VALUE1,NODE1,NODE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | vote(NODE1,VALUE0) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -11410,7 +11410,7 @@ num_suborbits: 2
 num_forall :   5
 num_exists :   0
 num_literals : 6
-quantified form : forall VALUE1,NODE0,VALUE2,NODE1,VALUE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | ~vote(NODE1,VALUE2) | (VALUE0 = VALUE1 | VALUE0 = VALUE2 | NODE0 = NODE1)
+quantified form : forall VALUE0,VALUE1,NODE0,VALUE2,NODE1. ~vote(NODE1,VALUE2) | ~decided(VALUE0) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | VALUE0 = VALUE2 | NODE0 = NODE1)
 qcost : 11
 
 
@@ -11494,7 +11494,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall NODE1,VALUE1,VALUE0,NODE0. ~decided(VALUE0) | ~vote(NODE0,VALUE1) | voted(NODE1) | (NODE0 = NODE1 | VALUE0 = VALUE1)
+quantified form : forall VALUE0,VALUE1,NODE1,NODE0. ~decided(VALUE0) | voted(NODE1) | ~vote(NODE0,VALUE1) | (VALUE0 = VALUE1 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -11542,7 +11542,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,VALUE0,NODE0. ~decided(VALUE0) | vote(NODE0,VALUE0) | voted(NODE1) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -11572,7 +11572,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | voted(NODE0) | chosenAt(QUORUM0,VALUE0)
+quantified form : forall QUORUM0,VALUE0,NODE0. member(NODE0,QUORUM0) | voted(NODE0) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)
 qcost : 7
 
 
@@ -11602,7 +11602,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,VALUE0,NODE0. ~decided(VALUE0) | voted(NODE0) | voted(NODE1) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0. voted(NODE0) | ~decided(VALUE0) | voted(NODE1) | NODE0 = NODE1
 qcost : 7
 
 
@@ -11632,7 +11632,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | member(NODE0,QUORUM0) | vote(NODE0,VALUE0) | chosenAt(QUORUM0,VALUE0)
+quantified form : forall QUORUM0,VALUE0,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0) | member(NODE0,QUORUM0)
 qcost : 7
 
 
@@ -11662,7 +11662,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,VALUE0,NODE0. ~decided(VALUE0) | vote(NODE1,VALUE0) | vote(NODE0,VALUE0) | NODE0 = NODE1
+quantified form : forall VALUE0,NODE1,NODE0. vote(NODE0,VALUE0) | ~decided(VALUE0) | vote(NODE1,VALUE0) | NODE0 = NODE1
 qcost : 7
 
 
@@ -11710,7 +11710,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall QUORUM1,VALUE0,NODE0,QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM1,VALUE0) | ~member(NODE0,QUORUM1) | chosenAt(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | ~vote(NODE0,VALUE0) | QUORUM0 = QUORUM1
+quantified form : forall QUORUM1,QUORUM0,VALUE0,NODE0. ~member(NODE0,QUORUM0) | ~member(NODE0,QUORUM1) | ~decided(VALUE0) | chosenAt(QUORUM1,VALUE0) | ~vote(NODE0,VALUE0) | chosenAt(QUORUM0,VALUE0) | QUORUM0 = QUORUM1
 qcost : 11
 
 
@@ -11740,16 +11740,16 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   1
 num_literals : 9
-quantified form : forall VALUE1,NODE0,QUORUM1,QUORUM0. ~decided(VALUE1) | ~member(NODE0,QUORUM0) | ~voted(NODE0) | ~member(NODE0,QUORUM1) | chosenAt(QUORUM0,VALUE1) | chosenAt(QUORUM1,VALUE1) | (exists VALUE0. (vote(NODE0,VALUE0) & VALUE0 ~= VALUE1)) | QUORUM0 = QUORUM1
+quantified form : forall QUORUM1,VALUE1,QUORUM0,NODE0. chosenAt(QUORUM1,VALUE1) | chosenAt(QUORUM0,VALUE1) | ~decided(VALUE1) | ~member(NODE0,QUORUM0) | ~member(NODE0,QUORUM1) | ~voted(NODE0) | (exists VALUE0. (vote(NODE0,VALUE0) & VALUE0 ~= VALUE1)) | QUORUM0 = QUORUM1
 qcost : 14
 
 
 
-[QRM NOTE]: Time elapsed since start: 2.765 seconds
+[QRM NOTE]: Time elapsed since start: 3.174 seconds
 
-[QRM NOTE]: Time elapsed since last: 2.427 seconds
+[QRM NOTE]: Time elapsed since last: 2.840 seconds
 
-[QRM NOTE]: Peak memory: 2540257 bytes
+[QRM NOTE]: Peak memory: 2540138 bytes
 
 
 =====================================================================================================
@@ -13403,7 +13403,7 @@ After backtrack at level 1
 
 [MIN NOTE]: number of definitions: 1
 
-invariant [def_chosenAt] forall V,Q. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
+invariant [def_chosenAt] forall Q,V. chosenAt(Q,V) = (forall N. member(N,Q) -> vote(N,V)) # definition, qcost: 6
 
 [MIN NOTE]: number of equality relations: 0
 
@@ -13413,9 +13413,9 @@ invariant [def_chosenAt] forall V,Q. chosenAt(Q,V) = (forall N. member(N,Q) -> v
 
 invariant [invar_0] forall VALUE1,VALUE0,NODE0. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
 
-invariant [invar_2] forall VALUE0,NODE0. ~vote(NODE0,VALUE0) | voted(NODE0) # qcost: 4
+invariant [invar_2] forall VALUE0,NODE0. voted(NODE0) | ~vote(NODE0,VALUE0) # qcost: 4
 
-invariant [invar_22] forall NODE0. (exists VALUE0. ~voted(NODE0) | vote(NODE0,VALUE0)) # qcost: 4
+invariant [invar_22] forall NODE0. (exists VALUE0. vote(NODE0,VALUE0) | ~voted(NODE0)) # qcost: 4
 
 invariant [invar_20] forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt(QUORUM0,VALUE0)) # qcost: 4
 
@@ -13426,11 +13426,11 @@ invariant [invar_20] forall VALUE0. (exists QUORUM0. ~decided(VALUE0) | chosenAt
 
 
 
-[QRM NOTE]: Time elapsed since start: 2.924 seconds
+[QRM NOTE]: Time elapsed since start: 3.332 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.159 seconds
+[QRM NOTE]: Time elapsed since last: 0.158 seconds
 
-[QRM NOTE]: Peak memory: 2452743 bytes
+[QRM NOTE]: Peak memory: 2452631 bytes
 
 
 *********************************************************************************************************************
@@ -13469,9 +13469,9 @@ OK
 
 [FW NOTE]: symmetric group order: 144
 
-[QRM NOTE]: Time elapsed since start: 0.146 seconds
+[QRM NOTE]: Time elapsed since start: 0.153 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.146 seconds
+[QRM NOTE]: Time elapsed since last: 0.153 seconds
 
 [QRM NOTE]: Peak memory: 293871 bytes
 
@@ -13513,10 +13513,10 @@ sort: node=['node0', 'node1', 'node2', 'node3']
 sort: value=['value0', 'value1', 'value2']
 sort: quorum=['quorum__node0_node1_node2', 'quorum__node0_node1_node3', 'quorum__node0_node2_node3', 'quorum__node1_node2_node3']
 predicate: chosenAt('quorum', 'value')
-predicate: decided('value',)
-predicate: vote('node', 'value')
-predicate: member('node', 'quorum')
 predicate: voted('node',)
+predicate: member('node', 'quorum')
+predicate: vote('node', 'value')
+predicate: decided('value',)
 interpreted atoms: {'member(node0,quorum__node0_node1_node2)': '1', 'member(node0,quorum__node0_node1_node3)': '1', 'member(node0,quorum__node0_node2_node3)': '1', 'member(node0,quorum__node1_node2_node3)': '0', 'member(node1,quorum__node0_node1_node2)': '1', 'member(node1,quorum__node0_node1_node3)': '1', 'member(node1,quorum__node0_node2_node3)': '0', 'member(node1,quorum__node1_node2_node3)': '1', 'member(node2,quorum__node0_node1_node2)': '1', 'member(node2,quorum__node0_node1_node3)': '0', 'member(node2,quorum__node0_node2_node3)': '1', 'member(node2,quorum__node1_node2_node3)': '1', 'member(node3,quorum__node0_node1_node2)': '0', 'member(node3,quorum__node0_node1_node3)': '1', 'member(node3,quorum__node0_node2_node3)': '1', 'member(node3,quorum__node1_node2_node3)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1_node2,value0)', 'chosenAt(quorum__node0_node1_node2,value1)', 'chosenAt(quorum__node0_node1_node2,value2)', 'chosenAt(quorum__node0_node1_node3,value0)', 'chosenAt(quorum__node0_node1_node3,value1)', 'chosenAt(quorum__node0_node1_node3,value2)', 'chosenAt(quorum__node0_node2_node3,value0)', 'chosenAt(quorum__node0_node2_node3,value1)', 'chosenAt(quorum__node0_node2_node3,value2)', 'chosenAt(quorum__node1_node2_node3,value0)', 'chosenAt(quorum__node1_node2_node3,value1)', 'chosenAt(quorum__node1_node2_node3,value2)', 'decided(value0)', 'decided(value1)', 'decided(value2)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'vote(node3,value0)', 'vote(node3,value1)', 'vote(node3,value2)', 'voted(node0)', 'voted(node1)', 'voted(node2)', 'voted(node3)']
 
@@ -13777,9 +13777,9 @@ state atoms: ['chosenAt(quorum__node0_node1_node2,value0)', 'chosenAt(quorum__no
 100000000000-001001001000101111
 100100100100-001001001001001111
 
-[QRM NOTE]: Time elapsed since start: 6.913 seconds
+[QRM NOTE]: Time elapsed since start: 7.122 seconds
 
-[QRM NOTE]: Time elapsed since last: 6.768 seconds
+[QRM NOTE]: Time elapsed since last: 6.969 seconds
 
 [QRM NOTE]: Peak memory: 1679449 bytes
 
@@ -13792,9 +13792,9 @@ state atoms: ['chosenAt(quorum__node0_node1_node2,value0)', 'chosenAt(quorum__no
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 10.526 seconds
+[QRM NOTE]: Time elapsed since start: 10.782 seconds
 
-[QRM NOTE]: Time elapsed since last: 3.613 seconds
+[QRM NOTE]: Time elapsed since last: 3.660 seconds
 
 [QRM NOTE]: Peak memory: 4469638 bytes
 
@@ -13828,11 +13828,11 @@ OK
 
 [FW NOTE]: symmetric group order: 144
 
-[QRM NOTE]: Time elapsed since start: 0.152 seconds
+[QRM NOTE]: Time elapsed since start: 0.170 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.152 seconds
+[QRM NOTE]: Time elapsed since last: 0.170 seconds
 
-[QRM NOTE]: Peak memory: 291290 bytes
+[QRM NOTE]: Peak memory: 292250 bytes
 
 
 ===================================
@@ -13871,11 +13871,11 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0', 'value1', 'value2', 'value3']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
+predicate: voted('node',)
 predicate: vote('node', 'value')
 predicate: decided('value',)
-predicate: chosenAt('quorum', 'value')
 predicate: member('node', 'quorum')
-predicate: voted('node',)
+predicate: chosenAt('quorum', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_node1,value1)', 'chosenAt(quorum__node0_node1,value2)', 'chosenAt(quorum__node0_node1,value3)', 'chosenAt(quorum__node0_node2,value0)', 'chosenAt(quorum__node0_node2,value1)', 'chosenAt(quorum__node0_node2,value2)', 'chosenAt(quorum__node0_node2,value3)', 'chosenAt(quorum__node1_node2,value0)', 'chosenAt(quorum__node1_node2,value1)', 'chosenAt(quorum__node1_node2,value2)', 'chosenAt(quorum__node1_node2,value3)', 'decided(value0)', 'decided(value1)', 'decided(value2)', 'decided(value3)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node0,value3)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node1,value3)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'vote(node2,value3)', 'voted(node0)', 'voted(node1)', 'voted(node2)']
 
@@ -14005,9 +14005,9 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 100000000000-000100010000100111
 100010001000-000100010001000111
 
-[QRM NOTE]: Time elapsed since start: 1.965 seconds
+[QRM NOTE]: Time elapsed since start: 2.071 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.813 seconds
+[QRM NOTE]: Time elapsed since last: 1.901 seconds
 
 [QRM NOTE]: Peak memory: 1593411 bytes
 
@@ -14020,11 +14020,11 @@ state atoms: ['chosenAt(quorum__node0_node1,value0)', 'chosenAt(quorum__node0_no
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 3.850 seconds
+[QRM NOTE]: Time elapsed since start: 4.109 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.885 seconds
+[QRM NOTE]: Time elapsed since last: 2.039 seconds
 
-[QRM NOTE]: Peak memory: 2422244 bytes
+[QRM NOTE]: Peak memory: 2422303 bytes
 
 
 *********************************************************************
@@ -14110,7 +14110,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 71.009 seconds
+[QRM NOTE]: Time elapsed since start: 67.402 seconds
 
-[QRM NOTE]: Time elapsed since last: 71.009 seconds
+[QRM NOTE]: Time elapsed since last: 67.402 seconds
 

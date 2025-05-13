@@ -43,6 +43,6 @@ export learn_value
 ##invariant [manual_2] decide(Q, V) -> (forall N. member(N, Q) -> vote(N, V))
 ##invariant [manual_3] decision(V) -> exists Q. decide(Q, V)
 
-invariant [invar_0] forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) # qcost: 6
-invariant [invar_11] forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)) # qcost: 4
+invariant [invar_0] forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
+invariant [invar_11] forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4
 invariant [invar_4] forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0)) # qcost: 3

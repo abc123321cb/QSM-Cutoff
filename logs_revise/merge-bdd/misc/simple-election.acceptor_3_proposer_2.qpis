@@ -33,7 +33,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall ACCEPTOR0,PROPOSER0. ~promise(ACCEPTOR0,PROPOSER0) | start(PROPOSER0)
+quantified form : forall PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER0) | start(PROPOSER0)
 qcost : 4
 
 
@@ -81,7 +81,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall QUORUM0,PROPOSER0. start(PROPOSER0) | ~chosenAt(QUORUM0,PROPOSER0)
+quantified form : forall PROPOSER0,QUORUM0. ~chosenAt(QUORUM0,PROPOSER0) | start(PROPOSER0)
 qcost : 4
 
 
@@ -103,7 +103,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall PROPOSER1,QUORUM0,PROPOSER0. ~leader(PROPOSER1) | ~chosenAt(QUORUM0,PROPOSER0) | PROPOSER0 = PROPOSER1
+quantified form : forall PROPOSER0,PROPOSER1,QUORUM0. ~chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER1) | PROPOSER0 = PROPOSER1
 qcost : 6
 
 
@@ -137,7 +137,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall ACCEPTOR1,PROPOSER0,ACCEPTOR0. ~didNotPromise(ACCEPTOR0) | promise(ACCEPTOR1,PROPOSER0) | ~leader(PROPOSER0) | ACCEPTOR0 = ACCEPTOR1
+quantified form : forall PROPOSER0,ACCEPTOR1,ACCEPTOR0. ~leader(PROPOSER0) | promise(ACCEPTOR1,PROPOSER0) | ~didNotPromise(ACCEPTOR0) | ACCEPTOR0 = ACCEPTOR1
 qcost : 7
 
 
@@ -159,7 +159,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall ACCEPTOR0,QUORUM0,PROPOSER0. chosenAt(QUORUM0,PROPOSER0) | ~didNotPromise(ACCEPTOR0) | ~leader(PROPOSER0) | member(ACCEPTOR0,QUORUM0)
+quantified form : forall PROPOSER0,QUORUM0,ACCEPTOR0. ~leader(PROPOSER0) | member(ACCEPTOR0,QUORUM0) | ~didNotPromise(ACCEPTOR0) | chosenAt(QUORUM0,PROPOSER0)
 qcost : 7
 
 
@@ -181,7 +181,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall ACCEPTOR1,PROPOSER0,ACCEPTOR0. ~didNotPromise(ACCEPTOR0) | ~leader(PROPOSER0) | ~didNotPromise(ACCEPTOR1) | ACCEPTOR0 = ACCEPTOR1
+quantified form : forall PROPOSER0,ACCEPTOR1,ACCEPTOR0. ~leader(PROPOSER0) | ~didNotPromise(ACCEPTOR1) | ~didNotPromise(ACCEPTOR0) | ACCEPTOR0 = ACCEPTOR1
 qcost : 7
 
 
@@ -215,7 +215,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall ACCEPTOR1,PROPOSER1,PROPOSER0,ACCEPTOR0. ~didNotPromise(ACCEPTOR0) | ~leader(PROPOSER0) | ~promise(ACCEPTOR1,PROPOSER1) | (PROPOSER0 = PROPOSER1 | ACCEPTOR0 = ACCEPTOR1)
+quantified form : forall PROPOSER0,PROPOSER1,ACCEPTOR1,ACCEPTOR0. ~leader(PROPOSER0) | ~promise(ACCEPTOR1,PROPOSER1) | ~didNotPromise(ACCEPTOR0) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
 qcost : 9
 
 
@@ -237,7 +237,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall ACCEPTOR0,QUORUM0,PROPOSER0. chosenAt(QUORUM0,PROPOSER0) | member(ACCEPTOR0,QUORUM0) | ~leader(PROPOSER0) | promise(ACCEPTOR0,PROPOSER0)
+quantified form : forall PROPOSER0,QUORUM0,ACCEPTOR0. promise(ACCEPTOR0,PROPOSER0) | ~leader(PROPOSER0) | member(ACCEPTOR0,QUORUM0) | chosenAt(QUORUM0,PROPOSER0)
 qcost : 7
 
 
@@ -271,7 +271,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall ACCEPTOR1,PROPOSER1,PROPOSER0,ACCEPTOR0. promise(ACCEPTOR1,PROPOSER0) | ~leader(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | (PROPOSER0 = PROPOSER1 | ACCEPTOR0 = ACCEPTOR1)
+quantified form : forall PROPOSER0,PROPOSER1,ACCEPTOR1,ACCEPTOR0. ~leader(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | promise(ACCEPTOR1,PROPOSER0) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
 qcost : 9
 
 
@@ -293,7 +293,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall ACCEPTOR1,PROPOSER0,ACCEPTOR0. promise(ACCEPTOR1,PROPOSER0) | ~leader(PROPOSER0) | promise(ACCEPTOR0,PROPOSER0) | ACCEPTOR0 = ACCEPTOR1
+quantified form : forall PROPOSER0,ACCEPTOR1,ACCEPTOR0. promise(ACCEPTOR0,PROPOSER0) | ~leader(PROPOSER0) | promise(ACCEPTOR1,PROPOSER0) | ACCEPTOR0 = ACCEPTOR1
 qcost : 7
 
 
@@ -315,7 +315,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 4
-quantified form : forall ACCEPTOR0,PROPOSER1,PROPOSER0. start(PROPOSER1) | didNotPromise(ACCEPTOR0) | promise(ACCEPTOR0,PROPOSER0) | PROPOSER0 = PROPOSER1
+quantified form : forall PROPOSER0,PROPOSER1,ACCEPTOR0. didNotPromise(ACCEPTOR0) | promise(ACCEPTOR0,PROPOSER0) | start(PROPOSER1) | PROPOSER0 = PROPOSER1
 qcost : 7
 
 
@@ -337,7 +337,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall ACCEPTOR1,PROPOSER1,PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR1,PROPOSER1) | ~leader(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | (PROPOSER0 = PROPOSER1 | ACCEPTOR0 = ACCEPTOR1)
+quantified form : forall PROPOSER0,PROPOSER1,ACCEPTOR1,ACCEPTOR0. ~leader(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | ~promise(ACCEPTOR1,PROPOSER1) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
 qcost : 9
 
 
@@ -359,7 +359,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 5
-quantified form : forall ACCEPTOR0,PROPOSER1,QUORUM0,PROPOSER0. chosenAt(QUORUM0,PROPOSER0) | member(ACCEPTOR0,QUORUM0) | ~leader(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER1) | PROPOSER0 = PROPOSER1
+quantified form : forall PROPOSER0,PROPOSER1,QUORUM0,ACCEPTOR0. ~leader(PROPOSER0) | member(ACCEPTOR0,QUORUM0) | ~promise(ACCEPTOR0,PROPOSER1) | chosenAt(QUORUM0,PROPOSER0) | PROPOSER0 = PROPOSER1
 qcost : 9
 
 
@@ -397,7 +397,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 8
-quantified form : forall PROPOSER1,ACCEPTOR1,QUORUM0,PROPOSER0,ACCEPTOR0. didNotPromise(ACCEPTOR1) | ~member(ACCEPTOR0,QUORUM0) | chosenAt(QUORUM0,PROPOSER0) | start(PROPOSER1) | didNotPromise(ACCEPTOR0) | ~member(ACCEPTOR1,QUORUM0) | (PROPOSER0 = PROPOSER1 | ACCEPTOR0 = ACCEPTOR1)
+quantified form : forall ACCEPTOR0,PROPOSER0,PROPOSER1,ACCEPTOR1,QUORUM0. didNotPromise(ACCEPTOR0) | didNotPromise(ACCEPTOR1) | chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR1,QUORUM0) | ~member(ACCEPTOR0,QUORUM0) | start(PROPOSER1) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
 qcost : 13
 
 
@@ -431,7 +431,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 8
-quantified form : forall PROPOSER1,ACCEPTOR1,QUORUM0,PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | chosenAt(QUORUM0,PROPOSER0) | start(PROPOSER1) | didNotPromise(ACCEPTOR0) | ~member(ACCEPTOR1,QUORUM0) | (PROPOSER0 = PROPOSER1 | ACCEPTOR0 = ACCEPTOR1)
+quantified form : forall ACCEPTOR0,PROPOSER0,PROPOSER1,ACCEPTOR1,QUORUM0. didNotPromise(ACCEPTOR0) | ~promise(ACCEPTOR1,PROPOSER0) | chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR1,QUORUM0) | ~member(ACCEPTOR0,QUORUM0) | start(PROPOSER1) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
 qcost : 13
 
 
@@ -465,7 +465,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 8
-quantified form : forall PROPOSER1,QUORUM0,PROPOSER0,QUORUM1,ACCEPTOR0. chosenAt(QUORUM1,PROPOSER0) | ~chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | member(ACCEPTOR0,QUORUM0) | start(PROPOSER1) | didNotPromise(ACCEPTOR0) | (PROPOSER0 = PROPOSER1 | QUORUM0 = QUORUM1)
+quantified form : forall ACCEPTOR0,PROPOSER0,PROPOSER1,QUORUM1,QUORUM0. didNotPromise(ACCEPTOR0) | member(ACCEPTOR0,QUORUM0) | ~chosenAt(QUORUM0,PROPOSER0) | start(PROPOSER1) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | (QUORUM0 = QUORUM1 | PROPOSER0 = PROPOSER1)
 qcost : 13
 
 
@@ -487,7 +487,7 @@ num_suborbits: 1
 num_forall :   4
 num_exists :   0
 num_literals : 7
-quantified form : forall QUORUM1,QUORUM0,PROPOSER0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER0) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | ~member(ACCEPTOR0,QUORUM1) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | QUORUM0 = QUORUM1
+quantified form : forall PROPOSER0,QUORUM0,QUORUM1,ACCEPTOR0. chosenAt(QUORUM0,PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER0) | ~leader(PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | QUORUM0 = QUORUM1
 qcost : 11
 
 
@@ -501,7 +501,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall PROPOSER0. (exists QUORUM0. chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0))
+quantified form : forall PROPOSER0. (exists QUORUM0. ~leader(PROPOSER0) | chosenAt(QUORUM0,PROPOSER0))
 qcost : 4
 
 
@@ -523,7 +523,7 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 9
-quantified form : forall PROPOSER1,QUORUM0,PROPOSER0,QUORUM1,ACCEPTOR0. chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | ~member(ACCEPTOR0,QUORUM1) | chosenAt(QUORUM0,PROPOSER0) | start(PROPOSER1) | ~leader(PROPOSER0) | didNotPromise(ACCEPTOR0) | (PROPOSER0 = PROPOSER1 | QUORUM0 = QUORUM1)
+quantified form : forall ACCEPTOR0,PROPOSER0,PROPOSER1,QUORUM1,QUORUM0. didNotPromise(ACCEPTOR0) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | start(PROPOSER1) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | (QUORUM0 = QUORUM1 | PROPOSER0 = PROPOSER1)
 qcost : 14
 
 
@@ -545,6 +545,6 @@ num_suborbits: 1
 num_forall :   5
 num_exists :   0
 num_literals : 9
-quantified form : forall PROPOSER1,QUORUM0,PROPOSER0,QUORUM1,ACCEPTOR0. chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | ~member(ACCEPTOR0,QUORUM1) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | promise(ACCEPTOR0,PROPOSER1) | didNotPromise(ACCEPTOR0) | (PROPOSER0 = PROPOSER1 | QUORUM0 = QUORUM1)
+quantified form : forall ACCEPTOR0,PROPOSER0,PROPOSER1,QUORUM1,QUORUM0. didNotPromise(ACCEPTOR0) | promise(ACCEPTOR0,PROPOSER1) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | (QUORUM0 = QUORUM1 | PROPOSER0 = PROPOSER1)
 qcost : 14
 

@@ -42,9 +42,9 @@ OK
 
 [FW NOTE]: symmetric group order: 1
 
-[QRM NOTE]: Time elapsed since start: 0.035 seconds
+[QRM NOTE]: Time elapsed since start: 0.034 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.035 seconds
+[QRM NOTE]: Time elapsed since last: 0.034 seconds
 
 [QRM NOTE]: Peak memory: 32056 bytes
 
@@ -89,11 +89,11 @@ start extracting cubes
 =================================================================================================
 
 sort: node=['node0']
+predicate: held()
+predicate: grant_msg('node',)
 predicate: lock_msg('node',)
 predicate: unlock_msg('node',)
-predicate: held()
 predicate: holds_lock('node',)
-predicate: grant_msg('node',)
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'held()', 'holds_lock(node0)', 'lock_msg(node0)', 'unlock_msg(node0)']
 
@@ -104,7 +104,7 @@ state atoms: ['grant_msg(node0)', 'held()', 'holds_lock(node0)', 'lock_msg(node0
 
 [QRM NOTE]: Time elapsed since start: 0.101 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.066 seconds
+[QRM NOTE]: Time elapsed since last: 0.067 seconds
 
 [QRM NOTE]: Peak memory: 1099686 bytes
 
@@ -121,9 +121,9 @@ state atoms: ['grant_msg(node0)', 'held()', 'holds_lock(node0)', 'lock_msg(node0
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.105 seconds
+[QRM NOTE]: Time elapsed since start: 0.106 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.004 seconds
+[QRM NOTE]: Time elapsed since last: 0.005 seconds
 
 [QRM NOTE]: Peak memory: 50762 bytes
 
@@ -235,7 +235,7 @@ qcost : 0
 
 [QRM NOTE]: Time elapsed since start: 0.117 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.013 seconds
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
 
 [QRM NOTE]: Peak memory: 1118584 bytes
 
@@ -291,11 +291,11 @@ After reduction :
  pending  : []
  solution : [0, 1, 2, 3, 4, 5, 6]
 
-[QRM NOTE]: Time elapsed since start: 0.119 seconds
+[QRM NOTE]: Time elapsed since start: 0.118 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.001 seconds
 
-[QRM NOTE]: Peak memory: 70983 bytes
+[QRM NOTE]: Peak memory: 71042 bytes
 
 
 ==============================================================================================
@@ -490,12 +490,12 @@ signed_func_name2args: {'1$held': [[]], '0$holds_lock': [[Var('NODE0', Enumerate
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds_lock(NODE0)', '~held']
+qterms: ['~held', 'holds_lock(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~holds_lock(NODE0) | held
+qclause: forall NODE0. held | ~holds_lock(NODE0)
 
 
 === Prime Orbit 2 =====================
@@ -775,12 +775,12 @@ signed_func_name2args: {'1$held': [[]], '0$unlock_msg': [[Var('NODE0', Enumerate
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['unlock_msg(NODE0)', '~held']
+qterms: ['~held', 'unlock_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~unlock_msg(NODE0) | held
+qclause: forall NODE0. held | ~unlock_msg(NODE0)
 
 
 === Prime Orbit 5 =====================
@@ -965,12 +965,12 @@ signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~grant_msg(NODE0)', '~unlock_msg(NODE0)', 'held', '~holds_lock(NODE0)']
+qterms: ['held', '~holds_lock(NODE0)', '~unlock_msg(NODE0)', '~grant_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | ~held | holds_lock(NODE0)
+qclause: forall NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0)
 
 
 ========================================================================================================
@@ -1002,7 +1002,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~holds_lock(NODE0) | held
+quantified form : forall NODE0. held | ~holds_lock(NODE0)
 qcost : 3
 
 
@@ -1044,7 +1044,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~unlock_msg(NODE0) | held
+quantified form : forall NODE0. held | ~unlock_msg(NODE0)
 qcost : 3
 
 
@@ -1072,16 +1072,16 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | ~held | holds_lock(NODE0)
+quantified form : forall NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.219 seconds
+[QRM NOTE]: Time elapsed since start: 0.419 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.100 seconds
+[QRM NOTE]: Time elapsed since last: 0.301 seconds
 
-[QRM NOTE]: Peak memory: 1807484 bytes
+[QRM NOTE]: Peak memory: 1807604 bytes
 
 
 =======================================================================================
@@ -1149,17 +1149,17 @@ After backtrack at level 1
 
 invariant [invar_0] forall NODE0. held | ~grant_msg(NODE0) # qcost: 3
 
-invariant [invar_1] forall NODE0. ~holds_lock(NODE0) | held # qcost: 3
+invariant [invar_1] forall NODE0. held | ~holds_lock(NODE0) # qcost: 3
 
 invariant [invar_2] forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0) # qcost: 3
 
 invariant [invar_3] forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0) # qcost: 3
 
-invariant [invar_4] forall NODE0. ~unlock_msg(NODE0) | held # qcost: 3
+invariant [invar_4] forall NODE0. held | ~unlock_msg(NODE0) # qcost: 3
 
 invariant [invar_5] forall NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE0) # qcost: 3
 
-invariant [invar_6] forall NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | ~held | holds_lock(NODE0) # qcost: 5
+invariant [invar_6] forall NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 7
 
@@ -1168,11 +1168,11 @@ invariant [invar_6] forall NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | ~held |
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.293 seconds
+[QRM NOTE]: Time elapsed since start: 0.492 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.074 seconds
+[QRM NOTE]: Time elapsed since last: 0.073 seconds
 
-[QRM NOTE]: Peak memory: 1796968 bytes
+[QRM NOTE]: Peak memory: 1797088 bytes
 
 
 *******************************************************************************************************
@@ -1211,9 +1211,9 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.066 seconds
+[QRM NOTE]: Time elapsed since start: 0.072 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.066 seconds
+[QRM NOTE]: Time elapsed since last: 0.072 seconds
 
 [QRM NOTE]: Peak memory: 66441 bytes
 
@@ -1258,11 +1258,11 @@ start extracting cubes
 =================================================================================================
 
 sort: node=['node0', 'node1']
-predicate: unlock_msg('node',)
+predicate: lock_msg('node',)
+predicate: holds_lock('node',)
 predicate: grant_msg('node',)
 predicate: held()
-predicate: holds_lock('node',)
-predicate: lock_msg('node',)
+predicate: unlock_msg('node',)
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'held()', 'holds_lock(node0)', 'holds_lock(node1)', 'lock_msg(node0)', 'lock_msg(node1)', 'unlock_msg(node0)', 'unlock_msg(node1)']
 
@@ -1274,11 +1274,11 @@ state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'held()', 'holds_lock(node
 01100--00
 10100--00
 
-[QRM NOTE]: Time elapsed since start: 0.506 seconds
+[QRM NOTE]: Time elapsed since start: 0.290 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.440 seconds
+[QRM NOTE]: Time elapsed since last: 0.218 seconds
 
-[QRM NOTE]: Peak memory: 1150655 bytes
+[QRM NOTE]: Peak memory: 1150711 bytes
 
 
 ===================================================================================================================================
@@ -1289,11 +1289,11 @@ state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'held()', 'holds_lock(node
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.544 seconds
+[QRM NOTE]: Time elapsed since start: 0.330 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.039 seconds
+[QRM NOTE]: Time elapsed since last: 0.040 seconds
 
-[QRM NOTE]: Peak memory: 131659 bytes
+[QRM NOTE]: Peak memory: 131656 bytes
 
 next size: node=2
 
@@ -1332,9 +1332,9 @@ OK
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.022 seconds
+[QRM NOTE]: Time elapsed since start: 0.019 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.022 seconds
+[QRM NOTE]: Time elapsed since last: 0.019 seconds
 
 [QRM NOTE]: Peak memory: 2226 bytes
 
@@ -1504,7 +1504,7 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 22
 
-[QRM NOTE]: Time elapsed since start: 0.037 seconds
+[QRM NOTE]: Time elapsed since start: 0.034 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.015 seconds
 
@@ -1562,7 +1562,7 @@ After reduction :
  pending  : []
  solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-[QRM NOTE]: Time elapsed since start: 0.039 seconds
+[QRM NOTE]: Time elapsed since start: 0.036 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
@@ -1819,12 +1819,12 @@ signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['unlock_msg(NODE1)', 'grant_msg(NODE0)']
+qterms: ['grant_msg(NODE0)', 'unlock_msg(NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
+qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)
 
 
 === Prime Orbit 2 =====================
@@ -1916,12 +1916,12 @@ signed_func_name2args: {'1$held': [[]], '0$unlock_msg': [[Var('NODE0', Enumerate
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['unlock_msg(NODE0)', '~held']
+qterms: ['~held', 'unlock_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~unlock_msg(NODE0) | held
+qclause: forall NODE0. held | ~unlock_msg(NODE0)
 
 
 === Prime Orbit 3 =====================
@@ -2614,12 +2614,12 @@ signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~unlock_msg(NODE0)', '~holds_lock(NODE0)', 'held', '~grant_msg(NODE0)']
+qterms: ['held', '~holds_lock(NODE0)', '~grant_msg(NODE0)', '~unlock_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: exists NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | ~held | grant_msg(NODE0)
+qclause: exists NODE0. ~held | holds_lock(NODE0) | grant_msg(NODE0) | unlock_msg(NODE0)
 
 
 ========================================================================================================
@@ -2663,7 +2663,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
+quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)
 qcost : 4
 
 
@@ -2679,7 +2679,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~unlock_msg(NODE0) | held
+quantified form : forall NODE0. held | ~unlock_msg(NODE0)
 qcost : 3
 
 
@@ -2787,16 +2787,16 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | ~held | grant_msg(NODE0)
+quantified form : exists NODE0. ~held | holds_lock(NODE0) | grant_msg(NODE0) | unlock_msg(NODE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.214 seconds
+[QRM NOTE]: Time elapsed since start: 0.206 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.175 seconds
+[QRM NOTE]: Time elapsed since last: 0.170 seconds
 
-[QRM NOTE]: Peak memory: 1831883 bytes
+[QRM NOTE]: Peak memory: 1832093 bytes
 
 
 =======================================================================================
@@ -2864,9 +2864,9 @@ After backtrack at level 1
 
 invariant [invar_0] forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) # qcost: 4
 
-invariant [invar_1] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0) # qcost: 4
+invariant [invar_1] forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) # qcost: 4
 
-invariant [invar_2] forall NODE0. ~unlock_msg(NODE0) | held # qcost: 3
+invariant [invar_2] forall NODE0. held | ~unlock_msg(NODE0) # qcost: 3
 
 invariant [invar_3] exists NODE0. ~unlock_msg(NODE0) # qcost: 2
 
@@ -2880,7 +2880,7 @@ invariant [invar_7] forall NODE0. ~holds_lock(NODE0) | held # qcost: 3
 
 invariant [invar_8] exists NODE0. ~holds_lock(NODE0) # qcost: 2
 
-invariant [invar_9] exists NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | ~held | grant_msg(NODE0) # qcost: 5
+invariant [invar_9] exists NODE0. ~held | holds_lock(NODE0) | grant_msg(NODE0) | unlock_msg(NODE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 10
 
@@ -2889,11 +2889,11 @@ invariant [invar_9] exists NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | ~held 
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.297 seconds
+[QRM NOTE]: Time elapsed since start: 0.276 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.083 seconds
+[QRM NOTE]: Time elapsed since last: 0.070 seconds
 
-[QRM NOTE]: Peak memory: 1813156 bytes
+[QRM NOTE]: Peak memory: 1813366 bytes
 
 
 *******************************************************************************************************
@@ -2932,9 +2932,9 @@ OK
 
 [FW NOTE]: symmetric group order: 6
 
-[QRM NOTE]: Time elapsed since start: 0.090 seconds
+[QRM NOTE]: Time elapsed since start: 0.094 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.090 seconds
+[QRM NOTE]: Time elapsed since last: 0.094 seconds
 
 [QRM NOTE]: Peak memory: 112846 bytes
 
@@ -2979,11 +2979,11 @@ start extracting cubes
 =================================================================================================
 
 sort: node=['node0', 'node1', 'node2']
-predicate: unlock_msg('node',)
-predicate: lock_msg('node',)
-predicate: held()
 predicate: grant_msg('node',)
+predicate: held()
 predicate: holds_lock('node',)
+predicate: lock_msg('node',)
+predicate: unlock_msg('node',)
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'held()', 'holds_lock(node0)', 'holds_lock(node1)', 'holds_lock(node2)', 'lock_msg(node0)', 'lock_msg(node1)', 'lock_msg(node2)', 'unlock_msg(node0)', 'unlock_msg(node1)', 'unlock_msg(node2)']
 
@@ -2998,9 +2998,9 @@ state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'held(
 0101000---000
 1001000---000
 
-[QRM NOTE]: Time elapsed since start: 0.517 seconds
+[QRM NOTE]: Time elapsed since start: 0.537 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.427 seconds
+[QRM NOTE]: Time elapsed since last: 0.444 seconds
 
 [QRM NOTE]: Peak memory: 1236114 bytes
 
@@ -3013,9 +3013,9 @@ state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'held(
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.618 seconds
+[QRM NOTE]: Time elapsed since start: 0.633 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.101 seconds
+[QRM NOTE]: Time elapsed since last: 0.095 seconds
 
 [QRM NOTE]: Peak memory: 251229 bytes
 
@@ -3056,9 +3056,9 @@ OK
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.020 seconds
+[QRM NOTE]: Time elapsed since start: 0.021 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.020 seconds
+[QRM NOTE]: Time elapsed since last: 0.021 seconds
 
 [QRM NOTE]: Peak memory: 2932 bytes
 
@@ -3276,9 +3276,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 46
 
-[QRM NOTE]: Time elapsed since start: 0.039 seconds
+[QRM NOTE]: Time elapsed since start: 0.092 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.019 seconds
+[QRM NOTE]: Time elapsed since last: 0.072 seconds
 
 [QRM NOTE]: Peak memory: 1143436 bytes
 
@@ -3334,7 +3334,7 @@ After reduction :
  pending  : []
  solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-[QRM NOTE]: Time elapsed since start: 0.041 seconds
+[QRM NOTE]: Time elapsed since start: 0.095 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.002 seconds
 
@@ -3465,7 +3465,7 @@ constraint mode: ConstraintMode.merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -3477,12 +3477,12 @@ signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds_lock(NODE0)', 'unlock_msg(NODE1)']
+qterms: ['unlock_msg(NODE1)', 'holds_lock(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1)
+qclause: forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
 
 
 === Prime Orbit 1 =====================
@@ -3599,7 +3599,7 @@ constraint mode: ConstraintMode.merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -3611,12 +3611,12 @@ signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['grant_msg(NODE0)', 'holds_lock(NODE1)']
+qterms: ['holds_lock(NODE1)', 'grant_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1)
+qclause: forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)
 
 
 === Prime Orbit 2 =====================
@@ -3710,12 +3710,12 @@ signed_func_name2args: {'1$held': [[]], '0$holds_lock': [[Var('NODE0', Enumerate
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~held', 'holds_lock(NODE0)']
+qterms: ['holds_lock(NODE0)', '~held']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. held | ~holds_lock(NODE0)
+qclause: forall NODE0. ~holds_lock(NODE0) | held
 
 
 === Prime Orbit 3 =====================
@@ -3797,7 +3797,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -3809,12 +3809,12 @@ signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['holds_lock(NODE1)', 'holds_lock(NODE0)']
+qterms: ['holds_lock(NODE0)', 'holds_lock(NODE1)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1
+qclause: forall NODE0,NODE1. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1
 
 
 === Prime Orbit 4 =====================
@@ -3931,7 +3931,7 @@ constraint mode: ConstraintMode.merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -3943,12 +3943,12 @@ signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['grant_msg(NODE0)', 'unlock_msg(NODE1)']
+qterms: ['unlock_msg(NODE1)', 'grant_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)
+qclause: forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
 
 
 === Prime Orbit 5 =====================
@@ -4030,7 +4030,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -4047,7 +4047,7 @@ qterms: ['grant_msg(NODE0)', 'grant_msg(NODE1)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1
+qclause: forall NODE0,NODE1. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1
 
 
 === Prime Orbit 6 =====================
@@ -4141,12 +4141,12 @@ signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['grant_msg(NODE0)', '~held']
+qterms: ['~held', 'grant_msg(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0. ~grant_msg(NODE0) | held
+qclause: forall NODE0. held | ~grant_msg(NODE0)
 
 
 === Prime Orbit 7 =====================
@@ -4327,7 +4327,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -4344,7 +4344,7 @@ qterms: ['unlock_msg(NODE1)', 'unlock_msg(NODE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1
+qclause: forall NODE0,NODE1. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1
 
 
 === Prime Orbit 9 =====================
@@ -4434,12 +4434,12 @@ signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('n
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['held', '~holds_lock(NODE0)', '~unlock_msg(NODE0)', '~grant_msg(NODE0)']
+qterms: ['held', '~grant_msg(NODE0)', '~unlock_msg(NODE0)', '~holds_lock(NODE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: exists NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0)
+qclause: exists NODE0. ~held | grant_msg(NODE0) | unlock_msg(NODE0) | holds_lock(NODE0)
 
 
 ========================================================================================================
@@ -4473,7 +4473,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0)
 qcost : 4
 
 
@@ -4503,7 +4503,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1)
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -4521,7 +4521,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. held | ~holds_lock(NODE0)
+quantified form : forall NODE0. ~holds_lock(NODE0) | held
 qcost : 3
 
 
@@ -4539,7 +4539,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -4569,7 +4569,7 @@ num_suborbits: 2
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1)
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0)
 qcost : 4
 
 
@@ -4587,7 +4587,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1
 qcost : 5
 
 
@@ -4605,7 +4605,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~grant_msg(NODE0) | held
+quantified form : forall NODE0. held | ~grant_msg(NODE0)
 qcost : 3
 
 
@@ -4641,7 +4641,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 3
-quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1
 qcost : 5
 
 
@@ -4655,16 +4655,16 @@ num_suborbits: 1
 num_forall :   0
 num_exists :   1
 num_literals : 4
-quantified form : exists NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0)
+quantified form : exists NODE0. ~held | grant_msg(NODE0) | unlock_msg(NODE0) | holds_lock(NODE0)
 qcost : 5
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.210 seconds
+[QRM NOTE]: Time elapsed since start: 0.499 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.169 seconds
+[QRM NOTE]: Time elapsed since last: 0.405 seconds
 
-[QRM NOTE]: Peak memory: 1886919 bytes
+[QRM NOTE]: Peak memory: 1887056 bytes
 
 
 =======================================================================================
@@ -4730,25 +4730,25 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 10
 
-invariant [invar_0] forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) # qcost: 4
+invariant [invar_0] forall NODE0,NODE1. ~unlock_msg(NODE1) | ~holds_lock(NODE0) # qcost: 4
 
-invariant [invar_1] forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) # qcost: 4
+invariant [invar_1] forall NODE0,NODE1. ~holds_lock(NODE1) | ~grant_msg(NODE0) # qcost: 4
 
-invariant [invar_2] forall NODE0. held | ~holds_lock(NODE0) # qcost: 3
+invariant [invar_2] forall NODE0. ~holds_lock(NODE0) | held # qcost: 3
 
-invariant [invar_3] forall NODE1,NODE0. ~holds_lock(NODE1) | ~holds_lock(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_3] forall NODE0,NODE1. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1 # qcost: 5
 
-invariant [invar_4] forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) # qcost: 4
+invariant [invar_4] forall NODE0,NODE1. ~unlock_msg(NODE1) | ~grant_msg(NODE0) # qcost: 4
 
-invariant [invar_5] forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+invariant [invar_5] forall NODE0,NODE1. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1 # qcost: 5
 
-invariant [invar_6] forall NODE0. ~grant_msg(NODE0) | held # qcost: 3
+invariant [invar_6] forall NODE0. held | ~grant_msg(NODE0) # qcost: 3
 
 invariant [invar_7] forall NODE0. held | ~unlock_msg(NODE0) # qcost: 3
 
-invariant [invar_8] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_8] forall NODE0,NODE1. ~unlock_msg(NODE1) | ~unlock_msg(NODE0) | NODE0 = NODE1 # qcost: 5
 
-invariant [invar_9] exists NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) | grant_msg(NODE0) # qcost: 5
+invariant [invar_9] exists NODE0. ~held | grant_msg(NODE0) | unlock_msg(NODE0) | holds_lock(NODE0) # qcost: 5
 
 [MIN NOTE]: number of total invariants: 10
 
@@ -4757,11 +4757,11 @@ invariant [invar_9] exists NODE0. ~held | holds_lock(NODE0) | unlock_msg(NODE0) 
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.304 seconds
+[QRM NOTE]: Time elapsed since start: 0.585 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.094 seconds
+[QRM NOTE]: Time elapsed since last: 0.085 seconds
 
-[QRM NOTE]: Peak memory: 1861150 bytes
+[QRM NOTE]: Peak memory: 1861287 bytes
 
 
 *******************************************************************************************************
@@ -4800,9 +4800,9 @@ OK
 
 [FW NOTE]: symmetric group order: 24
 
-[QRM NOTE]: Time elapsed since start: 0.123 seconds
+[QRM NOTE]: Time elapsed since start: 0.124 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.123 seconds
+[QRM NOTE]: Time elapsed since last: 0.124 seconds
 
 [QRM NOTE]: Peak memory: 188301 bytes
 
@@ -4847,10 +4847,10 @@ start extracting cubes
 =================================================================================================
 
 sort: node=['node0', 'node1', 'node2', 'node3']
-predicate: held()
-predicate: unlock_msg('node',)
 predicate: holds_lock('node',)
 predicate: grant_msg('node',)
+predicate: held()
+predicate: unlock_msg('node',)
 predicate: lock_msg('node',)
 interpreted atoms: {}
 state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'grant_msg(node3)', 'held()', 'holds_lock(node0)', 'holds_lock(node1)', 'holds_lock(node2)', 'holds_lock(node3)', 'lock_msg(node0)', 'lock_msg(node1)', 'lock_msg(node2)', 'lock_msg(node3)', 'unlock_msg(node0)', 'unlock_msg(node1)', 'unlock_msg(node2)', 'unlock_msg(node3)']
@@ -4869,9 +4869,9 @@ state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'grant
 010010000----0000
 100010000----0000
 
-[QRM NOTE]: Time elapsed since start: 0.953 seconds
+[QRM NOTE]: Time elapsed since start: 0.858 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.829 seconds
+[QRM NOTE]: Time elapsed since last: 0.734 seconds
 
 [QRM NOTE]: Peak memory: 1344297 bytes
 
@@ -4884,9 +4884,9 @@ state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'grant
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 1.158 seconds
+[QRM NOTE]: Time elapsed since start: 1.063 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.206 seconds
+[QRM NOTE]: Time elapsed since last: 0.205 seconds
 
 [QRM NOTE]: Peak memory: 433619 bytes
 
@@ -5029,7 +5029,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 24.396 seconds
+[QRM NOTE]: Time elapsed since start: 26.290 seconds
 
-[QRM NOTE]: Time elapsed since last: 24.396 seconds
+[QRM NOTE]: Time elapsed since last: 26.290 seconds
 

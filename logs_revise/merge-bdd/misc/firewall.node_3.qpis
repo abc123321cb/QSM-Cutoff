@@ -43,7 +43,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0. ~internal(NODE0) | ~allowed_in(NODE0)
+quantified form : forall NODE0. ~allowed_in(NODE0) | ~internal(NODE0)
 qcost : 3
 
 
@@ -65,7 +65,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE0,NODE1. internal(NODE1) | sent(NODE2,NODE0) | ~allowed_in(NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. internal(NODE1) | ~allowed_in(NODE0) | sent(NODE2,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -131,7 +131,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0,NODE3. ~sent(NODE1,NODE2) | internal(NODE3) | ~allowed_in(NODE0) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2))
+quantified form : forall NODE3,NODE0,NODE2,NODE1. internal(NODE3) | ~allowed_in(NODE0) | ~sent(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2))
 qcost : 13
 
 
@@ -153,7 +153,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE2,NODE0,NODE1. sent(NODE2,NODE1) | ~allowed_in(NODE1) | ~allowed_in(NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. sent(NODE2,NODE1) | ~allowed_in(NODE0) | ~allowed_in(NODE1) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 9
 
 
@@ -175,7 +175,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. ~allowed_in(NODE1) | ~sent(NODE0,NODE1) | ~allowed_in(NODE0) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~sent(NODE0,NODE1) | ~allowed_in(NODE0) | ~allowed_in(NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -201,7 +201,7 @@ num_suborbits: 2
 num_forall :   6
 num_exists :   0
 num_literals : 15
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE2,NODE5) | ~sent(NODE1,NODE4) | ~sent(NODE0,NODE3) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE5 | NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2. ~sent(NODE2,NODE5) | ~sent(NODE0,NODE3) | ~sent(NODE1,NODE4) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE5 | NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 21
 
 
@@ -235,7 +235,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 9
-quantified form : forall NODE2,NODE1,NODE0,NODE3. allowed_in(NODE3) | ~internal(NODE0) | ~sent(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2))
+quantified form : forall NODE3,NODE0,NODE2,NODE1. allowed_in(NODE3) | ~internal(NODE0) | ~sent(NODE1,NODE2) | ((NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE3 | NODE0 = NODE2))
 qcost : 13
 
 
@@ -257,7 +257,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. allowed_in(NODE0) | allowed_in(NODE1) | ~sent(NODE0,NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~sent(NODE0,NODE1) | allowed_in(NODE1) | allowed_in(NODE0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -291,7 +291,7 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. internal(NODE2) | allowed_in(NODE2) | ~sent(NODE0,NODE1) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE0 = NODE1))
+quantified form : forall NODE0,NODE2,NODE1. ~sent(NODE0,NODE1) | internal(NODE2) | allowed_in(NODE2) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE0 = NODE1))
 qcost : 10
 
 
@@ -313,7 +313,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. internal(NODE0) | ~sent(NODE0,NODE1) | internal(NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~sent(NODE0,NODE1) | internal(NODE0) | internal(NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -335,7 +335,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE0,NODE1. ~internal(NODE0) | ~sent(NODE0,NODE1) | ~internal(NODE1) | NODE0 = NODE1
+quantified form : forall NODE0,NODE1. ~sent(NODE0,NODE1) | ~internal(NODE1) | ~internal(NODE0) | NODE0 = NODE1
 qcost : 6
 
 
@@ -369,7 +369,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. internal(NODE1) | ~sent(NODE1,NODE2) | sent(NODE2,NODE1) | ~allowed_in(NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. sent(NODE2,NODE1) | internal(NODE1) | ~allowed_in(NODE0) | ~sent(NODE1,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -391,7 +391,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. sent(NODE2,NODE1) | ~sent(NODE1,NODE2) | sent(NODE1,NODE0) | ~allowed_in(NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. sent(NODE2,NODE1) | ~allowed_in(NODE0) | sent(NODE1,NODE0) | ~sent(NODE1,NODE2) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -437,7 +437,7 @@ num_suborbits: 3
 num_forall :   5
 num_exists :   0
 num_literals : 19
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2. allowed_in(NODE3) | sent(NODE3,NODE4) | ~sent(NODE1,NODE2) | ~allowed_in(NODE0) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE1,NODE4,NODE3,NODE2. ~allowed_in(NODE0) | allowed_in(NODE3) | sent(NODE3,NODE4) | ~sent(NODE1,NODE2) | ((NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 24
 
 
@@ -483,7 +483,7 @@ num_suborbits: 3
 num_forall :   5
 num_exists :   0
 num_literals : 19
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2. sent(NODE1,NODE4) | ~allowed_in(NODE0) | ~sent(NODE2,NODE3) | ~internal(NODE1) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE1,NODE4,NODE3,NODE2. ~allowed_in(NODE0) | sent(NODE1,NODE4) | ~sent(NODE2,NODE3) | ~internal(NODE1) | ((NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 24
 
 
@@ -541,7 +541,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 28
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE1,NODE3) | ~sent(NODE2,NODE4) | ~allowed_in(NODE0) | sent(NODE4,NODE5) | ((NODE0 ~= NODE2 | NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE2 | NODE1 ~= NODE5 | NODE3 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE2 | NODE0 ~= NODE5 | NODE3 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2. ~sent(NODE1,NODE3) | ~allowed_in(NODE0) | sent(NODE4,NODE5) | ~sent(NODE2,NODE4) | ((NODE0 ~= NODE5 | NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE2 | NODE1 ~= NODE5 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE5 | NODE0 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 34
 
 
@@ -599,7 +599,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 28
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE1,NODE3) | allowed_in(NODE5) | ~sent(NODE2,NODE4) | ~allowed_in(NODE0) | ((NODE0 ~= NODE2 | NODE1 ~= NODE5 | NODE3 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE3 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2. ~sent(NODE1,NODE3) | allowed_in(NODE5) | ~allowed_in(NODE0) | ~sent(NODE2,NODE4) | ((NODE0 ~= NODE2 | NODE1 ~= NODE5 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3))
 qcost : 34
 
 
@@ -657,7 +657,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 28
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE2,NODE4) | ~allowed_in(NODE0) | ~sent(NODE3,NODE5) | ~internal(NODE1) | ((NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE4 ~= NODE5 | NODE1 = NODE4 | NODE0 = NODE1 | NODE0 = NODE4) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2. ~allowed_in(NODE0) | ~sent(NODE3,NODE5) | ~sent(NODE2,NODE4) | ~internal(NODE1) | ((NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE4 ~= NODE5 | NODE0 = NODE4 | NODE1 = NODE4 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE2 ~= NODE5 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 34
 
 
@@ -715,7 +715,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 28
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE1,NODE3) | ~internal(NODE0) | ~sent(NODE2,NODE4) | internal(NODE5) | ((NODE0 ~= NODE2 | NODE1 ~= NODE5 | NODE3 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE3 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2. ~sent(NODE1,NODE3) | internal(NODE5) | ~sent(NODE2,NODE4) | ~internal(NODE0) | ((NODE0 ~= NODE2 | NODE1 ~= NODE5 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE3 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE1 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 34
 
 
@@ -749,7 +749,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 12
-quantified form : forall NODE2,NODE1,NODE0,NODE3. ~sent(NODE1,NODE3) | ~internal(NODE0) | sent(NODE0,NODE2) | ~sent(NODE2,NODE0) | ((NODE0 ~= NODE1 | NODE0 = NODE2 | NODE0 = NODE3 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE3,NODE0,NODE2,NODE1. ~sent(NODE1,NODE3) | ~sent(NODE2,NODE0) | sent(NODE0,NODE2) | ~internal(NODE0) | ((NODE0 ~= NODE1 | NODE0 = NODE2 | NODE2 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 16
 
 
@@ -807,7 +807,7 @@ num_suborbits: 4
 num_forall :   7
 num_exists :   0
 num_literals : 32
-quantified form : forall NODE3,NODE6,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE1,NODE3) | ~sent(NODE0,NODE2) | internal(NODE4) | sent(NODE5,NODE6) | ((NODE0 ~= NODE4 | NODE1 ~= NODE6 | NODE2 ~= NODE3 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE6 | NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 ~= NODE5 | NODE1 ~= NODE6 | NODE2 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE6 | NODE0 ~= NODE4 | NODE1 ~= NODE5 | NODE1 ~= NODE2 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2,NODE6. ~sent(NODE0,NODE2) | ~sent(NODE1,NODE3) | internal(NODE4) | sent(NODE5,NODE6) | ((NODE0 ~= NODE4 | NODE1 ~= NODE6 | NODE2 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE6 | NODE0 ~= NODE4 | NODE2 ~= NODE5 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE5 | NODE0 ~= NODE3 | NODE1 ~= NODE6 | NODE2 ~= NODE4 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE6 | NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 ~= NODE5 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3))
 qcost : 39
 
 
@@ -865,7 +865,7 @@ num_suborbits: 4
 num_forall :   6
 num_exists :   0
 num_literals : 28
-quantified form : forall NODE3,NODE0,NODE4,NODE1,NODE2,NODE5. ~sent(NODE1,NODE3) | ~sent(NODE0,NODE2) | allowed_in(NODE4) | internal(NODE5) | ((NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE5 | NODE3 ~= NODE4 | NODE0 = NODE2 | NODE0 = NODE3 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE5 | NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE0 = NODE1 | NODE1 = NODE3 | NODE0 = NODE3))
+quantified form : forall NODE0,NODE1,NODE5,NODE4,NODE3,NODE2. ~sent(NODE0,NODE2) | ~sent(NODE1,NODE3) | internal(NODE5) | allowed_in(NODE4) | ((NODE0 ~= NODE5 | NODE1 ~= NODE4 | NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE2 ~= NODE5 | NODE3 ~= NODE4 | NODE0 = NODE2 | NODE2 = NODE3 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE2 ~= NODE5 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE5 | NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE1 | NODE0 = NODE3))
 qcost : 34
 
 
@@ -899,7 +899,7 @@ num_suborbits: 2
 num_forall :   4
 num_exists :   0
 num_literals : 12
-quantified form : forall NODE2,NODE1,NODE0,NODE3. allowed_in(NODE3) | ~sent(NODE0,NODE2) | sent(NODE3,NODE1) | ~sent(NODE1,NODE3) | ((NODE2 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2) & (NODE0 ~= NODE3 | NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2))
+quantified form : forall NODE3,NODE0,NODE2,NODE1. ~sent(NODE0,NODE2) | ~sent(NODE1,NODE3) | allowed_in(NODE3) | sent(NODE3,NODE1) | ((NODE2 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1))
 qcost : 16
 
 
@@ -921,7 +921,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. allowed_in(NODE1) | sent(NODE1,NODE0) | ~sent(NODE0,NODE1) | sent(NODE2,NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~sent(NODE0,NODE1) | allowed_in(NODE1) | sent(NODE1,NODE0) | sent(NODE2,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -943,7 +943,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. sent(NODE1,NODE0) | sent(NODE2,NODE0) | ~sent(NODE0,NODE1) | internal(NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~sent(NODE0,NODE1) | internal(NODE0) | sent(NODE1,NODE0) | sent(NODE2,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -965,7 +965,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. sent(NODE2,NODE1) | ~internal(NODE0) | ~sent(NODE1,NODE0) | sent(NODE0,NODE1) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. sent(NODE2,NODE1) | ~sent(NODE1,NODE0) | sent(NODE0,NODE1) | ~internal(NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -987,7 +987,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. ~internal(NODE0) | internal(NODE2) | sent(NODE0,NODE1) | ~sent(NODE1,NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. internal(NODE2) | sent(NODE0,NODE1) | ~sent(NODE1,NODE0) | ~internal(NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -1009,7 +1009,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. allowed_in(NODE1) | internal(NODE2) | sent(NODE1,NODE0) | ~sent(NODE0,NODE1) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~sent(NODE0,NODE1) | internal(NODE2) | allowed_in(NODE1) | sent(NODE1,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 
 
@@ -1031,6 +1031,6 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 7
-quantified form : forall NODE2,NODE0,NODE1. sent(NODE1,NODE0) | internal(NODE2) | ~sent(NODE0,NODE1) | internal(NODE0) | (NODE0 = NODE1 | NODE1 = NODE2 | NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~sent(NODE0,NODE1) | internal(NODE0) | internal(NODE2) | sent(NODE1,NODE0) | (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE1)
 qcost : 10
 

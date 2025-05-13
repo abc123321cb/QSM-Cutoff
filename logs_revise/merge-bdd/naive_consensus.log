@@ -87,19 +87,19 @@ start extracting cubes
 sort: node=['node0', 'node1']
 sort: value=['value0']
 sort: quorum=['quorum__node0_node1']
-predicate: decide('quorum', 'value')
-predicate: member('node', 'quorum')
 predicate: decision('value',)
+predicate: decide('quorum', 'value')
 predicate: vote('node', 'value')
+predicate: member('node', 'quorum')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node1)': '1'}
 state atoms: ['decide(quorum__node0_node1,value0)', 'decision(value0)', 'vote(node0,value0)', 'vote(node1,value0)']
 
 00--
 1-11
 
-[QRM NOTE]: Time elapsed since start: 0.113 seconds
+[QRM NOTE]: Time elapsed since start: 0.115 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.084 seconds
+[QRM NOTE]: Time elapsed since last: 0.086 seconds
 
 [QRM NOTE]: Peak memory: 1103670 bytes
 
@@ -116,7 +116,7 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decision(value0)', 'vote(no
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.116 seconds
+[QRM NOTE]: Time elapsed since start: 0.119 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.003 seconds
 
@@ -184,9 +184,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 5
 
-[QRM NOTE]: Time elapsed since start: 0.130 seconds
+[QRM NOTE]: Time elapsed since start: 0.131 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.014 seconds
+[QRM NOTE]: Time elapsed since last: 0.013 seconds
 
 [QRM NOTE]: Peak memory: 1113938 bytes
 
@@ -242,9 +242,9 @@ After reduction :
  pending  : []
  solution : [0, 2]
 
-[QRM NOTE]: Time elapsed since start: 0.134 seconds
+[QRM NOTE]: Time elapsed since start: 0.135 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.003 seconds
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
 
 [QRM NOTE]: Peak memory: 67949 bytes
 
@@ -356,7 +356,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',))), Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',)))}
 
 exists_qvars: set()
 
@@ -368,12 +368,12 @@ signed_func_name2args: {'0$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decide(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)', '~vote(NODE0,VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'decide(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,NODE0,QUORUM0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0)
+qclause: forall VALUE0,QUORUM0,NODE0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0)
 
 
 === Prime Orbit 2 =====================
@@ -461,7 +461,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',))), Var('VALUE0', EnumeratedSort('value', ('value0',)))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',)))}
 
 exists_qvars: set()
 
@@ -473,12 +473,12 @@ signed_func_name2args: {'1$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decision(VALUE0)', '~decide(QUORUM0,VALUE0)']
+qterms: ['~decide(QUORUM0,VALUE0)', 'decision(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0,QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)
+qclause: forall VALUE0,QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0)
 
 
 ====================================================================================================================
@@ -498,7 +498,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE0,NODE0,QUORUM0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0)
+quantified form : forall VALUE0,QUORUM0,NODE0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0)
 qcost : 6
 
 
@@ -512,16 +512,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall VALUE0,QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)
+quantified form : forall VALUE0,QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0)
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.215 seconds
+[QRM NOTE]: Time elapsed since start: 0.230 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.082 seconds
+[QRM NOTE]: Time elapsed since last: 0.095 seconds
 
-[QRM NOTE]: Peak memory: 1804191 bytes
+[QRM NOTE]: Peak memory: 1804258 bytes
 
 
 ===================================================================================================
@@ -587,9 +587,9 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 2
 
-invariant [invar_0] forall VALUE0,NODE0,QUORUM0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0) # qcost: 6
+invariant [invar_0] forall VALUE0,QUORUM0,NODE0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
 
-invariant [invar_2] forall VALUE0,QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0) # qcost: 4
+invariant [invar_2] forall VALUE0,QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 2
 
@@ -598,11 +598,11 @@ invariant [invar_2] forall VALUE0,QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VA
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.291 seconds
+[QRM NOTE]: Time elapsed since start: 0.517 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.076 seconds
+[QRM NOTE]: Time elapsed since last: 0.287 seconds
 
-[QRM NOTE]: Peak memory: 1793328 bytes
+[QRM NOTE]: Peak memory: 1793355 bytes
 
 
 *******************************************************************************************************************
@@ -641,9 +641,9 @@ OK
 
 [FW NOTE]: symmetric group order: 6
 
-[QRM NOTE]: Time elapsed since start: 0.043 seconds
+[QRM NOTE]: Time elapsed since start: 0.044 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.043 seconds
+[QRM NOTE]: Time elapsed since last: 0.044 seconds
 
 [QRM NOTE]: Peak memory: 64430 bytes
 
@@ -686,10 +686,10 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: decide('quorum', 'value')
-predicate: decision('value',)
-predicate: member('node', 'quorum')
 predicate: vote('node', 'value')
+predicate: decision('value',)
+predicate: decide('quorum', 'value')
+predicate: member('node', 'quorum')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value0)', 'decision(value0)', 'vote(node0,value0)', 'vote(node1,value0)', 'vote(node2,value0)']
 
@@ -701,9 +701,9 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,
 101-111
 11--111
 
-[QRM NOTE]: Time elapsed since start: 0.429 seconds
+[QRM NOTE]: Time elapsed since start: 0.428 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.387 seconds
+[QRM NOTE]: Time elapsed since last: 0.384 seconds
 
 [QRM NOTE]: Peak memory: 1196049 bytes
 
@@ -716,9 +716,9 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.500 seconds
+[QRM NOTE]: Time elapsed since start: 0.502 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.071 seconds
+[QRM NOTE]: Time elapsed since last: 0.074 seconds
 
 [QRM NOTE]: Peak memory: 181536 bytes
 
@@ -752,11 +752,11 @@ OK
 
 [FW NOTE]: symmetric group order: 4
 
-[QRM NOTE]: Time elapsed since start: 0.041 seconds
+[QRM NOTE]: Time elapsed since start: 0.039 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.041 seconds
+[QRM NOTE]: Time elapsed since last: 0.039 seconds
 
-[QRM NOTE]: Peak memory: 60909 bytes
+[QRM NOTE]: Peak memory: 61229 bytes
 
 
 ===================================
@@ -798,9 +798,9 @@ sort: node=['node0', 'node1']
 sort: value=['value0', 'value1']
 sort: quorum=['quorum__node0_node1']
 predicate: member('node', 'quorum')
-predicate: decision('value',)
-predicate: vote('node', 'value')
 predicate: decide('quorum', 'value')
+predicate: vote('node', 'value')
+predicate: decision('value',)
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node1)': '1'}
 state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decision(value0)', 'decision(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)']
 
@@ -811,9 +811,9 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 010-0101
 10-01010
 
-[QRM NOTE]: Time elapsed since start: 0.263 seconds
+[QRM NOTE]: Time elapsed since start: 0.264 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.221 seconds
+[QRM NOTE]: Time elapsed since last: 0.225 seconds
 
 [QRM NOTE]: Peak memory: 1160190 bytes
 
@@ -826,9 +826,9 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 0.293 seconds
+[QRM NOTE]: Time elapsed since start: 0.296 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.031 seconds
+[QRM NOTE]: Time elapsed since last: 0.032 seconds
 
 [QRM NOTE]: Peak memory: 129398 bytes
 
@@ -871,11 +871,11 @@ OK
 
 [FW NOTE]: symmetric group order: 12
 
-[QRM NOTE]: Time elapsed since start: 0.107 seconds
+[QRM NOTE]: Time elapsed since start: 0.119 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.107 seconds
+[QRM NOTE]: Time elapsed since last: 0.119 seconds
 
-[QRM NOTE]: Peak memory: 152551 bytes
+[QRM NOTE]: Peak memory: 152495 bytes
 
 
 ===================================
@@ -916,10 +916,10 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0', 'value1']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: member('node', 'quorum')
-predicate: decide('quorum', 'value')
 predicate: vote('node', 'value')
+predicate: member('node', 'quorum')
 predicate: decision('value',)
+predicate: decide('quorum', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)', 'decision(value0)', 'decision(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node2,value0)', 'vote(node2,value1)']
 
@@ -950,11 +950,11 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 100010-0101010
 1010-0-0101010
 
-[QRM NOTE]: Time elapsed since start: 1.020 seconds
+[QRM NOTE]: Time elapsed since start: 1.093 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.913 seconds
+[QRM NOTE]: Time elapsed since last: 0.974 seconds
 
-[QRM NOTE]: Peak memory: 1359563 bytes
+[QRM NOTE]: Peak memory: 1359507 bytes
 
 
 ======================================
@@ -969,11 +969,11 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 1.020 seconds
+[QRM NOTE]: Time elapsed since start: 1.095 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.001 seconds
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
 
-[QRM NOTE]: Peak memory: 312447 bytes
+[QRM NOTE]: Peak memory: 312391 bytes
 
 
 =================================================================================================================
@@ -1279,11 +1279,11 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 81
 
-[QRM NOTE]: Time elapsed since start: 1.048 seconds
+[QRM NOTE]: Time elapsed since start: 1.129 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.028 seconds
+[QRM NOTE]: Time elapsed since last: 0.034 seconds
 
-[QRM NOTE]: Peak memory: 1485547 bytes
+[QRM NOTE]: Peak memory: 1485491 bytes
 
 
 ======================================================================================================
@@ -1337,11 +1337,11 @@ After reduction :
  pending  : []
  solution : [0, 11, 4]
 
-[QRM NOTE]: Time elapsed since start: 1.085 seconds
+[QRM NOTE]: Time elapsed since start: 1.173 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.037 seconds
+[QRM NOTE]: Time elapsed since last: 0.044 seconds
 
-[QRM NOTE]: Peak memory: 451667 bytes
+[QRM NOTE]: Peak memory: 451611 bytes
 
 
 ==========================================================================================================
@@ -1483,12 +1483,12 @@ signed_func_name2args: {'0$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['member(NODE0,QUORUM0)', 'decide(QUORUM0,VALUE0)', '~vote(NODE0,VALUE0)']
+qterms: ['~vote(NODE0,VALUE0)', 'decide(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0)
+qclause: forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0)
 
 
 === Prime Orbit 11 =====================
@@ -1590,12 +1590,12 @@ signed_func_name2args: {'1$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['decision(VALUE0)', '~decide(QUORUM0,VALUE0)']
+qterms: ['~decide(QUORUM0,VALUE0)', 'decision(VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0))
+qclause: forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0))
 
 
 === Prime Orbit 4 =====================
@@ -1744,7 +1744,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0)
+quantified form : forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0)
 qcost : 6
 
 
@@ -1760,7 +1760,7 @@ num_suborbits: 1
 num_forall :   1
 num_exists :   1
 num_literals : 2
-quantified form : forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0))
+quantified form : forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0))
 qcost : 4
 
 
@@ -1783,11 +1783,11 @@ qcost : 3
 
 
 
-[QRM NOTE]: Time elapsed since start: 1.175 seconds
+[QRM NOTE]: Time elapsed since start: 1.269 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.090 seconds
+[QRM NOTE]: Time elapsed since last: 0.096 seconds
 
-[QRM NOTE]: Peak memory: 2181036 bytes
+[QRM NOTE]: Peak memory: 2180959 bytes
 
 
 ===================================================================================================
@@ -1853,9 +1853,9 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_0] forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) # qcost: 6
+invariant [invar_0] forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
 
-invariant [invar_11] forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)) # qcost: 4
+invariant [invar_11] forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4
 
 invariant [invar_4] forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0)) # qcost: 3
 
@@ -1866,11 +1866,11 @@ invariant [invar_4] forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0)) # qcost: 
 
 
 
-[QRM NOTE]: Time elapsed since start: 1.249 seconds
+[QRM NOTE]: Time elapsed since start: 1.338 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.074 seconds
+[QRM NOTE]: Time elapsed since last: 0.069 seconds
 
-[QRM NOTE]: Peak memory: 2165685 bytes
+[QRM NOTE]: Peak memory: 2165608 bytes
 
 
 *******************************************************************************************************************
@@ -1909,9 +1909,9 @@ OK
 
 [FW NOTE]: symmetric group order: 48
 
-[QRM NOTE]: Time elapsed since start: 0.144 seconds
+[QRM NOTE]: Time elapsed since start: 0.156 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.144 seconds
+[QRM NOTE]: Time elapsed since last: 0.156 seconds
 
 [QRM NOTE]: Peak memory: 266864 bytes
 
@@ -1956,8 +1956,8 @@ sort: value=['value0', 'value1']
 sort: quorum=['quorum__node0_node1_node2', 'quorum__node0_node1_node3', 'quorum__node0_node2_node3', 'quorum__node1_node2_node3']
 predicate: member('node', 'quorum')
 predicate: decision('value',)
-predicate: vote('node', 'value')
 predicate: decide('quorum', 'value')
+predicate: vote('node', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1_node2)': '1', 'member(node0,quorum__node0_node1_node3)': '1', 'member(node0,quorum__node0_node2_node3)': '1', 'member(node0,quorum__node1_node2_node3)': '0', 'member(node1,quorum__node0_node1_node2)': '1', 'member(node1,quorum__node0_node1_node3)': '1', 'member(node1,quorum__node0_node2_node3)': '0', 'member(node1,quorum__node1_node2_node3)': '1', 'member(node2,quorum__node0_node1_node2)': '1', 'member(node2,quorum__node0_node1_node3)': '0', 'member(node2,quorum__node0_node2_node3)': '1', 'member(node2,quorum__node1_node2_node3)': '1', 'member(node3,quorum__node0_node1_node2)': '0', 'member(node3,quorum__node0_node1_node3)': '1', 'member(node3,quorum__node0_node2_node3)': '1', 'member(node3,quorum__node1_node2_node3)': '1'}
 state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_node1_node2,value1)', 'decide(quorum__node0_node1_node3,value0)', 'decide(quorum__node0_node1_node3,value1)', 'decide(quorum__node0_node2_node3,value0)', 'decide(quorum__node0_node2_node3,value1)', 'decide(quorum__node1_node2_node3,value0)', 'decide(quorum__node1_node2_node3,value1)', 'decision(value0)', 'decision(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node3,value0)', 'vote(node3,value1)']
 
@@ -2006,9 +2006,9 @@ state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_
 100010-0-010101010
 1010-0-0-010101010
 
-[QRM NOTE]: Time elapsed since start: 1.834 seconds
+[QRM NOTE]: Time elapsed since start: 1.790 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.689 seconds
+[QRM NOTE]: Time elapsed since last: 1.634 seconds
 
 [QRM NOTE]: Peak memory: 1597337 bytes
 
@@ -2021,9 +2021,9 @@ state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 2.296 seconds
+[QRM NOTE]: Time elapsed since start: 2.266 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.462 seconds
+[QRM NOTE]: Time elapsed since last: 0.476 seconds
 
 [QRM NOTE]: Peak memory: 930393 bytes
 
@@ -2057,11 +2057,11 @@ OK
 
 [FW NOTE]: symmetric group order: 36
 
-[QRM NOTE]: Time elapsed since start: 0.179 seconds
+[QRM NOTE]: Time elapsed since start: 0.177 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.179 seconds
+[QRM NOTE]: Time elapsed since last: 0.177 seconds
 
-[QRM NOTE]: Peak memory: 321064 bytes
+[QRM NOTE]: Peak memory: 321112 bytes
 
 
 ===================================
@@ -2102,9 +2102,9 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0', 'value1', 'value2']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: decision('value',)
 predicate: vote('node', 'value')
 predicate: decide('quorum', 'value')
+predicate: decision('value',)
 predicate: member('node', 'quorum')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node1,value2)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)', 'decide(quorum__node0_node2,value2)', 'decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)', 'decide(quorum__node1_node2,value2)', 'decision(value0)', 'decision(value1)', 'decision(value2)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)']
@@ -2173,11 +2173,11 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 100000100-00100100100
 100100-00-00100100100
 
-[QRM NOTE]: Time elapsed since start: 1.895 seconds
+[QRM NOTE]: Time elapsed since start: 1.952 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.716 seconds
+[QRM NOTE]: Time elapsed since last: 1.775 seconds
 
-[QRM NOTE]: Peak memory: 1621387 bytes
+[QRM NOTE]: Peak memory: 1621435 bytes
 
 
 =======================================================================================================================================================
@@ -2188,11 +2188,11 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 
 [REACH_CHECK RESULT]: FAIL
 
-[QRM NOTE]: Time elapsed since start: 2.544 seconds
+[QRM NOTE]: Time elapsed since start: 2.621 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.649 seconds
+[QRM NOTE]: Time elapsed since last: 0.669 seconds
 
-[QRM NOTE]: Peak memory: 1324578 bytes
+[QRM NOTE]: Peak memory: 1324626 bytes
 
 next size: node=3,value=3
 
@@ -2231,9 +2231,9 @@ OK
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.022 seconds
+[QRM NOTE]: Time elapsed since start: 0.027 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.022 seconds
+[QRM NOTE]: Time elapsed since last: 0.027 seconds
 
 [QRM NOTE]: Peak memory: 22720 bytes
 
@@ -2823,9 +2823,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 222
 
-[QRM NOTE]: Time elapsed since start: 0.088 seconds
+[QRM NOTE]: Time elapsed since start: 0.098 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.066 seconds
+[QRM NOTE]: Time elapsed since last: 0.071 seconds
 
 [QRM NOTE]: Peak memory: 1362306 bytes
 
@@ -2881,7 +2881,7 @@ After reduction :
  pending  : []
  solution : [0, 11, 3]
 
-[QRM NOTE]: Time elapsed since start: 0.122 seconds
+[QRM NOTE]: Time elapsed since start: 0.133 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.034 seconds
 
@@ -2999,7 +2999,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 exists_qvars: set()
 
@@ -3011,12 +3011,12 @@ signed_func_name2args: {'0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0'
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['vote(NODE0,VALUE0)', 'vote(NODE0,VALUE1)']
+qterms: ['vote(NODE0,VALUE1)', 'vote(NODE0,VALUE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall VALUE1,NODE0,VALUE0. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1
+qclause: forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1
 
 
 === Prime Orbit 11 =====================
@@ -3274,7 +3274,7 @@ qterms: ['decide(QUORUM0,VALUE0)', '~vote(NODE0,VALUE0)', 'member(NODE0,QUORUM0)
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall QUORUM0,NODE0,VALUE0. ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0)
+qclause: forall VALUE0,NODE0,QUORUM0. ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0)
 
 
 ====================================================================================================================
@@ -3308,7 +3308,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall VALUE1,NODE0,VALUE0. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1
+quantified form : forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1
 qcost : 6
 
 
@@ -3374,16 +3374,16 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 3
-quantified form : forall QUORUM0,NODE0,VALUE0. ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0)
+quantified form : forall VALUE0,NODE0,QUORUM0. ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0)
 qcost : 6
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.215 seconds
+[QRM NOTE]: Time elapsed since start: 0.231 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.093 seconds
+[QRM NOTE]: Time elapsed since last: 0.098 seconds
 
-[QRM NOTE]: Peak memory: 2080638 bytes
+[QRM NOTE]: Peak memory: 2080543 bytes
 
 
 ===================================================================================================
@@ -3449,11 +3449,11 @@ After backtrack at level 1
 
 [MIN NOTE]: solution length: 3
 
-invariant [invar_0] forall VALUE1,NODE0,VALUE0. ~vote(NODE0,VALUE0) | ~vote(NODE0,VALUE1) | VALUE0 = VALUE1 # qcost: 6
+invariant [invar_0] forall VALUE0,NODE0,VALUE1. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1 # qcost: 6
 
 invariant [invar_11] forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4
 
-invariant [invar_3] forall QUORUM0,NODE0,VALUE0. ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
+invariant [invar_3] forall VALUE0,NODE0,QUORUM0. ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0) # qcost: 6
 
 [MIN NOTE]: number of total invariants: 3
 
@@ -3462,11 +3462,11 @@ invariant [invar_3] forall QUORUM0,NODE0,VALUE0. ~decide(QUORUM0,VALUE0) | vote(
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.295 seconds
+[QRM NOTE]: Time elapsed since start: 0.299 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.080 seconds
+[QRM NOTE]: Time elapsed since last: 0.068 seconds
 
-[QRM NOTE]: Peak memory: 2060591 bytes
+[QRM NOTE]: Peak memory: 2060384 bytes
 
 
 *******************************************************************************************************************
@@ -3505,9 +3505,9 @@ OK
 
 [FW NOTE]: symmetric group order: 144
 
-[QRM NOTE]: Time elapsed since start: 0.254 seconds
+[QRM NOTE]: Time elapsed since start: 0.257 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.254 seconds
+[QRM NOTE]: Time elapsed since last: 0.257 seconds
 
 [QRM NOTE]: Peak memory: 524131 bytes
 
@@ -3551,8 +3551,8 @@ sort: node=['node0', 'node1', 'node2', 'node3']
 sort: value=['value0', 'value1', 'value2']
 sort: quorum=['quorum__node0_node1_node2', 'quorum__node0_node1_node3', 'quorum__node0_node2_node3', 'quorum__node1_node2_node3']
 predicate: decide('quorum', 'value')
-predicate: member('node', 'quorum')
 predicate: vote('node', 'value')
+predicate: member('node', 'quorum')
 predicate: decision('value',)
 interpreted atoms: {'member(node0,quorum__node0_node1_node2)': '1', 'member(node0,quorum__node0_node1_node3)': '1', 'member(node0,quorum__node0_node2_node3)': '1', 'member(node0,quorum__node1_node2_node3)': '0', 'member(node1,quorum__node0_node1_node2)': '1', 'member(node1,quorum__node0_node1_node3)': '1', 'member(node1,quorum__node0_node2_node3)': '0', 'member(node1,quorum__node1_node2_node3)': '1', 'member(node2,quorum__node0_node1_node2)': '1', 'member(node2,quorum__node0_node1_node3)': '0', 'member(node2,quorum__node0_node2_node3)': '1', 'member(node2,quorum__node1_node2_node3)': '1', 'member(node3,quorum__node0_node1_node2)': '0', 'member(node3,quorum__node0_node1_node3)': '1', 'member(node3,quorum__node0_node2_node3)': '1', 'member(node3,quorum__node1_node2_node3)': '1'}
 state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_node1_node2,value1)', 'decide(quorum__node0_node1_node2,value2)', 'decide(quorum__node0_node1_node3,value0)', 'decide(quorum__node0_node1_node3,value1)', 'decide(quorum__node0_node1_node3,value2)', 'decide(quorum__node0_node2_node3,value0)', 'decide(quorum__node0_node2_node3,value1)', 'decide(quorum__node0_node2_node3,value2)', 'decide(quorum__node1_node2_node3,value0)', 'decide(quorum__node1_node2_node3,value1)', 'decide(quorum__node1_node2_node3,value2)', 'decision(value0)', 'decision(value1)', 'decision(value2)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'vote(node3,value0)', 'vote(node3,value1)', 'vote(node3,value2)']
@@ -3693,9 +3693,9 @@ state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_
 100000100-00-00100100100100
 100100-00-00-00100100100100
 
-[QRM NOTE]: Time elapsed since start: 3.249 seconds
+[QRM NOTE]: Time elapsed since start: 3.304 seconds
 
-[QRM NOTE]: Time elapsed since last: 2.995 seconds
+[QRM NOTE]: Time elapsed since last: 3.047 seconds
 
 [QRM NOTE]: Peak memory: 2030701 bytes
 
@@ -3708,9 +3708,9 @@ state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 4.984 seconds
+[QRM NOTE]: Time elapsed since start: 5.010 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.735 seconds
+[QRM NOTE]: Time elapsed since last: 1.706 seconds
 
 [QRM NOTE]: Peak memory: 2722972 bytes
 
@@ -3744,9 +3744,9 @@ OK
 
 [FW NOTE]: symmetric group order: 144
 
-[QRM NOTE]: Time elapsed since start: 0.254 seconds
+[QRM NOTE]: Time elapsed since start: 0.257 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.254 seconds
+[QRM NOTE]: Time elapsed since last: 0.257 seconds
 
 [QRM NOTE]: Peak memory: 534889 bytes
 
@@ -3789,10 +3789,10 @@ start extracting cubes
 sort: node=['node0', 'node1', 'node2']
 sort: value=['value0', 'value1', 'value2', 'value3']
 sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
-predicate: decide('quorum', 'value')
+predicate: vote('node', 'value')
 predicate: member('node', 'quorum')
 predicate: decision('value',)
-predicate: vote('node', 'value')
+predicate: decide('quorum', 'value')
 interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
 state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node1,value2)', 'decide(quorum__node0_node1,value3)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)', 'decide(quorum__node0_node2,value2)', 'decide(quorum__node0_node2,value3)', 'decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)', 'decide(quorum__node1_node2,value2)', 'decide(quorum__node1_node2,value3)', 'decision(value0)', 'decision(value1)', 'decision(value2)', 'decision(value3)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node0,value3)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node1,value3)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'vote(node2,value3)']
 
@@ -3921,9 +3921,9 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 100000001000-000100010001000
 10001000-000-000100010001000
 
-[QRM NOTE]: Time elapsed since start: 2.977 seconds
+[QRM NOTE]: Time elapsed since start: 3.012 seconds
 
-[QRM NOTE]: Time elapsed since last: 2.723 seconds
+[QRM NOTE]: Time elapsed since last: 2.755 seconds
 
 [QRM NOTE]: Peak memory: 1967617 bytes
 
@@ -3936,9 +3936,9 @@ state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 4.558 seconds
+[QRM NOTE]: Time elapsed since start: 4.662 seconds
 
-[QRM NOTE]: Time elapsed since last: 1.581 seconds
+[QRM NOTE]: Time elapsed since last: 1.650 seconds
 
 [QRM NOTE]: Peak memory: 2564381 bytes
 
@@ -4022,7 +4022,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 52.526 seconds
+[QRM NOTE]: Time elapsed since start: 44.710 seconds
 
-[QRM NOTE]: Time elapsed since last: 52.526 seconds
+[QRM NOTE]: Time elapsed since last: 44.710 seconds
 

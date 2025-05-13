@@ -42,9 +42,9 @@ OK
 
 [FW NOTE]: symmetric group order: 1
 
-[QRM NOTE]: Time elapsed since start: 0.028 seconds
+[QRM NOTE]: Time elapsed since start: 0.031 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.028 seconds
+[QRM NOTE]: Time elapsed since last: 0.031 seconds
 
 [QRM NOTE]: Peak memory: 27702 bytes
 
@@ -89,8 +89,8 @@ sort: request=['request0']
 sort: response=['response0']
 predicate: match('request', 'response')
 predicate: request_sent('node', 'request')
-predicate: responseMatched('node', 'response')
 predicate: response_sent('node', 'response')
+predicate: responseMatched('node', 'response')
 predicate: response_received('node', 'response')
 interpreted atoms: {}
 state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'responseMatched(node0,response0)', 'response_received(node0,response0)', 'response_sent(node0,response0)']
@@ -100,9 +100,9 @@ state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'resp
 1110-
 11111
 
-[QRM NOTE]: Time elapsed since start: 0.088 seconds
+[QRM NOTE]: Time elapsed since start: 0.100 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.060 seconds
+[QRM NOTE]: Time elapsed since last: 0.069 seconds
 
 [QRM NOTE]: Peak memory: 1095913 bytes
 
@@ -119,9 +119,9 @@ state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'resp
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 0.093 seconds
+[QRM NOTE]: Time elapsed since start: 0.105 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.005 seconds
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
 
 [QRM NOTE]: Peak memory: 46394 bytes
 
@@ -267,9 +267,9 @@ qcost : 0
 
 [PRIME NOTE]: number of primes: 10
 
-[QRM NOTE]: Time elapsed since start: 0.110 seconds
+[QRM NOTE]: Time elapsed since start: 0.117 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.017 seconds
+[QRM NOTE]: Time elapsed since last: 0.012 seconds
 
 [QRM NOTE]: Peak memory: 1119354 bytes
 
@@ -325,11 +325,11 @@ After reduction :
  pending  : [0, 2, 4, 5, 7, 8]
  solution : [6]
 
-[QRM NOTE]: Time elapsed since start: 0.114 seconds
+[QRM NOTE]: Time elapsed since start: 0.121 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.004 seconds
 
-[QRM NOTE]: Peak memory: 71184 bytes
+[QRM NOTE]: Peak memory: 71139 bytes
 
 
 =================================================================================================================
@@ -439,12 +439,12 @@ signed_func_name2args: {'0$response_received': [[Var('NODE0', EnumeratedSort('no
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~response_sent(NODE0,RESPONSE0)', 'response_received(NODE0,RESPONSE0)']
+qterms: ['response_received(NODE0,RESPONSE0)', '~response_sent(NODE0,RESPONSE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0. ~response_received(NODE0,RESPONSE0) | response_sent(NODE0,RESPONSE0)
 
 
 === Prime Orbit 0 =====================
@@ -542,7 +542,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
 
 exists_qvars: set()
 
@@ -559,7 +559,7 @@ qterms: ['~request_sent(NODE0,REQUEST0)', 'response_sent(NODE0,RESPONSE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_sent(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_sent(NODE0,RESPONSE0)
 
 
 === Prime Orbit 2 =====================
@@ -657,7 +657,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
 
 exists_qvars: set()
 
@@ -669,12 +669,12 @@ signed_func_name2args: {'1$request_sent': [[Var('NODE0', EnumeratedSort('node', 
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~request_sent(NODE0,REQUEST0)', 'response_received(NODE0,RESPONSE0)']
+qterms: ['response_received(NODE0,RESPONSE0)', '~request_sent(NODE0,REQUEST0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_received(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0,REQUEST0. ~response_received(NODE0,RESPONSE0) | request_sent(NODE0,REQUEST0)
 
 
 === Prime Orbit 4 =====================
@@ -772,7 +772,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
 
 exists_qvars: set()
 
@@ -789,7 +789,7 @@ qterms: ['~match(REQUEST0,RESPONSE0)', 'response_sent(NODE0,RESPONSE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
 
 
 === Prime Orbit 5 =====================
@@ -887,7 +887,7 @@ constraint mode: ConstraintMode.no_merge
 
 ---------- QFormula: _set_qvars ----------
 
-forall_qvars: {Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('NODE0', EnumeratedSort('node', ('node0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',))), Var('REQUEST0', EnumeratedSort('request', ('request0',))), Var('RESPONSE0', EnumeratedSort('response', ('response0',)))}
 
 exists_qvars: set()
 
@@ -899,12 +899,12 @@ signed_func_name2args: {'1$match': [[Var('REQUEST0', EnumeratedSort('request', (
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~match(REQUEST0,RESPONSE0)', 'response_received(NODE0,RESPONSE0)']
+qterms: ['response_received(NODE0,RESPONSE0)', '~match(REQUEST0,RESPONSE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0,REQUEST0. ~response_received(NODE0,RESPONSE0) | match(REQUEST0,RESPONSE0)
 
 
 === Prime Orbit 7 =====================
@@ -1004,12 +1004,12 @@ signed_func_name2args: {'1$responseMatched': [[Var('NODE0', EnumeratedSort('node
 
 ---------- QFormula: _set_qterms ----------
 
-qterms: ['~responseMatched(NODE0,RESPONSE0)', 'response_received(NODE0,RESPONSE0)']
+qterms: ['response_received(NODE0,RESPONSE0)', '~responseMatched(NODE0,RESPONSE0)']
 
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0. ~response_received(NODE0,RESPONSE0) | responseMatched(NODE0,RESPONSE0)
 
 
 === Prime Orbit 8 =====================
@@ -1114,7 +1114,7 @@ qterms: ['~responseMatched(NODE0,RESPONSE0)', 'response_sent(NODE0,RESPONSE0)']
 
 ---------- QFormula: get_qclause ----------
 
-qclause: forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+qclause: forall RESPONSE0,NODE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
 
 
 ===========================================================================================================================
@@ -1132,7 +1132,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0. ~response_received(NODE0,RESPONSE0) | response_sent(NODE0,RESPONSE0)
 qcost : 4
 
 
@@ -1146,7 +1146,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_sent(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_sent(NODE0,RESPONSE0)
 qcost : 5
 
 
@@ -1160,7 +1160,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0,REQUEST0. request_sent(NODE0,REQUEST0) | ~response_received(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0,REQUEST0. ~response_received(NODE0,RESPONSE0) | request_sent(NODE0,REQUEST0)
 qcost : 5
 
 
@@ -1174,7 +1174,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
 qcost : 5
 
 
@@ -1188,7 +1188,7 @@ num_suborbits: 1
 num_forall :   3
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0,REQUEST0. match(REQUEST0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0,REQUEST0. ~response_received(NODE0,RESPONSE0) | match(REQUEST0,RESPONSE0)
 qcost : 5
 
 
@@ -1202,7 +1202,7 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0. ~response_received(NODE0,RESPONSE0) | responseMatched(NODE0,RESPONSE0)
 qcost : 4
 
 
@@ -1216,16 +1216,16 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 2
-quantified form : forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
+quantified form : forall RESPONSE0,NODE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0)
 qcost : 4
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.203 seconds
+[QRM NOTE]: Time elapsed since start: 0.417 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.089 seconds
+[QRM NOTE]: Time elapsed since last: 0.296 seconds
 
-[QRM NOTE]: Peak memory: 1808653 bytes
+[QRM NOTE]: Peak memory: 1808722 bytes
 
 
 ==========================================================================================================
@@ -1417,9 +1417,9 @@ invariant [def_responseMatched] forall P,N. responseMatched(N,P) = (exists R. (r
 
 [MIN NOTE]: solution length: 2
 
-invariant [invar_6] forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0) # qcost: 4
+invariant [invar_6] forall RESPONSE0,NODE0. ~response_received(NODE0,RESPONSE0) | response_sent(NODE0,RESPONSE0) # qcost: 4
 
-invariant [invar_8] forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0) # qcost: 4
+invariant [invar_8] forall RESPONSE0,NODE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0) # qcost: 4
 
 [MIN NOTE]: number of total invariants: 3
 
@@ -1428,11 +1428,11 @@ invariant [invar_8] forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~
 
 
 
-[QRM NOTE]: Time elapsed since start: 0.279 seconds
+[QRM NOTE]: Time elapsed since start: 0.493 seconds
 
 [QRM NOTE]: Time elapsed since last: 0.076 seconds
 
-[QRM NOTE]: Peak memory: 1797212 bytes
+[QRM NOTE]: Peak memory: 1797326 bytes
 
 
 **************************************************************************************************************************
@@ -1471,11 +1471,11 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.033 seconds
+[QRM NOTE]: Time elapsed since start: 0.041 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.033 seconds
+[QRM NOTE]: Time elapsed since last: 0.041 seconds
 
-[QRM NOTE]: Peak memory: 48835 bytes
+[QRM NOTE]: Peak memory: 48587 bytes
 
 
 ===================================
@@ -1516,11 +1516,11 @@ start extracting cubes
 sort: node=['node0', 'node1']
 sort: request=['request0']
 sort: response=['response0']
-predicate: responseMatched('node', 'response')
-predicate: match('request', 'response')
 predicate: response_sent('node', 'response')
-predicate: request_sent('node', 'request')
+predicate: responseMatched('node', 'response')
 predicate: response_received('node', 'response')
+predicate: request_sent('node', 'request')
+predicate: match('request', 'response')
 interpreted atoms: {}
 state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'request_sent(node1,request0)', 'responseMatched(node0,response0)', 'responseMatched(node1,response0)', 'response_received(node0,response0)', 'response_received(node1,response0)', 'response_sent(node0,response0)', 'response_sent(node1,response0)']
 
@@ -1535,11 +1535,11 @@ state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'requ
 11111101-
 111111111
 
-[QRM NOTE]: Time elapsed since start: 0.163 seconds
+[QRM NOTE]: Time elapsed since start: 0.176 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.130 seconds
+[QRM NOTE]: Time elapsed since last: 0.136 seconds
 
-[QRM NOTE]: Peak memory: 1136812 bytes
+[QRM NOTE]: Peak memory: 1136756 bytes
 
 
 ===========================================================================================================================================================================
@@ -1550,11 +1550,11 @@ state atoms: ['match(request0,response0)', 'request_sent(node0,request0)', 'requ
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.213 seconds
+[QRM NOTE]: Time elapsed since start: 0.231 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.050 seconds
+[QRM NOTE]: Time elapsed since last: 0.055 seconds
 
-[QRM NOTE]: Peak memory: 122072 bytes
+[QRM NOTE]: Peak memory: 122112 bytes
 
 python3 qrm.py ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy -s node=1,request=2,response=1 -f 2 -g -w -r -b -e -v 5 -w -l ivybench/sym/ivy/client_server_ae.log
 
@@ -1586,9 +1586,9 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.030 seconds
+[QRM NOTE]: Time elapsed since start: 0.033 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.030 seconds
+[QRM NOTE]: Time elapsed since last: 0.033 seconds
 
 [QRM NOTE]: Peak memory: 39078 bytes
 
@@ -1632,9 +1632,9 @@ sort: node=['node0']
 sort: request=['request0', 'request1']
 sort: response=['response0']
 predicate: request_sent('node', 'request')
-predicate: responseMatched('node', 'response')
 predicate: response_received('node', 'response')
 predicate: match('request', 'response')
+predicate: responseMatched('node', 'response')
 predicate: response_sent('node', 'response')
 interpreted atoms: {}
 state atoms: ['match(request0,response0)', 'match(request1,response0)', 'request_sent(node0,request0)', 'request_sent(node0,request1)', 'responseMatched(node0,response0)', 'response_received(node0,response0)', 'response_sent(node0,response0)']
@@ -1652,9 +1652,9 @@ state atoms: ['match(request0,response0)', 'match(request1,response0)', 'request
 111-10-
 111-111
 
-[QRM NOTE]: Time elapsed since start: 0.117 seconds
+[QRM NOTE]: Time elapsed since start: 0.123 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.087 seconds
+[QRM NOTE]: Time elapsed since last: 0.090 seconds
 
 [QRM NOTE]: Peak memory: 1118334 bytes
 
@@ -1667,11 +1667,11 @@ state atoms: ['match(request0,response0)', 'match(request1,response0)', 'request
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.155 seconds
+[QRM NOTE]: Time elapsed since start: 0.163 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.038 seconds
+[QRM NOTE]: Time elapsed since last: 0.040 seconds
 
-[QRM NOTE]: Peak memory: 97258 bytes
+[QRM NOTE]: Peak memory: 97354 bytes
 
 python3 qrm.py ivybench/sym/ivy/client_server_ae.node_1_request_1_response_1.0.ivy -s node=1,request=1,response=2 -f 2 -g -w -r -b -e -v 5 -w -l ivybench/sym/ivy/client_server_ae.log
 
@@ -1703,9 +1703,9 @@ OK
 
 [FW NOTE]: symmetric group order: 2
 
-[QRM NOTE]: Time elapsed since start: 0.032 seconds
+[QRM NOTE]: Time elapsed since start: 0.036 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.032 seconds
+[QRM NOTE]: Time elapsed since last: 0.036 seconds
 
 [QRM NOTE]: Peak memory: 44073 bytes
 
@@ -1750,9 +1750,9 @@ sort: request=['request0']
 sort: response=['response0', 'response1']
 predicate: match('request', 'response')
 predicate: response_sent('node', 'response')
-predicate: responseMatched('node', 'response')
 predicate: response_received('node', 'response')
 predicate: request_sent('node', 'request')
+predicate: responseMatched('node', 'response')
 interpreted atoms: {}
 state atoms: ['match(request0,response0)', 'match(request0,response1)', 'request_sent(node0,request0)', 'responseMatched(node0,response0)', 'responseMatched(node0,response1)', 'response_received(node0,response0)', 'response_received(node0,response1)', 'response_sent(node0,response0)', 'response_sent(node0,response1)']
 
@@ -1769,9 +1769,9 @@ state atoms: ['match(request0,response0)', 'match(request0,response1)', 'request
 11111101-
 111111111
 
-[QRM NOTE]: Time elapsed since start: 0.143 seconds
+[QRM NOTE]: Time elapsed since start: 0.152 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.110 seconds
+[QRM NOTE]: Time elapsed since last: 0.116 seconds
 
 [QRM NOTE]: Peak memory: 1129583 bytes
 
@@ -1784,9 +1784,9 @@ state atoms: ['match(request0,response0)', 'match(request0,response1)', 'request
 
 [REACH_CHECK RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 0.199 seconds
+[QRM NOTE]: Time elapsed since start: 0.213 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.056 seconds
+[QRM NOTE]: Time elapsed since last: 0.060 seconds
 
 [QRM NOTE]: Peak memory: 123137 bytes
 
@@ -1869,7 +1869,7 @@ OK
 
 [QRM RESULT]: PASS
 
-[QRM NOTE]: Time elapsed since start: 14.279 seconds
+[QRM NOTE]: Time elapsed since start: 15.215 seconds
 
-[QRM NOTE]: Time elapsed since last: 14.279 seconds
+[QRM NOTE]: Time elapsed since last: 15.215 seconds
 

@@ -52,5 +52,5 @@ export receive_response
 ##invariant [manual_1] forall N,P. response_sent(N,P) -> exists R. request_sent(N,R) & match(R,P)
 
 invariant [def_responseMatched] forall P,N. responseMatched(N,P) = (exists R. (request_sent(N,R) & match(R,P))) # definition, qcost: 6
-invariant [invar_6] forall NODE0,RESPONSE0. response_sent(NODE0,RESPONSE0) | ~response_received(NODE0,RESPONSE0) # qcost: 4
-invariant [invar_8] forall NODE0,RESPONSE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0) # qcost: 4
+invariant [invar_6] forall RESPONSE0,NODE0. ~response_received(NODE0,RESPONSE0) | response_sent(NODE0,RESPONSE0) # qcost: 4
+invariant [invar_8] forall RESPONSE0,NODE0. responseMatched(NODE0,RESPONSE0) | ~response_sent(NODE0,RESPONSE0) # qcost: 4

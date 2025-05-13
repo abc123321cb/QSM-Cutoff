@@ -36,7 +36,7 @@ export recv
 ##invariant [manual_3] ~message(X,Y) | ~message(Z,W) | Y=W
 ##invariant [manual_4] forall A, B, C, D . ((((A) = (B)) & ((C) = (D))) | ((~(has_lock(A))) & (~(message(A, C)))) | (~(message(B, D))))
 
-invariant [invar_1] forall NODE2,NODE1,NODE0,NODE3. ~message(NODE0,NODE2) | ~message(NODE1,NODE3) | (NODE0 = NODE1 & NODE2 = NODE3) # qcost: 8
-invariant [invar_2] forall NODE2,NODE1,NODE0. ~message(NODE1,NODE2) | ~has_lock(NODE0) # qcost: 5
-invariant [invar_3] forall NODE1,NODE0. ~has_lock(NODE1) | ~has_lock(NODE0) | NODE0 = NODE1 # qcost: 5
+invariant [invar_1] forall NODE1,NODE2,NODE0,NODE3. ~message(NODE1,NODE3) | ~message(NODE0,NODE2) | (NODE0 = NODE1 & NODE2 = NODE3) # qcost: 8
+invariant [invar_2] forall NODE1,NODE2,NODE0. ~has_lock(NODE0) | ~message(NODE1,NODE2) # qcost: 5
+invariant [invar_3] forall NODE1,NODE0. ~has_lock(NODE0) | ~has_lock(NODE1) | NODE0 = NODE1 # qcost: 5
 invariant [invar_5] exists NODE1,NODE0. has_lock(NODE0) | message(NODE0,NODE1) # qcost: 4
