@@ -11,7 +11,7 @@ from typing import Dict
 
 def usage ():
     print('Usage:   python3 QSM-Cutoff.py FILE.ivy -s SORT_SIZE [options]')
-    print('         read ivy file and start with the given sort size, incremeting size until deriving reachability invariant') 
+    print('         read ivy file and start with the given sort size, incremeting size until deriving cutoff formula') 
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
     print('Options:')
