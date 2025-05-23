@@ -17,7 +17,7 @@ python3 -m pip install numpy
 ```
 
 2. Install swig
-Install `autotools-dev`, `automake`, `bison`.
+- Install `autotools-dev`, `automake`, `bison`.
 ```
 cd swig-4.2.1
 ./autogen.sh
@@ -34,7 +34,7 @@ make
 make libso
 cd..
 ```
-change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X and add the compilation flag `-I[PATH TO Python.h]`
+- Change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X and add the compilation flag `-I[PATH TO Python.h]`
 ```
 make
 export PYTHONPATH=$PYTHONPATH:[path to repycudd.py]
@@ -58,6 +58,12 @@ make test
 ## Usage
 ```=python3
 ./configure.sh [PATH TO Python.h]
-python3 qrm.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 python3 QSM-Cutoff.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 ```
+- Run `python3 QSM-Cutoff.py -h` for more information
+
+## Scripts
+The directory `scripts` contains the scripts for generating results of our CAV 2025 paper.
+
+## Logs
+The directory `CAV_logs` contains experiment logs of our CAV 2025 paper.
