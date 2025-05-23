@@ -74,20 +74,5 @@ If you don't have permission to `apt-get install` or `yum install`, try the foll
 ```=python3
 ./configure.sh [PYTON INCLUDE PATH] (e.g. /usr/include/python3.12)
 python3 qrm.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
-python3 run_all.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
+python3 QSM-Cutoff.py [IVY FILE] -s [sort1=size1,sort2=size2 ...]
 ```
-### Usage for Options
-#### Verbosity
-- default: only prints `ivy_check` result for each size, and the final qrm result
-- `-v 1`: prints elapsed time
-- `-v 2`: 
-    - print number of variables, reachable states, orbits, suborbits, primes, minimal solutions, etc
-    - number of suborbits is meaningful only if using option `-m`
-    - number of minimal solutions is meaningful only if using option `-a`
-- `-v 3`:
-    - prints results of forward reachability
-    - prints results of prime orbit generation
-    - prints results of quantifier inference
-    - prints results of minimization (prints all solutions if using option `-a`)
-- `-v 5`: 
-    - print debug info

@@ -10,7 +10,7 @@ from verbose import *
 from typing import Dict
 
 def usage ():
-    print('Usage:   python3 run_all.py FILE.ivy -s SORT_SIZE [options]')
+    print('Usage:   python3 QSM-Cutoff.py FILE.ivy -s SORT_SIZE [options]')
     print('         read ivy file and start with the given sort size, incremeting size until deriving reachability invariant') 
     print('         (SORT_SIZE format: -s [sort1=size1,sort2=size2 ...])')
     print('')
@@ -215,7 +215,7 @@ def get_next_size_str(sizes_str : List[str]) -> str:
                 next_sizes[sort] = max(size, next_sizes[sort])
     return get_next_size_string(next_sizes)
 
-def run_all(ivy_name, args):
+def qsm_cutoff(ivy_name, args):
     sys_args = args.copy()
     options  = get_options(ivy_name, args, sys_args)
 
@@ -274,4 +274,4 @@ def run_all(ivy_name, args):
     options.print_time()
 
 if __name__ == '__main__':
-    run_all(sys.argv[1], sys.argv[2:])
+    qsm_cutoff(sys.argv[1], sys.argv[2:])
