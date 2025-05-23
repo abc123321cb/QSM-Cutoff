@@ -1,0 +1,2808 @@
+
+***********************************************************
+
+	[QRM]: ivybench/sym/ivy/lock_server.ivy
+
+***********************************************************
+
+
+********************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lock_server.ivy -s server=1,client=1 -f 1 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+==================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+==================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 2
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[FW NOTE]: number of branching actions: 2
+
+ivy_to_cpp target=qrm lock_server.server_1_client_1.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_1_client_1.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_1_client_1.finite.cpp lock_server.server_1_client_1.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_1_client_1.finite.o lock_server.server_1_client_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.384 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.384 seconds
+
+[QRM NOTE]: Peak memory: 1172773 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        2
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 0
+
+
+=========================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+=========================================================================================================
+
+sort: client=['client0']
+sort: server=['server0']
+predicate: link('client', 'server')
+predicate: semaphore('server',)
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'semaphore(server0)']
+representative states : 1, 2
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 01
+lex min decimal: 1
+states:
+01
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 10
+lex min decimal: 2
+states:
+10
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.463 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.078 seconds
+
+[QRM NOTE]: Peak memory: 1194733 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 6.466 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 144951 bytes
+
+
+=========================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+=========================================================================================================
+
+
+====================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+====================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 00
+0     : ['~link(client0,server0)', '~semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : 11
+1     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 2
+
+[PRIME NOTE]: number of orbits before merging: 2
+
+[PRIME NOTE]: number of primes: 2
+
+[QRM NOTE]: Time elapsed since start: 6.480 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
+
+[QRM NOTE]: Peak memory: 1199559 bytes
+
+
+==============================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+==============================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1]
+ solution : []
+
+Essensial at level 0 : {0, 1}
+
+Before removed
+ coverage : [(0, -1), (1, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1]
+
+[QRM NOTE]: Time elapsed since start: 6.481 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 151777 bytes
+
+
+==================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+==================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 00
+0     : ['~link(client0,server0)', '~semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~link(client0,server0)', '~semaphore(server0)']
+
+sign_func_name2args: {'1$link': [(Const('client0', EnumeratedSort('client', ('client0',))), Const('server0', EnumeratedSort('server', ('server0',))))], '1$semaphore': [(Const('server0', EnumeratedSort('server', ('server0',))),)]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0',))): [client$1$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$1$link$1$0, server$1$semaphore$0$0]}
+
+sig2const: {'client$1$link$0$0': Const('client0', EnumeratedSort('client', ('client0',))), 'server$1$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'server$1$semaphore$0$0': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0',)): [client$1$link$0$0], EnumeratedSort('server', ('server0',)): [server$1$link$1$0; server$1$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0',)): client$1$link$0$0, EnumeratedSort('server', ('server0',)): server$1$link$1$0; server$1$semaphore$0$0}
+
+part_sig: ('client$1$link$0$0', 'server$1$link$1$0; server$1$semaphore$0$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~link(client0,server0)', '~semaphore(server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0',)), EnumeratedSort('server', ('server0',)), BooleanSort())), 'semaphore': Const('semaphore', FunctionSort(EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0',)), EnumeratedSort('server', ('server0',))), 'semaphore': (EnumeratedSort('server', ('server0',)),)}
+
+sign_func_name2count:  {'1$link': 1, '1$semaphore': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0',)): [client$1$link$0$0], EnumeratedSort('server', ('server0',)): [server$1$link$1$0; server$1$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0',)): client$1$link$0$0, EnumeratedSort('server', ('server0',)): server$1$link$1$0; server$1$semaphore$0$0}
+
+	sort: client
+
+	identical_classes: {'client$1$link$0': [client$1$link$0$0]}
+
+	identical_single_classes: {'client$1$link$0': client$1$link$0$0}
+
+	identical_multi_classes: {}
+
+	sort: server
+
+	identical_classes: {'server$1$link$1; server$1$semaphore$0': [server$1$link$1$0; server$1$semaphore$0$0]}
+
+	identical_single_classes: {'server$1$link$1; server$1$semaphore$0': server$1$link$1$0; server$1$semaphore$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.forall
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0',))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0',))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]], '1$semaphore': [[Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~link(CLIENT0,SERVER0)', '~semaphore(SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall CLIENT0,SERVER0. link(CLIENT0,SERVER0) | semaphore(SERVER0)
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : 11
+1     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['link(client0,server0)', 'semaphore(server0)']
+
+sign_func_name2args: {'0$link': [(Const('client0', EnumeratedSort('client', ('client0',))), Const('server0', EnumeratedSort('server', ('server0',))))], '0$semaphore': [(Const('server0', EnumeratedSort('server', ('server0',))),)]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0',))): [client$0$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$0$link$1$0, server$0$semaphore$0$0]}
+
+sig2const: {'client$0$link$0$0': Const('client0', EnumeratedSort('client', ('client0',))), 'server$0$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'server$0$semaphore$0$0': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0',)): [client$0$link$0$0], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0',)): client$0$link$0$0, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$semaphore$0$0}
+
+part_sig: ('client$0$link$0$0', 'server$0$link$1$0; server$0$semaphore$0$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['link(client0,server0)', 'semaphore(server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0',)), EnumeratedSort('server', ('server0',)), BooleanSort())), 'semaphore': Const('semaphore', FunctionSort(EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0',)), EnumeratedSort('server', ('server0',))), 'semaphore': (EnumeratedSort('server', ('server0',)),)}
+
+sign_func_name2count:  {'0$link': 1, '0$semaphore': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0',)): [client$0$link$0$0], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0',)): client$0$link$0$0, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$semaphore$0$0}
+
+	sort: client
+
+	identical_classes: {'client$0$link$0': [client$0$link$0$0]}
+
+	identical_single_classes: {'client$0$link$0': client$0$link$0$0}
+
+	identical_multi_classes: {}
+
+	sort: server
+
+	identical_classes: {'server$0$link$1; server$0$semaphore$0': [server$0$link$1$0; server$0$semaphore$0$0]}
+
+	identical_single_classes: {'server$0$link$1; server$0$semaphore$0': server$0$link$1$0; server$0$semaphore$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.forall
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0',))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0',))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]], '0$semaphore': [[Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['link(CLIENT0,SERVER0)', 'semaphore(SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+
+
+============================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+============================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 00
+0     : ['~link(client0,server0)', '~semaphore(server0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall CLIENT0,SERVER0. link(CLIENT0,SERVER0) | semaphore(SERVER0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : 11
+1     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0)
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.562 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.081 seconds
+
+[QRM NOTE]: Peak memory: 1878972 bytes
+
+
+===========================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+===========================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1]
+
+
+Solution : [0, 1] has cost 8.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1]
+
+
+==========================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+==========================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 8
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1]
+
+[MIN NOTE]: solution length: 2
+
+invariant [invar_0] forall CLIENT0,SERVER0. link(CLIENT0,SERVER0) | semaphore(SERVER0) # qcost: 4
+
+invariant [invar_1] forall CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~semaphore(SERVER0) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 2
+
+[MIN NOTE]: total qCost: 8
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.604 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.042 seconds
+
+[QRM NOTE]: Peak memory: 1867591 bytes
+
+
+***********************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/lock_server.ivy: server=1,client=1]
+
+***********************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy -s server=2,client=1 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy: server=2,client=1]
+
+======================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 4
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[FW NOTE]: number of branching actions: 4
+
+ivy_to_cpp target=qrm lock_server.server_2_client_1.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_2_client_1.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_2_client_1.finite.cpp lock_server.server_2_client_1.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_2_client_1.finite.o lock_server.server_2_client_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 7.207 seconds
+
+[QRM NOTE]: Time elapsed since last: 7.207 seconds
+
+[QRM NOTE]: Peak memory: 1174048 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 2
+
+[FW NOTE]: number of total reachable states:        4
+
+[FW NOTE]: number of dfs representative states:     3
+
+[FW NOTE]: number of dfs non-representative states: 1
+
+
+=============================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy: server=2,client=1]
+
+=============================================================================================================================
+
+sort: client=['client0']
+sort: server=['server0', 'server1']
+predicate: semaphore('server',)
+predicate: link('client', 'server')
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client0,server1)', 'semaphore(server0)', 'semaphore(server1)']
+representative states : 3, 6, 12
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 0011
+lex min decimal: 3
+states:
+0011
+
+
+
+
+=== State Orbit 1 =====================
+size : 2
+repr state: 1001
+lex min decimal: 6
+states:
+0110
+1001
+
+
+
+
+=== State Orbit 2 =====================
+size : 1
+repr state: 1100
+lex min decimal: 12
+states:
+1100
+
+
+
+[QRM NOTE]: Time elapsed since start: 7.286 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.079 seconds
+
+[QRM NOTE]: Peak memory: 1199670 bytes
+
+
+==================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy: server=2,client=1]
+
+==================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 7.292 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.006 seconds
+
+[QRM NOTE]: Peak memory: 153586 bytes
+
+python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy -s server=1,client=2 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy: server=1,client=2]
+
+======================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 3
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[FW NOTE]: number of branching actions: 4
+
+ivy_to_cpp target=qrm lock_server.server_1_client_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_1_client_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_1_client_2.finite.cpp lock_server.server_1_client_2.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_1_client_2.finite.o lock_server.server_1_client_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.441 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.441 seconds
+
+[QRM NOTE]: Peak memory: 1173812 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        3
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 1
+
+
+=============================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy: server=1,client=2]
+
+=============================================================================================================================
+
+sort: client=['client0', 'client1']
+sort: server=['server0']
+predicate: link('client', 'server')
+predicate: semaphore('server',)
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client1,server0)', 'semaphore(server0)']
+representative states : 1, 2
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 001
+lex min decimal: 1
+states:
+001
+
+
+
+
+=== State Orbit 1 =====================
+size : 2
+repr state: 100
+lex min decimal: 2
+states:
+100
+010
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.520 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.079 seconds
+
+[QRM NOTE]: Peak memory: 1198692 bytes
+
+
+==================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lock_server.server_1_client_1.0.ivy: server=1,client=2]
+
+==================================================================================================================================================
+
+Found a representative state in Rmin not in reachability: decimal: 6, binary: 110
+
+Representatitive states in reachability not in Rmin
+
+{2}
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 6.527 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.007 seconds
+
+[QRM NOTE]: Peak memory: 152749 bytes
+
+next size: server=1,client=2
+
+
+********************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lock_server.ivy -s server=1,client=2 -f 1 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.013 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.013 seconds
+
+[QRM NOTE]: Peak memory: 934 bytes
+
+
+=========================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+=========================================================================================================
+
+
+====================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+====================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11-
+0     : ['link(client0,server0)', 'link(client1,server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+1 (*) : 1-1
+1     : ['link(client0,server0)', 'semaphore(server0)']
+2     : -11
+2     : ['link(client1,server0)', 'semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 000
+3     : ['~link(client0,server0)', '~link(client1,server0)', '~semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 3
+
+[PRIME NOTE]: number of orbits before merging: 3
+
+[PRIME NOTE]: number of primes: 4
+
+[QRM NOTE]: Time elapsed since start: 0.023 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 1058923 bytes
+
+
+==============================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+==============================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2]
+ solution : []
+
+Essensial at level 0 : {0, 1, 2}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+[QRM NOTE]: Time elapsed since start: 0.025 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 11354 bytes
+
+
+==================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+==================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11-
+0     : ['link(client0,server0)', 'link(client1,server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['link(client0,server0)', 'link(client1,server0)']
+
+sign_func_name2args: {'0$link': [(Const('client0', EnumeratedSort('client', ('client0', 'client1'))), Const('server0', EnumeratedSort('server', ('server0',)))), (Const('client1', EnumeratedSort('client', ('client0', 'client1'))), Const('server0', EnumeratedSort('server', ('server0',))))]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0', 'client1'))): [client$0$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$0$link$1$0, server$0$link$1$1], Const('client1', EnumeratedSort('client', ('client0', 'client1'))): [client$0$link$0$1]}
+
+sig2const: {'client$0$link$0$0': Const('client0', EnumeratedSort('client', ('client0', 'client1'))), 'server$0$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'client$0$link$0$1': Const('client1', EnumeratedSort('client', ('client0', 'client1'))), 'server$0$link$1$1': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1')): [client$0$link$0$0, client$0$link$0$1], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$link$1$1]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1')): client$0$link$0$0 | client$0$link$0$1, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$link$1$1}
+
+part_sig: ('client$0$link$0$0 | client$0$link$0$1', 'server$0$link$1$0; server$0$link$1$1')
+
+
+---------- SigGenerator ----------
+
+terms:  ['link(client0,server0)', 'link(client1,server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0', 'client1')), EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0', 'client1')), EnumeratedSort('server', ('server0',)))}
+
+sign_func_name2count:  {'0$link': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1')): [client$0$link$0$0, client$0$link$0$1], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$link$1$1]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1')): client$0$link$0$0 | client$0$link$0$1, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$link$1$1}
+
+	sort: client
+
+	identical_classes: {'client$0$link$0': [client$0$link$0$0, client$0$link$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'client$0$link$0': [client$0$link$0$0, client$0$link$0$1]}
+
+	sort: server
+
+	identical_classes: {'server$0$link$1; server$0$link$1': [server$0$link$1$0; server$0$link$1$1]}
+
+	identical_single_classes: {'server$0$link$1; server$0$link$1': server$0$link$1$0; server$0$link$1$1}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.exists
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+
+exists_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))], [Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['link(CLIENT0,SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall SERVER0. (exists CLIENT0. ~link(CLIENT0,SERVER0))
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+1 (*) : 1-1
+1     : ['link(client0,server0)', 'semaphore(server0)']
+2     : -11
+2     : ['link(client1,server0)', 'semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['link(client0,server0)', 'semaphore(server0)']
+
+sign_func_name2args: {'0$link': [(Const('client0', EnumeratedSort('client', ('client0', 'client1'))), Const('server0', EnumeratedSort('server', ('server0',))))], '0$semaphore': [(Const('server0', EnumeratedSort('server', ('server0',))),)]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0', 'client1'))): [client$0$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$0$link$1$0, server$0$semaphore$0$0]}
+
+sig2const: {'client$0$link$0$0': Const('client0', EnumeratedSort('client', ('client0', 'client1'))), 'server$0$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'server$0$semaphore$0$0': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1')): [client$0$link$0$0], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1')): client$0$link$0$0, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$semaphore$0$0}
+
+part_sig: ('client$0$link$0$0', 'server$0$link$1$0; server$0$semaphore$0$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['link(client0,server0)', 'semaphore(server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0', 'client1')), EnumeratedSort('server', ('server0',)), BooleanSort())), 'semaphore': Const('semaphore', FunctionSort(EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0', 'client1')), EnumeratedSort('server', ('server0',))), 'semaphore': (EnumeratedSort('server', ('server0',)),)}
+
+sign_func_name2count:  {'0$link': 1, '0$semaphore': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1')): [client$0$link$0$0], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1')): client$0$link$0$0, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$semaphore$0$0}
+
+	sort: client
+
+	identical_classes: {'client$0$link$0': [client$0$link$0$0]}
+
+	identical_single_classes: {'client$0$link$0': client$0$link$0$0}
+
+	identical_multi_classes: {}
+
+	sort: server
+
+	identical_classes: {'server$0$link$1; server$0$semaphore$0': [server$0$link$1$0; server$0$semaphore$0$0]}
+
+	identical_single_classes: {'server$0$link$1; server$0$semaphore$0': server$0$link$1$0; server$0$semaphore$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.forall
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]], '0$semaphore': [[Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 000
+3     : ['~link(client0,server0)', '~link(client1,server0)', '~semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~link(client0,server0)', '~link(client1,server0)', '~semaphore(server0)']
+
+sign_func_name2args: {'1$link': [(Const('client0', EnumeratedSort('client', ('client0', 'client1'))), Const('server0', EnumeratedSort('server', ('server0',)))), (Const('client1', EnumeratedSort('client', ('client0', 'client1'))), Const('server0', EnumeratedSort('server', ('server0',))))], '1$semaphore': [(Const('server0', EnumeratedSort('server', ('server0',))),)]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0', 'client1'))): [client$1$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$1$link$1$0, server$1$link$1$1, server$1$semaphore$0$0], Const('client1', EnumeratedSort('client', ('client0', 'client1'))): [client$1$link$0$1]}
+
+sig2const: {'client$1$link$0$0': Const('client0', EnumeratedSort('client', ('client0', 'client1'))), 'server$1$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'client$1$link$0$1': Const('client1', EnumeratedSort('client', ('client0', 'client1'))), 'server$1$link$1$1': Const('server0', EnumeratedSort('server', ('server0',))), 'server$1$semaphore$0$0': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1')): [client$1$link$0$0, client$1$link$0$1], EnumeratedSort('server', ('server0',)): [server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1')): client$1$link$0$0 | client$1$link$0$1, EnumeratedSort('server', ('server0',)): server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0}
+
+part_sig: ('client$1$link$0$0 | client$1$link$0$1', 'server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~link(client0,server0)', '~link(client1,server0)', '~semaphore(server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0', 'client1')), EnumeratedSort('server', ('server0',)), BooleanSort())), 'semaphore': Const('semaphore', FunctionSort(EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0', 'client1')), EnumeratedSort('server', ('server0',))), 'semaphore': (EnumeratedSort('server', ('server0',)),)}
+
+sign_func_name2count:  {'1$link': 2, '1$semaphore': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1')): [client$1$link$0$0, client$1$link$0$1], EnumeratedSort('server', ('server0',)): [server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1')): client$1$link$0$0 | client$1$link$0$1, EnumeratedSort('server', ('server0',)): server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0}
+
+	sort: client
+
+	identical_classes: {'client$1$link$0': [client$1$link$0$0, client$1$link$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'client$1$link$0': [client$1$link$0$0, client$1$link$0$1]}
+
+	sort: server
+
+	identical_classes: {'server$1$link$1; server$1$link$1; server$1$semaphore$0': [server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0]}
+
+	identical_single_classes: {'server$1$link$1; server$1$link$1; server$1$semaphore$0': server$1$link$1$0; server$1$link$1$1; server$1$semaphore$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.exists
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+
+exists_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))], [Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]], '1$semaphore': [[Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~semaphore(SERVER0)', '~link(CLIENT0,SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
+
+
+============================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+============================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11-
+0     : ['link(client0,server0)', 'link(client1,server0)']
+num_forall :   1
+num_exists :   1
+num_literals : 1
+quantified form : forall SERVER0. (exists CLIENT0. ~link(CLIENT0,SERVER0))
+qcost : 3
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+1 (*) : 1-1
+1     : ['link(client0,server0)', 'semaphore(server0)']
+2     : -11
+2     : ['link(client1,server0)', 'semaphore(server0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 000
+3     : ['~link(client0,server0)', '~link(client1,server0)', '~semaphore(server0)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0))
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.095 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.071 seconds
+
+[QRM NOTE]: Peak memory: 1754643 bytes
+
+
+===========================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+===========================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 2]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+
+Solution : [0, 1, 2] has cost 11.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 2]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 2]
+
+
+==========================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+==========================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 11
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2]
+
+[MIN NOTE]: solution length: 3
+
+invariant [invar_0] forall SERVER0. (exists CLIENT0. ~link(CLIENT0,SERVER0)) # qcost: 3
+
+invariant [invar_1] forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+
+invariant [invar_2] forall SERVER0. (exists CLIENT0. semaphore(SERVER0) | link(CLIENT0,SERVER0)) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 3
+
+[MIN NOTE]: total qCost: 11
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.157 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.061 seconds
+
+[QRM NOTE]: Peak memory: 1741087 bytes
+
+
+***********************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/lock_server.ivy: server=1,client=2]
+
+***********************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy -s server=2,client=2 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy: server=2,client=2]
+
+======================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 6
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 4
+
+[FW NOTE]: number of branching actions: 8
+
+ivy_to_cpp target=qrm lock_server.server_2_client_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_2_client_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_2_client_2.finite.cpp lock_server.server_2_client_2.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_2_client_2.finite.o lock_server.server_2_client_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.884 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.884 seconds
+
+[QRM NOTE]: Peak memory: 1175217 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 2
+
+[FW NOTE]: number of total reachable states:        9
+
+[FW NOTE]: number of dfs representative states:     4
+
+[FW NOTE]: number of dfs non-representative states: 5
+
+
+=============================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy: server=2,client=2]
+
+=============================================================================================================================
+
+sort: client=['client0', 'client1']
+sort: server=['server0', 'server1']
+predicate: link('client', 'server')
+predicate: semaphore('server',)
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,server0)', 'link(client1,server1)', 'semaphore(server0)', 'semaphore(server1)']
+representative states : 3, 6, 12, 24
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 000011
+lex min decimal: 3
+states:
+000011
+
+
+
+
+=== State Orbit 1 =====================
+size : 4
+repr state: 100001
+lex min decimal: 6
+states:
+010010
+100001
+001001
+000110
+
+
+
+
+=== State Orbit 2 =====================
+size : 2
+repr state: 110000
+lex min decimal: 12
+states:
+001100
+110000
+
+
+
+
+=== State Orbit 3 =====================
+size : 2
+repr state: 100100
+lex min decimal: 24
+states:
+100100
+011000
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.966 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.082 seconds
+
+[QRM NOTE]: Peak memory: 1202818 bytes
+
+
+==================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy: server=2,client=2]
+
+==================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 6.983 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.017 seconds
+
+[QRM NOTE]: Peak memory: 162160 bytes
+
+python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy -s server=1,client=3 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy: server=1,client=3]
+
+======================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 4
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 6
+
+[FW NOTE]: number of branching actions: 6
+
+ivy_to_cpp target=qrm lock_server.server_1_client_3.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_1_client_3.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_1_client_3.finite.cpp lock_server.server_1_client_3.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_1_client_3.finite.o lock_server.server_1_client_3.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.671 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.671 seconds
+
+[QRM NOTE]: Peak memory: 1174505 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        4
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 2
+
+
+=============================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy: server=1,client=3]
+
+=============================================================================================================================
+
+sort: client=['client0', 'client1', 'client2']
+sort: server=['server0']
+predicate: link('client', 'server')
+predicate: semaphore('server',)
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,server0)', 'semaphore(server0)']
+representative states : 1, 2
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 0001
+lex min decimal: 1
+states:
+0001
+
+
+
+
+=== State Orbit 1 =====================
+size : 3
+repr state: 1000
+lex min decimal: 2
+states:
+0010
+0100
+1000
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.748 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.077 seconds
+
+[QRM NOTE]: Peak memory: 1199542 bytes
+
+
+==================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lock_server.server_1_client_2.0.ivy: server=1,client=3]
+
+==================================================================================================================================================
+
+Found a representative state in Rmin not in reachability: decimal: 6, binary: 0110
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 6.759 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 156539 bytes
+
+next size: server=1,client=3
+
+
+********************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lock_server.ivy -s server=1,client=3 -f 1 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.014 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
+
+[QRM NOTE]: Peak memory: 1022 bytes
+
+
+=========================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+=========================================================================================================
+
+
+====================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+====================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : --11
+0     : ['link(client2,server0)', 'semaphore(server0)']
+1     : -1-1
+1     : ['link(client1,server0)', 'semaphore(server0)']
+2     : 1--1
+2     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : 1-1-
+3     : ['link(client0,server0)', 'link(client2,server0)']
+4     : 11--
+4     : ['link(client0,server0)', 'link(client1,server0)']
+5     : -11-
+5     : ['link(client1,server0)', 'link(client2,server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 0000
+6     : ['~link(client0,server0)', '~link(client1,server0)', '~link(client2,server0)', '~semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 3
+
+[PRIME NOTE]: number of orbits before merging: 3
+
+[PRIME NOTE]: number of primes: 7
+
+[QRM NOTE]: Time elapsed since start: 0.025 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 1063922 bytes
+
+
+==============================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+==============================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2]
+ solution : []
+
+Essensial at level 0 : {0, 1, 2}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+[QRM NOTE]: Time elapsed since start: 0.026 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 16179 bytes
+
+
+==================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+==================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : --11
+0     : ['link(client2,server0)', 'semaphore(server0)']
+1     : -1-1
+1     : ['link(client1,server0)', 'semaphore(server0)']
+2     : 1--1
+2     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['link(client2,server0)', 'semaphore(server0)']
+
+sign_func_name2args: {'0$link': [(Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Const('server0', EnumeratedSort('server', ('server0',))))], '0$semaphore': [(Const('server0', EnumeratedSort('server', ('server0',))),)]}
+
+const2sigs: {Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))): [client$0$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$0$link$1$0, server$0$semaphore$0$0]}
+
+sig2const: {'client$0$link$0$0': Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))), 'server$0$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'server$0$semaphore$0$0': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1', 'client2')): [client$0$link$0$0], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1', 'client2')): client$0$link$0$0, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$semaphore$0$0}
+
+part_sig: ('client$0$link$0$0', 'server$0$link$1$0; server$0$semaphore$0$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['link(client2,server0)', 'semaphore(server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0', 'client1', 'client2')), EnumeratedSort('server', ('server0',)), BooleanSort())), 'semaphore': Const('semaphore', FunctionSort(EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0', 'client1', 'client2')), EnumeratedSort('server', ('server0',))), 'semaphore': (EnumeratedSort('server', ('server0',)),)}
+
+sign_func_name2count:  {'0$link': 1, '0$semaphore': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1', 'client2')): [client$0$link$0$0], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1', 'client2')): client$0$link$0$0, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$semaphore$0$0}
+
+	sort: client
+
+	identical_classes: {'client$0$link$0': [client$0$link$0$0]}
+
+	identical_single_classes: {'client$0$link$0': client$0$link$0$0}
+
+	identical_multi_classes: {}
+
+	sort: server
+
+	identical_classes: {'server$0$link$1; server$0$semaphore$0': [server$0$link$1$0; server$0$semaphore$0$0]}
+
+	identical_single_classes: {'server$0$link$1; server$0$semaphore$0': server$0$link$1$0; server$0$semaphore$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.forall
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]], '0$semaphore': [[Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['semaphore(SERVER0)', 'link(CLIENT0,SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : 1-1-
+3     : ['link(client0,server0)', 'link(client2,server0)']
+4     : 11--
+4     : ['link(client0,server0)', 'link(client1,server0)']
+5     : -11-
+5     : ['link(client1,server0)', 'link(client2,server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['link(client0,server0)', 'link(client2,server0)']
+
+sign_func_name2args: {'0$link': [(Const('client0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Const('server0', EnumeratedSort('server', ('server0',)))), (Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Const('server0', EnumeratedSort('server', ('server0',))))]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0', 'client1', 'client2'))): [client$0$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$0$link$1$0, server$0$link$1$1], Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))): [client$0$link$0$1]}
+
+sig2const: {'client$0$link$0$0': Const('client0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), 'server$0$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'client$0$link$0$1': Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))), 'server$0$link$1$1': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1', 'client2')): [client$0$link$0$0, client$0$link$0$1], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$link$1$1]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1', 'client2')): client$0$link$0$0 | client$0$link$0$1, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$link$1$1}
+
+part_sig: ('client$0$link$0$0 | client$0$link$0$1', 'server$0$link$1$0; server$0$link$1$1')
+
+
+---------- SigGenerator ----------
+
+terms:  ['link(client0,server0)', 'link(client2,server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0', 'client1', 'client2')), EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0', 'client1', 'client2')), EnumeratedSort('server', ('server0',)))}
+
+sign_func_name2count:  {'0$link': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1', 'client2')): [client$0$link$0$0, client$0$link$0$1], EnumeratedSort('server', ('server0',)): [server$0$link$1$0; server$0$link$1$1]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1', 'client2')): client$0$link$0$0 | client$0$link$0$1, EnumeratedSort('server', ('server0',)): server$0$link$1$0; server$0$link$1$1}
+
+	sort: client
+
+	identical_classes: {'client$0$link$0': [client$0$link$0$0, client$0$link$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'client$0$link$0': [client$0$link$0$0, client$0$link$0$1]}
+
+	sort: server
+
+	identical_classes: {'server$0$link$1; server$0$link$1': [server$0$link$1$0; server$0$link$1$1]}
+
+	identical_single_classes: {'server$0$link$1; server$0$link$1': server$0$link$1$0; server$0$link$1$1}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.forall
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',))), Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))], [Var('CLIENT1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['link(CLIENT0,SERVER0)', 'link(CLIENT1,SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall CLIENT1,CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 0000
+6     : ['~link(client0,server0)', '~link(client1,server0)', '~link(client2,server0)', '~semaphore(server0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~link(client0,server0)', '~link(client1,server0)', '~link(client2,server0)', '~semaphore(server0)']
+
+sign_func_name2args: {'1$link': [(Const('client0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Const('server0', EnumeratedSort('server', ('server0',)))), (Const('client1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Const('server0', EnumeratedSort('server', ('server0',)))), (Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Const('server0', EnumeratedSort('server', ('server0',))))], '1$semaphore': [(Const('server0', EnumeratedSort('server', ('server0',))),)]}
+
+const2sigs: {Const('client0', EnumeratedSort('client', ('client0', 'client1', 'client2'))): [client$1$link$0$0], Const('server0', EnumeratedSort('server', ('server0',))): [server$1$link$1$0, server$1$link$1$1, server$1$link$1$2, server$1$semaphore$0$0], Const('client1', EnumeratedSort('client', ('client0', 'client1', 'client2'))): [client$1$link$0$1], Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))): [client$1$link$0$2]}
+
+sig2const: {'client$1$link$0$0': Const('client0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), 'server$1$link$1$0': Const('server0', EnumeratedSort('server', ('server0',))), 'client$1$link$0$1': Const('client1', EnumeratedSort('client', ('client0', 'client1', 'client2'))), 'server$1$link$1$1': Const('server0', EnumeratedSort('server', ('server0',))), 'client$1$link$0$2': Const('client2', EnumeratedSort('client', ('client0', 'client1', 'client2'))), 'server$1$link$1$2': Const('server0', EnumeratedSort('server', ('server0',))), 'server$1$semaphore$0$0': Const('server0', EnumeratedSort('server', ('server0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1', 'client2')): [client$1$link$0$0, client$1$link$0$1, client$1$link$0$2], EnumeratedSort('server', ('server0',)): [server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1', 'client2')): client$1$link$0$0 | client$1$link$0$1 | client$1$link$0$2, EnumeratedSort('server', ('server0',)): server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0}
+
+part_sig: ('client$1$link$0$0 | client$1$link$0$1 | client$1$link$0$2', 'server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~link(client0,server0)', '~link(client1,server0)', '~link(client2,server0)', '~semaphore(server0)']
+
+func_name2symbol:  {'link': Const('link', FunctionSort(EnumeratedSort('client', ('client0', 'client1', 'client2')), EnumeratedSort('server', ('server0',)), BooleanSort())), 'semaphore': Const('semaphore', FunctionSort(EnumeratedSort('server', ('server0',)), BooleanSort()))}
+
+func_name2args_sort:  {'link': (EnumeratedSort('client', ('client0', 'client1', 'client2')), EnumeratedSort('server', ('server0',))), 'semaphore': (EnumeratedSort('server', ('server0',)),)}
+
+sign_func_name2count:  {'1$link': 3, '1$semaphore': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('client', ('client0', 'client1', 'client2')): [client$1$link$0$0, client$1$link$0$1, client$1$link$0$2], EnumeratedSort('server', ('server0',)): [server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0]}
+
+sort2part_sig: {EnumeratedSort('client', ('client0', 'client1', 'client2')): client$1$link$0$0 | client$1$link$0$1 | client$1$link$0$2, EnumeratedSort('server', ('server0',)): server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0}
+
+	sort: client
+
+	identical_classes: {'client$1$link$0': [client$1$link$0$0, client$1$link$0$1, client$1$link$0$2]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'client$1$link$0': [client$1$link$0$0, client$1$link$0$1, client$1$link$0$2]}
+
+	sort: server
+
+	identical_classes: {'server$1$link$1; server$1$link$1; server$1$link$1; server$1$semaphore$0': [server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0]}
+
+	identical_single_classes: {'server$1$link$1; server$1$link$1; server$1$link$1; server$1$semaphore$0': server$1$link$1$0; server$1$link$1$1; server$1$link$1$2; server$1$semaphore$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: client: QuantifierMode.exists
+
+quantifier mode: server: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('SERVER0', EnumeratedSort('server', ('server0',)))}
+
+exists_qvars: {Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$link': [[Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))], [Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))], [Var('CLIENT0', EnumeratedSort('client', ('client0', 'client1', 'client2'))), Var('SERVER0', EnumeratedSort('server', ('server0',)))]], '1$semaphore': [[Var('SERVER0', EnumeratedSort('server', ('server0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~link(CLIENT0,SERVER0)', '~semaphore(SERVER0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))
+
+
+============================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+============================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : --11
+0     : ['link(client2,server0)', 'semaphore(server0)']
+1     : -1-1
+1     : ['link(client1,server0)', 'semaphore(server0)']
+2     : 1--1
+2     : ['link(client0,server0)', 'semaphore(server0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : 1-1-
+3     : ['link(client0,server0)', 'link(client2,server0)']
+4     : 11--
+4     : ['link(client0,server0)', 'link(client1,server0)']
+5     : -11-
+5     : ['link(client1,server0)', 'link(client2,server0)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall CLIENT1,CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1
+qcost : 6
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 0000
+6     : ['~link(client0,server0)', '~link(client1,server0)', '~link(client2,server0)', '~semaphore(server0)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0))
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.102 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.076 seconds
+
+[QRM NOTE]: Peak memory: 1763375 bytes
+
+
+===========================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+===========================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 2]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2]
+
+
+Solution : [0, 1, 2] has cost 14.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 2]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 2]
+
+
+==========================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+==========================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 14
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2]
+
+[MIN NOTE]: solution length: 3
+
+invariant [invar_0] forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+
+invariant [invar_1] forall CLIENT1,CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
+
+invariant [invar_2] forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0)) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 3
+
+[MIN NOTE]: total qCost: 14
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.166 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.064 seconds
+
+[QRM NOTE]: Peak memory: 1747484 bytes
+
+
+***********************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/lock_server.ivy: server=1,client=3]
+
+***********************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy -s server=2,client=3 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: server=2,client=3]
+
+======================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 8
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 12
+
+[FW NOTE]: number of branching actions: 12
+
+ivy_to_cpp target=qrm lock_server.server_2_client_3.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_2_client_3.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_2_client_3.finite.cpp lock_server.server_2_client_3.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_2_client_3.finite.o lock_server.server_2_client_3.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.764 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.764 seconds
+
+[QRM NOTE]: Peak memory: 1176799 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 2
+
+[FW NOTE]: number of total reachable states:        16
+
+[FW NOTE]: number of dfs representative states:     4
+
+[FW NOTE]: number of dfs non-representative states: 12
+
+
+=============================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: server=2,client=3]
+
+=============================================================================================================================
+
+sort: client=['client0', 'client1', 'client2']
+sort: server=['server0', 'server1']
+predicate: link('client', 'server')
+predicate: semaphore('server',)
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client0,server1)', 'link(client1,server0)', 'link(client1,server1)', 'link(client2,server0)', 'link(client2,server1)', 'semaphore(server0)', 'semaphore(server1)']
+representative states : 3, 6, 12, 24
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 00000011
+lex min decimal: 3
+states:
+00000011
+
+
+
+
+=== State Orbit 1 =====================
+size : 6
+repr state: 10000001
+lex min decimal: 6
+states:
+00100001
+01000010
+00001001
+00000110
+10000001
+00010010
+
+
+
+
+=== State Orbit 2 =====================
+size : 3
+repr state: 11000000
+lex min decimal: 12
+states:
+11000000
+00001100
+00110000
+
+
+
+
+=== State Orbit 3 =====================
+size : 6
+repr state: 10010000
+lex min decimal: 24
+states:
+10000100
+00011000
+10010000
+00100100
+01100000
+01001000
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.847 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.084 seconds
+
+[QRM NOTE]: Peak memory: 1206382 bytes
+
+
+==================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: server=2,client=3]
+
+==================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 6.912 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.065 seconds
+
+[QRM NOTE]: Peak memory: 183309 bytes
+
+python3 qrm.py ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy -s server=1,client=4 -f 2 -g -w -r -e -v 5 -w -l ivybench/sym/ivy/lock_server.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+======================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: server=1,client=4]
+
+======================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 5
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 24
+
+[FW NOTE]: number of branching actions: 8
+
+ivy_to_cpp target=qrm lock_server.server_1_client_4.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o lock_server.server_1_client_4.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 lock_server.server_1_client_4.finite.cpp lock_server.server_1_client_4.finite_wrap.cpp -I/home/yunrong/.pyenv/versions/3.12.0/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared lock_server.server_1_client_4.finite.o lock_server.server_1_client_4.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 7.119 seconds
+
+[QRM NOTE]: Time elapsed since last: 7.119 seconds
+
+[QRM NOTE]: Peak memory: 1177159 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        5
+
+[FW NOTE]: number of dfs representative states:     2
+
+[FW NOTE]: number of dfs non-representative states: 3
+
+
+=============================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: server=1,client=4]
+
+=============================================================================================================================
+
+sort: client=['client0', 'client1', 'client2', 'client3']
+sort: server=['server0']
+predicate: link('client', 'server')
+predicate: semaphore('server',)
+interpreted atoms: {}
+state atoms: ['link(client0,server0)', 'link(client1,server0)', 'link(client2,server0)', 'link(client3,server0)', 'semaphore(server0)']
+representative states : 1, 2
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 00001
+lex min decimal: 1
+states:
+00001
+
+
+
+
+=== State Orbit 1 =====================
+size : 4
+repr state: 10000
+lex min decimal: 2
+states:
+01000
+00100
+10000
+00010
+
+
+
+[QRM NOTE]: Time elapsed since start: 7.204 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.085 seconds
+
+[QRM NOTE]: Peak memory: 1202917 bytes
+
+
+==================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: server=1,client=4]
+
+==================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 7.235 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.030 seconds
+
+[QRM NOTE]: Peak memory: 177131 bytes
+
+
+*********************************************************************
+
+	[IVY_CHECK]: Ivy Check for Reachability Invariant
+
+*********************************************************************
+
+
+===============================================================================================
+
+	[IVY_CHECK]: Ivy check on [ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy]
+
+===============================================================================================
+
+ivy_check complete=fo ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy
+
+
+Isolate this:
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 39: invar_0
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 40: invar_1
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 41: invar_2
+
+    The following action implementations are present:
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 18: implementation of connect
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 24: implementation of disconnect
+
+    The following initializers are present:
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 5: init[after1]
+
+    Initialization must establish the invariant
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 39: invar_0 ... PASS
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 40: invar_1 ... PASS
+        ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 41: invar_2 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:connect
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 39: invar_0 ... PASS
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 40: invar_1 ... PASS
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 41: invar_2 ... PASS
+        (internal) ext:disconnect
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 39: invar_0 ... PASS
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 40: invar_1 ... PASS
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 41: invar_2 ... PASS
+
+    The following program assertions are treated as assumptions:
+        in action connect when called from the environment:
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 19: assumption
+        in action disconnect when called from the environment:
+            ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy: line 25: assumption
+
+OK
+[IVY_CHECK RESULT]: PASS
+
+
+*******************************************************************************
+
+	[QRM]: ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy
+
+*******************************************************************************
+
+[RMIN NUM]: 1
+
+[RMIN RESULT]: ['ivybench/sym/ivy/lock_server.server_1_client_3.0.ivy']
+
+[CUTOFF]: server=1,client=3
+
+[QRM RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 75.791 seconds
+
+[QRM NOTE]: Time elapsed since last: 75.791 seconds
+

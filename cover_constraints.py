@@ -463,6 +463,7 @@ class CoverConstraints():
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
         neq_term       = il.Not(il.Equals(il.And(*primes_clauses), quantified_orbit)) # do not instantiate qorbit, let SMT solver do it
         check_fmla     = il.And(*[def_fmla, axiom_fmla, neq_term])
+        slv.clear()
         self.qinfer_checker  = slv.z3.Solver()
         self.qinfer_checker.add(slv.formula_to_z3(check_fmla))
     

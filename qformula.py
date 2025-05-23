@@ -7,14 +7,16 @@ from qutil import *
 from util import FormulaUtility as futil 
 from signature import *
 from finite_ivy_instantiate import FiniteIvyInstantiator
+from constraint_merge import ConstraintMerger
 
 from enum import Enum
 QuantifierMode  = Enum('QuantifierMode', ['forall', 'exists', 'forall_exists'])
 ConstraintMode  = Enum('ConstraintMode', ['merge', 'no_merge'])
 
 class QFormula():
-    def __init__(self, pap : ProductArgPartition, sort2qmode : Dict[il.EnumeratedSort, QuantifierMode], options : QrmOptions):
-        self.options = options
+    def __init__(self,orbit_id, pap : ProductArgPartition, sort2qmode : Dict[il.EnumeratedSort, QuantifierMode], options : QrmOptions):
+        self.orbit_id = orbit_id
+        self.options  = options
         self.sort2qmode       : Dict[il.EnumeratedSort, QuantifierMode] = sort2qmode
         self.pap              : ProductArgPartition = pap
         # sort2class_sigs: each class_sig in will be represented by a distinct qvar
@@ -44,14 +46,10 @@ class QFormula():
         self.qterms = []
         self._set_qterms()
 
-        # merge constraints
-        self.constraint_sigs : ConstraintSignatures
-
         # constraint
         self.forall_constraint = None
         self.forall_exists_constraint = None
         self.sub_exists_vars : Set[il.Variable] = set()
-
 
     def _set_sort_to_class_signatures(self) -> None:
         for sort, part_sig in self.pap.sort2part_sig.items():
@@ -175,173 +173,42 @@ class QFormula():
         vprint(self.options, f'qterms: {[str(term) for term in self.qterms]}', 5)
 
     #------------------------------------------------
-    # QFormula: merging constraints
-    #------------------------------------------------
-    def _get_class_constraint(self, class_sig : ClassSignature):
-        qvars = set() 
-        for arg_sig in class_sig.arg_signatures: 
-            qvar = self.arg_sig2qvar[str(arg_sig)]
-            qvars.add(qvar)
-        qvars = sorted(list(qvars))
-
-        eq_terms = set()
-        qvar = qvars[0] 
-        for j in range(1, len(qvars)):
-            assert(str(qvar) != str(qvars[j]))
-            eq = il.Equals(qvar, qvars[j])
-            eq_terms.add(eq)
-        vprint_title(self.options, 'QFormula: _get_class_constraint', 5)
-        vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
-        vprint(self.options, f'eq_terms: {[str(t) for t in eq_terms]}')
-        return list(eq_terms)
-
-    def _get_diff_class_constraint(self, class_sigs : List[ClassSignature]):
-        qvars = set()
-        for class_sig in class_sigs:
-            qvar = self.arg_sig2qvar[str(class_sig.arg_signatures[0])]
-            qvars.add(qvar)
-        qvars = list(qvars)
-        neq_terms = set()
-        for i in range(len(qvars)-1):
-            for j in range(i+1, len(qvars)):
-                assert(str(qvars[i]) != str(qvars[j]))
-                neq_qvars = [qvars[i], qvars[j]]
-                neq_qvars.sort(key=lambda x: str(x))
-                neq = il.Not(il.Equals(neq_qvars[0], neq_qvars[1]))
-                neq_terms.add(neq)
-        vprint_title(self.options, 'QFormula: _get_diff_class_constraint', 5)
-        vprint(self.options, f'qvars: {[str(q) for q in qvars]}', 5)
-        vprint(self.options, f'eq_terms: {[str(t) for t in neq_terms]}')
-        return list(neq_terms)
-
-    def _get_member_constraints(self, mem_sigs : List[MemberRelationSignature]):
-        terms = []
-        for mem_sig in mem_sigs:
-            for (elem_class_sig, set_class_sig) in mem_sig.member_relations:
-                elem_qvar = self.arg_sig2qvar[str(elem_class_sig.arg_signatures[0])] 
-                set_qvar  = self.arg_sig2qvar[str(set_class_sig.arg_signatures[0])] 
-                terms.append(il.App(mem_sig.member_symbol, *[elem_qvar, set_qvar]))
-            for (elem_class_sig, set_class_sig) in mem_sig.non_member_relations:
-                elem_qvar = self.arg_sig2qvar[str(elem_class_sig.arg_signatures[0])] 
-                set_qvar  = self.arg_sig2qvar[str(set_class_sig.arg_signatures[0])] 
-                terms.append(il.Not(il.App(mem_sig.member_symbol, *[elem_qvar, set_qvar])))
-        return terms
-
-    def _get_partition_constraint(self, partition : ConstraintPartitionSignature): 
-        vprint_title(self.options, 'QFormula: _get_partition_constraint', 5)
-        vprint(self.options, f'partition: {partition}', 5)
-        constraint   = []
-        for sort, sort_sig in partition.sort2signature.items():
-            vprint(self.options, f'sort partition signature: {sort_sig}', 5)
-            for class_sig in sort_sig.class_signatures:
-                vprint(self.options, f'class signature: {class_sig}', 5)
-                constraint  += self._get_class_constraint(class_sig)
-            constraint += self._get_diff_class_constraint(sort_sig.class_signatures)
-        constraint += self._get_member_constraints(partition.member_sigs)
-        vprint(self.options, f'constraint: {[str(c) for c in constraint]}', 5)
-        return constraint
-
-    def _convert_sat_model_to_absent_partition_signature(self, model) -> PartitionSignature:
-        qvar2value  : Dict[str, str] = {}
-        for decl in model.decls():
-            qvar_name = str(decl.name()).split('!')[0]
-            value = str(model.get_interp(decl))
-            qvar2value[qvar_name] = value
-        const2qvars : Dict[str, List[il.Variable]] = {}
-        for qvar in self.forall_qvars:
-            if str(qvar) in qvar2value:
-                const = qvar2value[str(qvar)] 
-                if not const in const2qvars:
-                    const2qvars[const] = []
-                const2qvars[const].append(qvar)
-
-        # sort2part_sig
-        sort2class_sigs : Dict[il.EnumeratedSort, List[ClassSignature]] = {}
-        for qvars in const2qvars.values():
-            sort = qvars[0].sort
-            arg_sigs = []
-            for qvar in qvars:
-                arg_sigs += self.qvar2arg_sigs[qvar]
-            if not sort in sort2class_sigs:
-                sort2class_sigs[sort] = []
-            sort2class_sigs[sort].append(ClassSignature(arg_sigs))
-        sort2part_sig : Dict[il.EnumeratedSort, List[SortPartitionSignature]] = {}
-        for sort, class_sigs in sort2class_sigs.items():
-            sort2part_sig[sort] = SortPartitionSignature(class_sigs)
-        part_sig = ConstraintPartitionSignature(sort2part_sig) 
-        # sig2const_str
-        class_sig2const : Dict[str,str] = {}
-        for class_sigs in sort2class_sigs.values():
-            for class_sig in class_sigs:
-                arg_sig = class_sig.arg_signatures[0]
-                qvar  = self.arg_sig2qvar[str(arg_sig)]
-                assert(str(qvar) in qvar2value)
-                const = qvar2value[str(qvar)]
-                class_sig2const[str(class_sig)] = const
-        part_sig.init_member_relations_from_model(class_sig2const)
-        return part_sig
-
-    def _get_constraints(self, part_sigs : List[ConstraintPartitionSignature]):
-        constraints = [] 
-        for part_sig in part_sigs: 
-            constraint = self._get_partition_constraint(part_sig)
-            constraints.append(constraint)
-        constraints.sort(key=lambda constraint: len(constraint))
-        return constraints
-
-    def _get_constraint_term(self, constraints):
-        terms = []
-        for constraint in constraints:
-            if len(constraint):
-                term = il.And(*constraint)
-                terms.append(term)
-        if len(terms):
-            return il.Or(*terms)    
-        return None
-
-    #------------------------------------------------
     # public methods
     #------------------------------------------------
-    def set_merge_constraints(self, sig_gen : SigGenerator, arg_partitions : List[ArgPartition], instantiator : FiniteIvyInstantiator) -> None:
-        self.constraint_sigs = ConstraintSignatures(sig_gen)
-        self.constraint_sigs.add_present_signatures(arg_partitions) 
-        present_constraints = self._get_constraints(self.constraint_sigs.get_present_signatures())
-        present_cterm = self._get_constraint_term(present_constraints)  
-        assert(present_cterm != None)
-        present_constraints = self._get_constraints(self.constraint_sigs.get_reduced_present_signatures()) 
-        present_cost = sum([len(c) for c in present_constraints])
-        # present_cterm is a disjuction of eq constraints for each sub-orbit 
-        fmlas  = instantiator.dep_axioms_fmla + [il.Not(present_cterm)]
-        absent_fmla  = il.Exists(self.forall_qvars, il.And(*fmlas)) 
-        solver = slv.z3.Solver()
-        solver.add(slv.formula_to_z3(absent_fmla))
-        res = solver.check() 
-        if res == slv.z3.unsat: # no constraints needed if unsat
+    def set_merge_constraints(self, sig_gen : SigGenerator, arg_partitions : List[ArgPartition], instantiator : FiniteIvyInstantiator, tran_sys : TransitionSystem) -> None:
+        # constraints
+        constraint_sigs   = ConstraintSignatures(sig_gen, arg_partitions)
+        constraint_merger = ConstraintMerger(self.orbit_id, self.arg_sig2qvar, self.qvar2arg_sigs, self.forall_qvars, self.options)
+        constraint_merger.set_constraint_to_minimize(constraint_sigs, instantiator.dep_axioms_fmla)
+        if constraint_merger.no_need_constraint():
             return
-        absent_cost = 0
-        while(res == slv.z3.sat):
-            model = slv.get_model(solver)
-            absent_part_sig   = self._convert_sat_model_to_absent_partition_signature(model)
-            absent_part_sigs  = self.constraint_sigs.add_absent_signatures(absent_part_sig)
-            absent_cost += sum([len(c) for c in self._get_constraints([absent_part_sig]) ])
-            if present_cost <= absent_cost:
-                break
-            block_constraints = self._get_constraints(absent_part_sigs)
-            block_cterm       = self._get_constraint_term(block_constraints)
-            fmla_body         = il.And(*[absent_fmla.body, il.Not(block_cterm)])
-            absent_fmla = il.Exists(self.forall_qvars, fmla_body)
-            solver = slv.z3.Solver()
-            solver.add(slv.formula_to_z3(absent_fmla))
-            res = solver.check() 
-        if present_cost <= absent_cost:
-            cterm = self._get_constraint_term(present_constraints)
-            self.qterms.append(cterm)
-            vprint(self.options, 'use present constraint', 5)
+        if self.options.minimize_equality:
+            constraint_merger.set_variables_for_minimization(self.sort2qvars)
+            constraint_merger.write_smt2_for_minimization(tran_sys)
+            constraint_merger.extract_prime_implicants()
+            minimized_constraint = constraint_merger.minimize_prime_implicants(instantiator.dep_axioms_fmla)
+            self.qterms.append(minimized_constraint)
         else:
-            absent_constraints  = self._get_constraints(self.constraint_sigs.get_reduced_absent_signatures()) 
-            cterm = il.Not(self._get_constraint_term(absent_constraints))
-            self.qterms.append(cterm)
-            vprint(self.options, 'use absent constraint', 5)
+            reduced_present_constraints = constraint_merger.get_constraint_list(constraint_sigs.get_reduced_constraint_signatures()) 
+            reduced_present_cost        = sum([len(c) for c in reduced_present_constraints])
+            reduced_absent_cost         = 0
+            res = slv.z3.sat
+            while(res == slv.z3.sat):
+                absent_part_sig      = constraint_merger.convert_sat_model_to_absent_partition_signature() 
+                absent_part_sigs     = constraint_sigs.add_absent_signatures(absent_part_sig)
+                reduced_absent_cost += sum([len(c) for c in constraint_merger.get_constraint_list([absent_part_sig]) ])
+                if reduced_present_cost <= reduced_absent_cost:
+                    break
+                constraint_merger.block_constraint(absent_part_sigs)
+                res = constraint_merger.solver.check() 
+            if reduced_present_cost <= reduced_absent_cost:
+                cterm = constraint_merger.disjunct_constraint_list(reduced_present_constraints)
+                self.qterms.append(cterm)
+                vprint(self.options, 'use present constraint', 5)
+            else:
+                cterm = il.Not(constraint_merger.get_disjunctive_constraint_term(constraint_sigs.get_reduced_absent_signatures()))
+                self.qterms.append(cterm)
+                vprint(self.options, 'use absent constraint', 5)
 
     def _set_forall_constraint(self):
         neq_terms = set()

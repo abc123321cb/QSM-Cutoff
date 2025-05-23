@@ -58,7 +58,7 @@ class QInference():
         self._set_constraint_mode()
 
         # qformula
-        self.qformula = QFormula(self.prod_arg_partition, self.sort2qmode, self.options)
+        self.qformula = QFormula(orbit.id, self.prod_arg_partition, self.sort2qmode, self.options)
 
         # quantifier inference
         self.qclause = None
@@ -143,8 +143,9 @@ class QInference():
         for qterm in qterms:
             used_constants.update(ilu.used_constants_ast(qterm))
         used_sort_constants = []
+        domain_constants = set(sort.constructors)
         for const in used_constants:
-            if const.sort == sort:
+            if const.sort == sort and const in domain_constants:
                 used_sort_constants.append(const)
         eqs = []
         for const in used_sort_constants:
@@ -221,7 +222,7 @@ class QInference():
 
     def _set_qclause(self):
         if self.cmode == ConstraintMode.merge:
-            self.qformula.set_merge_constraints(self.sig_gen, self.arg_partitions, QInference.instantiator)
+            self.qformula.set_merge_constraints(self.sig_gen, self.arg_partitions, QInference.instantiator, QInference.tran_sys)
         elif self.cmode == ConstraintMode.no_merge:
             self.qformula.set_no_merge_constraints()
 

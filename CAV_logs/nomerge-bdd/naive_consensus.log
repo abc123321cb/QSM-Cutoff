@@ -1,0 +1,4058 @@
+
+**********************************************************************
+
+	[QRM]: ivybench/sym_quorum/ivy/naive_consensus.ivy
+
+**********************************************************************
+
+
+****************************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+****************************************************************************************************
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.ivy -s node=2,value=1 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+==========================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+==========================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 4
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 2
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 0.051 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.051 seconds
+
+[QRM NOTE]: Peak memory: 29003 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 2
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=2,value=1]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1']
+sort: value=['value0']
+sort: quorum=['quorum__node0_node1']
+predicate: decide('quorum', 'value')
+predicate: vote('node', 'value')
+predicate: member('node', 'quorum')
+predicate: decision('value',)
+interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node1)': '1'}
+state atoms: ['decide(quorum__node0_node1,value0)', 'decision(value0)', 'vote(node0,value0)', 'vote(node1,value0)']
+
+00--
+1-11
+
+[QRM NOTE]: Time elapsed since start: 0.171 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.120 seconds
+
+[QRM NOTE]: Peak memory: 1103670 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.175 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 53454 bytes
+
+
+=================================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+=================================================================================================================
+
+
+============================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+============================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : 1-0-
+0     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+1     : 1--0
+1     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : -10-
+2     : ['decision(value0)', '~vote(node0,value0)']
+3     : -1-0
+3     : ['decision(value0)', '~vote(node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 01--
+4     : ['decision(value0)', '~decide(quorum__node0_node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 3
+
+[PRIME NOTE]: number of orbits before merging: 3
+
+[PRIME NOTE]: number of primes: 5
+
+[QRM NOTE]: Time elapsed since start: 0.188 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.012 seconds
+
+[QRM NOTE]: Peak memory: 1113938 bytes
+
+
+======================================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+======================================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2]
+ solution : []
+
+Essensial at level 0 : {0, 2}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, 0), (2, -1)]
+
+Covered at level 0 : {1}
+
+After reduction : 
+ pending  : []
+ solution : [0, 2]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 2]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, 0), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 2]
+
+[QRM NOTE]: Time elapsed since start: 0.191 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 67949 bytes
+
+
+==========================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+==========================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : 1-0-
+0     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+1     : 1--0
+1     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)', 'member(node0,quorum__node0_node1)']
+
+sign_func_name2args: {'0$decide': [(Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))), Const('value0', EnumeratedSort('value', ('value0',))))], '1$vote': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))), Const('value0', EnumeratedSort('value', ('value0',))))], '0$member': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))), Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))))]}
+
+const2sigs: {Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))): [quorum$0$decide$0$0, quorum$0$member$1$0], Const('value0', EnumeratedSort('value', ('value0',))): [value$0$decide$1$0, value$1$vote$1$0], Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$1$vote$0$0, node$0$member$0$0]}
+
+sig2const: {'quorum$0$decide$0$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))), 'value$0$decide$1$0': Const('value0', EnumeratedSort('value', ('value0',))), 'node$1$vote$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'value$1$vote$1$0': Const('value0', EnumeratedSort('value', ('value0',))), 'node$0$member$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'quorum$0$member$1$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1',)): [quorum$0$decide$0$0; quorum$0$member$1$0], EnumeratedSort('value', ('value0',)): [value$0$decide$1$0; value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1')): [node$0$member$0$0; node$1$vote$0$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1',)): quorum$0$decide$0$0; quorum$0$member$1$0, EnumeratedSort('value', ('value0',)): value$0$decide$1$0; value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1')): node$0$member$0$0; node$1$vote$0$0}
+
+part_sig: ('node$0$member$0$0; node$1$vote$0$0', 'quorum$0$decide$0$0; quorum$0$member$1$0', 'value$0$decide$1$0; value$1$vote$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)', 'member(node0,quorum__node0_node1)']
+
+func_name2symbol:  {'decide': Const('decide', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1',)), EnumeratedSort('value', ('value0',)), BooleanSort())), 'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('value', ('value0',)), BooleanSort())), 'member': Const('member', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('quorum', ('quorum__node0_node1',)), BooleanSort()))}
+
+func_name2args_sort:  {'decide': (EnumeratedSort('quorum', ('quorum__node0_node1',)), EnumeratedSort('value', ('value0',))), 'vote': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('value', ('value0',))), 'member': (EnumeratedSort('node', ('node0', 'node1')), EnumeratedSort('quorum', ('quorum__node0_node1',)))}
+
+sign_func_name2count:  {'0$decide': 1, '1$vote': 1, '0$member': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1',)): [quorum$0$decide$0$0; quorum$0$member$1$0], EnumeratedSort('value', ('value0',)): [value$0$decide$1$0; value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1')): [node$0$member$0$0; node$1$vote$0$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1',)): quorum$0$decide$0$0; quorum$0$member$1$0, EnumeratedSort('value', ('value0',)): value$0$decide$1$0; value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1')): node$0$member$0$0; node$1$vote$0$0}
+
+	sort: quorum
+
+	identical_classes: {'quorum$0$decide$0; quorum$0$member$1': [quorum$0$decide$0$0; quorum$0$member$1$0]}
+
+	identical_single_classes: {'quorum$0$decide$0; quorum$0$member$1': quorum$0$decide$0$0; quorum$0$member$1$0}
+
+	identical_multi_classes: {}
+
+	sort: value
+
+	identical_classes: {'value$0$decide$1; value$1$vote$1': [value$0$decide$1$0; value$1$vote$1$0]}
+
+	identical_single_classes: {'value$0$decide$1; value$1$vote$1': value$0$decide$1$0; value$1$vote$1$0}
+
+	identical_multi_classes: {}
+
+	sort: node
+
+	identical_classes: {'node$0$member$0; node$1$vote$0': [node$0$member$0$0; node$1$vote$0$0]}
+
+	identical_single_classes: {'node$0$member$0; node$1$vote$0': node$0$member$0$0; node$1$vote$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: quorum: QuantifierMode.forall
+
+quantifier mode: value: QuantifierMode.forall
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',))), Var('VALUE0', EnumeratedSort('value', ('value0',)))]], '1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('VALUE0', EnumeratedSort('value', ('value0',)))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['member(NODE0,QUORUM0)', 'decide(QUORUM0,VALUE0)', '~vote(NODE0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0)
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 01--
+4     : ['decision(value0)', '~decide(quorum__node0_node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~decide(quorum__node0_node1,value0)', 'decision(value0)']
+
+sign_func_name2args: {'1$decide': [(Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))), Const('value0', EnumeratedSort('value', ('value0',))))], '0$decision': [(Const('value0', EnumeratedSort('value', ('value0',))),)]}
+
+const2sigs: {Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))): [quorum$1$decide$0$0], Const('value0', EnumeratedSort('value', ('value0',))): [value$1$decide$1$0, value$0$decision$0$0]}
+
+sig2const: {'quorum$1$decide$0$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1',))), 'value$1$decide$1$0': Const('value0', EnumeratedSort('value', ('value0',))), 'value$0$decision$0$0': Const('value0', EnumeratedSort('value', ('value0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1',)): [quorum$1$decide$0$0], EnumeratedSort('value', ('value0',)): [value$0$decision$0$0; value$1$decide$1$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1',)): quorum$1$decide$0$0, EnumeratedSort('value', ('value0',)): value$0$decision$0$0; value$1$decide$1$0}
+
+part_sig: ('quorum$1$decide$0$0', 'value$0$decision$0$0; value$1$decide$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~decide(quorum__node0_node1,value0)', 'decision(value0)']
+
+func_name2symbol:  {'decide': Const('decide', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1',)), EnumeratedSort('value', ('value0',)), BooleanSort())), 'decision': Const('decision', FunctionSort(EnumeratedSort('value', ('value0',)), BooleanSort()))}
+
+func_name2args_sort:  {'decide': (EnumeratedSort('quorum', ('quorum__node0_node1',)), EnumeratedSort('value', ('value0',))), 'decision': (EnumeratedSort('value', ('value0',)),)}
+
+sign_func_name2count:  {'1$decide': 1, '0$decision': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1',)): [quorum$1$decide$0$0], EnumeratedSort('value', ('value0',)): [value$0$decision$0$0; value$1$decide$1$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1',)): quorum$1$decide$0$0, EnumeratedSort('value', ('value0',)): value$0$decision$0$0; value$1$decide$1$0}
+
+	sort: quorum
+
+	identical_classes: {'quorum$1$decide$0': [quorum$1$decide$0$0]}
+
+	identical_single_classes: {'quorum$1$decide$0': quorum$1$decide$0$0}
+
+	identical_multi_classes: {}
+
+	sort: value
+
+	identical_classes: {'value$0$decision$0; value$1$decide$1': [value$0$decision$0$0; value$1$decide$1$0]}
+
+	identical_single_classes: {'value$0$decision$0; value$1$decide$1': value$0$decision$0$0; value$1$decide$1$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: quorum: QuantifierMode.forall
+
+quantifier mode: value: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0',))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1',))), Var('VALUE0', EnumeratedSort('value', ('value0',)))]], '0$decision': [[Var('VALUE0', EnumeratedSort('value', ('value0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['decision(VALUE0)', '~decide(QUORUM0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall QUORUM0,VALUE0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)
+
+
+====================================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+====================================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : 1-0-
+0     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+1     : 1--0
+1     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0)
+qcost : 6
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+4 (*) : 01--
+4     : ['decision(value0)', '~decide(quorum__node0_node1,value0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall QUORUM0,VALUE0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.305 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.114 seconds
+
+[QRM NOTE]: Peak memory: 1804194 bytes
+
+
+===================================================================================================
+
+	[MIN]: Minimization on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+===================================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 2]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 2]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 2]
+
+
+Solution : [0, 2] has cost 10.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 2]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 2]
+
+
+==================================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+==================================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 10
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 2]
+
+[MIN NOTE]: solution length: 2
+
+invariant [invar_0] forall QUORUM0,NODE0,VALUE0. ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) | vote(NODE0,VALUE0) # qcost: 6
+
+invariant [invar_2] forall QUORUM0,VALUE0. ~decision(VALUE0) | decide(QUORUM0,VALUE0) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 2
+
+[MIN NOTE]: total qCost: 10
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.381 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.076 seconds
+
+[QRM NOTE]: Peak memory: 1793331 bytes
+
+
+*******************************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=2,value=1]
+
+*******************************************************************************************************************
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.node_2_value_1.0.ivy -s node=3,value=1 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.node_2_value_1.0.ivy: node=3,value=1]
+
+===========================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 7
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 9
+
+[FW NOTE]: symmetric group order: 6
+
+[QRM NOTE]: Time elapsed since start: 0.043 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.043 seconds
+
+[QRM NOTE]: Peak memory: 64430 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 7
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=3,value=1]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+sort: value=['value0']
+sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
+predicate: decision('value',)
+predicate: member('node', 'quorum')
+predicate: vote('node', 'value')
+predicate: decide('quorum', 'value')
+interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
+state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value0)', 'decision(value0)', 'vote(node0,value0)', 'vote(node1,value0)', 'vote(node2,value0)']
+
+0000---
+001--11
+010-1-1
+011-111
+100-11-
+101-111
+11--111
+
+[QRM NOTE]: Time elapsed since start: 0.439 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.395 seconds
+
+[QRM NOTE]: Peak memory: 1196049 bytes
+
+
+=======================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym_quorum/ivy/naive_consensus.node_2_value_1.0.ivy: node=3,value=1]
+
+=======================================================================================================================================================
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 0.513 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.074 seconds
+
+[QRM NOTE]: Peak memory: 181536 bytes
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.node_2_value_1.0.ivy -s node=2,value=2 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.node_2_value_1.0.ivy: node=2,value=2]
+
+===========================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 8
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 2
+
+[FW NOTE]: symmetric group order: 4
+
+[QRM NOTE]: Time elapsed since start: 0.041 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.041 seconds
+
+[QRM NOTE]: Peak memory: 61229 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 6
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=2,value=2]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1']
+sort: value=['value0', 'value1']
+sort: quorum=['quorum__node0_node1']
+predicate: decide('quorum', 'value')
+predicate: member('node', 'quorum')
+predicate: vote('node', 'value')
+predicate: decision('value',)
+interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node1)': '1'}
+state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decision(value0)', 'decision(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)']
+
+00000-0-
+00000-10
+0000100-
+00001010
+010-0101
+10-01010
+
+[QRM NOTE]: Time elapsed since start: 0.286 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.245 seconds
+
+[QRM NOTE]: Peak memory: 1160190 bytes
+
+
+=======================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym_quorum/ivy/naive_consensus.node_2_value_1.0.ivy: node=2,value=2]
+
+=======================================================================================================================================================
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 0.318 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.032 seconds
+
+[QRM NOTE]: Peak memory: 129398 bytes
+
+next size: node=3,value=2
+
+
+****************************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+****************************************************************************************************
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.ivy -s node=3,value=2 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+==========================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+==========================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 14
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 9
+
+[FW NOTE]: symmetric group order: 12
+
+[QRM NOTE]: Time elapsed since start: 0.103 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.103 seconds
+
+[QRM NOTE]: Peak memory: 152327 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 26
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=3,value=2]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+sort: value=['value0', 'value1']
+sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
+predicate: decide('quorum', 'value')
+predicate: decision('value',)
+predicate: vote('node', 'value')
+predicate: member('node', 'quorum')
+interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
+state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)', 'decision(value0)', 'decision(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node2,value0)', 'vote(node2,value1)']
+
+000000000-0-0-
+000000000-0-10
+000000000-100-
+000000000-1010
+00000000100-0-
+00000000100-10
+0000000010100-
+00000000101010
+0000010-0-0101
+0000010-100101
+000010-00-1010
+000010-0101010
+0001000-010-01
+0001000-011001
+0001010-010101
+001000-0100-10
+001000-0101010
+001010-0101010
+0100000-01010-
+0100000-010110
+0100010-010101
+01010-0-010101
+100000-010100-
+100000-0101010
+100010-0101010
+1010-0-0101010
+
+[QRM NOTE]: Time elapsed since start: 0.980 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.877 seconds
+
+[QRM NOTE]: Peak memory: 1359339 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.981 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 312223 bytes
+
+
+=================================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+=================================================================================================================
+
+
+============================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+============================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 12
+num_suborbits: 1
+0 (*) : -----1-------0
+0     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+1     : ----1-------0-
+1     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+2     : -----1-----0--
+2     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+3     : ----1-----0---
+3     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+4     : ---1---------0
+4     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+5     : --1---------0-
+5     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+6     : ---1-----0----
+6     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+7     : --1-----0-----
+7     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+8     : -1---------0--
+8     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+9     : 1---------0---
+9     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+10     : -1-------0----
+10     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+11     : 1-------0-----
+11     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 12
+num_suborbits: 1
+12 (*) : -----1------1-
+12     : ['decide(quorum__node1_node2,value1)', 'vote(node2,value0)']
+13     : ----1--------1
+13     : ['decide(quorum__node1_node2,value0)', 'vote(node2,value1)']
+14     : -----1----1---
+14     : ['decide(quorum__node1_node2,value1)', 'vote(node1,value0)']
+15     : ----1------1--
+15     : ['decide(quorum__node1_node2,value0)', 'vote(node1,value1)']
+16     : ---1--------1-
+16     : ['decide(quorum__node0_node2,value1)', 'vote(node2,value0)']
+17     : --1----------1
+17     : ['decide(quorum__node0_node2,value0)', 'vote(node2,value1)']
+18     : ---1----1-----
+18     : ['decide(quorum__node0_node2,value1)', 'vote(node0,value0)']
+19     : --1------1----
+19     : ['decide(quorum__node0_node2,value0)', 'vote(node0,value1)']
+20     : -1--------1---
+20     : ['decide(quorum__node0_node1,value1)', 'vote(node1,value0)']
+21     : 1----------1--
+21     : ['decide(quorum__node0_node1,value0)', 'vote(node1,value1)']
+22     : -1------1-----
+22     : ['decide(quorum__node0_node1,value1)', 'vote(node0,value0)']
+23     : 1--------1----
+23     : ['decide(quorum__node0_node1,value0)', 'vote(node0,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 6
+num_suborbits: 1
+24 (*) : --1--1--------
+24     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value1)']
+25     : ---11---------
+25     : ['decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value0)']
+26     : 1----1--------
+26     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node1_node2,value1)']
+27     : -1--1---------
+27     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node1_node2,value0)']
+28     : 1--1----------
+28     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value1)']
+29     : -11-----------
+29     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 6
+num_suborbits: 1
+30 (*) : -----11-------
+30     : ['decide(quorum__node1_node2,value1)', 'decision(value0)']
+31     : ----1--1------
+31     : ['decide(quorum__node1_node2,value0)', 'decision(value1)']
+32     : ---1--1-------
+32     : ['decide(quorum__node0_node2,value1)', 'decision(value0)']
+33     : --1----1------
+33     : ['decide(quorum__node0_node2,value0)', 'decision(value1)']
+34     : -1----1-------
+34     : ['decide(quorum__node0_node1,value1)', 'decision(value0)']
+35     : 1------1------
+35     : ['decide(quorum__node0_node1,value0)', 'decision(value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 3
+num_suborbits: 1
+36 (*) : ----11--------
+36     : ['decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)']
+37     : --11----------
+37     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)']
+38     : 11------------
+38     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 3
+num_suborbits: 1
+39 (*) : ------------11
+39     : ['vote(node2,value0)', 'vote(node2,value1)']
+40     : ----------11--
+40     : ['vote(node1,value0)', 'vote(node1,value1)']
+41     : --------11----
+41     : ['vote(node0,value0)', 'vote(node0,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+42 (*) : ------11------
+42     : ['decision(value0)', 'decision(value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 6
+num_suborbits: 1
+43 (*) : -----0-11-----
+43     : ['decision(value1)', 'vote(node0,value0)', '~decide(quorum__node1_node2,value1)']
+44     : ----0-1--1----
+44     : ['decision(value0)', 'vote(node0,value1)', '~decide(quorum__node1_node2,value0)']
+45     : ---0---1--1---
+45     : ['decision(value1)', 'vote(node1,value0)', '~decide(quorum__node0_node2,value1)']
+46     : --0---1----1--
+46     : ['decision(value0)', 'vote(node1,value1)', '~decide(quorum__node0_node2,value0)']
+47     : -0-----1----1-
+47     : ['decision(value1)', 'vote(node2,value0)', '~decide(quorum__node0_node1,value1)']
+48     : 0-----1------1
+48     : ['decision(value0)', 'vote(node2,value1)', '~decide(quorum__node0_node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 12
+num_suborbits: 1
+49 (*) : -------11--0--
+49     : ['decision(value1)', 'vote(node0,value0)', '~vote(node1,value1)']
+50     : ------1--10---
+50     : ['decision(value0)', 'vote(node0,value1)', '~vote(node1,value0)']
+51     : -------11----0
+51     : ['decision(value1)', 'vote(node0,value0)', '~vote(node2,value1)']
+52     : ------1--1--0-
+52     : ['decision(value0)', 'vote(node0,value1)', '~vote(node2,value0)']
+53     : -------1-01---
+53     : ['decision(value1)', 'vote(node1,value0)', '~vote(node0,value1)']
+54     : ------1-0--1--
+54     : ['decision(value0)', 'vote(node1,value1)', '~vote(node0,value0)']
+55     : -------1--1--0
+55     : ['decision(value1)', 'vote(node1,value0)', '~vote(node2,value1)']
+56     : ------1----10-
+56     : ['decision(value0)', 'vote(node1,value1)', '~vote(node2,value0)']
+57     : -------1-0--1-
+57     : ['decision(value1)', 'vote(node2,value0)', '~vote(node0,value1)']
+58     : ------1-0----1
+58     : ['decision(value0)', 'vote(node2,value1)', '~vote(node0,value0)']
+59     : -------1---01-
+59     : ['decision(value1)', 'vote(node2,value0)', '~vote(node1,value1)']
+60     : ------1---0--1
+60     : ['decision(value0)', 'vote(node2,value1)', '~vote(node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 6
+num_suborbits: 1
+61 (*) : -------11---1-
+61     : ['decision(value1)', 'vote(node0,value0)', 'vote(node2,value0)']
+62     : ------1--1---1
+62     : ['decision(value0)', 'vote(node0,value1)', 'vote(node2,value1)']
+63     : -------11-1---
+63     : ['decision(value1)', 'vote(node0,value0)', 'vote(node1,value0)']
+64     : ------1--1-1--
+64     : ['decision(value0)', 'vote(node0,value1)', 'vote(node1,value1)']
+65     : -------1--1-1-
+65     : ['decision(value1)', 'vote(node1,value0)', 'vote(node2,value0)']
+66     : ------1----1-1
+66     : ['decision(value0)', 'vote(node1,value1)', 'vote(node2,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 10 =====================
+size : 6
+num_suborbits: 1
+67 (*) : ------1---0-0-
+67     : ['decision(value0)', '~vote(node1,value0)', '~vote(node2,value0)']
+68     : -------1---0-0
+68     : ['decision(value1)', '~vote(node1,value1)', '~vote(node2,value1)']
+69     : ------1-0---0-
+69     : ['decision(value0)', '~vote(node0,value0)', '~vote(node2,value0)']
+70     : -------1-0---0
+70     : ['decision(value1)', '~vote(node0,value1)', '~vote(node2,value1)']
+71     : ------1-0-0---
+71     : ['decision(value0)', '~vote(node0,value0)', '~vote(node1,value0)']
+72     : -------1-0-0--
+72     : ['decision(value1)', '~vote(node0,value1)', '~vote(node1,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 11 =====================
+size : 6
+num_suborbits: 1
+73 (*) : 0-----1-----0-
+73     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~vote(node2,value0)']
+74     : -0-----1-----0
+74     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~vote(node2,value1)']
+75     : --0---1---0---
+75     : ['decision(value0)', '~decide(quorum__node0_node2,value0)', '~vote(node1,value0)']
+76     : ---0---1---0--
+76     : ['decision(value1)', '~decide(quorum__node0_node2,value1)', '~vote(node1,value1)']
+77     : ----0-1-0-----
+77     : ['decision(value0)', '~decide(quorum__node1_node2,value0)', '~vote(node0,value0)']
+78     : -----0-1-0----
+78     : ['decision(value1)', '~decide(quorum__node1_node2,value1)', '~vote(node0,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 12 =====================
+size : 2
+num_suborbits: 1
+79 (*) : 0-0-0-1-------
+79     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+80     : -0-0-0-1------
+80     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 13
+
+[PRIME NOTE]: number of orbits before merging: 13
+
+[PRIME NOTE]: number of primes: 81
+
+[QRM NOTE]: Time elapsed since start: 1.013 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.032 seconds
+
+[QRM NOTE]: Peak memory: 1485890 bytes
+
+
+======================================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+======================================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ solution : []
+
+Essensial at level 0 : {0, 12, 5}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, 0), (2, 0), (3, 0), (4, 0), (5, -1), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, -1)]
+
+Covered at level 0 : {1, 2, 3, 4, 6, 7, 8, 9, 10, 11}
+
+After reduction : 
+ pending  : []
+ solution : [0, 12, 5]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 12, 5]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, 0), (2, 0), (3, 0), (4, 0), (5, -1), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 12, 5]
+
+[QRM NOTE]: Time elapsed since start: 1.051 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.038 seconds
+
+[QRM NOTE]: Peak memory: 451788 bytes
+
+
+==========================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+==========================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 12
+num_suborbits: 1
+0 (*) : -----1-------0
+0     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+1     : ----1-------0-
+1     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+2     : -----1-----0--
+2     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+3     : ----1-----0---
+3     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+4     : ---1---------0
+4     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+5     : --1---------0-
+5     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+6     : ---1-----0----
+6     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+7     : --1-----0-----
+7     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+8     : -1---------0--
+8     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+9     : 1---------0---
+9     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+10     : -1-------0----
+10     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+11     : 1-------0-----
+11     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)', 'member(node2,quorum__node1_node2)']
+
+sign_func_name2args: {'0$decide': [(Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1'))))], '1$vote': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1'))))], '0$member': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))))]}
+
+const2sigs: {Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$0$decide$0$0, quorum$0$member$1$0], Const('value1', EnumeratedSort('value', ('value0', 'value1'))): [value$0$decide$1$0, value$1$vote$1$0], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$vote$0$0, node$0$member$0$0]}
+
+sig2const: {'quorum$0$decide$0$0': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$0$decide$1$0': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'node$1$vote$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$1$vote$1$0': Const('value1', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$member$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$0': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$decide$0$0; quorum$0$member$1$0], EnumeratedSort('value', ('value0', 'value1')): [value$0$decide$1$0; value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$1$vote$0$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$decide$0$0; quorum$0$member$1$0, EnumeratedSort('value', ('value0', 'value1')): value$0$decide$1$0; value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$1$vote$0$0}
+
+part_sig: ('node$0$member$0$0; node$1$vote$0$0', 'quorum$0$decide$0$0; quorum$0$member$1$0', 'value$0$decide$1$0; value$1$vote$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)', 'member(node2,quorum__node1_node2)']
+
+func_name2symbol:  {'decide': Const('decide', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'member': Const('member', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), BooleanSort()))}
+
+func_name2args_sort:  {'decide': (EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1'))), 'vote': (EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1'))), 'member': (EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+sign_func_name2count:  {'0$decide': 1, '1$vote': 1, '0$member': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$decide$0$0; quorum$0$member$1$0], EnumeratedSort('value', ('value0', 'value1')): [value$0$decide$1$0; value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$1$vote$0$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$decide$0$0; quorum$0$member$1$0, EnumeratedSort('value', ('value0', 'value1')): value$0$decide$1$0; value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$1$vote$0$0}
+
+	sort: quorum
+
+	identical_classes: {'quorum$0$decide$0; quorum$0$member$1': [quorum$0$decide$0$0; quorum$0$member$1$0]}
+
+	identical_single_classes: {'quorum$0$decide$0; quorum$0$member$1': quorum$0$decide$0$0; quorum$0$member$1$0}
+
+	identical_multi_classes: {}
+
+	sort: value
+
+	identical_classes: {'value$0$decide$1; value$1$vote$1': [value$0$decide$1$0; value$1$vote$1$0]}
+
+	identical_single_classes: {'value$0$decide$1; value$1$vote$1': value$0$decide$1$0; value$1$vote$1$0}
+
+	identical_multi_classes: {}
+
+	sort: node
+
+	identical_classes: {'node$0$member$0; node$1$vote$0': [node$0$member$0$0; node$1$vote$0$0]}
+
+	identical_single_classes: {'node$0$member$0; node$1$vote$0': node$0$member$0$0; node$1$vote$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: quorum: QuantifierMode.forall
+
+quantifier mode: value: QuantifierMode.forall
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['decide(QUORUM0,VALUE0)', 'member(NODE0,QUORUM0)', '~vote(NODE0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall VALUE0,QUORUM0,NODE0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0)
+
+
+=== Prime Orbit 12 =====================
+size : 2
+num_suborbits: 1
+79 (*) : 0-0-0-1-------
+79     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+80     : -0-0-0-1------
+80     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)', 'decision(value0)']
+
+sign_func_name2args: {'1$decide': [(Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1')))), (Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1')))), (Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1'))))], '0$decision': [(Const('value0', EnumeratedSort('value', ('value0', 'value1'))),)]}
+
+const2sigs: {Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$decide$0$0], Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$1$decide$1$0, value$1$decide$1$1, value$1$decide$1$2, value$0$decision$0$0], Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$decide$0$1], Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$decide$0$2]}
+
+sig2const: {'quorum$1$decide$0$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$decide$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'quorum$1$decide$0$1': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$decide$1$1': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'quorum$1$decide$0$2': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$decide$1$2': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'value$0$decision$0$0': Const('value0', EnumeratedSort('value', ('value0', 'value1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2], EnumeratedSort('value', ('value0', 'value1')): [value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$1$decide$0$0 | quorum$1$decide$0$1 | quorum$1$decide$0$2, EnumeratedSort('value', ('value0', 'value1')): value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2}
+
+part_sig: ('quorum$1$decide$0$0 | quorum$1$decide$0$1 | quorum$1$decide$0$2', 'value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)', 'decision(value0)']
+
+func_name2symbol:  {'decide': Const('decide', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort())), 'decision': Const('decision', FunctionSort(EnumeratedSort('value', ('value0', 'value1')), BooleanSort()))}
+
+func_name2args_sort:  {'decide': (EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1'))), 'decision': (EnumeratedSort('value', ('value0', 'value1')),)}
+
+sign_func_name2count:  {'1$decide': 3, '0$decision': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2], EnumeratedSort('value', ('value0', 'value1')): [value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$1$decide$0$0 | quorum$1$decide$0$1 | quorum$1$decide$0$2, EnumeratedSort('value', ('value0', 'value1')): value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2}
+
+	sort: quorum
+
+	identical_classes: {'quorum$1$decide$0': [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'quorum$1$decide$0': [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2]}
+
+	sort: value
+
+	identical_classes: {'value$0$decision$0; value$1$decide$1; value$1$decide$1; value$1$decide$1': [value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2]}
+
+	identical_single_classes: {'value$0$decision$0; value$1$decide$1; value$1$decide$1; value$1$decide$1': value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: quorum: QuantifierMode.exists
+
+quantifier mode: value: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+
+exists_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]], '0$decision': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['decision(VALUE0)', '~decide(QUORUM0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0))
+
+
+=== Prime Orbit 5 =====================
+size : 3
+num_suborbits: 1
+39 (*) : ------------11
+39     : ['vote(node2,value0)', 'vote(node2,value1)']
+40     : ----------11--
+40     : ['vote(node1,value0)', 'vote(node1,value1)']
+41     : --------11----
+41     : ['vote(node0,value0)', 'vote(node0,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['vote(node2,value0)', 'vote(node2,value1)']
+
+sign_func_name2args: {'0$vote': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1')))), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1'))))]}
+
+const2sigs: {Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$vote$0$0, node$0$vote$0$1], Const('value0', EnumeratedSort('value', ('value0', 'value1'))): [value$0$vote$1$0], Const('value1', EnumeratedSort('value', ('value0', 'value1'))): [value$0$vote$1$1]}
+
+sig2const: {'node$0$vote$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$0$vote$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1'))), 'node$0$vote$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$0$vote$1$1': Const('value1', EnumeratedSort('value', ('value0', 'value1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$vote$0$0; node$0$vote$0$1], EnumeratedSort('value', ('value0', 'value1')): [value$0$vote$1$0, value$0$vote$1$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$vote$0$0; node$0$vote$0$1, EnumeratedSort('value', ('value0', 'value1')): value$0$vote$1$0 | value$0$vote$1$1}
+
+part_sig: ('node$0$vote$0$0; node$0$vote$0$1', 'value$0$vote$1$0 | value$0$vote$1$1')
+
+
+---------- SigGenerator ----------
+
+terms:  ['vote(node2,value0)', 'vote(node2,value1)']
+
+func_name2symbol:  {'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1')), BooleanSort()))}
+
+func_name2args_sort:  {'vote': (EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1')))}
+
+sign_func_name2count:  {'0$vote': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$vote$0$0; node$0$vote$0$1], EnumeratedSort('value', ('value0', 'value1')): [value$0$vote$1$0, value$0$vote$1$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$vote$0$0; node$0$vote$0$1, EnumeratedSort('value', ('value0', 'value1')): value$0$vote$1$0 | value$0$vote$1$1}
+
+	sort: node
+
+	identical_classes: {'node$0$vote$0; node$0$vote$0': [node$0$vote$0$0; node$0$vote$0$1]}
+
+	identical_single_classes: {'node$0$vote$0; node$0$vote$0': node$0$vote$0$0; node$0$vote$0$1}
+
+	identical_multi_classes: {}
+
+	sort: value
+
+	identical_classes: {'value$0$vote$1': [value$0$vote$1$0, value$0$vote$1$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'value$0$vote$1': [value$0$vote$1$0, value$0$vote$1$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: value: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['vote(NODE0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0))
+
+
+====================================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+====================================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 12
+num_suborbits: 1
+0 (*) : -----1-------0
+0     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+1     : ----1-------0-
+1     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+2     : -----1-----0--
+2     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+3     : ----1-----0---
+3     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+4     : ---1---------0
+4     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+5     : --1---------0-
+5     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+6     : ---1-----0----
+6     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+7     : --1-----0-----
+7     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+8     : -1---------0--
+8     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+9     : 1---------0---
+9     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+10     : -1-------0----
+10     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+11     : 1-------0-----
+11     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall VALUE0,QUORUM0,NODE0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0)
+qcost : 6
+
+
+
+
+=== Prime Orbit 12 =====================
+size : 2
+num_suborbits: 1
+79 (*) : 0-0-0-1-------
+79     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+80     : -0-0-0-1------
+80     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0))
+qcost : 4
+
+
+
+
+=== Prime Orbit 5 =====================
+size : 3
+num_suborbits: 1
+39 (*) : ------------11
+39     : ['vote(node2,value0)', 'vote(node2,value1)']
+40     : ----------11--
+40     : ['vote(node1,value0)', 'vote(node1,value1)']
+41     : --------11----
+41     : ['vote(node0,value0)', 'vote(node0,value1)']
+num_forall :   1
+num_exists :   1
+num_literals : 1
+quantified form : forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0))
+qcost : 3
+
+
+
+[QRM NOTE]: Time elapsed since start: 1.139 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.088 seconds
+
+[QRM NOTE]: Peak memory: 2181278 bytes
+
+
+===================================================================================================
+
+	[MIN]: Minimization on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+===================================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 12, 5]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 12, 5]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 12, 5]
+
+
+Solution : [0, 12, 5] has cost 13.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 12, 5]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 12, 5]
+
+
+==================================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+==================================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 13
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 12, 5]
+
+[MIN NOTE]: solution length: 3
+
+invariant [invar_0] forall VALUE0,QUORUM0,NODE0. ~decide(QUORUM0,VALUE0) | ~member(NODE0,QUORUM0) | vote(NODE0,VALUE0) # qcost: 6
+
+invariant [invar_12] forall VALUE0. (exists QUORUM0. ~decision(VALUE0) | decide(QUORUM0,VALUE0)) # qcost: 4
+
+invariant [invar_5] forall NODE0. (exists VALUE0. ~vote(NODE0,VALUE0)) # qcost: 3
+
+[MIN NOTE]: number of total invariants: 3
+
+[MIN NOTE]: total qCost: 13
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 1.206 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.066 seconds
+
+[QRM NOTE]: Peak memory: 2165927 bytes
+
+
+*******************************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=2]
+
+*******************************************************************************************************************
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.node_3_value_2.0.ivy -s node=4,value=2 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_2.0.ivy: node=4,value=2]
+
+===========================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 18
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 16
+
+[FW NOTE]: symmetric group order: 48
+
+[QRM NOTE]: Time elapsed since start: 0.151 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.151 seconds
+
+[QRM NOTE]: Peak memory: 266864 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 44
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=4,value=2]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1', 'node2', 'node3']
+sort: value=['value0', 'value1']
+sort: quorum=['quorum__node0_node1_node2', 'quorum__node0_node1_node3', 'quorum__node0_node2_node3', 'quorum__node1_node2_node3']
+predicate: decide('quorum', 'value')
+predicate: member('node', 'quorum')
+predicate: vote('node', 'value')
+predicate: decision('value',)
+interpreted atoms: {'member(node0,quorum__node0_node1_node2)': '1', 'member(node0,quorum__node0_node1_node3)': '1', 'member(node0,quorum__node0_node2_node3)': '1', 'member(node0,quorum__node1_node2_node3)': '0', 'member(node1,quorum__node0_node1_node2)': '1', 'member(node1,quorum__node0_node1_node3)': '1', 'member(node1,quorum__node0_node2_node3)': '0', 'member(node1,quorum__node1_node2_node3)': '1', 'member(node2,quorum__node0_node1_node2)': '1', 'member(node2,quorum__node0_node1_node3)': '0', 'member(node2,quorum__node0_node2_node3)': '1', 'member(node2,quorum__node1_node2_node3)': '1', 'member(node3,quorum__node0_node1_node2)': '0', 'member(node3,quorum__node0_node1_node3)': '1', 'member(node3,quorum__node0_node2_node3)': '1', 'member(node3,quorum__node1_node2_node3)': '1'}
+state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_node1_node2,value1)', 'decide(quorum__node0_node1_node3,value0)', 'decide(quorum__node0_node1_node3,value1)', 'decide(quorum__node0_node2_node3,value0)', 'decide(quorum__node0_node2_node3,value1)', 'decide(quorum__node1_node2_node3,value0)', 'decide(quorum__node1_node2_node3,value1)', 'decision(value0)', 'decision(value1)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node3,value0)', 'vote(node3,value1)']
+
+00000000000-0-0-0-
+00000000000-0-0-10
+00000000000-0-100-
+00000000000-0-1010
+00000000000-100-0-
+00000000000-100-10
+00000000000-10100-
+00000000000-101010
+0000000000100-0-0-
+0000000000100-0-10
+0000000000100-100-
+0000000000100-1010
+000000000010100-0-
+000000000010100-10
+00000000001010100-
+000000000010101010
+000000010-0-010101
+000000010-10010101
+00000010-00-101010
+00000010-010101010
+000001000-010-0101
+000001000-01100101
+000001010-01010101
+00001000-0100-1010
+00001000-010101010
+00001010-010101010
+000100000-01010-01
+000100000-01011001
+000100010-01010101
+0001010-0-01010101
+00100000-010100-10
+00100000-010101010
+00100010-010101010
+001010-0-010101010
+010000000-0101010-
+010000000-01010110
+010000010-01010101
+0100010-0-01010101
+01010-0-0-01010101
+10000000-01010100-
+10000000-010101010
+10000010-010101010
+100010-0-010101010
+1010-0-0-010101010
+
+[QRM NOTE]: Time elapsed since start: 1.798 seconds
+
+[QRM NOTE]: Time elapsed since last: 1.647 seconds
+
+[QRM NOTE]: Peak memory: 1597337 bytes
+
+
+=======================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_2.0.ivy: node=4,value=2]
+
+=======================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 2.274 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.476 seconds
+
+[QRM NOTE]: Peak memory: 930393 bytes
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.node_3_value_2.0.ivy -s node=3,value=3 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_2.0.ivy: node=3,value=3]
+
+===========================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 21
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 9
+
+[FW NOTE]: symmetric group order: 36
+
+[QRM NOTE]: Time elapsed since start: 0.209 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.209 seconds
+
+[QRM NOTE]: Peak memory: 321064 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 63
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=3,value=3]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+sort: value=['value0', 'value1', 'value2']
+sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
+predicate: decide('quorum', 'value')
+predicate: member('node', 'quorum')
+predicate: vote('node', 'value')
+predicate: decision('value',)
+interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
+state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node1,value2)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)', 'decide(quorum__node0_node2,value2)', 'decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)', 'decide(quorum__node1_node2,value2)', 'decision(value0)', 'decision(value1)', 'decision(value2)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)']
+
+00000000000000-00-00-
+00000000000000-00-010
+00000000000000-00-100
+00000000000000-01000-
+00000000000000-010010
+00000000000000-010100
+00000000000000-10000-
+00000000000000-100010
+00000000000000-100100
+00000000000001000-00-
+00000000000001000-010
+00000000000001000-100
+00000000000001001000-
+000000000000010010010
+000000000000010010100
+00000000000001010000-
+000000000000010100010
+000000000000010100100
+00000000000010000-00-
+00000000000010000-010
+00000000000010000-100
+00000000000010001000-
+000000000000100010010
+000000000000100010100
+00000000000010010000-
+000000000000100100010
+000000000000100100100
+00000000100-00-001001
+00000000100-010001001
+00000000100-100001001
+0000000100-000-010010
+0000000100-0010010010
+0000000100-0100010010
+000000100-0000-100100
+000000100-00010100100
+000000100-00100100100
+00000100000-00100-001
+00000100000-001010001
+00000100000-001100001
+00000100100-001001001
+0000100000-001000-010
+0000100000-0010010010
+0000100000-0010100010
+0000100100-0010010010
+000100000-0010000-100
+000100000-00100010100
+000100000-00100100100
+000100100-00100100100
+00100000000-00100100-
+00100000000-001001010
+00100000000-001001100
+00100000100-001001001
+00100100-00-001001001
+0100000000-001001000-
+0100000000-0010010010
+0100000000-0010010100
+0100000100-0010010010
+0100100-00-0010010010
+100000000-0010010000-
+100000000-00100100010
+100000000-00100100100
+100000100-00100100100
+100100-00-00100100100
+
+[QRM NOTE]: Time elapsed since start: 2.006 seconds
+
+[QRM NOTE]: Time elapsed since last: 1.797 seconds
+
+[QRM NOTE]: Peak memory: 1621387 bytes
+
+
+=======================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_2.0.ivy: node=3,value=3]
+
+=======================================================================================================================================================
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 2.664 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.658 seconds
+
+[QRM NOTE]: Peak memory: 1324578 bytes
+
+next size: node=3,value=3
+
+
+****************************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+****************************************************************************************************
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.ivy -s node=3,value=3 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.023 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.023 seconds
+
+[QRM NOTE]: Peak memory: 22720 bytes
+
+
+=================================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+=================================================================================================================
+
+
+============================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+============================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 9
+num_suborbits: 1
+0 (*) : ------------------11-
+0     : ['vote(node2,value0)', 'vote(node2,value1)']
+1     : ------------------1-1
+1     : ['vote(node2,value0)', 'vote(node2,value2)']
+2     : -------------------11
+2     : ['vote(node2,value1)', 'vote(node2,value2)']
+3     : ---------------11----
+3     : ['vote(node1,value0)', 'vote(node1,value1)']
+4     : ---------------1-1---
+4     : ['vote(node1,value0)', 'vote(node1,value2)']
+5     : ----------------11---
+5     : ['vote(node1,value1)', 'vote(node1,value2)']
+6     : ------------11-------
+6     : ['vote(node0,value0)', 'vote(node0,value1)']
+7     : ------------1-1------
+7     : ['vote(node0,value0)', 'vote(node0,value2)']
+8     : -------------11------
+8     : ['vote(node0,value1)', 'vote(node0,value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 36
+num_suborbits: 1
+9 (*) : ---1---------------1-
+9     : ['decide(quorum__node0_node2,value0)', 'vote(node2,value1)']
+10     : ---1----------------1
+10     : ['decide(quorum__node0_node2,value0)', 'vote(node2,value2)']
+11     : ----1-------------1--
+11     : ['decide(quorum__node0_node2,value1)', 'vote(node2,value0)']
+12     : ----1---------------1
+12     : ['decide(quorum__node0_node2,value1)', 'vote(node2,value2)']
+13     : -----1------------1--
+13     : ['decide(quorum__node0_node2,value2)', 'vote(node2,value0)']
+14     : -----1-------------1-
+14     : ['decide(quorum__node0_node2,value2)', 'vote(node2,value1)']
+15     : 1---------------1----
+15     : ['decide(quorum__node0_node1,value0)', 'vote(node1,value1)']
+16     : 1----------------1---
+16     : ['decide(quorum__node0_node1,value0)', 'vote(node1,value2)']
+17     : -1-------------1-----
+17     : ['decide(quorum__node0_node1,value1)', 'vote(node1,value0)']
+18     : -1---------------1---
+18     : ['decide(quorum__node0_node1,value1)', 'vote(node1,value2)']
+19     : --1------------1-----
+19     : ['decide(quorum__node0_node1,value2)', 'vote(node1,value0)']
+20     : --1-------------1----
+20     : ['decide(quorum__node0_node1,value2)', 'vote(node1,value1)']
+21     : ------1------------1-
+21     : ['decide(quorum__node1_node2,value0)', 'vote(node2,value1)']
+22     : ------1-------------1
+22     : ['decide(quorum__node1_node2,value0)', 'vote(node2,value2)']
+23     : -------1----------1--
+23     : ['decide(quorum__node1_node2,value1)', 'vote(node2,value0)']
+24     : -------1------------1
+24     : ['decide(quorum__node1_node2,value1)', 'vote(node2,value2)']
+25     : --------1---------1--
+25     : ['decide(quorum__node1_node2,value2)', 'vote(node2,value0)']
+26     : --------1----------1-
+26     : ['decide(quorum__node1_node2,value2)', 'vote(node2,value1)']
+27     : 1------------1-------
+27     : ['decide(quorum__node0_node1,value0)', 'vote(node0,value1)']
+28     : 1-------------1------
+28     : ['decide(quorum__node0_node1,value0)', 'vote(node0,value2)']
+29     : -1----------1--------
+29     : ['decide(quorum__node0_node1,value1)', 'vote(node0,value0)']
+30     : -1------------1------
+30     : ['decide(quorum__node0_node1,value1)', 'vote(node0,value2)']
+31     : --1---------1--------
+31     : ['decide(quorum__node0_node1,value2)', 'vote(node0,value0)']
+32     : --1----------1-------
+32     : ['decide(quorum__node0_node1,value2)', 'vote(node0,value1)']
+33     : ------1---------1----
+33     : ['decide(quorum__node1_node2,value0)', 'vote(node1,value1)']
+34     : ------1----------1---
+34     : ['decide(quorum__node1_node2,value0)', 'vote(node1,value2)']
+35     : -------1-------1-----
+35     : ['decide(quorum__node1_node2,value1)', 'vote(node1,value0)']
+36     : -------1---------1---
+36     : ['decide(quorum__node1_node2,value1)', 'vote(node1,value2)']
+37     : --------1------1-----
+37     : ['decide(quorum__node1_node2,value2)', 'vote(node1,value0)']
+38     : --------1-------1----
+38     : ['decide(quorum__node1_node2,value2)', 'vote(node1,value1)']
+39     : ---1---------1-------
+39     : ['decide(quorum__node0_node2,value0)', 'vote(node0,value1)']
+40     : ---1----------1------
+40     : ['decide(quorum__node0_node2,value0)', 'vote(node0,value2)']
+41     : ----1-------1--------
+41     : ['decide(quorum__node0_node2,value1)', 'vote(node0,value0)']
+42     : ----1---------1------
+42     : ['decide(quorum__node0_node2,value1)', 'vote(node0,value2)']
+43     : -----1------1--------
+43     : ['decide(quorum__node0_node2,value2)', 'vote(node0,value0)']
+44     : -----1-------1-------
+44     : ['decide(quorum__node0_node2,value2)', 'vote(node0,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 18
+num_suborbits: 1
+45 (*) : ----1----1-----------
+45     : ['decide(quorum__node0_node2,value1)', 'decision(value0)']
+46     : -----1---1-----------
+46     : ['decide(quorum__node0_node2,value2)', 'decision(value0)']
+47     : ---1------1----------
+47     : ['decide(quorum__node0_node2,value0)', 'decision(value1)']
+48     : -----1----1----------
+48     : ['decide(quorum__node0_node2,value2)', 'decision(value1)']
+49     : ---1-------1---------
+49     : ['decide(quorum__node0_node2,value0)', 'decision(value2)']
+50     : ----1------1---------
+50     : ['decide(quorum__node0_node2,value1)', 'decision(value2)']
+51     : -1-------1-----------
+51     : ['decide(quorum__node0_node1,value1)', 'decision(value0)']
+52     : --1------1-----------
+52     : ['decide(quorum__node0_node1,value2)', 'decision(value0)']
+53     : 1---------1----------
+53     : ['decide(quorum__node0_node1,value0)', 'decision(value1)']
+54     : --1-------1----------
+54     : ['decide(quorum__node0_node1,value2)', 'decision(value1)']
+55     : 1----------1---------
+55     : ['decide(quorum__node0_node1,value0)', 'decision(value2)']
+56     : -1---------1---------
+56     : ['decide(quorum__node0_node1,value1)', 'decision(value2)']
+57     : -------1-1-----------
+57     : ['decide(quorum__node1_node2,value1)', 'decision(value0)']
+58     : --------11-----------
+58     : ['decide(quorum__node1_node2,value2)', 'decision(value0)']
+59     : ------1---1----------
+59     : ['decide(quorum__node1_node2,value0)', 'decision(value1)']
+60     : --------1-1----------
+60     : ['decide(quorum__node1_node2,value2)', 'decision(value1)']
+61     : ------1----1---------
+61     : ['decide(quorum__node1_node2,value0)', 'decision(value2)']
+62     : -------1---1---------
+62     : ['decide(quorum__node1_node2,value1)', 'decision(value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 18
+num_suborbits: 1
+63 (*) : ----1--------------0-
+63     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+64     : -----1--------------0
+64     : ['decide(quorum__node0_node2,value2)', '~vote(node2,value2)']
+65     : ---1--------------0--
+65     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+66     : -1--------------0----
+66     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+67     : --1--------------0---
+67     : ['decide(quorum__node0_node1,value2)', '~vote(node1,value2)']
+68     : 1--------------0-----
+68     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+69     : -------1-----------0-
+69     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+70     : --------1-----------0
+70     : ['decide(quorum__node1_node2,value2)', '~vote(node2,value2)']
+71     : ------1-----------0--
+71     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+72     : -1-----------0-------
+72     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+73     : --1-----------0------
+73     : ['decide(quorum__node0_node1,value2)', '~vote(node0,value2)']
+74     : 1-----------0--------
+74     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+75     : -------1--------0----
+75     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+76     : --------1--------0---
+76     : ['decide(quorum__node1_node2,value2)', '~vote(node1,value2)']
+77     : ------1--------0-----
+77     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+78     : ----1--------0-------
+78     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+79     : -----1--------0------
+79     : ['decide(quorum__node0_node2,value2)', '~vote(node0,value2)']
+80     : ---1--------0--------
+80     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 3
+num_suborbits: 1
+81 (*) : ---------11----------
+81     : ['decision(value0)', 'decision(value1)']
+82     : ---------1-1---------
+82     : ['decision(value0)', 'decision(value2)']
+83     : ----------11---------
+83     : ['decision(value1)', 'decision(value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 18
+num_suborbits: 1
+84 (*) : --1-1----------------
+84     : ['decide(quorum__node0_node1,value2)', 'decide(quorum__node0_node2,value1)']
+85     : -1---1---------------
+85     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value2)']
+86     : --11-----------------
+86     : ['decide(quorum__node0_node1,value2)', 'decide(quorum__node0_node2,value0)']
+87     : 1----1---------------
+87     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value2)']
+88     : -1-1-----------------
+88     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node2,value0)']
+89     : 1---1----------------
+89     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node2,value1)']
+90     : --1----1-------------
+90     : ['decide(quorum__node0_node1,value2)', 'decide(quorum__node1_node2,value1)']
+91     : -1------1------------
+91     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node1_node2,value2)']
+92     : --1---1--------------
+92     : ['decide(quorum__node0_node1,value2)', 'decide(quorum__node1_node2,value0)']
+93     : 1-------1------------
+93     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node1_node2,value2)']
+94     : -1----1--------------
+94     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node1_node2,value0)']
+95     : 1------1-------------
+95     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node1_node2,value1)']
+96     : -----1-1-------------
+96     : ['decide(quorum__node0_node2,value2)', 'decide(quorum__node1_node2,value1)']
+97     : ----1---1------------
+97     : ['decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value2)']
+98     : -----11--------------
+98     : ['decide(quorum__node0_node2,value2)', 'decide(quorum__node1_node2,value0)']
+99     : ---1----1------------
+99     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value2)']
+100     : ----1-1--------------
+100     : ['decide(quorum__node0_node2,value1)', 'decide(quorum__node1_node2,value0)']
+101     : ---1---1-------------
+101     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node1_node2,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 9
+num_suborbits: 1
+102 (*) : -11------------------
+102     : ['decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node1,value2)']
+103     : 1-1------------------
+103     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value2)']
+104     : 11-------------------
+104     : ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)']
+105     : ----11---------------
+105     : ['decide(quorum__node0_node2,value1)', 'decide(quorum__node0_node2,value2)']
+106     : ---1-1---------------
+106     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value2)']
+107     : ---11----------------
+107     : ['decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)']
+108     : -------11------------
+108     : ['decide(quorum__node1_node2,value1)', 'decide(quorum__node1_node2,value2)']
+109     : ------1-1------------
+109     : ['decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value2)']
+110     : ------11-------------
+110     : ['decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 18
+num_suborbits: 1
+111 (*) : ---0-----1------1----
+111     : ['decision(value0)', 'vote(node1,value1)', '~decide(quorum__node0_node2,value0)']
+112     : ---0-----1-------1---
+112     : ['decision(value0)', 'vote(node1,value2)', '~decide(quorum__node0_node2,value0)']
+113     : ----0-----1----1-----
+113     : ['decision(value1)', 'vote(node1,value0)', '~decide(quorum__node0_node2,value1)']
+114     : ----0-----1------1---
+114     : ['decision(value1)', 'vote(node1,value2)', '~decide(quorum__node0_node2,value1)']
+115     : -----0-----1---1-----
+115     : ['decision(value2)', 'vote(node1,value0)', '~decide(quorum__node0_node2,value2)']
+116     : -----0-----1----1----
+116     : ['decision(value2)', 'vote(node1,value1)', '~decide(quorum__node0_node2,value2)']
+117     : 0--------1---------1-
+117     : ['decision(value0)', 'vote(node2,value1)', '~decide(quorum__node0_node1,value0)']
+118     : 0--------1----------1
+118     : ['decision(value0)', 'vote(node2,value2)', '~decide(quorum__node0_node1,value0)']
+119     : -0--------1-------1--
+119     : ['decision(value1)', 'vote(node2,value0)', '~decide(quorum__node0_node1,value1)']
+120     : -0--------1---------1
+120     : ['decision(value1)', 'vote(node2,value2)', '~decide(quorum__node0_node1,value1)']
+121     : --0--------1------1--
+121     : ['decision(value2)', 'vote(node2,value0)', '~decide(quorum__node0_node1,value2)']
+122     : --0--------1-------1-
+122     : ['decision(value2)', 'vote(node2,value1)', '~decide(quorum__node0_node1,value2)']
+123     : ------0--1---1-------
+123     : ['decision(value0)', 'vote(node0,value1)', '~decide(quorum__node1_node2,value0)']
+124     : ------0--1----1------
+124     : ['decision(value0)', 'vote(node0,value2)', '~decide(quorum__node1_node2,value0)']
+125     : -------0--1-1--------
+125     : ['decision(value1)', 'vote(node0,value0)', '~decide(quorum__node1_node2,value1)']
+126     : -------0--1---1------
+126     : ['decision(value1)', 'vote(node0,value2)', '~decide(quorum__node1_node2,value1)']
+127     : --------0--11--------
+127     : ['decision(value2)', 'vote(node0,value0)', '~decide(quorum__node1_node2,value2)']
+128     : --------0--1-1-------
+128     : ['decision(value2)', 'vote(node0,value1)', '~decide(quorum__node1_node2,value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 36
+num_suborbits: 1
+129 (*) : ---------1--0---1----
+129     : ['decision(value0)', 'vote(node1,value1)', '~vote(node0,value0)']
+130     : ---------1--0----1---
+130     : ['decision(value0)', 'vote(node1,value2)', '~vote(node0,value0)']
+131     : ----------1--0-1-----
+131     : ['decision(value1)', 'vote(node1,value0)', '~vote(node0,value1)']
+132     : ----------1--0---1---
+132     : ['decision(value1)', 'vote(node1,value2)', '~vote(node0,value1)']
+133     : -----------1--01-----
+133     : ['decision(value2)', 'vote(node1,value0)', '~vote(node0,value2)']
+134     : -----------1--0-1----
+134     : ['decision(value2)', 'vote(node1,value1)', '~vote(node0,value2)']
+135     : ---------1--0------1-
+135     : ['decision(value0)', 'vote(node2,value1)', '~vote(node0,value0)']
+136     : ---------1--0-------1
+136     : ['decision(value0)', 'vote(node2,value2)', '~vote(node0,value0)']
+137     : ----------1--0----1--
+137     : ['decision(value1)', 'vote(node2,value0)', '~vote(node0,value1)']
+138     : ----------1--0------1
+138     : ['decision(value1)', 'vote(node2,value2)', '~vote(node0,value1)']
+139     : -----------1--0---1--
+139     : ['decision(value2)', 'vote(node2,value0)', '~vote(node0,value2)']
+140     : -----------1--0----1-
+140     : ['decision(value2)', 'vote(node2,value1)', '~vote(node0,value2)']
+141     : ---------1---1-0-----
+141     : ['decision(value0)', 'vote(node0,value1)', '~vote(node1,value0)']
+142     : ---------1----10-----
+142     : ['decision(value0)', 'vote(node0,value2)', '~vote(node1,value0)']
+143     : ----------1-1---0----
+143     : ['decision(value1)', 'vote(node0,value0)', '~vote(node1,value1)']
+144     : ----------1---1-0----
+144     : ['decision(value1)', 'vote(node0,value2)', '~vote(node1,value1)']
+145     : -----------11----0---
+145     : ['decision(value2)', 'vote(node0,value0)', '~vote(node1,value2)']
+146     : -----------1-1---0---
+146     : ['decision(value2)', 'vote(node0,value1)', '~vote(node1,value2)']
+147     : ---------1-----0---1-
+147     : ['decision(value0)', 'vote(node2,value1)', '~vote(node1,value0)']
+148     : ---------1-----0----1
+148     : ['decision(value0)', 'vote(node2,value2)', '~vote(node1,value0)']
+149     : ----------1-----0-1--
+149     : ['decision(value1)', 'vote(node2,value0)', '~vote(node1,value1)']
+150     : ----------1-----0---1
+150     : ['decision(value1)', 'vote(node2,value2)', '~vote(node1,value1)']
+151     : -----------1-----01--
+151     : ['decision(value2)', 'vote(node2,value0)', '~vote(node1,value2)']
+152     : -----------1-----0-1-
+152     : ['decision(value2)', 'vote(node2,value1)', '~vote(node1,value2)']
+153     : ---------1---1----0--
+153     : ['decision(value0)', 'vote(node0,value1)', '~vote(node2,value0)']
+154     : ---------1----1---0--
+154     : ['decision(value0)', 'vote(node0,value2)', '~vote(node2,value0)']
+155     : ----------1-1------0-
+155     : ['decision(value1)', 'vote(node0,value0)', '~vote(node2,value1)']
+156     : ----------1---1----0-
+156     : ['decision(value1)', 'vote(node0,value2)', '~vote(node2,value1)']
+157     : -----------11-------0
+157     : ['decision(value2)', 'vote(node0,value0)', '~vote(node2,value2)']
+158     : -----------1-1------0
+158     : ['decision(value2)', 'vote(node0,value1)', '~vote(node2,value2)']
+159     : ---------1------1-0--
+159     : ['decision(value0)', 'vote(node1,value1)', '~vote(node2,value0)']
+160     : ---------1-------10--
+160     : ['decision(value0)', 'vote(node1,value2)', '~vote(node2,value0)']
+161     : ----------1----1---0-
+161     : ['decision(value1)', 'vote(node1,value0)', '~vote(node2,value1)']
+162     : ----------1------1-0-
+162     : ['decision(value1)', 'vote(node1,value2)', '~vote(node2,value1)']
+163     : -----------1---1----0
+163     : ['decision(value2)', 'vote(node1,value0)', '~vote(node2,value2)']
+164     : -----------1----1---0
+164     : ['decision(value2)', 'vote(node1,value1)', '~vote(node2,value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 18
+num_suborbits: 1
+165 (*) : ---------1------1---1
+165     : ['decision(value0)', 'vote(node1,value1)', 'vote(node2,value2)']
+166     : ---------1-------1-1-
+166     : ['decision(value0)', 'vote(node1,value2)', 'vote(node2,value1)']
+167     : ----------1----1----1
+167     : ['decision(value1)', 'vote(node1,value0)', 'vote(node2,value2)']
+168     : ----------1------11--
+168     : ['decision(value1)', 'vote(node1,value2)', 'vote(node2,value0)']
+169     : -----------1---1---1-
+169     : ['decision(value2)', 'vote(node1,value0)', 'vote(node2,value1)']
+170     : -----------1----1-1--
+170     : ['decision(value2)', 'vote(node1,value1)', 'vote(node2,value0)']
+171     : ---------1---1------1
+171     : ['decision(value0)', 'vote(node0,value1)', 'vote(node2,value2)']
+172     : ---------1----1----1-
+172     : ['decision(value0)', 'vote(node0,value2)', 'vote(node2,value1)']
+173     : ----------1-1-------1
+173     : ['decision(value1)', 'vote(node0,value0)', 'vote(node2,value2)']
+174     : ----------1---1---1--
+174     : ['decision(value1)', 'vote(node0,value2)', 'vote(node2,value0)']
+175     : -----------11------1-
+175     : ['decision(value2)', 'vote(node0,value0)', 'vote(node2,value1)']
+176     : -----------1-1----1--
+176     : ['decision(value2)', 'vote(node0,value1)', 'vote(node2,value0)']
+177     : ---------1---1---1---
+177     : ['decision(value0)', 'vote(node0,value1)', 'vote(node1,value2)']
+178     : ---------1----1-1----
+178     : ['decision(value0)', 'vote(node0,value2)', 'vote(node1,value1)']
+179     : ----------1-1----1---
+179     : ['decision(value1)', 'vote(node0,value0)', 'vote(node1,value2)']
+180     : ----------1---11-----
+180     : ['decision(value1)', 'vote(node0,value2)', 'vote(node1,value0)']
+181     : -----------11---1----
+181     : ['decision(value2)', 'vote(node0,value0)', 'vote(node1,value1)']
+182     : -----------1-1-1-----
+182     : ['decision(value2)', 'vote(node0,value1)', 'vote(node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 10 =====================
+size : 18
+num_suborbits: 1
+183 (*) : ---------1---1--1----
+183     : ['decision(value0)', 'vote(node0,value1)', 'vote(node1,value1)']
+184     : ---------1----1--1---
+184     : ['decision(value0)', 'vote(node0,value2)', 'vote(node1,value2)']
+185     : ----------1-1--1-----
+185     : ['decision(value1)', 'vote(node0,value0)', 'vote(node1,value0)']
+186     : ----------1---1--1---
+186     : ['decision(value1)', 'vote(node0,value2)', 'vote(node1,value2)']
+187     : -----------11--1-----
+187     : ['decision(value2)', 'vote(node0,value0)', 'vote(node1,value0)']
+188     : -----------1-1--1----
+188     : ['decision(value2)', 'vote(node0,value1)', 'vote(node1,value1)']
+189     : ---------1---1-----1-
+189     : ['decision(value0)', 'vote(node0,value1)', 'vote(node2,value1)']
+190     : ---------1----1-----1
+190     : ['decision(value0)', 'vote(node0,value2)', 'vote(node2,value2)']
+191     : ----------1-1-----1--
+191     : ['decision(value1)', 'vote(node0,value0)', 'vote(node2,value0)']
+192     : ----------1---1-----1
+192     : ['decision(value1)', 'vote(node0,value2)', 'vote(node2,value2)']
+193     : -----------11-----1--
+193     : ['decision(value2)', 'vote(node0,value0)', 'vote(node2,value0)']
+194     : -----------1-1-----1-
+194     : ['decision(value2)', 'vote(node0,value1)', 'vote(node2,value1)']
+195     : ---------1------1--1-
+195     : ['decision(value0)', 'vote(node1,value1)', 'vote(node2,value1)']
+196     : ---------1-------1--1
+196     : ['decision(value0)', 'vote(node1,value2)', 'vote(node2,value2)']
+197     : ----------1----1--1--
+197     : ['decision(value1)', 'vote(node1,value0)', 'vote(node2,value0)']
+198     : ----------1------1--1
+198     : ['decision(value1)', 'vote(node1,value2)', 'vote(node2,value2)']
+199     : -----------1---1--1--
+199     : ['decision(value2)', 'vote(node1,value0)', 'vote(node2,value0)']
+200     : -----------1----1--1-
+200     : ['decision(value2)', 'vote(node1,value1)', 'vote(node2,value1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 11 =====================
+size : 9
+num_suborbits: 1
+201 (*) : -0--------1--------0-
+201     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~vote(node2,value1)']
+202     : --0--------1--------0
+202     : ['decision(value2)', '~decide(quorum__node0_node1,value2)', '~vote(node2,value2)']
+203     : 0--------1--------0--
+203     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~vote(node2,value0)']
+204     : ----0-----1-----0----
+204     : ['decision(value1)', '~decide(quorum__node0_node2,value1)', '~vote(node1,value1)']
+205     : -----0-----1-----0---
+205     : ['decision(value2)', '~decide(quorum__node0_node2,value2)', '~vote(node1,value2)']
+206     : ---0-----1-----0-----
+206     : ['decision(value0)', '~decide(quorum__node0_node2,value0)', '~vote(node1,value0)']
+207     : -------0--1--0-------
+207     : ['decision(value1)', '~decide(quorum__node1_node2,value1)', '~vote(node0,value1)']
+208     : --------0--1--0------
+208     : ['decision(value2)', '~decide(quorum__node1_node2,value2)', '~vote(node0,value2)']
+209     : ------0--1--0--------
+209     : ['decision(value0)', '~decide(quorum__node1_node2,value0)', '~vote(node0,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 12 =====================
+size : 9
+num_suborbits: 1
+210 (*) : ----------1-----0--0-
+210     : ['decision(value1)', '~vote(node1,value1)', '~vote(node2,value1)']
+211     : -----------1-----0--0
+211     : ['decision(value2)', '~vote(node1,value2)', '~vote(node2,value2)']
+212     : ---------1-----0--0--
+212     : ['decision(value0)', '~vote(node1,value0)', '~vote(node2,value0)']
+213     : ----------1--0-----0-
+213     : ['decision(value1)', '~vote(node0,value1)', '~vote(node2,value1)']
+214     : -----------1--0-----0
+214     : ['decision(value2)', '~vote(node0,value2)', '~vote(node2,value2)']
+215     : ---------1--0-----0--
+215     : ['decision(value0)', '~vote(node0,value0)', '~vote(node2,value0)']
+216     : ----------1--0--0----
+216     : ['decision(value1)', '~vote(node0,value1)', '~vote(node1,value1)']
+217     : -----------1--0--0---
+217     : ['decision(value2)', '~vote(node0,value2)', '~vote(node1,value2)']
+218     : ---------1--0--0-----
+218     : ['decision(value0)', '~vote(node0,value0)', '~vote(node1,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 13 =====================
+size : 3
+num_suborbits: 1
+219 (*) : --0--0--0--1---------
+219     : ['decision(value2)', '~decide(quorum__node0_node1,value2)', '~decide(quorum__node0_node2,value2)', '~decide(quorum__node1_node2,value2)']
+220     : -0--0--0--1----------
+220     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+221     : 0--0--0--1-----------
+221     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 14
+
+[PRIME NOTE]: number of orbits before merging: 14
+
+[PRIME NOTE]: number of primes: 222
+
+[QRM NOTE]: Time elapsed since start: 0.112 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.088 seconds
+
+[QRM NOTE]: Peak memory: 1363744 bytes
+
+
+======================================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+======================================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+ solution : []
+
+Essensial at level 0 : {0, 3, 13}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1), (13, -1)]
+
+After removed
+ coverage : [(0, -1), (1, 0), (2, 0), (3, -1), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, -1)]
+
+Covered at level 0 : {1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
+After reduction : 
+ pending  : []
+ solution : [0, 3, 13]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 3, 13]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, 0), (2, 0), (3, -1), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1), (13, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 3, 13]
+
+[QRM NOTE]: Time elapsed since start: 0.145 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.034 seconds
+
+[QRM NOTE]: Peak memory: 327956 bytes
+
+
+==========================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+==========================================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 9
+num_suborbits: 1
+0 (*) : ------------------11-
+0     : ['vote(node2,value0)', 'vote(node2,value1)']
+1     : ------------------1-1
+1     : ['vote(node2,value0)', 'vote(node2,value2)']
+2     : -------------------11
+2     : ['vote(node2,value1)', 'vote(node2,value2)']
+3     : ---------------11----
+3     : ['vote(node1,value0)', 'vote(node1,value1)']
+4     : ---------------1-1---
+4     : ['vote(node1,value0)', 'vote(node1,value2)']
+5     : ----------------11---
+5     : ['vote(node1,value1)', 'vote(node1,value2)']
+6     : ------------11-------
+6     : ['vote(node0,value0)', 'vote(node0,value1)']
+7     : ------------1-1------
+7     : ['vote(node0,value0)', 'vote(node0,value2)']
+8     : -------------11------
+8     : ['vote(node0,value1)', 'vote(node0,value2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['vote(node2,value0)', 'vote(node2,value1)']
+
+sign_func_name2args: {'0$vote': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value0', EnumeratedSort('value', ('value0', 'value1', 'value2')))), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))))]}
+
+const2sigs: {Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$vote$0$0, node$0$vote$0$1], Const('value0', EnumeratedSort('value', ('value0', 'value1', 'value2'))): [value$0$vote$1$0], Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))): [value$0$vote$1$1]}
+
+sig2const: {'node$0$vote$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$0$vote$1$0': Const('value0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'node$0$vote$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$0$vote$1$1': Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$vote$0$0; node$0$vote$0$1], EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$vote$1$0, value$0$vote$1$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$vote$0$0; node$0$vote$0$1, EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$vote$1$0 | value$0$vote$1$1}
+
+part_sig: ('node$0$vote$0$0; node$0$vote$0$1', 'value$0$vote$1$0 | value$0$vote$1$1')
+
+
+---------- SigGenerator ----------
+
+terms:  ['vote(node2,value0)', 'vote(node2,value1)']
+
+func_name2symbol:  {'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1', 'value2')), BooleanSort()))}
+
+func_name2args_sort:  {'vote': (EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+sign_func_name2count:  {'0$vote': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$vote$0$0; node$0$vote$0$1], EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$vote$1$0, value$0$vote$1$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$vote$0$0; node$0$vote$0$1, EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$vote$1$0 | value$0$vote$1$1}
+
+	sort: node
+
+	identical_classes: {'node$0$vote$0; node$0$vote$0': [node$0$vote$0$0; node$0$vote$0$1]}
+
+	identical_single_classes: {'node$0$vote$0; node$0$vote$0': node$0$vote$0$0; node$0$vote$0$1}
+
+	identical_multi_classes: {}
+
+	sort: value
+
+	identical_classes: {'value$0$vote$1': [value$0$vote$1$0, value$0$vote$1$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'value$0$vote$1': [value$0$vote$1$0, value$0$vote$1$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+quantifier mode: value: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE1', EnumeratedSort('value', ('value0', 'value1', 'value2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['vote(NODE0,VALUE1)', 'vote(NODE0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall VALUE1,VALUE0,NODE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1
+
+
+=== Prime Orbit 3 =====================
+size : 18
+num_suborbits: 1
+63 (*) : ----1--------------0-
+63     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+64     : -----1--------------0
+64     : ['decide(quorum__node0_node2,value2)', '~vote(node2,value2)']
+65     : ---1--------------0--
+65     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+66     : -1--------------0----
+66     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+67     : --1--------------0---
+67     : ['decide(quorum__node0_node1,value2)', '~vote(node1,value2)']
+68     : 1--------------0-----
+68     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+69     : -------1-----------0-
+69     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+70     : --------1-----------0
+70     : ['decide(quorum__node1_node2,value2)', '~vote(node2,value2)']
+71     : ------1-----------0--
+71     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+72     : -1-----------0-------
+72     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+73     : --1-----------0------
+73     : ['decide(quorum__node0_node1,value2)', '~vote(node0,value2)']
+74     : 1-----------0--------
+74     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+75     : -------1--------0----
+75     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+76     : --------1--------0---
+76     : ['decide(quorum__node1_node2,value2)', '~vote(node1,value2)']
+77     : ------1--------0-----
+77     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+78     : ----1--------0-------
+78     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+79     : -----1--------0------
+79     : ['decide(quorum__node0_node2,value2)', '~vote(node0,value2)']
+80     : ---1--------0--------
+80     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)', 'member(node2,quorum__node0_node2)']
+
+sign_func_name2args: {'0$decide': [(Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))))], '1$vote': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))))], '0$member': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))))]}
+
+const2sigs: {Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$0$decide$0$0, quorum$0$member$1$0], Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))): [value$0$decide$1$0, value$1$vote$1$0], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$vote$0$0, node$0$member$0$0]}
+
+sig2const: {'quorum$0$decide$0$0': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$0$decide$1$0': Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'node$1$vote$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'value$1$vote$1$0': Const('value1', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'node$0$member$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'quorum$0$member$1$0': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$decide$0$0; quorum$0$member$1$0], EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$decide$1$0; value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$1$vote$0$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$decide$0$0; quorum$0$member$1$0, EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$decide$1$0; value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$1$vote$0$0}
+
+part_sig: ('node$0$member$0$0; node$1$vote$0$0', 'quorum$0$decide$0$0; quorum$0$member$1$0', 'value$0$decide$1$0; value$1$vote$1$0')
+
+
+---------- SigGenerator ----------
+
+terms:  ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)', 'member(node2,quorum__node0_node2)']
+
+func_name2symbol:  {'decide': Const('decide', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1', 'value2')), BooleanSort())), 'vote': Const('vote', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1', 'value2')), BooleanSort())), 'member': Const('member', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), BooleanSort()))}
+
+func_name2args_sort:  {'decide': (EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'vote': (EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'member': (EnumeratedSort('node', ('node0', 'node1', 'node2')), EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+sign_func_name2count:  {'0$decide': 1, '1$vote': 1, '0$member': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$0$decide$0$0; quorum$0$member$1$0], EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$decide$1$0; value$1$vote$1$0], EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$member$0$0; node$1$vote$0$0]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$0$decide$0$0; quorum$0$member$1$0, EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$decide$1$0; value$1$vote$1$0, EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$member$0$0; node$1$vote$0$0}
+
+	sort: quorum
+
+	identical_classes: {'quorum$0$decide$0; quorum$0$member$1': [quorum$0$decide$0$0; quorum$0$member$1$0]}
+
+	identical_single_classes: {'quorum$0$decide$0; quorum$0$member$1': quorum$0$decide$0$0; quorum$0$member$1$0}
+
+	identical_multi_classes: {}
+
+	sort: value
+
+	identical_classes: {'value$0$decide$1; value$1$vote$1': [value$0$decide$1$0; value$1$vote$1$0]}
+
+	identical_single_classes: {'value$0$decide$1; value$1$vote$1': value$0$decide$1$0; value$1$vote$1$0}
+
+	identical_multi_classes: {}
+
+	sort: node
+
+	identical_classes: {'node$0$member$0; node$1$vote$0': [node$0$member$0$0; node$1$vote$0$0]}
+
+	identical_single_classes: {'node$0$member$0; node$1$vote$0': node$0$member$0$0; node$1$vote$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: quorum: QuantifierMode.forall
+
+quantifier mode: value: QuantifierMode.forall
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))]], '1$vote': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))]], '0$member': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~vote(NODE0,VALUE0)', 'member(NODE0,QUORUM0)', 'decide(QUORUM0,VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0)
+
+
+=== Prime Orbit 13 =====================
+size : 3
+num_suborbits: 1
+219 (*) : --0--0--0--1---------
+219     : ['decision(value2)', '~decide(quorum__node0_node1,value2)', '~decide(quorum__node0_node2,value2)', '~decide(quorum__node1_node2,value2)']
+220     : -0--0--0--1----------
+220     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+221     : 0--0--0--1-----------
+221     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~decide(quorum__node0_node1,value2)', '~decide(quorum__node0_node2,value2)', '~decide(quorum__node1_node2,value2)', 'decision(value2)']
+
+sign_func_name2args: {'1$decide': [(Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2')))), (Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2')))), (Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2'))))], '0$decision': [(Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2'))),)]}
+
+const2sigs: {Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$decide$0$0], Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2'))): [value$1$decide$1$0, value$1$decide$1$1, value$1$decide$1$2, value$0$decision$0$0], Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$decide$0$1], Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))): [quorum$1$decide$0$2]}
+
+sig2const: {'quorum$1$decide$0$0': Const('quorum__node0_node1', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$decide$1$0': Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'quorum$1$decide$0$1': Const('quorum__node0_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$decide$1$1': Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'quorum$1$decide$0$2': Const('quorum__node1_node2', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), 'value$1$decide$1$2': Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'value$0$decision$0$0': Const('value2', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2], EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$1$decide$0$0 | quorum$1$decide$0$1 | quorum$1$decide$0$2, EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2}
+
+part_sig: ('quorum$1$decide$0$0 | quorum$1$decide$0$1 | quorum$1$decide$0$2', 'value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2')
+
+
+---------- SigGenerator ----------
+
+terms:  ['~decide(quorum__node0_node1,value2)', '~decide(quorum__node0_node2,value2)', '~decide(quorum__node1_node2,value2)', 'decision(value2)']
+
+func_name2symbol:  {'decide': Const('decide', FunctionSort(EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1', 'value2')), BooleanSort())), 'decision': Const('decision', FunctionSort(EnumeratedSort('value', ('value0', 'value1', 'value2')), BooleanSort()))}
+
+func_name2args_sort:  {'decide': (EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')), EnumeratedSort('value', ('value0', 'value1', 'value2'))), 'decision': (EnumeratedSort('value', ('value0', 'value1', 'value2')),)}
+
+sign_func_name2count:  {'1$decide': 3, '0$decision': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2], EnumeratedSort('value', ('value0', 'value1', 'value2')): [value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2]}
+
+sort2part_sig: {EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')): quorum$1$decide$0$0 | quorum$1$decide$0$1 | quorum$1$decide$0$2, EnumeratedSort('value', ('value0', 'value1', 'value2')): value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2}
+
+	sort: quorum
+
+	identical_classes: {'quorum$1$decide$0': [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'quorum$1$decide$0': [quorum$1$decide$0$0, quorum$1$decide$0$1, quorum$1$decide$0$2]}
+
+	sort: value
+
+	identical_classes: {'value$0$decision$0; value$1$decide$1; value$1$decide$1; value$1$decide$1': [value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2]}
+
+	identical_single_classes: {'value$0$decision$0; value$1$decide$1; value$1$decide$1; value$1$decide$1': value$0$decision$0$0; value$1$decide$1$0; value$1$decide$1$1; value$1$decide$1$2}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: quorum: QuantifierMode.exists
+
+quantifier mode: value: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))}
+
+exists_qvars: {Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$decide': [[Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))], [Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))], [Var('QUORUM0', EnumeratedSort('quorum', ('quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2'))), Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))]], '0$decision': [[Var('VALUE0', EnumeratedSort('value', ('value0', 'value1', 'value2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~decide(QUORUM0,VALUE0)', 'decision(VALUE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0))
+
+
+====================================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+====================================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 9
+num_suborbits: 1
+0 (*) : ------------------11-
+0     : ['vote(node2,value0)', 'vote(node2,value1)']
+1     : ------------------1-1
+1     : ['vote(node2,value0)', 'vote(node2,value2)']
+2     : -------------------11
+2     : ['vote(node2,value1)', 'vote(node2,value2)']
+3     : ---------------11----
+3     : ['vote(node1,value0)', 'vote(node1,value1)']
+4     : ---------------1-1---
+4     : ['vote(node1,value0)', 'vote(node1,value2)']
+5     : ----------------11---
+5     : ['vote(node1,value1)', 'vote(node1,value2)']
+6     : ------------11-------
+6     : ['vote(node0,value0)', 'vote(node0,value1)']
+7     : ------------1-1------
+7     : ['vote(node0,value0)', 'vote(node0,value2)']
+8     : -------------11------
+8     : ['vote(node0,value1)', 'vote(node0,value2)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall VALUE1,VALUE0,NODE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 3 =====================
+size : 18
+num_suborbits: 1
+63 (*) : ----1--------------0-
+63     : ['decide(quorum__node0_node2,value1)', '~vote(node2,value1)']
+64     : -----1--------------0
+64     : ['decide(quorum__node0_node2,value2)', '~vote(node2,value2)']
+65     : ---1--------------0--
+65     : ['decide(quorum__node0_node2,value0)', '~vote(node2,value0)']
+66     : -1--------------0----
+66     : ['decide(quorum__node0_node1,value1)', '~vote(node1,value1)']
+67     : --1--------------0---
+67     : ['decide(quorum__node0_node1,value2)', '~vote(node1,value2)']
+68     : 1--------------0-----
+68     : ['decide(quorum__node0_node1,value0)', '~vote(node1,value0)']
+69     : -------1-----------0-
+69     : ['decide(quorum__node1_node2,value1)', '~vote(node2,value1)']
+70     : --------1-----------0
+70     : ['decide(quorum__node1_node2,value2)', '~vote(node2,value2)']
+71     : ------1-----------0--
+71     : ['decide(quorum__node1_node2,value0)', '~vote(node2,value0)']
+72     : -1-----------0-------
+72     : ['decide(quorum__node0_node1,value1)', '~vote(node0,value1)']
+73     : --1-----------0------
+73     : ['decide(quorum__node0_node1,value2)', '~vote(node0,value2)']
+74     : 1-----------0--------
+74     : ['decide(quorum__node0_node1,value0)', '~vote(node0,value0)']
+75     : -------1--------0----
+75     : ['decide(quorum__node1_node2,value1)', '~vote(node1,value1)']
+76     : --------1--------0---
+76     : ['decide(quorum__node1_node2,value2)', '~vote(node1,value2)']
+77     : ------1--------0-----
+77     : ['decide(quorum__node1_node2,value0)', '~vote(node1,value0)']
+78     : ----1--------0-------
+78     : ['decide(quorum__node0_node2,value1)', '~vote(node0,value1)']
+79     : -----1--------0------
+79     : ['decide(quorum__node0_node2,value2)', '~vote(node0,value2)']
+80     : ---1--------0--------
+80     : ['decide(quorum__node0_node2,value0)', '~vote(node0,value0)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0)
+qcost : 6
+
+
+
+
+=== Prime Orbit 13 =====================
+size : 3
+num_suborbits: 1
+219 (*) : --0--0--0--1---------
+219     : ['decision(value2)', '~decide(quorum__node0_node1,value2)', '~decide(quorum__node0_node2,value2)', '~decide(quorum__node1_node2,value2)']
+220     : -0--0--0--1----------
+220     : ['decision(value1)', '~decide(quorum__node0_node1,value1)', '~decide(quorum__node0_node2,value1)', '~decide(quorum__node1_node2,value1)']
+221     : 0--0--0--1-----------
+221     : ['decision(value0)', '~decide(quorum__node0_node1,value0)', '~decide(quorum__node0_node2,value0)', '~decide(quorum__node1_node2,value0)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0))
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.232 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.086 seconds
+
+[QRM NOTE]: Peak memory: 2083234 bytes
+
+
+===================================================================================================
+
+	[MIN]: Minimization on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+===================================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 3, 13]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 3, 13]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1), (13, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1), (13, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 3, 13]
+
+
+Solution : [0, 3, 13] has cost 16.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 3, 13]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 3, 13]
+
+
+==================================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+==================================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 16
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 3, 13]
+
+[MIN NOTE]: solution length: 3
+
+invariant [invar_0] forall VALUE1,VALUE0,NODE0. ~vote(NODE0,VALUE1) | ~vote(NODE0,VALUE0) | VALUE0 = VALUE1 # qcost: 6
+
+invariant [invar_3] forall NODE0,VALUE0,QUORUM0. vote(NODE0,VALUE0) | ~member(NODE0,QUORUM0) | ~decide(QUORUM0,VALUE0) # qcost: 6
+
+invariant [invar_13] forall VALUE0. (exists QUORUM0. decide(QUORUM0,VALUE0) | ~decision(VALUE0)) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 3
+
+[MIN NOTE]: total qCost: 16
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.293 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.061 seconds
+
+[QRM NOTE]: Peak memory: 2061907 bytes
+
+
+*******************************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym_quorum/ivy/naive_consensus.ivy: node=3,value=3]
+
+*******************************************************************************************************************
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy -s node=4,value=3 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: node=4,value=3]
+
+===========================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 27
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 16
+
+[FW NOTE]: symmetric group order: 144
+
+[QRM NOTE]: Time elapsed since start: 0.259 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.259 seconds
+
+[QRM NOTE]: Peak memory: 524131 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 135
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=4,value=3]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1', 'node2', 'node3']
+sort: value=['value0', 'value1', 'value2']
+sort: quorum=['quorum__node0_node1_node2', 'quorum__node0_node1_node3', 'quorum__node0_node2_node3', 'quorum__node1_node2_node3']
+predicate: decision('value',)
+predicate: decide('quorum', 'value')
+predicate: vote('node', 'value')
+predicate: member('node', 'quorum')
+interpreted atoms: {'member(node0,quorum__node0_node1_node2)': '1', 'member(node0,quorum__node0_node1_node3)': '1', 'member(node0,quorum__node0_node2_node3)': '1', 'member(node0,quorum__node1_node2_node3)': '0', 'member(node1,quorum__node0_node1_node2)': '1', 'member(node1,quorum__node0_node1_node3)': '1', 'member(node1,quorum__node0_node2_node3)': '0', 'member(node1,quorum__node1_node2_node3)': '1', 'member(node2,quorum__node0_node1_node2)': '1', 'member(node2,quorum__node0_node1_node3)': '0', 'member(node2,quorum__node0_node2_node3)': '1', 'member(node2,quorum__node1_node2_node3)': '1', 'member(node3,quorum__node0_node1_node2)': '0', 'member(node3,quorum__node0_node1_node3)': '1', 'member(node3,quorum__node0_node2_node3)': '1', 'member(node3,quorum__node1_node2_node3)': '1'}
+state atoms: ['decide(quorum__node0_node1_node2,value0)', 'decide(quorum__node0_node1_node2,value1)', 'decide(quorum__node0_node1_node2,value2)', 'decide(quorum__node0_node1_node3,value0)', 'decide(quorum__node0_node1_node3,value1)', 'decide(quorum__node0_node1_node3,value2)', 'decide(quorum__node0_node2_node3,value0)', 'decide(quorum__node0_node2_node3,value1)', 'decide(quorum__node0_node2_node3,value2)', 'decide(quorum__node1_node2_node3,value0)', 'decide(quorum__node1_node2_node3,value1)', 'decide(quorum__node1_node2_node3,value2)', 'decision(value0)', 'decision(value1)', 'decision(value2)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'vote(node3,value0)', 'vote(node3,value1)', 'vote(node3,value2)']
+
+00000000000000000-00-00-00-
+00000000000000000-00-00-010
+00000000000000000-00-00-100
+00000000000000000-00-01000-
+00000000000000000-00-010010
+00000000000000000-00-010100
+00000000000000000-00-10000-
+00000000000000000-00-100010
+00000000000000000-00-100100
+00000000000000000-01000-00-
+00000000000000000-01000-010
+00000000000000000-01000-100
+00000000000000000-01001000-
+00000000000000000-010010010
+00000000000000000-010010100
+00000000000000000-01010000-
+00000000000000000-010100010
+00000000000000000-010100100
+00000000000000000-10000-00-
+00000000000000000-10000-010
+00000000000000000-10000-100
+00000000000000000-10001000-
+00000000000000000-100010010
+00000000000000000-100010100
+00000000000000000-10010000-
+00000000000000000-100100010
+00000000000000000-100100100
+00000000000000001000-00-00-
+00000000000000001000-00-010
+00000000000000001000-00-100
+00000000000000001000-01000-
+00000000000000001000-010010
+00000000000000001000-010100
+00000000000000001000-10000-
+00000000000000001000-100010
+00000000000000001000-100100
+00000000000000001001000-00-
+00000000000000001001000-010
+00000000000000001001000-100
+00000000000000001001001000-
+000000000000000010010010010
+000000000000000010010010100
+00000000000000001001010000-
+000000000000000010010100010
+000000000000000010010100100
+00000000000000001010000-00-
+00000000000000001010000-010
+00000000000000001010000-100
+00000000000000001010001000-
+000000000000000010100010010
+000000000000000010100010100
+00000000000000001010010000-
+000000000000000010100100010
+000000000000000010100100100
+00000000000000010000-00-00-
+00000000000000010000-00-010
+00000000000000010000-00-100
+00000000000000010000-01000-
+00000000000000010000-010010
+00000000000000010000-010100
+00000000000000010000-10000-
+00000000000000010000-100010
+00000000000000010000-100100
+00000000000000010001000-00-
+00000000000000010001000-010
+00000000000000010001000-100
+00000000000000010001001000-
+000000000000000100010010010
+000000000000000100010010100
+00000000000000010001010000-
+000000000000000100010100010
+000000000000000100010100100
+00000000000000010010000-00-
+00000000000000010010000-010
+00000000000000010010000-100
+00000000000000010010001000-
+000000000000000100100010010
+000000000000000100100010100
+00000000000000010010010000-
+000000000000000100100100010
+000000000000000100100100100
+00000000000100-00-001001001
+00000000000100-010001001001
+00000000000100-100001001001
+0000000000100-000-010010010
+0000000000100-0010010010010
+0000000000100-0100010010010
+000000000100-0000-100100100
+000000000100-00010100100100
+000000000100-00100100100100
+00000000100000-00100-001001
+00000000100000-001010001001
+00000000100000-001100001001
+00000000100100-001001001001
+0000000100000-001000-010010
+0000000100000-0010010010010
+0000000100000-0010100010010
+0000000100100-0010010010010
+000000100000-0010000-100100
+000000100000-00100010100100
+000000100000-00100100100100
+000000100100-00100100100100
+00000100000000-00100100-001
+00000100000000-001001010001
+00000100000000-001001100001
+00000100000100-001001001001
+00000100100-00-001001001001
+0000100000000-001001000-010
+0000100000000-0010010010010
+0000100000000-0010010100010
+0000100000100-0010010010010
+0000100100-00-0010010010010
+000100000000-0010010000-100
+000100000000-00100100010100
+000100000000-00100100100100
+000100000100-00100100100100
+000100100-00-00100100100100
+00100000000000-00100100100-
+00100000000000-001001001010
+00100000000000-001001001100
+00100000000100-001001001001
+00100000100-00-001001001001
+00100100-00-00-001001001001
+0100000000000-001001001000-
+0100000000000-0010010010010
+0100000000000-0010010010100
+0100000000100-0010010010010
+0100000100-00-0010010010010
+0100100-00-00-0010010010010
+100000000000-0010010010000-
+100000000000-00100100100010
+100000000000-00100100100100
+100000000100-00100100100100
+100000100-00-00100100100100
+100100-00-00-00100100100100
+
+[QRM NOTE]: Time elapsed since start: 3.324 seconds
+
+[QRM NOTE]: Time elapsed since last: 3.064 seconds
+
+[QRM NOTE]: Peak memory: 2030701 bytes
+
+
+=======================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: node=4,value=3]
+
+=======================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 5.049 seconds
+
+[QRM NOTE]: Time elapsed since last: 1.726 seconds
+
+[QRM NOTE]: Peak memory: 2722972 bytes
+
+python3 qrm.py ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy -s node=3,value=4 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym_quorum/ivy/naive_consensus.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+===========================================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: node=3,value=4]
+
+===========================================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 28
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 9
+
+[FW NOTE]: symmetric group order: 144
+
+[QRM NOTE]: Time elapsed since start: 0.261 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.261 seconds
+
+[QRM NOTE]: Peak memory: 534889 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: cast_vote(fml:n,fml:v)
+
+building bdd for action: collect_votes(fml:q,fml:v)
+
+building bdd for action: learn_value(fml:q,fml:v)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 124
+
+
+=============================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym_quorum/ivy/naive_consensus: node=3,value=4]
+
+=============================================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+sort: value=['value0', 'value1', 'value2', 'value3']
+sort: quorum=['quorum__node0_node1', 'quorum__node0_node2', 'quorum__node1_node2']
+predicate: vote('node', 'value')
+predicate: decision('value',)
+predicate: member('node', 'quorum')
+predicate: decide('quorum', 'value')
+interpreted atoms: {'member(node0,quorum__node0_node1)': '1', 'member(node0,quorum__node0_node2)': '1', 'member(node0,quorum__node1_node2)': '0', 'member(node1,quorum__node0_node1)': '1', 'member(node1,quorum__node0_node2)': '0', 'member(node1,quorum__node1_node2)': '1', 'member(node2,quorum__node0_node1)': '0', 'member(node2,quorum__node0_node2)': '1', 'member(node2,quorum__node1_node2)': '1'}
+state atoms: ['decide(quorum__node0_node1,value0)', 'decide(quorum__node0_node1,value1)', 'decide(quorum__node0_node1,value2)', 'decide(quorum__node0_node1,value3)', 'decide(quorum__node0_node2,value0)', 'decide(quorum__node0_node2,value1)', 'decide(quorum__node0_node2,value2)', 'decide(quorum__node0_node2,value3)', 'decide(quorum__node1_node2,value0)', 'decide(quorum__node1_node2,value1)', 'decide(quorum__node1_node2,value2)', 'decide(quorum__node1_node2,value3)', 'decision(value0)', 'decision(value1)', 'decision(value2)', 'decision(value3)', 'vote(node0,value0)', 'vote(node0,value1)', 'vote(node0,value2)', 'vote(node0,value3)', 'vote(node1,value0)', 'vote(node1,value1)', 'vote(node1,value2)', 'vote(node1,value3)', 'vote(node2,value0)', 'vote(node2,value1)', 'vote(node2,value2)', 'vote(node2,value3)']
+
+0000000000000000000-000-000-
+0000000000000000000-000-0010
+0000000000000000000-000-0100
+0000000000000000000-000-1000
+0000000000000000000-0010000-
+0000000000000000000-00100010
+0000000000000000000-00100100
+0000000000000000000-00101000
+0000000000000000000-0100000-
+0000000000000000000-01000010
+0000000000000000000-01000100
+0000000000000000000-01001000
+0000000000000000000-1000000-
+0000000000000000000-10000010
+0000000000000000000-10000100
+0000000000000000000-10001000
+00000000000000000010000-000-
+00000000000000000010000-0010
+00000000000000000010000-0100
+00000000000000000010000-1000
+000000000000000000100010000-
+0000000000000000001000100010
+0000000000000000001000100100
+0000000000000000001000101000
+000000000000000000100100000-
+0000000000000000001001000010
+0000000000000000001001000100
+0000000000000000001001001000
+000000000000000000101000000-
+0000000000000000001010000010
+0000000000000000001010000100
+0000000000000000001010001000
+00000000000000000100000-000-
+00000000000000000100000-0010
+00000000000000000100000-0100
+00000000000000000100000-1000
+000000000000000001000010000-
+0000000000000000010000100010
+0000000000000000010000100100
+0000000000000000010000101000
+000000000000000001000100000-
+0000000000000000010001000010
+0000000000000000010001000100
+0000000000000000010001001000
+000000000000000001001000000-
+0000000000000000010010000010
+0000000000000000010010000100
+0000000000000000010010001000
+00000000000000001000000-000-
+00000000000000001000000-0010
+00000000000000001000000-0100
+00000000000000001000000-1000
+000000000000000010000010000-
+0000000000000000100000100010
+0000000000000000100000100100
+0000000000000000100000101000
+000000000000000010000100000-
+0000000000000000100001000010
+0000000000000000100001000100
+0000000000000000100001001000
+000000000000000010001000000-
+0000000000000000100010000010
+0000000000000000100010000100
+0000000000000000100010001000
+000000000001000-000-00010001
+000000000001000-001000010001
+000000000001000-010000010001
+000000000001000-100000010001
+00000000001000-0000-00100010
+00000000001000-0001000100010
+00000000001000-0010000100010
+00000000001000-0100000100010
+0000000001000-00000-01000100
+0000000001000-00001001000100
+0000000001000-00010001000100
+0000000001000-00100001000100
+000000001000-000000-10001000
+000000001000-000001010001000
+000000001000-000010010001000
+000000001000-000100010001000
+000000010000000-0001000-0001
+000000010000000-000100100001
+000000010000000-000101000001
+000000010000000-000110000001
+000000010001000-000100010001
+00000010000000-00010000-0010
+00000010000000-0001000100010
+00000010000000-0001001000010
+00000010000000-0001010000010
+00000010001000-0001000100010
+0000010000000-000100000-0100
+0000010000000-00010000100100
+0000010000000-00010001000100
+0000010000000-00010010000100
+0000010001000-00010001000100
+000010000000-0001000000-1000
+000010000000-000100000101000
+000010000000-000100001001000
+000010000000-000100010001000
+000010001000-000100010001000
+000100000000000-00010001000-
+000100000000000-000100010010
+000100000000000-000100010100
+000100000000000-000100011000
+000100000001000-000100010001
+00010001000-000-000100010001
+00100000000000-000100010000-
+00100000000000-0001000100010
+00100000000000-0001000100100
+00100000000000-0001000101000
+00100000001000-0001000100010
+0010001000-000-0001000100010
+0100000000000-0001000100000-
+0100000000000-00010001000010
+0100000000000-00010001000100
+0100000000000-00010001001000
+0100000001000-00010001000100
+010001000-000-00010001000100
+100000000000-00010001000000-
+100000000000-000100010000010
+100000000000-000100010000100
+100000000000-000100010001000
+100000001000-000100010001000
+10001000-000-000100010001000
+
+[QRM NOTE]: Time elapsed since start: 3.053 seconds
+
+[QRM NOTE]: Time elapsed since last: 2.792 seconds
+
+[QRM NOTE]: Peak memory: 1967617 bytes
+
+
+=======================================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: node=3,value=4]
+
+=======================================================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 4.720 seconds
+
+[QRM NOTE]: Time elapsed since last: 1.667 seconds
+
+[QRM NOTE]: Peak memory: 2564381 bytes
+
+
+*********************************************************************
+
+	[IVY_CHECK]: Ivy Check for Reachability Invariant
+
+*********************************************************************
+
+
+=======================================================================================================
+
+	[IVY_CHECK]: Ivy check on [ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy]
+
+=======================================================================================================
+
+ivy_check complete=fo ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy
+
+
+Isolate this:
+
+    The following properties are assumed as axioms:
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 12: axiom1
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 46: invar_0
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 47: invar_3
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 48: invar_13
+
+    The following action implementations are present:
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 20: implementation of cast_vote
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 25: implementation of collect_votes
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 30: implementation of learn_value
+
+    The following initializers are present:
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 14: init[after2]
+
+    Initialization must establish the invariant
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 46: invar_0 ... PASS
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 47: invar_3 ... PASS
+        ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 48: invar_13 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:cast_vote
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 46: invar_0 ... PASS
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 47: invar_3 ... PASS
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 48: invar_13 ... PASS
+        (internal) ext:collect_votes
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 46: invar_0 ... PASS
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 47: invar_3 ... PASS
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 48: invar_13 ... PASS
+        (internal) ext:learn_value
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 46: invar_0 ... PASS
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 47: invar_3 ... PASS
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 48: invar_13 ... PASS
+
+    The following program assertions are treated as assumptions:
+        in action cast_vote when called from the environment:
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 21: assumption
+        in action collect_votes when called from the environment:
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 26: assumption
+        in action learn_value when called from the environment:
+            ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy: line 31: assumption
+
+OK
+[IVY_CHECK RESULT]: PASS
+
+
+***************************************************************************************
+
+	[QRM]: ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy
+
+***************************************************************************************
+
+[RMIN NUM]: 1
+
+[RMIN RESULT]: ['ivybench/sym_quorum/ivy/naive_consensus.node_3_value_3.0.ivy']
+
+[CUTOFF]: node=3,value=3
+
+[QRM RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 50.849 seconds
+
+[QRM NOTE]: Time elapsed since last: 50.849 seconds
+

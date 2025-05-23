@@ -1,0 +1,38 @@
+sort: acceptor=['acceptor0', 'acceptor1', 'acceptor2']
+sort: proposer=['proposer0', 'proposer1']
+sort: quorum=['quorum__acceptor0_acceptor1', 'quorum__acceptor0_acceptor2', 'quorum__acceptor1_acceptor2']
+predicate: leader('proposer',)
+predicate: chosenAt('quorum', 'proposer')
+predicate: promise('acceptor', 'proposer')
+predicate: didNotPromise('acceptor',)
+predicate: member('acceptor', 'quorum')
+predicate: start('proposer',)
+interpreted atoms: {'member(acceptor0,quorum__acceptor0_acceptor1)': '1', 'member(acceptor0,quorum__acceptor0_acceptor2)': '1', 'member(acceptor0,quorum__acceptor1_acceptor2)': '0', 'member(acceptor1,quorum__acceptor0_acceptor1)': '1', 'member(acceptor1,quorum__acceptor0_acceptor2)': '0', 'member(acceptor1,quorum__acceptor1_acceptor2)': '1', 'member(acceptor2,quorum__acceptor0_acceptor1)': '0', 'member(acceptor2,quorum__acceptor0_acceptor2)': '1', 'member(acceptor2,quorum__acceptor1_acceptor2)': '1'}
+state atoms: ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer0)', 'leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor1,proposer0)', 'promise(acceptor1,proposer1)', 'promise(acceptor2,proposer0)', 'promise(acceptor2,proposer1)', 'start(proposer0)', 'start(proposer1)']
+0000000010001100011
+0000000010010010011
+0000000100001001011
+0000000100010000111
+00000001100010000-1
+000000011001000001-
+0000001000000011011
+0000001000000100111
+00000010100000100-1
+000000101000010001-
+00000011000000001-1
+000000110000000101-
+00000011100000000--
+0000010000-10010111
+0000011000-000101-1
+000010000-001101011
+000010100-00010101-
+0001000000-01100111
+0001000100-010001-1
+001000000-010011011
+001000010-01000101-
+0100000000-01011011
+0100000010-010100-1
+0101010000-010101-1
+100000000-010100111
+100000001-01010001-
+101010000-01010101-

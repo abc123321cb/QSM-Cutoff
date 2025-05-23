@@ -1,0 +1,5620 @@
+
+********************************************************
+
+	[QRM]: ivybench/sym/ivy/lockserv.ivy
+
+********************************************************
+
+
+******************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+******************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lockserv.ivy -s node=1 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lockserv.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+====================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+====================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 5
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[QRM NOTE]: Time elapsed since start: 0.034 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.034 seconds
+
+[QRM NOTE]: Peak memory: 34497 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: send_lock(fml:n)
+
+building bdd for action: recv_lock(fml:n)
+
+building bdd for action: recv_grant(fml:n)
+
+building bdd for action: unlock(fml:n)
+
+building bdd for action: recv_unlock(fml:n)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 4
+
+
+=======================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lockserv: node=1]
+
+=======================================================================================
+
+sort: node=['node0']
+predicate: unlock_msg('node',)
+predicate: grant_msg('node',)
+predicate: holds_lock('node',)
+predicate: server_holds_lock()
+predicate: lock_msg('node',)
+interpreted atoms: {}
+state atoms: ['grant_msg(node0)', 'holds_lock(node0)', 'lock_msg(node0)', 'server_holds_lock()', 'unlock_msg(node0)']
+
+00-01
+00-10
+01-00
+10-00
+
+[QRM NOTE]: Time elapsed since start: 0.102 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.068 seconds
+
+[QRM NOTE]: Peak memory: 1102215 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.106 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 53249 bytes
+
+
+===========================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+===========================================================================================
+
+
+======================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+======================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11---
+0     : ['grant_msg(node0)', 'holds_lock(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : -1-1-
+1     : ['holds_lock(node0)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : 1--1-
+2     : ['grant_msg(node0)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 1---1
+3     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+4 (*) : -1--1
+4     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+5 (*) : ---11
+5     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 00-00
+6     : ['~grant_msg(node0)', '~holds_lock(node0)', '~server_holds_lock()', '~unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 7
+
+[PRIME NOTE]: number of orbits before merging: 7
+
+[PRIME NOTE]: number of primes: 7
+
+[QRM NOTE]: Time elapsed since start: 0.117 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 1121261 bytes
+
+
+================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3, 4, 5, 6]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3, 4, 5, 6]
+ solution : []
+
+Essensial at level 0 : {0, 1, 2, 3, 4, 5, 6}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+[QRM NOTE]: Time elapsed since start: 0.118 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.001 seconds
+
+[QRM NOTE]: Peak memory: 73629 bytes
+
+
+====================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+====================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11---
+0     : ['grant_msg(node0)', 'holds_lock(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'holds_lock(node0)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'holds_lock(node0)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0',)),), 'holds_lock': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0; node$0$holds_lock$0': [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0; node$0$holds_lock$0': node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : -1-1-
+1     : ['holds_lock(node0)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'server_holds_lock']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$server_holds_lock': [[]]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$holds_lock$0$0}
+
+part_sig: ('node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'server_holds_lock']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0',)),), 'server_holds_lock': []}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$server_holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0': node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$server_holds_lock': [[]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['server_holds_lock', 'holds_lock(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : 1--1-
+2     : ['grant_msg(node0)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'server_holds_lock']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$server_holds_lock': [[]]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$grant_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$grant_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$grant_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'server_holds_lock']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0',)),), 'server_holds_lock': []}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$server_holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$grant_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$grant_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$server_holds_lock': [[]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['server_holds_lock', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 1---1
+3     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'unlock_msg(node0)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'unlock_msg(node0)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0',)),), 'unlock_msg': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0; node$0$unlock_msg$0': [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0; node$0$unlock_msg$0': node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+4 (*) : -1--1
+4     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'unlock_msg(node0)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$holds_lock$0$0; node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'unlock_msg(node0)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0',)),), 'unlock_msg': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0; node$0$unlock_msg$0': [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0; node$0$unlock_msg$0': node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'holds_lock(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0)
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+5 (*) : ---11
+5     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['server_holds_lock', 'unlock_msg(node0)']
+
+sign_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['server_holds_lock', 'unlock_msg(node0)']
+
+func_name2symbol:  {'server_holds_lock': Const('server_holds_lock', BooleanSort()), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'server_holds_lock': [], 'unlock_msg': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'0$server_holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 00-00
+6     : ['~grant_msg(node0)', '~holds_lock(node0)', '~server_holds_lock()', '~unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~grant_msg(node0)', '~holds_lock(node0)', '~server_holds_lock', '~unlock_msg(node0)']
+
+sign_func_name2args: {'1$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '1$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '1$server_holds_lock': [[]], '1$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$grant_msg$0$0, node$1$holds_lock$0$0, node$1$unlock_msg$0$0]}
+
+sig2const: {'node$1$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$1$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$1$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0}
+
+part_sig: ('node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['~grant_msg(node0)', '~holds_lock(node0)', '~server_holds_lock', '~unlock_msg(node0)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort()), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0',)),), 'holds_lock': (EnumeratedSort('node', ('node0',)),), 'server_holds_lock': [], 'unlock_msg': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'1$grant_msg': 1, '1$holds_lock': 1, '1$server_holds_lock': 1, '1$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$1$grant_msg$0; node$1$holds_lock$0; node$1$unlock_msg$0': [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$1$grant_msg$0; node$1$holds_lock$0; node$1$unlock_msg$0': node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '1$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '1$server_holds_lock': [[]], '1$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~unlock_msg(NODE0)', '~holds_lock(NODE0)', '~grant_msg(NODE0)', '~server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock
+
+
+==============================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+==============================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 11---
+0     : ['grant_msg(node0)', 'holds_lock(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : -1-1-
+1     : ['holds_lock(node0)', 'server_holds_lock()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~server_holds_lock | ~holds_lock(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : 1--1-
+2     : ['grant_msg(node0)', 'server_holds_lock()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 1---1
+3     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+4 (*) : -1--1
+4     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+5 (*) : ---11
+5     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+qcost : 3
+
+
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+6 (*) : 00-00
+6     : ['~grant_msg(node0)', '~holds_lock(node0)', '~server_holds_lock()', '~unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock
+qcost : 5
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.206 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.088 seconds
+
+[QRM NOTE]: Peak memory: 1807318 bytes
+
+
+=============================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+=============================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+
+Solution : [0, 1, 2, 3, 4, 5, 6] has cost 23.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6]
+
+
+============================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+============================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 23
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2, 3, 4, 5, 6]
+
+[MIN NOTE]: solution length: 7
+
+invariant [invar_0] forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_1] forall NODE0. ~server_holds_lock | ~holds_lock(NODE0) # qcost: 3
+
+invariant [invar_2] forall NODE0. ~server_holds_lock | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_3] forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_4] forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0) # qcost: 3
+
+invariant [invar_5] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
+
+invariant [invar_6] forall NODE0. unlock_msg(NODE0) | holds_lock(NODE0) | grant_msg(NODE0) | server_holds_lock # qcost: 5
+
+[MIN NOTE]: number of total invariants: 7
+
+[MIN NOTE]: total qCost: 23
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.271 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.065 seconds
+
+[QRM NOTE]: Peak memory: 1796692 bytes
+
+
+*********************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/lockserv.ivy: node=1]
+
+*********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lockserv.node_1.0.ivy -s node=2 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lockserv.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lockserv.node_1.0.ivy: node=2]
+
+=============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 9
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[QRM NOTE]: Time elapsed since start: 0.072 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.072 seconds
+
+[QRM NOTE]: Peak memory: 64648 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: send_lock(fml:n)
+
+building bdd for action: recv_lock(fml:n)
+
+building bdd for action: recv_grant(fml:n)
+
+building bdd for action: unlock(fml:n)
+
+building bdd for action: recv_unlock(fml:n)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 7
+
+
+=======================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lockserv: node=2]
+
+=======================================================================================
+
+sort: node=['node0', 'node1']
+predicate: lock_msg('node',)
+predicate: holds_lock('node',)
+predicate: server_holds_lock()
+predicate: grant_msg('node',)
+predicate: unlock_msg('node',)
+interpreted atoms: {}
+state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'holds_lock(node0)', 'holds_lock(node1)', 'lock_msg(node0)', 'lock_msg(node1)', 'server_holds_lock()', 'unlock_msg(node0)', 'unlock_msg(node1)']
+
+0000--001
+0000--010
+0000--100
+0001--000
+0010--000
+0100--000
+1000--000
+
+[QRM NOTE]: Time elapsed since start: 0.285 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.213 seconds
+
+[QRM NOTE]: Peak memory: 1167308 bytes
+
+
+=========================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lockserv.node_1.0.ivy: node=2]
+
+=========================================================================================================================
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 0.323 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.039 seconds
+
+[QRM NOTE]: Peak memory: 146878 bytes
+
+next size: node=2
+
+
+******************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+******************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lockserv.ivy -s node=2 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lockserv.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.020 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.020 seconds
+
+[QRM NOTE]: Peak memory: 2226 bytes
+
+
+===========================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+===========================================================================================
+
+
+======================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+======================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : ---1----1
+0     : ['holds_lock(node1)', 'unlock_msg(node1)']
+1     : --1----1-
+1     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1-------1
+2     : ['grant_msg(node0)', 'unlock_msg(node1)']
+3     : -1-----1-
+3     : ['grant_msg(node1)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+4 (*) : -1------1
+4     : ['grant_msg(node1)', 'unlock_msg(node1)']
+5     : 1------1-
+5     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+6 (*) : --1-----1
+6     : ['holds_lock(node0)', 'unlock_msg(node1)']
+7     : ---1---1-
+7     : ['holds_lock(node1)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 2
+num_suborbits: 1
+8 (*) : ------1-1
+8     : ['server_holds_lock()', 'unlock_msg(node1)']
+9     : ------11-
+9     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+10 (*) : -------11
+10     : ['unlock_msg(node0)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 2
+num_suborbits: 1
+11 (*) : 1--1-----
+11     : ['grant_msg(node0)', 'holds_lock(node1)']
+12     : -11------
+12     : ['grant_msg(node1)', 'holds_lock(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 1
+num_suborbits: 1
+13 (*) : 11-------
+13     : ['grant_msg(node0)', 'grant_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 2
+num_suborbits: 1
+14 (*) : -1-1-----
+14     : ['grant_msg(node1)', 'holds_lock(node1)']
+15     : 1-1------
+15     : ['grant_msg(node0)', 'holds_lock(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 1
+num_suborbits: 1
+16 (*) : --11-----
+16     : ['holds_lock(node0)', 'holds_lock(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+17 (*) : --1---1--
+17     : ['holds_lock(node0)', 'server_holds_lock()']
+18     : ---1--1--
+18     : ['holds_lock(node1)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 11 =====================
+size : 2
+num_suborbits: 1
+19 (*) : 1-----1--
+19     : ['grant_msg(node0)', 'server_holds_lock()']
+20     : -1----1--
+20     : ['grant_msg(node1)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+21 (*) : 0000--000
+21     : ['~grant_msg(node0)', '~grant_msg(node1)', '~holds_lock(node0)', '~holds_lock(node1)', '~server_holds_lock()', '~unlock_msg(node0)', '~unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 13
+
+[PRIME NOTE]: number of orbits before merging: 13
+
+[PRIME NOTE]: number of primes: 22
+
+[QRM NOTE]: Time elapsed since start: 0.031 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 1103864 bytes
+
+
+================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ solution : []
+
+Essensial at level 0 : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+[QRM NOTE]: Time elapsed since start: 0.033 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
+
+[QRM NOTE]: Peak memory: 55773 bytes
+
+
+====================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+====================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : ---1----1
+0     : ['holds_lock(node1)', 'unlock_msg(node1)']
+1     : --1----1-
+1     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node1)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$holds_lock$0$0; node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node1)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0; node$0$unlock_msg$0': [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0; node$0$unlock_msg$0': node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'unlock_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE0)
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1-------1
+2     : ['grant_msg(node0)', 'unlock_msg(node1)']
+3     : -1-----1-
+3     : ['grant_msg(node1)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0 | node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0 | node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0 | node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0], 'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0, 'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$unlock_msg': [[Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE1)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
+
+
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+4 (*) : -1------1
+4     : ['grant_msg(node1)', 'unlock_msg(node1)']
+5     : 1------1-
+5     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node1)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node1)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0; node$0$unlock_msg$0': [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0; node$0$unlock_msg$0': node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+6 (*) : --1-----1
+6     : ['holds_lock(node0)', 'unlock_msg(node1)']
+7     : ---1---1-
+7     : ['holds_lock(node1)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0 | node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$holds_lock$0$0 | node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0 | node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0], 'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0': node$0$holds_lock$0$0, 'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$unlock_msg': [[Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'unlock_msg(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 4 =====================
+size : 2
+num_suborbits: 1
+8 (*) : ------1-1
+8     : ['server_holds_lock()', 'unlock_msg(node1)']
+9     : ------11-
+9     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['server_holds_lock', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['server_holds_lock', 'unlock_msg(node1)']
+
+func_name2symbol:  {'server_holds_lock': Const('server_holds_lock', BooleanSort()), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'server_holds_lock': [], 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$server_holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+10 (*) : -------11
+10     : ['unlock_msg(node0)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['unlock_msg(node0)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$unlock_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$unlock_msg$0$1]}
+
+sig2const: {'node$0$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$unlock_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$unlock_msg$0$0 | node$0$unlock_msg$0$1}
+
+part_sig: ('node$0$unlock_msg$0$0 | node$0$unlock_msg$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['unlock_msg(node0)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$unlock_msg': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$unlock_msg$0$0 | node$0$unlock_msg$0$1}
+
+	sort: node
+
+	identical_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: set()
+
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: exists NODE0. ~unlock_msg(NODE0)
+
+
+=== Prime Orbit 6 =====================
+size : 2
+num_suborbits: 1
+11 (*) : 1--1-----
+11     : ['grant_msg(node0)', 'holds_lock(node1)']
+12     : -11------
+12     : ['grant_msg(node1)', 'holds_lock(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'holds_lock(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$holds_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0 | node$0$holds_lock$0$0}
+
+part_sig: ('node$0$grant_msg$0$0 | node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'holds_lock(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),), 'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0 | node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0], 'node$0$holds_lock$0': [node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0, 'node$0$holds_lock$0': node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$holds_lock': [[Var('NODE1', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE1)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
+
+
+=== Prime Orbit 7 =====================
+size : 1
+num_suborbits: 1
+13 (*) : 11-------
+13     : ['grant_msg(node0)', 'grant_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'grant_msg(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$1]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$grant_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0 | node$0$grant_msg$0$1}
+
+part_sig: ('node$0$grant_msg$0$0 | node$0$grant_msg$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'grant_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$grant_msg': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0 | node$0$grant_msg$0$1}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: set()
+
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: exists NODE0. ~grant_msg(NODE0)
+
+
+=== Prime Orbit 8 =====================
+size : 2
+num_suborbits: 1
+14 (*) : -1-1-----
+14     : ['grant_msg(node1)', 'holds_lock(node1)']
+15     : 1-1------
+15     : ['grant_msg(node0)', 'holds_lock(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node1)', 'holds_lock(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$holds_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node1)', 'holds_lock(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),), 'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0; node$0$holds_lock$0': [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0; node$0$holds_lock$0': node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 9 =====================
+size : 1
+num_suborbits: 1
+16 (*) : --11-----
+16     : ['holds_lock(node0)', 'holds_lock(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'holds_lock(node1)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$1]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$holds_lock$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0 | node$0$holds_lock$0$1}
+
+part_sig: ('node$0$holds_lock$0$0 | node$0$holds_lock$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'holds_lock(node1)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'0$holds_lock': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0 | node$0$holds_lock$0$1}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: set()
+
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: exists NODE0. ~holds_lock(NODE0)
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+17 (*) : --1---1--
+17     : ['holds_lock(node0)', 'server_holds_lock()']
+18     : ---1--1--
+18     : ['holds_lock(node1)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'server_holds_lock']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$server_holds_lock': [[]]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0}
+
+part_sig: ('node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'server_holds_lock']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),), 'server_holds_lock': []}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$server_holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0': node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$server_holds_lock': [[]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
+
+
+=== Prime Orbit 11 =====================
+size : 2
+num_suborbits: 1
+19 (*) : 1-----1--
+19     : ['grant_msg(node0)', 'server_holds_lock()']
+20     : -1----1--
+20     : ['grant_msg(node1)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'server_holds_lock']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)], '0$server_holds_lock': [[]]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$0$grant_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'server_holds_lock']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),), 'server_holds_lock': []}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$server_holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$grant_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$grant_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '0$server_holds_lock': [[]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['server_holds_lock', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+21 (*) : 0000--000
+21     : ['~grant_msg(node0)', '~grant_msg(node1)', '~holds_lock(node0)', '~holds_lock(node1)', '~server_holds_lock()', '~unlock_msg(node0)', '~unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~grant_msg(node0)', '~grant_msg(node1)', '~holds_lock(node0)', '~holds_lock(node1)', '~server_holds_lock', '~unlock_msg(node0)', '~unlock_msg(node1)']
+
+sign_func_name2args: {'1$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '1$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '1$server_holds_lock': [[]], '1$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$1$grant_msg$0$0, node$1$holds_lock$0$0, node$1$unlock_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$1$grant_msg$0$1, node$1$holds_lock$0$1, node$1$unlock_msg$0$1]}
+
+sig2const: {'node$1$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$grant_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$holds_lock$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$unlock_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0, node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0 | node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1}
+
+part_sig: ('node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0 | node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['~grant_msg(node0)', '~grant_msg(node1)', '~holds_lock(node0)', '~holds_lock(node1)', '~server_holds_lock', '~unlock_msg(node0)', '~unlock_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort()), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1')),), 'holds_lock': (EnumeratedSort('node', ('node0', 'node1')),), 'server_holds_lock': [], 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1')),)}
+
+sign_func_name2count:  {'1$grant_msg': 2, '1$holds_lock': 2, '1$server_holds_lock': 1, '1$unlock_msg': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0, node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0 | node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1}
+
+	sort: node
+
+	identical_classes: {'node$1$grant_msg$0; node$1$holds_lock$0; node$1$unlock_msg$0': [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0, node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$1$grant_msg$0; node$1$holds_lock$0; node$1$unlock_msg$0': [node$1$grant_msg$0$0, node$1$holds_lock$0$0, node$1$unlock_msg$0$0, node$1$grant_msg$0$1, node$1$holds_lock$0$1, node$1$unlock_msg$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: set()
+
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '1$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]], '1$server_holds_lock': [[]], '1$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~grant_msg(NODE0)', '~unlock_msg(NODE0)', '~server_holds_lock', '~holds_lock(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: exists NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | server_holds_lock | holds_lock(NODE0)
+
+
+==============================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+==============================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : ---1----1
+0     : ['holds_lock(node1)', 'unlock_msg(node1)']
+1     : --1----1-
+1     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : 1-------1
+2     : ['grant_msg(node0)', 'unlock_msg(node1)']
+3     : -1-----1-
+3     : ['grant_msg(node1)', 'unlock_msg(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+4 (*) : -1------1
+4     : ['grant_msg(node1)', 'unlock_msg(node1)']
+5     : 1------1-
+5     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+6 (*) : --1-----1
+6     : ['holds_lock(node0)', 'unlock_msg(node1)']
+7     : ---1---1-
+7     : ['holds_lock(node1)', 'unlock_msg(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 4 =====================
+size : 2
+num_suborbits: 1
+8 (*) : ------1-1
+8     : ['server_holds_lock()', 'unlock_msg(node1)']
+9     : ------11-
+9     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+qcost : 3
+
+
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+10 (*) : -------11
+10     : ['unlock_msg(node0)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~unlock_msg(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 6 =====================
+size : 2
+num_suborbits: 1
+11 (*) : 1--1-----
+11     : ['grant_msg(node0)', 'holds_lock(node1)']
+12     : -11------
+12     : ['grant_msg(node1)', 'holds_lock(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 7 =====================
+size : 1
+num_suborbits: 1
+13 (*) : 11-------
+13     : ['grant_msg(node0)', 'grant_msg(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~grant_msg(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 8 =====================
+size : 2
+num_suborbits: 1
+14 (*) : -1-1-----
+14     : ['grant_msg(node1)', 'holds_lock(node1)']
+15     : 1-1------
+15     : ['grant_msg(node0)', 'holds_lock(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 9 =====================
+size : 1
+num_suborbits: 1
+16 (*) : --11-----
+16     : ['holds_lock(node0)', 'holds_lock(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~holds_lock(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+17 (*) : --1---1--
+17     : ['holds_lock(node0)', 'server_holds_lock()']
+18     : ---1--1--
+18     : ['holds_lock(node1)', 'server_holds_lock()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
+qcost : 3
+
+
+
+
+=== Prime Orbit 11 =====================
+size : 2
+num_suborbits: 1
+19 (*) : 1-----1--
+19     : ['grant_msg(node0)', 'server_holds_lock()']
+20     : -1----1--
+20     : ['grant_msg(node1)', 'server_holds_lock()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~server_holds_lock | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+21 (*) : 0000--000
+21     : ['~grant_msg(node0)', '~grant_msg(node1)', '~holds_lock(node0)', '~holds_lock(node1)', '~server_holds_lock()', '~unlock_msg(node0)', '~unlock_msg(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 4
+quantified form : exists NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | server_holds_lock | holds_lock(NODE0)
+qcost : 5
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.136 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.103 seconds
+
+[QRM NOTE]: Peak memory: 1815363 bytes
+
+
+=============================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+=============================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+Solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] has cost 44.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+============================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+============================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 44
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+[MIN NOTE]: solution length: 13
+
+invariant [invar_0] forall NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE0) # qcost: 3
+
+invariant [invar_1] forall NODE1,NODE0. ~unlock_msg(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_2] forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_3] forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_4] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
+
+invariant [invar_5] exists NODE0. ~unlock_msg(NODE0) # qcost: 2
+
+invariant [invar_6] forall NODE1,NODE0. ~holds_lock(NODE1) | ~grant_msg(NODE0) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_7] exists NODE0. ~grant_msg(NODE0) # qcost: 2
+
+invariant [invar_8] forall NODE0. ~holds_lock(NODE0) | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_9] exists NODE0. ~holds_lock(NODE0) # qcost: 2
+
+invariant [invar_10] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
+
+invariant [invar_11] forall NODE0. ~server_holds_lock | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_12] exists NODE0. grant_msg(NODE0) | unlock_msg(NODE0) | server_holds_lock | holds_lock(NODE0) # qcost: 5
+
+[MIN NOTE]: number of total invariants: 13
+
+[MIN NOTE]: total qCost: 44
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.206 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.070 seconds
+
+[QRM NOTE]: Peak memory: 1796694 bytes
+
+
+*********************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/lockserv.ivy: node=2]
+
+*********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lockserv.node_2.0.ivy -s node=3 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lockserv.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lockserv.node_2.0.ivy: node=3]
+
+=============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 13
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 6
+
+[QRM NOTE]: Time elapsed since start: 0.093 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.093 seconds
+
+[QRM NOTE]: Peak memory: 127295 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: send_lock(fml:n)
+
+building bdd for action: recv_lock(fml:n)
+
+building bdd for action: recv_grant(fml:n)
+
+building bdd for action: unlock(fml:n)
+
+building bdd for action: recv_unlock(fml:n)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 10
+
+
+=======================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lockserv: node=3]
+
+=======================================================================================
+
+sort: node=['node0', 'node1', 'node2']
+predicate: holds_lock('node',)
+predicate: grant_msg('node',)
+predicate: lock_msg('node',)
+predicate: server_holds_lock()
+predicate: unlock_msg('node',)
+interpreted atoms: {}
+state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'holds_lock(node0)', 'holds_lock(node1)', 'holds_lock(node2)', 'lock_msg(node0)', 'lock_msg(node1)', 'lock_msg(node2)', 'server_holds_lock()', 'unlock_msg(node0)', 'unlock_msg(node1)', 'unlock_msg(node2)']
+
+000000---0001
+000000---0010
+000000---0100
+000000---1000
+000001---0000
+000010---0000
+000100---0000
+001000---0000
+010000---0000
+100000---0000
+
+[QRM NOTE]: Time elapsed since start: 0.564 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.471 seconds
+
+[QRM NOTE]: Peak memory: 1257215 bytes
+
+
+=========================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lockserv.node_2.0.ivy: node=3]
+
+=========================================================================================================================
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 0.667 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.103 seconds
+
+[QRM NOTE]: Peak memory: 278604 bytes
+
+next size: node=3
+
+
+******************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+******************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lockserv.ivy -s node=3 -f 1 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lockserv.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+OK
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 0.023 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.023 seconds
+
+[QRM NOTE]: Peak memory: 2932 bytes
+
+
+===========================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+===========================================================================================
+
+
+======================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+======================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : ---------1-1-
+0     : ['server_holds_lock()', 'unlock_msg(node1)']
+1     : ---------1--1
+1     : ['server_holds_lock()', 'unlock_msg(node2)']
+2     : ---------11--
+2     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : -1-------1---
+3     : ['grant_msg(node1)', 'server_holds_lock()']
+4     : --1------1---
+4     : ['grant_msg(node2)', 'server_holds_lock()']
+5     : 1--------1---
+5     : ['grant_msg(node0)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 3
+num_suborbits: 1
+6 (*) : ---1-----1---
+6     : ['holds_lock(node0)', 'server_holds_lock()']
+7     : ----1----1---
+7     : ['holds_lock(node1)', 'server_holds_lock()']
+8     : -----1---1---
+8     : ['holds_lock(node2)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 3
+num_suborbits: 1
+9 (*) : -1---------1-
+9     : ['grant_msg(node1)', 'unlock_msg(node1)']
+10     : --1---------1
+10     : ['grant_msg(node2)', 'unlock_msg(node2)']
+11     : 1---------1--
+11     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 3
+num_suborbits: 1
+12 (*) : 11-----------
+12     : ['grant_msg(node0)', 'grant_msg(node1)']
+13     : 1-1----------
+13     : ['grant_msg(node0)', 'grant_msg(node2)']
+14     : -11----------
+14     : ['grant_msg(node1)', 'grant_msg(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 6
+num_suborbits: 1
+15 (*) : 1----------1-
+15     : ['grant_msg(node0)', 'unlock_msg(node1)']
+16     : 1-----------1
+16     : ['grant_msg(node0)', 'unlock_msg(node2)']
+17     : -1--------1--
+17     : ['grant_msg(node1)', 'unlock_msg(node0)']
+18     : -1----------1
+18     : ['grant_msg(node1)', 'unlock_msg(node2)']
+19     : --1-------1--
+19     : ['grant_msg(node2)', 'unlock_msg(node0)']
+20     : --1--------1-
+20     : ['grant_msg(node2)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 6
+num_suborbits: 1
+21 (*) : --11---------
+21     : ['grant_msg(node2)', 'holds_lock(node0)']
+22     : -1-1---------
+22     : ['grant_msg(node1)', 'holds_lock(node0)']
+23     : --1-1--------
+23     : ['grant_msg(node2)', 'holds_lock(node1)']
+24     : 1---1--------
+24     : ['grant_msg(node0)', 'holds_lock(node1)']
+25     : -1---1-------
+25     : ['grant_msg(node1)', 'holds_lock(node2)']
+26     : 1----1-------
+26     : ['grant_msg(node0)', 'holds_lock(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 6
+num_suborbits: 1
+27 (*) : ---1-------1-
+27     : ['holds_lock(node0)', 'unlock_msg(node1)']
+28     : ---1--------1
+28     : ['holds_lock(node0)', 'unlock_msg(node2)']
+29     : ----1-----1--
+29     : ['holds_lock(node1)', 'unlock_msg(node0)']
+30     : ----1-------1
+30     : ['holds_lock(node1)', 'unlock_msg(node2)']
+31     : -----1----1--
+31     : ['holds_lock(node2)', 'unlock_msg(node0)']
+32     : -----1-----1-
+32     : ['holds_lock(node2)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 3
+num_suborbits: 1
+33 (*) : 1--1---------
+33     : ['grant_msg(node0)', 'holds_lock(node0)']
+34     : -1--1--------
+34     : ['grant_msg(node1)', 'holds_lock(node1)']
+35     : --1--1-------
+35     : ['grant_msg(node2)', 'holds_lock(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 3
+num_suborbits: 1
+36 (*) : ---11--------
+36     : ['holds_lock(node0)', 'holds_lock(node1)']
+37     : ---1-1-------
+37     : ['holds_lock(node0)', 'holds_lock(node2)']
+38     : ----11-------
+38     : ['holds_lock(node1)', 'holds_lock(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 10 =====================
+size : 3
+num_suborbits: 1
+39 (*) : ----1------1-
+39     : ['holds_lock(node1)', 'unlock_msg(node1)']
+40     : -----1------1
+40     : ['holds_lock(node2)', 'unlock_msg(node2)']
+41     : ---1------1--
+41     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 11 =====================
+size : 3
+num_suborbits: 1
+42 (*) : ----------11-
+42     : ['unlock_msg(node0)', 'unlock_msg(node1)']
+43     : ----------1-1
+43     : ['unlock_msg(node0)', 'unlock_msg(node2)']
+44     : -----------11
+44     : ['unlock_msg(node1)', 'unlock_msg(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+45 (*) : 000000---0000
+45     : ['~grant_msg(node0)', '~grant_msg(node1)', '~grant_msg(node2)', '~holds_lock(node0)', '~holds_lock(node1)', '~holds_lock(node2)', '~server_holds_lock()', '~unlock_msg(node0)', '~unlock_msg(node1)', '~unlock_msg(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 13
+
+[PRIME NOTE]: number of orbits before merging: 13
+
+[PRIME NOTE]: number of primes: 46
+
+[QRM NOTE]: Time elapsed since start: 0.045 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.022 seconds
+
+[QRM NOTE]: Peak memory: 1145789 bytes
+
+
+================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+ solution : []
+
+Essensial at level 0 : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+[QRM NOTE]: Time elapsed since start: 0.047 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.003 seconds
+
+[QRM NOTE]: Peak memory: 98055 bytes
+
+
+====================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+====================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : ---------1-1-
+0     : ['server_holds_lock()', 'unlock_msg(node1)']
+1     : ---------1--1
+1     : ['server_holds_lock()', 'unlock_msg(node2)']
+2     : ---------11--
+2     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['server_holds_lock', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['server_holds_lock', 'unlock_msg(node1)']
+
+func_name2symbol:  {'server_holds_lock': Const('server_holds_lock', BooleanSort()), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'server_holds_lock': [], 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$server_holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$server_holds_lock': [[]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : -1-------1---
+3     : ['grant_msg(node1)', 'server_holds_lock()']
+4     : --1------1---
+4     : ['grant_msg(node2)', 'server_holds_lock()']
+5     : 1--------1---
+5     : ['grant_msg(node0)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node1)', 'server_holds_lock']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$server_holds_lock': [[]]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node1)', 'server_holds_lock']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'server_holds_lock': []}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$server_holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$server_holds_lock': [[]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['grant_msg(NODE0)', 'server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock
+
+
+=== Prime Orbit 2 =====================
+size : 3
+num_suborbits: 1
+6 (*) : ---1-----1---
+6     : ['holds_lock(node0)', 'server_holds_lock()']
+7     : ----1----1---
+7     : ['holds_lock(node1)', 'server_holds_lock()']
+8     : -----1---1---
+8     : ['holds_lock(node2)', 'server_holds_lock()']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'server_holds_lock']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$server_holds_lock': [[]]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0}
+
+part_sig: ('node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'server_holds_lock']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort())}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'server_holds_lock': []}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$server_holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0': node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$server_holds_lock': [[]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'server_holds_lock']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
+
+
+=== Prime Orbit 3 =====================
+size : 3
+num_suborbits: 1
+9 (*) : -1---------1-
+9     : ['grant_msg(node1)', 'unlock_msg(node1)']
+10     : --1---------1
+10     : ['grant_msg(node2)', 'unlock_msg(node2)']
+11     : 1---------1--
+11     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node1)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node1)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0; node$0$unlock_msg$0': [node$0$grant_msg$0$0; node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0; node$0$unlock_msg$0': node$0$grant_msg$0$0; node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'grant_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0)
+
+
+=== Prime Orbit 4 =====================
+size : 3
+num_suborbits: 1
+12 (*) : 11-----------
+12     : ['grant_msg(node0)', 'grant_msg(node1)']
+13     : 1-1----------
+13     : ['grant_msg(node0)', 'grant_msg(node2)']
+14     : -11----------
+14     : ['grant_msg(node1)', 'grant_msg(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'grant_msg(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$1]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$grant_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0 | node$0$grant_msg$0$1}
+
+part_sig: ('node$0$grant_msg$0$0 | node$0$grant_msg$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'grant_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$grant_msg': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0 | node$0$grant_msg$0$1}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0, node$0$grant_msg$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['grant_msg(NODE0)', 'grant_msg(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 5 =====================
+size : 6
+num_suborbits: 1
+15 (*) : 1----------1-
+15     : ['grant_msg(node0)', 'unlock_msg(node1)']
+16     : 1-----------1
+16     : ['grant_msg(node0)', 'unlock_msg(node2)']
+17     : -1--------1--
+17     : ['grant_msg(node1)', 'unlock_msg(node0)']
+18     : -1----------1
+18     : ['grant_msg(node1)', 'unlock_msg(node2)']
+19     : --1-------1--
+19     : ['grant_msg(node2)', 'unlock_msg(node0)']
+20     : --1--------1-
+20     : ['grant_msg(node2)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0 | node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$grant_msg$0$0 | node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0 | node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0], 'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0, 'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$unlock_msg': [[Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['grant_msg(NODE0)', 'unlock_msg(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 6 =====================
+size : 6
+num_suborbits: 1
+21 (*) : --11---------
+21     : ['grant_msg(node2)', 'holds_lock(node0)']
+22     : -1-1---------
+22     : ['grant_msg(node1)', 'holds_lock(node0)']
+23     : --1-1--------
+23     : ['grant_msg(node2)', 'holds_lock(node1)']
+24     : 1---1--------
+24     : ['grant_msg(node0)', 'holds_lock(node1)']
+25     : -1---1-------
+25     : ['grant_msg(node1)', 'holds_lock(node2)']
+26     : 1----1-------
+26     : ['grant_msg(node0)', 'holds_lock(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node2)', 'holds_lock(node0)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$0], Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0 | node$0$holds_lock$0$0}
+
+part_sig: ('node$0$grant_msg$0$0 | node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node2)', 'holds_lock(node0)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0 | node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0': [node$0$grant_msg$0$0], 'node$0$holds_lock$0': [node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0': node$0$grant_msg$0$0, 'node$0$holds_lock$0': node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$holds_lock': [[Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['grant_msg(NODE0)', 'holds_lock(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 7 =====================
+size : 6
+num_suborbits: 1
+27 (*) : ---1-------1-
+27     : ['holds_lock(node0)', 'unlock_msg(node1)']
+28     : ---1--------1
+28     : ['holds_lock(node0)', 'unlock_msg(node2)']
+29     : ----1-----1--
+29     : ['holds_lock(node1)', 'unlock_msg(node0)']
+30     : ----1-------1
+30     : ['holds_lock(node1)', 'unlock_msg(node2)']
+31     : -----1----1--
+31     : ['holds_lock(node2)', 'unlock_msg(node0)']
+32     : -----1-----1-
+32     : ['holds_lock(node2)', 'unlock_msg(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$holds_lock$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0 | node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$holds_lock$0$0 | node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0 | node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0], 'node$0$unlock_msg$0': [node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0': node$0$holds_lock$0$0, 'node$0$unlock_msg$0': node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$unlock_msg': [[Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'unlock_msg(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 8 =====================
+size : 3
+num_suborbits: 1
+33 (*) : 1--1---------
+33     : ['grant_msg(node0)', 'holds_lock(node0)']
+34     : -1--1--------
+34     : ['grant_msg(node1)', 'holds_lock(node1)']
+35     : --1--1-------
+35     : ['grant_msg(node2)', 'holds_lock(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['grant_msg(node0)', 'holds_lock(node0)']
+
+sign_func_name2args: {'0$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$grant_msg$0$0, node$0$holds_lock$0$0]}
+
+sig2const: {'node$0$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+part_sig: ('node$0$grant_msg$0$0; node$0$holds_lock$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['grant_msg(node0)', 'holds_lock(node0)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$grant_msg': 1, '0$holds_lock': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$grant_msg$0; node$0$holds_lock$0': [node$0$grant_msg$0$0; node$0$holds_lock$0$0]}
+
+	identical_single_classes: {'node$0$grant_msg$0; node$0$holds_lock$0': node$0$grant_msg$0$0; node$0$holds_lock$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['grant_msg(NODE0)', 'holds_lock(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE0)
+
+
+=== Prime Orbit 9 =====================
+size : 3
+num_suborbits: 1
+36 (*) : ---11--------
+36     : ['holds_lock(node0)', 'holds_lock(node1)']
+37     : ---1-1-------
+37     : ['holds_lock(node0)', 'holds_lock(node2)']
+38     : ----11-------
+38     : ['holds_lock(node1)', 'holds_lock(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node0)', 'holds_lock(node1)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$holds_lock$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$holds_lock$0$1]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$holds_lock$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0 | node$0$holds_lock$0$1}
+
+part_sig: ('node$0$holds_lock$0$0 | node$0$holds_lock$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node0)', 'holds_lock(node1)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$holds_lock': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0 | node$0$holds_lock$0$1}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$holds_lock$0': [node$0$holds_lock$0$0, node$0$holds_lock$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['holds_lock(NODE0)', 'holds_lock(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 10 =====================
+size : 3
+num_suborbits: 1
+39 (*) : ----1------1-
+39     : ['holds_lock(node1)', 'unlock_msg(node1)']
+40     : -----1------1
+40     : ['holds_lock(node2)', 'unlock_msg(node2)']
+41     : ---1------1--
+41     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['holds_lock(node1)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$holds_lock': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '0$unlock_msg': [(Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$holds_lock$0$0, node$0$unlock_msg$0$0]}
+
+sig2const: {'node$0$holds_lock$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$unlock_msg$0$0': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+part_sig: ('node$0$holds_lock$0$0; node$0$unlock_msg$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['holds_lock(node1)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$holds_lock': 1, '0$unlock_msg': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$holds_lock$0; node$0$unlock_msg$0': [node$0$holds_lock$0$0; node$0$unlock_msg$0$0]}
+
+	identical_single_classes: {'node$0$holds_lock$0; node$0$unlock_msg$0': node$0$holds_lock$0$0; node$0$unlock_msg$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'holds_lock(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0)
+
+
+=== Prime Orbit 11 =====================
+size : 3
+num_suborbits: 1
+42 (*) : ----------11-
+42     : ['unlock_msg(node0)', 'unlock_msg(node1)']
+43     : ----------1-1
+43     : ['unlock_msg(node0)', 'unlock_msg(node2)']
+44     : -----------11
+44     : ['unlock_msg(node1)', 'unlock_msg(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['unlock_msg(node0)', 'unlock_msg(node1)']
+
+sign_func_name2args: {'0$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$unlock_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$unlock_msg$0$1]}
+
+sig2const: {'node$0$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$unlock_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$unlock_msg$0$0 | node$0$unlock_msg$0$1}
+
+part_sig: ('node$0$unlock_msg$0$0 | node$0$unlock_msg$0$1',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['unlock_msg(node0)', 'unlock_msg(node1)']
+
+func_name2symbol:  {'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'0$unlock_msg': 2}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$unlock_msg$0$0 | node$0$unlock_msg$0$1}
+
+	sort: node
+
+	identical_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$0$unlock_msg$0': [node$0$unlock_msg$0$0, node$0$unlock_msg$0$1]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['unlock_msg(NODE0)', 'unlock_msg(NODE1)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE0. ~unlock_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+45 (*) : 000000---0000
+45     : ['~grant_msg(node0)', '~grant_msg(node1)', '~grant_msg(node2)', '~holds_lock(node0)', '~holds_lock(node1)', '~holds_lock(node2)', '~server_holds_lock()', '~unlock_msg(node0)', '~unlock_msg(node1)', '~unlock_msg(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~grant_msg(node0)', '~grant_msg(node1)', '~grant_msg(node2)', '~holds_lock(node0)', '~holds_lock(node1)', '~holds_lock(node2)', '~server_holds_lock', '~unlock_msg(node0)', '~unlock_msg(node1)', '~unlock_msg(node2)']
+
+sign_func_name2args: {'1$grant_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '1$holds_lock': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '1$server_holds_lock': [[]], '1$unlock_msg': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$grant_msg$0$0, node$1$holds_lock$0$0, node$1$unlock_msg$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$grant_msg$0$1, node$1$holds_lock$0$1, node$1$unlock_msg$0$1], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$grant_msg$0$2, node$1$holds_lock$0$2, node$1$unlock_msg$0$2]}
+
+sig2const: {'node$1$grant_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$grant_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$grant_msg$0$2': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$holds_lock$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$holds_lock$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$holds_lock$0$2': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$unlock_msg$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$unlock_msg$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$unlock_msg$0$2': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0, node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1, node$1$grant_msg$0$2; node$1$holds_lock$0$2; node$1$unlock_msg$0$2]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0 | node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1 | node$1$grant_msg$0$2; node$1$holds_lock$0$2; node$1$unlock_msg$0$2}
+
+part_sig: ('node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0 | node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1 | node$1$grant_msg$0$2; node$1$holds_lock$0$2; node$1$unlock_msg$0$2',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['~grant_msg(node0)', '~grant_msg(node1)', '~grant_msg(node2)', '~holds_lock(node0)', '~holds_lock(node1)', '~holds_lock(node2)', '~server_holds_lock', '~unlock_msg(node0)', '~unlock_msg(node1)', '~unlock_msg(node2)']
+
+func_name2symbol:  {'grant_msg': Const('grant_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'holds_lock': Const('holds_lock', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'server_holds_lock': Const('server_holds_lock', BooleanSort()), 'unlock_msg': Const('unlock_msg', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
+
+func_name2args_sort:  {'grant_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'holds_lock': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'server_holds_lock': [], 'unlock_msg': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
+
+sign_func_name2count:  {'1$grant_msg': 3, '1$holds_lock': 3, '1$server_holds_lock': 1, '1$unlock_msg': 3}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0, node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1, node$1$grant_msg$0$2; node$1$holds_lock$0$2; node$1$unlock_msg$0$2]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0 | node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1 | node$1$grant_msg$0$2; node$1$holds_lock$0$2; node$1$unlock_msg$0$2}
+
+	sort: node
+
+	identical_classes: {'node$1$grant_msg$0; node$1$holds_lock$0; node$1$unlock_msg$0': [node$1$grant_msg$0$0; node$1$holds_lock$0$0; node$1$unlock_msg$0$0, node$1$grant_msg$0$1; node$1$holds_lock$0$1; node$1$unlock_msg$0$1, node$1$grant_msg$0$2; node$1$holds_lock$0$2; node$1$unlock_msg$0$2]}
+
+	identical_single_classes: {}
+
+	identical_multi_classes: {'node$1$grant_msg$0; node$1$holds_lock$0; node$1$unlock_msg$0': [node$1$grant_msg$0$0, node$1$holds_lock$0$0, node$1$unlock_msg$0$0, node$1$grant_msg$0$1, node$1$holds_lock$0$1, node$1$unlock_msg$0$1, node$1$grant_msg$0$2, node$1$holds_lock$0$2, node$1$unlock_msg$0$2]}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.exists
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: set()
+
+exists_qvars: {Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$grant_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '1$holds_lock': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '1$server_holds_lock': [[]], '1$unlock_msg': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['~grant_msg(NODE0)', '~holds_lock(NODE0)', '~server_holds_lock', '~unlock_msg(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock | unlock_msg(NODE0)
+
+
+==============================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+==============================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 3
+num_suborbits: 1
+0 (*) : ---------1-1-
+0     : ['server_holds_lock()', 'unlock_msg(node1)']
+1     : ---------1--1
+1     : ['server_holds_lock()', 'unlock_msg(node2)']
+2     : ---------11--
+2     : ['server_holds_lock()', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock
+qcost : 3
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+3 (*) : -1-------1---
+3     : ['grant_msg(node1)', 'server_holds_lock()']
+4     : --1------1---
+4     : ['grant_msg(node2)', 'server_holds_lock()']
+5     : 1--------1---
+5     : ['grant_msg(node0)', 'server_holds_lock()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock
+qcost : 3
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 3
+num_suborbits: 1
+6 (*) : ---1-----1---
+6     : ['holds_lock(node0)', 'server_holds_lock()']
+7     : ----1----1---
+7     : ['holds_lock(node1)', 'server_holds_lock()']
+8     : -----1---1---
+8     : ['holds_lock(node2)', 'server_holds_lock()']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock
+qcost : 3
+
+
+
+
+=== Prime Orbit 3 =====================
+size : 3
+num_suborbits: 1
+9 (*) : -1---------1-
+9     : ['grant_msg(node1)', 'unlock_msg(node1)']
+10     : --1---------1
+10     : ['grant_msg(node2)', 'unlock_msg(node2)']
+11     : 1---------1--
+11     : ['grant_msg(node0)', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 4 =====================
+size : 3
+num_suborbits: 1
+12 (*) : 11-----------
+12     : ['grant_msg(node0)', 'grant_msg(node1)']
+13     : 1-1----------
+13     : ['grant_msg(node0)', 'grant_msg(node2)']
+14     : -11----------
+14     : ['grant_msg(node1)', 'grant_msg(node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 5 =====================
+size : 6
+num_suborbits: 1
+15 (*) : 1----------1-
+15     : ['grant_msg(node0)', 'unlock_msg(node1)']
+16     : 1-----------1
+16     : ['grant_msg(node0)', 'unlock_msg(node2)']
+17     : -1--------1--
+17     : ['grant_msg(node1)', 'unlock_msg(node0)']
+18     : -1----------1
+18     : ['grant_msg(node1)', 'unlock_msg(node2)']
+19     : --1-------1--
+19     : ['grant_msg(node2)', 'unlock_msg(node0)']
+20     : --1--------1-
+20     : ['grant_msg(node2)', 'unlock_msg(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 6 =====================
+size : 6
+num_suborbits: 1
+21 (*) : --11---------
+21     : ['grant_msg(node2)', 'holds_lock(node0)']
+22     : -1-1---------
+22     : ['grant_msg(node1)', 'holds_lock(node0)']
+23     : --1-1--------
+23     : ['grant_msg(node2)', 'holds_lock(node1)']
+24     : 1---1--------
+24     : ['grant_msg(node0)', 'holds_lock(node1)']
+25     : -1---1-------
+25     : ['grant_msg(node1)', 'holds_lock(node2)']
+26     : 1----1-------
+26     : ['grant_msg(node0)', 'holds_lock(node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 7 =====================
+size : 6
+num_suborbits: 1
+27 (*) : ---1-------1-
+27     : ['holds_lock(node0)', 'unlock_msg(node1)']
+28     : ---1--------1
+28     : ['holds_lock(node0)', 'unlock_msg(node2)']
+29     : ----1-----1--
+29     : ['holds_lock(node1)', 'unlock_msg(node0)']
+30     : ----1-------1
+30     : ['holds_lock(node1)', 'unlock_msg(node2)']
+31     : -----1----1--
+31     : ['holds_lock(node2)', 'unlock_msg(node0)']
+32     : -----1-----1-
+32     : ['holds_lock(node2)', 'unlock_msg(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 8 =====================
+size : 3
+num_suborbits: 1
+33 (*) : 1--1---------
+33     : ['grant_msg(node0)', 'holds_lock(node0)']
+34     : -1--1--------
+34     : ['grant_msg(node1)', 'holds_lock(node1)']
+35     : --1--1-------
+35     : ['grant_msg(node2)', 'holds_lock(node2)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 9 =====================
+size : 3
+num_suborbits: 1
+36 (*) : ---11--------
+36     : ['holds_lock(node0)', 'holds_lock(node1)']
+37     : ---1-1-------
+37     : ['holds_lock(node0)', 'holds_lock(node2)']
+38     : ----11-------
+38     : ['holds_lock(node1)', 'holds_lock(node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 10 =====================
+size : 3
+num_suborbits: 1
+39 (*) : ----1------1-
+39     : ['holds_lock(node1)', 'unlock_msg(node1)']
+40     : -----1------1
+40     : ['holds_lock(node2)', 'unlock_msg(node2)']
+41     : ---1------1--
+41     : ['holds_lock(node0)', 'unlock_msg(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 11 =====================
+size : 3
+num_suborbits: 1
+42 (*) : ----------11-
+42     : ['unlock_msg(node0)', 'unlock_msg(node1)']
+43     : ----------1-1
+43     : ['unlock_msg(node0)', 'unlock_msg(node2)']
+44     : -----------11
+44     : ['unlock_msg(node1)', 'unlock_msg(node2)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE1,NODE0. ~unlock_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+45 (*) : 000000---0000
+45     : ['~grant_msg(node0)', '~grant_msg(node1)', '~grant_msg(node2)', '~holds_lock(node0)', '~holds_lock(node1)', '~holds_lock(node2)', '~server_holds_lock()', '~unlock_msg(node0)', '~unlock_msg(node1)', '~unlock_msg(node2)']
+num_forall :   0
+num_exists :   1
+num_literals : 4
+quantified form : exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock | unlock_msg(NODE0)
+qcost : 5
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.164 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.117 seconds
+
+[QRM NOTE]: Peak memory: 1872490 bytes
+
+
+=============================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+=============================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1), (6, -1), (7, -1), (8, -1), (9, -1), (10, -1), (11, -1), (12, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+Solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] has cost 53.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+============================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+============================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 53
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+[MIN NOTE]: solution length: 13
+
+invariant [invar_0] forall NODE0. ~unlock_msg(NODE0) | ~server_holds_lock # qcost: 3
+
+invariant [invar_1] forall NODE0. ~grant_msg(NODE0) | ~server_holds_lock # qcost: 3
+
+invariant [invar_2] forall NODE0. ~holds_lock(NODE0) | ~server_holds_lock # qcost: 3
+
+invariant [invar_3] forall NODE0. ~unlock_msg(NODE0) | ~grant_msg(NODE0) # qcost: 3
+
+invariant [invar_4] forall NODE1,NODE0. ~grant_msg(NODE0) | ~grant_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_5] forall NODE1,NODE0. ~grant_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_6] forall NODE1,NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_7] forall NODE1,NODE0. ~holds_lock(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_8] forall NODE0. ~grant_msg(NODE0) | ~holds_lock(NODE0) # qcost: 3
+
+invariant [invar_9] forall NODE1,NODE0. ~holds_lock(NODE0) | ~holds_lock(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_10] forall NODE0. ~unlock_msg(NODE0) | ~holds_lock(NODE0) # qcost: 3
+
+invariant [invar_11] forall NODE1,NODE0. ~unlock_msg(NODE0) | ~unlock_msg(NODE1) | NODE0 = NODE1 # qcost: 5
+
+invariant [invar_12] exists NODE0. grant_msg(NODE0) | holds_lock(NODE0) | server_holds_lock | unlock_msg(NODE0) # qcost: 5
+
+[MIN NOTE]: number of total invariants: 13
+
+[MIN NOTE]: total qCost: 53
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 0.233 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.069 seconds
+
+[QRM NOTE]: Peak memory: 1846843 bytes
+
+
+*********************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/lockserv.ivy: node=3]
+
+*********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/lockserv.node_3.0.ivy -s node=4 -f 2 -g -w -r -b -m -v 5 -w -l ivybench/sym/ivy/lockserv.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/lockserv.node_3.0.ivy: node=4]
+
+=============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 17
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 24
+
+[QRM NOTE]: Time elapsed since start: 0.122 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.122 seconds
+
+[QRM NOTE]: Peak memory: 203078 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+building bdd for atoms
+
+building bdd for initial action
+
+building bdd for axioms
+
+building bdd for actions
+
+building bdd for action: send_lock(fml:n)
+
+building bdd for action: recv_lock(fml:n)
+
+building bdd for action: recv_grant(fml:n)
+
+building bdd for action: unlock(fml:n)
+
+building bdd for action: recv_unlock(fml:n)
+
+building bdd for abstractions
+
+start symbolic image computation
+
+start extracting cubes
+
+[FW NOTE]: number of reachable cubes: 13
+
+
+=======================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/lockserv: node=4]
+
+=======================================================================================
+
+sort: node=['node0', 'node1', 'node2', 'node3']
+predicate: lock_msg('node',)
+predicate: server_holds_lock()
+predicate: holds_lock('node',)
+predicate: unlock_msg('node',)
+predicate: grant_msg('node',)
+interpreted atoms: {}
+state atoms: ['grant_msg(node0)', 'grant_msg(node1)', 'grant_msg(node2)', 'grant_msg(node3)', 'holds_lock(node0)', 'holds_lock(node1)', 'holds_lock(node2)', 'holds_lock(node3)', 'lock_msg(node0)', 'lock_msg(node1)', 'lock_msg(node2)', 'lock_msg(node3)', 'server_holds_lock()', 'unlock_msg(node0)', 'unlock_msg(node1)', 'unlock_msg(node2)', 'unlock_msg(node3)']
+
+00000000----00001
+00000000----00010
+00000000----00100
+00000000----01000
+00000000----10000
+00000001----00000
+00000010----00000
+00000100----00000
+00001000----00000
+00010000----00000
+00100000----00000
+01000000----00000
+10000000----00000
+
+[QRM NOTE]: Time elapsed since start: 0.910 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.788 seconds
+
+[QRM NOTE]: Peak memory: 1366918 bytes
+
+
+=========================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/lockserv.node_3.0.ivy: node=4]
+
+=========================================================================================================================
+
+[REACH_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 1.146 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.236 seconds
+
+[QRM NOTE]: Peak memory: 465973 bytes
+
+
+*********************************************************************
+
+	[IVY_CHECK]: Ivy Check for Reachability Invariant
+
+*********************************************************************
+
+
+=================================================================================
+
+	[IVY_CHECK]: Ivy check on [ivybench/sym/ivy/lockserv.node_3.0.ivy]
+
+=================================================================================
+
+ivy_check complete=fo ivybench/sym/ivy/lockserv.node_3.0.ivy
+
+
+Isolate this:
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12
+
+    The following action implementations are present:
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 32: implementation of recv_grant
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 23: implementation of recv_lock
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 46: implementation of recv_unlock
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 20: implementation of send_lock
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 39: implementation of unlock
+
+    The following initializers are present:
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 11: init[after1]
+
+    Initialization must establish the invariant
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11 ... PASS
+        ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:recv_grant
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12 ... PASS
+        (internal) ext:recv_lock
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12 ... PASS
+        (internal) ext:recv_unlock
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12 ... PASS
+        (internal) ext:send_lock
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12 ... PASS
+        (internal) ext:unlock
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 70: invar_0 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 71: invar_1 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 72: invar_2 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 73: invar_3 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 74: invar_4 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 75: invar_5 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 76: invar_6 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 77: invar_7 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 78: invar_8 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 79: invar_9 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 80: invar_10 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 81: invar_11 ... PASS
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 82: invar_12 ... PASS
+
+    The following program assertions are treated as assumptions:
+        in action recv_lock when called from the environment:
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 24: assumption
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 25: assumption
+        in action recv_grant when called from the environment:
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 33: assumption
+        in action unlock when called from the environment:
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 40: assumption
+        in action recv_unlock when called from the environment:
+            ivybench/sym/ivy/lockserv.node_3.0.ivy: line 47: assumption
+
+OK
+[IVY_CHECK RESULT]: PASS
+
+
+*****************************************************************
+
+	[QRM]: ivybench/sym/ivy/lockserv.node_3.0.ivy
+
+*****************************************************************
+
+[RMIN NUM]: 1
+
+[RMIN RESULT]: ['ivybench/sym/ivy/lockserv.node_3.0.ivy']
+
+[CUTOFF]: node=3
+
+[QRM RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 22.549 seconds
+
+[QRM NOTE]: Time elapsed since last: 22.549 seconds
+

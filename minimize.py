@@ -6,6 +6,7 @@ from cover_constraints import CoverConstraints
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from util import QrmOptions, ForwardMode
 from verbose import *
+from ivy import ivy_logic as il
 
 class Rmin():
     # static members
@@ -13,6 +14,8 @@ class Rmin():
     eq_relations = []
     def_lines = []
     eq_lines  = []
+    def_qcost = 0
+    eq_qcost  = 0
     
     def __init__(self, solution, orbits):
         self.solution    = solution
@@ -27,11 +30,17 @@ class Rmin():
         Rmin.definitions  = tran_sys.definitions
         Rmin.eq_relations = list(tran_sys.closed_atom_equivalence_constraints)
         for def_symbol, def_ast in tran_sys.definitions.items():
-            line = f'invariant [def_{str(def_symbol)}] {format(def_ast)} # definition'
+            (num_forall, num_exists, num_lits) = futil.count_quantifiers_and_literals(il.close_formula(def_ast))
+            qcost = num_forall + num_exists + num_lits
+            line = f'invariant [def_{str(def_symbol)}] {format(il.close_formula(def_ast))} # definition, qcost: {qcost}'
             Rmin.def_lines.append(line)
+            Rmin.def_qcost += qcost
         for i, atom_equiv in enumerate(tran_sys.closed_atom_equivalence_constraints):
-            line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation'
+            (num_forall, num_exists, num_lits) = futil.count_equiv_invar_quantifiers_and_literals(atom_equiv)
+            qcost = num_forall + num_exists + num_lits
+            line = f'invariant [eq_{i}] {format(atom_equiv)} # equivalence relation, qcost: {qcost}'
             Rmin.eq_lines.append(line)
+            Rmin.eq_qcost += qcost
 
 def remove_target_from_source(source : list, target : set) -> list:
     temp = source.copy()
@@ -101,7 +110,7 @@ class Minimizer():
             assert(top.orbit_id == self.solution.pop())
         top._switch_branch()
         if top.include_orbit:
-            self.solution.append(top.id)
+            self.solution.append(top.orbit_id)
         vprint(self.options, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
 
     def _new_level(self) -> None:
@@ -273,18 +282,21 @@ class Minimizer():
     def print_rmin(self) -> None:
         vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
         vprint(self.options, f'[MIN NOTE]: number of minimal solution found: {len(self.optimal_solutions)}', 3)
-        vprint(self.options, f'[MIN NOTE]: total qcost: {self.ubound}', 3)
+        vprint(self.options, f'[MIN NOTE]: upper bound: {self.ubound}', 3)
         vprint(self.options, f'[MIN NOTE]: maximum branch and bound depth: {self.bnb_max_depth}', 3)
-        vprint(self.options, f'Definitions (length={len(Rmin.def_lines)})', 3)
+        vprint(self.options, f'[MIN NOTE]: number of definitions: {len(Rmin.def_lines)}', 3)
         for line in Rmin.def_lines:
             vprint(self.options, line, 3)
-        vprint(self.options, f'Equality Relations (length={len(Rmin.eq_lines)})', 3)
+        vprint(self.options, f'[MIN NOTE]: number of equality relations: {len(Rmin.eq_lines)}', 3)
         for line in Rmin.eq_lines:
             vprint(self.options, line, 3)
         for (sid, rmin) in enumerate(self.rmin):
-            vprint(self.options, f'Solution {sid} : {rmin.solution} (length = {len(rmin.solution)})', 3)
+            vprint(self.options, f'[MIN NOTE]: Solution {sid} : {rmin.solution}', 3)
+            vprint(self.options, f'[MIN NOTE]: solution length: {len(rmin.solution)}', 3)
             for line in rmin.invar_lines:
                 vprint(self.options, line, 3)
+            vprint(self.options, f'[MIN NOTE]: number of total invariants: {len(rmin.solution) + len(Rmin.def_lines) + len(Rmin.eq_lines)}', 3)
+            vprint(self.options, f'[MIN NOTE]: total qCost: {self.ubound + Rmin.def_qcost + Rmin.eq_qcost}', 3)
             vprint(self.options, '\n', 3)
 
     def set_rmin(self) -> None:
@@ -396,3 +408,4 @@ class Minimizer():
                 result = result and self._compare_symmetry_quotient(sol_id, invariants, protocol)
             else:
                 result = result and self._equivalence_checking(sol_id, invariants, protocol)
+        return result

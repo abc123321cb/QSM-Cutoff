@@ -1,0 +1,67 @@
+#lang ivy1.7
+
+#clinet server example
+
+after init  {
+    semaphore(Y) := true ;
+    link(X, Y) := false;
+}
+
+type client = {client0, client1, client2, client3}
+
+type server = {server0}
+
+relation link(X: client, Y: server)
+relation semaphore(X: server)
+
+
+action connect(c: client, s: server) = {
+    require semaphore(s);
+    link(c, s) := true;
+    semaphore(s) := false;
+}
+
+action disconnect(c: client, s: server) = {
+    require link(c, s);
+    link(c, s) := false;
+    semaphore(s) := true;
+}
+
+
+export connect
+
+export disconnect
+
+#invariant [unique] forall C1, C2 : client, S: server. link(C1, S) & link(C2, S) -> C1 = C2
+
+##invariant [manual_1] link(C, S) -> ~semaphore(S)
+
+invariant [invar_0] forall CLIENT0,SERVER0. ~semaphore(SERVER0) | ~link(CLIENT0,SERVER0) # qcost: 4
+invariant [invar_1] forall CLIENT1,CLIENT0,SERVER0. ~link(CLIENT0,SERVER0) | ~link(CLIENT1,SERVER0) | CLIENT0 = CLIENT1 # qcost: 6
+invariant [invar_2] forall SERVER0. (exists CLIENT0. link(CLIENT0,SERVER0) | semaphore(SERVER0)) # qcost: 4
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Access actions ##
+action get_link(c0: client, s1: server) returns(qrm_result: bool) = {
+    qrm_result := link(c0, s1)
+}
+export get_link
+
+action get_bool_link(c0: client, s1: server, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (link(c0, s1) = result)
+}
+export get_bool_link
+
+action get_semaphore(s0: server) returns(qrm_result: bool) = {
+    qrm_result := semaphore(s0)
+}
+export get_semaphore
+
+action get_bool_semaphore(s0: server, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (semaphore(s0) = result)
+}
+export get_bool_semaphore
+

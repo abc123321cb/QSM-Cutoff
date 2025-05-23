@@ -1,0 +1,550 @@
+
+=== Prime Orbit 1 =====================
+size : 3
+num_suborbits: 1
+6 (*) : ---------------11--
+6     : ['promise(acceptor2,proposer0)', 'promise(acceptor2,proposer1)']
+7     : -------------11----
+7     : ['promise(acceptor1,proposer0)', 'promise(acceptor1,proposer1)']
+8     : -----------11------
+8     : ['promise(acceptor0,proposer0)', 'promise(acceptor0,proposer1)']
+num_forall :   1
+num_exists :   1
+num_literals : 1
+quantified form : forall ACCEPTOR0. (exists PROPOSER0. ~promise(ACCEPTOR0,PROPOSER0))
+qcost : 3
+
+
+=== Prime Orbit 2 =====================
+size : 6
+num_suborbits: 1
+9 (*) : ----------------1-0
+9     : ['promise(acceptor2,proposer1)', '~start(proposer1)']
+10     : ---------------1-0-
+10     : ['promise(acceptor2,proposer0)', '~start(proposer0)']
+11     : --------------1---0
+11     : ['promise(acceptor1,proposer1)', '~start(proposer1)']
+12     : -------------1---0-
+12     : ['promise(acceptor1,proposer0)', '~start(proposer0)']
+13     : ------------1-----0
+13     : ['promise(acceptor0,proposer1)', '~start(proposer1)']
+14     : -----------1-----0-
+14     : ['promise(acceptor0,proposer0)', '~start(proposer0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall ACCEPTOR0,PROPOSER0. start(PROPOSER0) | ~promise(ACCEPTOR0,PROPOSER0)
+qcost : 4
+
+
+=== Prime Orbit 6 =====================
+size : 6
+num_suborbits: 1
+51 (*) : ---1-----1---------
+51     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', 'leader(proposer0)']
+52     : --1-------1--------
+52     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', 'leader(proposer1)']
+53     : -1-------1---------
+53     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', 'leader(proposer0)']
+54     : 1---------1--------
+54     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', 'leader(proposer1)']
+55     : -----1---1---------
+55     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', 'leader(proposer0)']
+56     : ----1-----1--------
+56     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', 'leader(proposer1)']
+num_forall :   3
+num_exists :   0
+num_literals : 3
+quantified form : forall PROPOSER1,PROPOSER0,QUORUM0. ~leader(PROPOSER1) | ~chosenAt(QUORUM0,PROPOSER0) | PROPOSER0 = PROPOSER1
+qcost : 6
+
+
+=== Prime Orbit 7 =====================
+size : 6
+num_suborbits: 1
+57 (*) : ---1--------------0
+57     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~start(proposer1)']
+58     : --1--------------0-
+58     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~start(proposer0)']
+59     : -1----------------0
+59     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~start(proposer1)']
+60     : 1----------------0-
+60     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~start(proposer0)']
+61     : -----1------------0
+61     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~start(proposer1)']
+62     : ----1------------0-
+62     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~start(proposer0)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall PROPOSER0,QUORUM0. ~chosenAt(QUORUM0,PROPOSER0) | start(PROPOSER0)
+qcost : 4
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+72 (*) : ---------1-------0-
+72     : ['leader(proposer0)', '~start(proposer0)']
+73     : ----------1-------0
+73     : ['leader(proposer1)', '~start(proposer1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall PROPOSER0. ~leader(PROPOSER0) | start(PROPOSER0)
+qcost : 3
+
+
+=== Prime Orbit 11 =====================
+size : 1
+num_suborbits: 1
+74 (*) : ---------11--------
+74     : ['leader(proposer0)', 'leader(proposer1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists PROPOSER0. ~leader(PROPOSER0)
+qcost : 2
+
+
+=== Prime Orbit 12 =====================
+size : 6
+num_suborbits: 1
+75 (*) : ----0----1--1------
+75     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+76     : -----0----11-------
+76     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+77     : --0------1----1----
+77     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+78     : ---0------1--1-----
+78     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+79     : 0--------1------1--
+79     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+80     : -0--------1----1---
+80     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
+num_forall :   4
+num_exists :   0
+num_literals : 5
+quantified form : forall PROPOSER1,PROPOSER0,QUORUM0,ACCEPTOR0. ~promise(ACCEPTOR0,PROPOSER1) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | member(ACCEPTOR0,QUORUM0) | PROPOSER0 = PROPOSER1
+qcost : 9
+
+
+=== Prime Orbit 13 =====================
+size : 12
+num_suborbits: 1
+81 (*) : ---------1--10-----
+81     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~promise(acceptor1,proposer0)']
+82     : ----------11--0----
+82     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~promise(acceptor1,proposer1)']
+83     : ---------1--1--0---
+83     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', '~promise(acceptor2,proposer0)']
+84     : ----------11----0--
+84     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', '~promise(acceptor2,proposer1)']
+85     : ---------1-0--1----
+85     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~promise(acceptor0,proposer0)']
+86     : ----------1-01-----
+86     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~promise(acceptor0,proposer1)']
+87     : ---------1----10---
+87     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', '~promise(acceptor2,proposer0)']
+88     : ----------1--1--0--
+88     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', '~promise(acceptor2,proposer1)']
+89     : ---------1-0----1--
+89     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~promise(acceptor0,proposer0)']
+90     : ----------1-0--1---
+90     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~promise(acceptor0,proposer1)']
+91     : ---------1---0--1--
+91     : ['leader(proposer0)', 'promise(acceptor2,proposer1)', '~promise(acceptor1,proposer0)']
+92     : ----------1---01---
+92     : ['leader(proposer1)', 'promise(acceptor2,proposer0)', '~promise(acceptor1,proposer1)']
+num_forall :   4
+num_exists :   0
+num_literals : 5
+quantified form : forall PROPOSER1,PROPOSER0,ACCEPTOR0,ACCEPTOR1. ~promise(ACCEPTOR0,PROPOSER1) | ~leader(PROPOSER0) | promise(ACCEPTOR1,PROPOSER0) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
+qcost : 9
+
+
+=== Prime Orbit 14 =====================
+size : 6
+num_suborbits: 1
+93 (*) : ---------1--1---1--
+93     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor2,proposer1)']
+94     : ----------11---1---
+94     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor2,proposer0)']
+95     : ---------1--1-1----
+95     : ['leader(proposer0)', 'promise(acceptor0,proposer1)', 'promise(acceptor1,proposer1)']
+96     : ----------11-1-----
+96     : ['leader(proposer1)', 'promise(acceptor0,proposer0)', 'promise(acceptor1,proposer0)']
+97     : ---------1----1-1--
+97     : ['leader(proposer0)', 'promise(acceptor1,proposer1)', 'promise(acceptor2,proposer1)']
+98     : ----------1--1-1---
+98     : ['leader(proposer1)', 'promise(acceptor1,proposer0)', 'promise(acceptor2,proposer0)']
+num_forall :   4
+num_exists :   0
+num_literals : 5
+quantified form : forall PROPOSER1,PROPOSER0,ACCEPTOR0,ACCEPTOR1. ~promise(ACCEPTOR0,PROPOSER1) | ~leader(PROPOSER0) | ~promise(ACCEPTOR1,PROPOSER1) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
+qcost : 9
+
+
+=== Prime Orbit 16 =====================
+size : 12
+num_suborbits: 1
+105 (*) : -------1-1--1------
+105     : ['didNotPromise(acceptor1)', 'leader(proposer0)', 'promise(acceptor0,proposer1)']
+106     : -------1--11-------
+106     : ['didNotPromise(acceptor1)', 'leader(proposer1)', 'promise(acceptor0,proposer0)']
+107     : --------11--1------
+107     : ['didNotPromise(acceptor2)', 'leader(proposer0)', 'promise(acceptor0,proposer1)']
+108     : --------1-11-------
+108     : ['didNotPromise(acceptor2)', 'leader(proposer1)', 'promise(acceptor0,proposer0)']
+109     : ------1--1----1----
+109     : ['didNotPromise(acceptor0)', 'leader(proposer0)', 'promise(acceptor1,proposer1)']
+110     : ------1---1--1-----
+110     : ['didNotPromise(acceptor0)', 'leader(proposer1)', 'promise(acceptor1,proposer0)']
+111     : --------11----1----
+111     : ['didNotPromise(acceptor2)', 'leader(proposer0)', 'promise(acceptor1,proposer1)']
+112     : --------1-1--1-----
+112     : ['didNotPromise(acceptor2)', 'leader(proposer1)', 'promise(acceptor1,proposer0)']
+113     : ------1--1------1--
+113     : ['didNotPromise(acceptor0)', 'leader(proposer0)', 'promise(acceptor2,proposer1)']
+114     : ------1---1----1---
+114     : ['didNotPromise(acceptor0)', 'leader(proposer1)', 'promise(acceptor2,proposer0)']
+115     : -------1-1------1--
+115     : ['didNotPromise(acceptor1)', 'leader(proposer0)', 'promise(acceptor2,proposer1)']
+116     : -------1--1----1---
+116     : ['didNotPromise(acceptor1)', 'leader(proposer1)', 'promise(acceptor2,proposer0)']
+num_forall :   4
+num_exists :   0
+num_literals : 5
+quantified form : forall PROPOSER1,PROPOSER0,ACCEPTOR0,ACCEPTOR1. ~leader(PROPOSER0) | ~promise(ACCEPTOR1,PROPOSER1) | ~didNotPromise(ACCEPTOR0) | (PROPOSER0 = PROPOSER1 | ACCEPTOR0 = ACCEPTOR1)
+qcost : 9
+
+
+=== Prime Orbit 17 =====================
+size : 12
+num_suborbits: 1
+117 (*) : --------11-0-------
+117     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~promise(acceptor0,proposer0)']
+118     : --------1-1-0------
+118     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~promise(acceptor0,proposer1)']
+119     : -------1-1-0-------
+119     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~promise(acceptor0,proposer0)']
+120     : -------1--1-0------
+120     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~promise(acceptor0,proposer1)']
+121     : --------11---0-----
+121     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~promise(acceptor1,proposer0)']
+122     : --------1-1---0----
+122     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~promise(acceptor1,proposer1)']
+123     : ------1--1---0-----
+123     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~promise(acceptor1,proposer0)']
+124     : ------1---1---0----
+124     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~promise(acceptor1,proposer1)']
+125     : -------1-1-----0---
+125     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~promise(acceptor2,proposer0)']
+126     : -------1--1-----0--
+126     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~promise(acceptor2,proposer1)']
+127     : ------1--1-----0---
+127     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~promise(acceptor2,proposer0)']
+128     : ------1---1-----0--
+128     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~promise(acceptor2,proposer1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall ACCEPTOR0,PROPOSER0,ACCEPTOR1. ~leader(PROPOSER0) | promise(ACCEPTOR1,PROPOSER0) | ~didNotPromise(ACCEPTOR0) | ACCEPTOR0 = ACCEPTOR1
+qcost : 7
+
+
+=== Prime Orbit 18 =====================
+size : 6
+num_suborbits: 1
+129 (*) : 0-------11---------
+129     : ['didNotPromise(acceptor2)', 'leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)']
+130     : -0------1-1--------
+130     : ['didNotPromise(acceptor2)', 'leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)']
+131     : --0----1-1---------
+131     : ['didNotPromise(acceptor1)', 'leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+132     : ---0---1--1--------
+132     : ['didNotPromise(acceptor1)', 'leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+133     : ----0-1--1---------
+133     : ['didNotPromise(acceptor0)', 'leader(proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+134     : -----01---1--------
+134     : ['didNotPromise(acceptor0)', 'leader(proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall ACCEPTOR0,PROPOSER0,QUORUM0. member(ACCEPTOR0,QUORUM0) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | ~didNotPromise(ACCEPTOR0)
+qcost : 7
+
+
+=== Prime Orbit 19 =====================
+size : 6
+num_suborbits: 1
+135 (*) : ------1-11---------
+135     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor2)', 'leader(proposer0)']
+136     : ------1-1-1--------
+136     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor2)', 'leader(proposer1)']
+137     : ------11-1---------
+137     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer0)']
+138     : ------11--1--------
+138     : ['didNotPromise(acceptor0)', 'didNotPromise(acceptor1)', 'leader(proposer1)']
+139     : -------111---------
+139     : ['didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer0)']
+140     : -------11-1--------
+140     : ['didNotPromise(acceptor1)', 'didNotPromise(acceptor2)', 'leader(proposer1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall ACCEPTOR0,PROPOSER0,ACCEPTOR1. ~didNotPromise(ACCEPTOR1) | ~leader(PROPOSER0) | ~didNotPromise(ACCEPTOR0) | ACCEPTOR0 = ACCEPTOR1
+qcost : 7
+
+
+=== Prime Orbit 20 =====================
+size : 6
+num_suborbits: 1
+141 (*) : ----0----1-0-------
+141     : ['leader(proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~promise(acceptor0,proposer0)']
+142     : -----0----1-0------
+142     : ['leader(proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~promise(acceptor0,proposer1)']
+143     : --0------1---0-----
+143     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~promise(acceptor1,proposer0)']
+144     : ---0------1---0----
+144     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~promise(acceptor1,proposer1)']
+145     : 0--------1-----0---
+145     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
+146     : -0--------1-----0--
+146     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~promise(acceptor2,proposer1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall ACCEPTOR0,PROPOSER0,QUORUM0. promise(ACCEPTOR0,PROPOSER0) | chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0) | member(ACCEPTOR0,QUORUM0)
+qcost : 7
+
+
+=== Prime Orbit 21 =====================
+size : 6
+num_suborbits: 1
+147 (*) : ---------1-0-0-----
+147     : ['leader(proposer0)', '~promise(acceptor0,proposer0)', '~promise(acceptor1,proposer0)']
+148     : ----------1-0-0----
+148     : ['leader(proposer1)', '~promise(acceptor0,proposer1)', '~promise(acceptor1,proposer1)']
+149     : ---------1-0---0---
+149     : ['leader(proposer0)', '~promise(acceptor0,proposer0)', '~promise(acceptor2,proposer0)']
+150     : ----------1-0---0--
+150     : ['leader(proposer1)', '~promise(acceptor0,proposer1)', '~promise(acceptor2,proposer1)']
+151     : ---------1---0-0---
+151     : ['leader(proposer0)', '~promise(acceptor1,proposer0)', '~promise(acceptor2,proposer0)']
+152     : ----------1---0-0--
+152     : ['leader(proposer1)', '~promise(acceptor1,proposer1)', '~promise(acceptor2,proposer1)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall ACCEPTOR0,PROPOSER0,ACCEPTOR1. ~leader(PROPOSER0) | promise(ACCEPTOR0,PROPOSER0) | promise(ACCEPTOR1,PROPOSER0) | ACCEPTOR0 = ACCEPTOR1
+qcost : 7
+
+
+=== Prime Orbit 25 =====================
+size : 6
+num_suborbits: 1
+174 (*) : ------0----0------0
+174     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)', '~start(proposer1)']
+175     : ------0-----0----0-
+175     : ['~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)', '~start(proposer0)']
+176     : -------0-----0----0
+176     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)', '~start(proposer1)']
+177     : -------0------0--0-
+177     : ['~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)', '~start(proposer0)']
+178     : --------0------0--0
+178     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)', '~start(proposer1)']
+179     : --------0-------00-
+179     : ['~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)', '~start(proposer0)']
+num_forall :   3
+num_exists :   0
+num_literals : 4
+quantified form : forall PROPOSER1,PROPOSER0,ACCEPTOR0. start(PROPOSER1) | promise(ACCEPTOR0,PROPOSER0) | didNotPromise(ACCEPTOR0) | PROPOSER0 = PROPOSER1
+qcost : 7
+
+
+=== Prime Orbit 26 =====================
+size : 3
+num_suborbits: 1
+180 (*) : -------0---------00
+180     : ['~didNotPromise(acceptor1)', '~start(proposer0)', '~start(proposer1)']
+181     : --------0--------00
+181     : ['~didNotPromise(acceptor2)', '~start(proposer0)', '~start(proposer1)']
+182     : ------0----------00
+182     : ['~didNotPromise(acceptor0)', '~start(proposer0)', '~start(proposer1)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall ACCEPTOR0. (exists PROPOSER0. start(PROPOSER0) | didNotPromise(ACCEPTOR0))
+qcost : 4
+
+
+=== Prime Orbit 28 =====================
+size : 6
+num_suborbits: 1
+195 (*) : --0-0----1-----1---
+195     : ['leader(proposer0)', 'promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+196     : ---0-0----1-----1--
+196     : ['leader(proposer1)', 'promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+197     : 0---0----1---1-----
+197     : ['leader(proposer0)', 'promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+198     : -0---0----1---1----
+198     : ['leader(proposer1)', 'promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+199     : 0-0------1-1-------
+199     : ['leader(proposer0)', 'promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)']
+200     : -0-0------1-1------
+200     : ['leader(proposer1)', 'promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)']
+num_forall :   4
+num_exists :   0
+num_literals : 7
+quantified form : forall ACCEPTOR0,PROPOSER0,QUORUM0,QUORUM1. ~promise(ACCEPTOR0,PROPOSER0) | ~leader(PROPOSER0) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | QUORUM0 = QUORUM1
+qcost : 11
+
+
+=== Prime Orbit 29 =====================
+size : 12
+num_suborbits: 1
+201 (*) : --0---0--------1--0
+201     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+202     : ---0--0---------10-
+202     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+203     : 0-----0------1----0
+203     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+204     : -0----0-------1--0-
+204     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+205     : ----0--0-------1--0
+205     : ['promise(acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+206     : -----0-0--------10-
+206     : ['promise(acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+207     : 0------0---1------0
+207     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+208     : -0-----0----1----0-
+208     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+209     : ----0---0----1----0
+209     : ['promise(acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+210     : -----0--0-----1--0-
+210     : ['promise(acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+211     : --0-----0--1------0
+211     : ['promise(acceptor0,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+212     : ---0----0---1----0-
+212     : ['promise(acceptor0,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+num_forall :   5
+num_exists :   0
+num_literals : 8
+quantified form : forall PROPOSER1,ACCEPTOR1,ACCEPTOR0,PROPOSER0,QUORUM0. ~promise(ACCEPTOR1,PROPOSER0) | didNotPromise(ACCEPTOR0) | ~member(ACCEPTOR1,QUORUM0) | start(PROPOSER1) | chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
+qcost : 13
+
+
+=== Prime Orbit 31 =====================
+size : 12
+num_suborbits: 1
+225 (*) : 1---0---0---------0
+225     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+226     : -1---0--0--------0-
+226     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+227     : --1-0--0----------0
+227     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+228     : ---1-0-0---------0-
+228     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+229     : 1-0-----0---------0
+229     : ['chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+230     : -1-0----0--------0-
+230     : ['chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+231     : --0-1-0-----------0
+231     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+232     : ---0-10----------0-
+232     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+233     : 0-1----0----------0
+233     : ['chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+234     : -0-1---0---------0-
+234     : ['chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+235     : 0---1-0-----------0
+235     : ['chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+236     : -0---10----------0-
+236     : ['chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+num_forall :   5
+num_exists :   0
+num_literals : 8
+quantified form : forall PROPOSER1,ACCEPTOR0,PROPOSER0,QUORUM0,QUORUM1. member(ACCEPTOR0,QUORUM0) | ~chosenAt(QUORUM0,PROPOSER0) | didNotPromise(ACCEPTOR0) | chosenAt(QUORUM1,PROPOSER0) | start(PROPOSER1) | ~member(ACCEPTOR0,QUORUM1) | (QUORUM0 = QUORUM1 | PROPOSER0 = PROPOSER1)
+qcost : 13
+
+
+=== Prime Orbit 32 =====================
+size : 2
+num_suborbits: 1
+237 (*) : 0-0-0----1---------
+237     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)']
+238     : -0-0-0----1--------
+238     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)']
+num_forall :   1
+num_exists :   1
+num_literals : 2
+quantified form : forall PROPOSER0. (exists QUORUM0. chosenAt(QUORUM0,PROPOSER0) | ~leader(PROPOSER0))
+qcost : 4
+
+
+=== Prime Orbit 33 =====================
+size : 6
+num_suborbits: 1
+239 (*) : --0---0-0---------0
+239     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+240     : ---0--0-0--------0-
+240     : ['~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+241     : 0-----00----------0
+241     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+242     : -0----00---------0-
+242     : ['~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~didNotPromise(acceptor0)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+243     : ----0--00---------0
+243     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+244     : -----0-00--------0-
+244     : ['~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+num_forall :   5
+num_exists :   0
+num_literals : 8
+quantified form : forall PROPOSER1,ACCEPTOR1,ACCEPTOR0,PROPOSER0,QUORUM0. didNotPromise(ACCEPTOR0) | ~member(ACCEPTOR1,QUORUM0) | start(PROPOSER1) | chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | didNotPromise(ACCEPTOR1) | (ACCEPTOR0 = ACCEPTOR1 | PROPOSER0 = PROPOSER1)
+qcost : 13
+
+
+=== Prime Orbit 34 =====================
+size : 6
+num_suborbits: 1
+245 (*) : 0-0---0--1--0------
+245     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer1)']
+246     : -0-0--0---10-------
+246     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~promise(acceptor0,proposer0)']
+247     : 0---0--0-1----0----
+247     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer1)']
+248     : -0---0-0--1--0-----
+248     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~promise(acceptor1,proposer0)']
+249     : --0-0---01------0--
+249     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer1)']
+250     : ---0-0--0-1----0---
+250     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~promise(acceptor2,proposer0)']
+num_forall :   5
+num_exists :   0
+num_literals : 9
+quantified form : forall PROPOSER1,ACCEPTOR0,PROPOSER0,QUORUM0,QUORUM1. ~leader(PROPOSER0) | didNotPromise(ACCEPTOR0) | chosenAt(QUORUM1,PROPOSER0) | ~member(ACCEPTOR0,QUORUM1) | chosenAt(QUORUM0,PROPOSER0) | promise(ACCEPTOR0,PROPOSER1) | ~member(ACCEPTOR0,QUORUM0) | (QUORUM0 = QUORUM1 | PROPOSER0 = PROPOSER1)
+qcost : 14
+
+
+=== Prime Orbit 35 =====================
+size : 6
+num_suborbits: 1
+251 (*) : -0-0--0---1------0-
+251     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~didNotPromise(acceptor0)', '~start(proposer0)']
+252     : 0-0---0--1--------0
+252     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~didNotPromise(acceptor0)', '~start(proposer1)']
+253     : -0---0-0--1------0-
+253     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor1,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor1)', '~start(proposer0)']
+254     : 0---0--0-1--------0
+254     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor1,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor1)', '~start(proposer1)']
+255     : ---0-0--0-1------0-
+255     : ['leader(proposer1)', '~chosenAt(quorum__acceptor0_acceptor2,proposer1)', '~chosenAt(quorum__acceptor1_acceptor2,proposer1)', '~didNotPromise(acceptor2)', '~start(proposer0)']
+256     : --0-0---01--------0
+256     : ['leader(proposer0)', '~chosenAt(quorum__acceptor0_acceptor2,proposer0)', '~chosenAt(quorum__acceptor1_acceptor2,proposer0)', '~didNotPromise(acceptor2)', '~start(proposer1)']
+num_forall :   5
+num_exists :   0
+num_literals : 9
+quantified form : forall PROPOSER1,ACCEPTOR0,PROPOSER0,QUORUM0,QUORUM1. ~leader(PROPOSER0) | didNotPromise(ACCEPTOR0) | chosenAt(QUORUM1,PROPOSER0) | start(PROPOSER1) | ~member(ACCEPTOR0,QUORUM1) | chosenAt(QUORUM0,PROPOSER0) | ~member(ACCEPTOR0,QUORUM0) | (QUORUM0 = QUORUM1 | PROPOSER0 = PROPOSER1)
+qcost : 14
+
