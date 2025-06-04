@@ -180,7 +180,7 @@ class PrimeOrbits():
         # emumerate prime orbits
         self._formula = DualRailNegation(self.options, protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
-            if self.options.prime_gen == PrimeGen.ilp or self.options.prime_gen == PrimeGen.binary:
+            if self.options.prime_gen == PrimeGen.ilp:
                 self._ilp_prime_gen(sat_solver, protocol)
             elif self.options.prime_gen == PrimeGen.enumerate:
                 self._enumerate_prime_gen(sat_solver, protocol)

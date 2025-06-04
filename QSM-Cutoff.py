@@ -22,7 +22,7 @@ def usage ():
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable suborbits (default: on)')
     print('-k           enalbe sanity checks for quantifier inference and minimization (default: off)')
-    print('-p 1|2|3     prime generation: 1. ilp, 2. binary search ilp 3. enumerate (default: 1)')
+    print('-p 1|2       prime generation: 1. ilp, 2. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       write verbose info to LOG (default: off)')

@@ -4,7 +4,7 @@ from verbose import *
 from enum import Enum
 FlowMode    = Enum('FlowMode', ['Synthesize_Rmin', 'Check_Reachability', 'Check_Finite_Inductive'])
 ForwardMode = Enum('ForwardMode', ['Sym_DFS', 'BDD_Symbolic'])
-PrimeGen    = Enum('PrimeGen', ['ilp', 'binary', 'enumerate'])
+PrimeGen    = Enum('PrimeGen', ['ilp', 'enumerate'])
 UseMC       = Enum('UseMC', ['sat', 'mc'])
 MUSMode     = Enum('MUSMode', ['MARCO', 'enumerate'])
 
