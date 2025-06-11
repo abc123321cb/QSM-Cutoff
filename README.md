@@ -32,7 +32,7 @@ cd repycudd
 cd cudd-2.4.2
 make
 make libso
-cd..
+cd ..
 ```
 - Change the python version in repycudd Makefile,Makefile_64bit to your version of python3.1X and add the compilation flag `-I[PATH TO Python.h]`
 ```
