@@ -67,3 +67,27 @@ The directory `scripts` contains the scripts for generating results of our CAV 2
 
 ## Logs
 The directory `CAV_logs` contains experiment logs of our CAV 2025 paper.
+
+## Check installation
+To check the installion copy paste this to your terminal I am using bash.
+
+python3 - <<'PY'
+import importlib, sys
+pkgs = [
+    "pysat",                      # python-sat[…]
+    "z3",                         # z3-solver
+    "yaml",                       # pyyaml
+    "pytest", "setuptools",
+    "more_itertools", "numpy",
+]                             
+missing = []
+for p in pkgs:
+    try:
+        importlib.import_module(p)
+    except ImportError:
+        missing.append(p)
+if missing:
+    print("❌  Missing:", ", ".join(missing))
+    sys.exit(1)                              
+print("✅  All listed Python packages import correctly.")
+PY  
