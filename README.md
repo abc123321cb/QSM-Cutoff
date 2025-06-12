@@ -69,7 +69,7 @@ The directory `scripts` contains the scripts for generating results of our CAV 2
 The directory `CAV_logs` contains experiment logs of our CAV 2025 paper.
 
 ## Check installation
-To check the installion copy paste this to your terminal I am using bash.
+To check the installion copy paste this to your terminal.
 ```
 python3 - <<'PY'
 import importlib, sys
