@@ -70,7 +70,7 @@ The directory `CAV_logs` contains experiment logs of our CAV 2025 paper.
 
 ## Check installation
 To check the installion copy paste this to your terminal I am using bash.
-
+```
 python3 - <<'PY'
 import importlib, sys
 pkgs = [
@@ -90,4 +90,5 @@ if missing:
     print("❌  Missing:", ", ".join(missing))
     sys.exit(1)                              
 print("✅  All listed Python packages import correctly.")
-PY  
+PY
+```
