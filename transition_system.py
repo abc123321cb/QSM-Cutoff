@@ -109,6 +109,7 @@ class TransitionSystem():
 
     def _init_sort(self, sort_str, sort, size):
         assert(size > 0)
+        print(sort)
         enum_const_names = get_enum_constant_names(sort_str, size)
         enum_sort        = get_enum_sort(sort_str, enum_const_names)
         enum_consts      = get_enum_constants(enum_sort)

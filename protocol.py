@@ -87,7 +87,9 @@ class Protocol():
         self.atom2equivs      = {} 
         self.atom2complements = {}
         self.remove_atom_ids  = set()
-        self.quotient_reachable_states : List[str] = [] 
+        self.quotient_reachable_states : List[str] = []
+        # reachable states >= unreachable states
+        self.more_reach : bool
 
     def init_sort(self, tran_sys : TransitionSystem) -> None:
         for sort in tran_sys.sort2consts.keys():
@@ -340,7 +342,7 @@ class Protocol():
                     continue
                 elif line.startswith('representative states'):
                     repr_states_str  = line.strip().split(' : ')[1].split(', ')
-                    repr_states_int  = [int(t) for t in repr_states_str]
+                    repr_states_int  = [(int(t)) for t in repr_states_str]
                     self.repr_states = set(repr_states_int)
                 else:
                     state = line.strip()

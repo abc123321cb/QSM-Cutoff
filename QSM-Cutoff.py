@@ -69,7 +69,7 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
     vprint_instance_banner(options, f'[Synthesize Rmin]: [{options.ivy_filename}: {options.size_str}]', 0)
-    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-w', '-r'] + sys_args
+    qrm_args    = ['python3', 'qrm.py', options.ivy_filename, '-s', options.size_str, '-f', '1', '-g', '-w'] + sys_args
     rmin_result = True 
     try:
         vprint(options, ' '.join(qrm_args))
@@ -117,16 +117,18 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args, incre
     has_converge  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes, increase_size)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w', '-r'] + sys_args
-        try_result   = True 
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args
+        try_result   = True
+        converged =                                                                                                                            
         try:
             vprint(options, ' '.join(qrm_args))
             options.close_log_if_exists()
-            subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to) 
+            converged = not bool(subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to)) 
+            
             options.append_log_if_exists()
         except subprocess.CalledProcessError as error:
             options.append_log_if_exists()
-            if error.stderr == 'QrmFail':
+            if error.stderr.rstrip()[-7:] == 'QrmFail':
                 try_result = False
             else:
                 vprint(options, error.stderr)
@@ -225,7 +227,7 @@ def qsm_cutoff(ivy_name, args):
     cutoff_size_str = ''
     Rmin_solutions  = []
     while not qrm_result:
-        rmin_result  = synthesize_Rmin_and_ivy_check(options, sys_args)
+        synthesize_Rmin_and_ivy_check(options, sys_args)
         num_solution = get_number_of_Rmin_solutions(options)
         sizes_str = []
         increase_size = 0   

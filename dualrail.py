@@ -2,6 +2,8 @@ from typing import Dict,List
 from pysat.card import ITotalizer 
 from protocol import Protocol
 from util import QrmOptions, PrimeGen
+from verbose import *
+from pprint import pformat
 
 class DualRailNegation():
     def __init__(self, options : QrmOptions, protocol : Protocol) -> None:
@@ -18,6 +20,7 @@ class DualRailNegation():
             # Implementing the paper "Enumerating Prime Implicants of Propositional Formulae in Conjunctive Normal Form"
             self._encode_M()
 
+    # todo replace atom_id2vars with a function I don't think it should be a list.
     def _set_dualrail_vars(self, atom_id: int) -> None:
         self._atom_id2vars[atom_id] = [atom_id*2+2, atom_id*2+1]
         
@@ -28,6 +31,7 @@ class DualRailNegation():
         return self._atom_id2vars[atom_id][0]
 
     def _encode(self, protocol : Protocol) -> None:
+        # this for loop adds to the clauses (~pvar + ~nvar) 
         for atom_id in range(self._state_atom_num):
             self._set_dualrail_vars(atom_id) 
             pvar = self._get_pos_var(atom_id)
@@ -37,6 +41,7 @@ class DualRailNegation():
                 self._var2clause_id[pvar] = []
                 self._var2clause_id[nvar] = []
 
+        # this blocks the reachable states the first for loop goes through each state and the secound through each variable in the state
         for state in protocol.quotient_reachable_states: # use quotient reachable states to prevent excessive redudant orbits
             clause = []
             for (atom_id, value) in enumerate(state):
@@ -52,9 +57,11 @@ class DualRailNegation():
                         self._var2clause_id[neg_var].append(len(self.clauses))
             self.clauses.append(clause)
 
+# not being run
     def _encode_M(self):
         tseitin_var = self._state_atom_num*2+1
         for var, clause_ids in self._var2clause_id.items():
+            vprint(self.options,var + "\t" + clause_ids)
             mclause = []
             for cid in clause_ids:
                 clause = self.clauses[cid]
@@ -98,3 +105,29 @@ class DualRailNegation():
             elif self._get_neg_var(atom_id) in sat_model:
                 values[atom_id] = '0'
         return values
+
+    def debug_print(self) -> None:
+        """
+        Dump every instance attribute except `self.options`
+        using vprint(self.options, msg) for consistent logging.
+        """
+        for name, value in self.__dict__.items():
+            if name == "options":
+                continue
+
+            if name == "_totalizer" and value is not None:
+                vprint(self.options, f"{name}:")
+                vprint(self.options, f"  literals        : {value.lits}")
+                vprint(self.options, f"  rhs vars        : {value.rhs}")
+                vprint(self.options, f"  CNF #clauses    : {len(value.cnf.clauses)}")
+                vprint(self.options, "-" * 40)
+                continue
+
+            # Fallback: print other attribute
+            vprint(self.options, f"{name}: {pformat(value, depth=3, compact=True)}")
+            vprint(self.options, "-" * 40)
+
+
+
+
+

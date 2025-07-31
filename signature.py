@@ -432,6 +432,8 @@ class ConstraintSignatures():
         self.func_permutations = list(product(*all_func_permutations))
 
     def _add_constraint_signatures(self, arg_partitions : List[ArgPartition]):
+        print("ArgPartition:")
+        print(arg_partitions)
         for arg_part in arg_partitions: 
             cpart_sig = ConstraintPartitionSignature(arg_part.part_sig.sort2signature)
             cpart_sig.init_member_relations_from_binding(arg_part.binding)

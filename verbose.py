@@ -1,4 +1,6 @@
 import sys
+import inspect
+
 def vprint_instance_banner(options, line : str, level=0, disable=False) -> None:
     if options.verbosity >= level and not disable:
         banner = '*'*(len(line)+20)
@@ -36,8 +38,20 @@ def vprint_title(options, line : str, level=0, disable=False) -> None:
 
 def vprint(options, line : str, level=0, disable=False) -> None:
     if options.verbosity >= level and not disable:
-        line = f'{line}\n\n'
-        sys.stdout.write(line)
+        
+        frame = inspect.currentframe()
+        caller_frame = frame.f_back
+        filename = caller_frame.f_code.co_filename
+        lineno = caller_frame.f_lineno
+        
+        # Add caller info to the output
+        location = f'[Called from {filename}, line {lineno}]'
+        full_line = f'{location}\n{line}\n\n'
+        #full_line = f'{line}\n\n'
+
+        # Output to stdout
+        sys.stdout.write(full_line)
         sys.stdout.flush()
+
         if options.writeLog:
             options.write_log(line)

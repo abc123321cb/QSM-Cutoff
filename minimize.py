@@ -350,11 +350,14 @@ class Minimizer():
         self.ubound   = self.max_cost
 
     def solve_rmin(self) -> List[str]:
+        print("hello: " + str(self.options.all_solutions))
         if self.options.all_solutions:
             self._solve_all()
         else:
             self._solve_one()
+        print("ghost")
         self.set_rmin()
+        print("I think last")
         self.print_rmin()
         self.write_ivy_files()
 

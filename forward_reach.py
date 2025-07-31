@@ -52,13 +52,13 @@ class StateOrbit():
         self.repr_state = dfs_state # first visited state in this orbit
         self.visit_id   = visit_id 
         self.states     = set()
-        self.repr_int   = 0
+        self.repr_int   = 0         # the minimum value in the orbit
 
     def __str__(self) -> str:
         lines  = f'\n=== State Orbit {self.visit_id} =====================\n'
         lines += f'size : {len(self.states)}\n'
         lines += f'repr state: {self.repr_state}\n'
-        lines += f'lex min decimal: {self.repr_int}\n'
+        lines += f'lex min decimal: {hex(self.repr_int)}\n'
         lines += f'states:\n'
         for state in self.states:
             lines += f'{state}\n'
@@ -100,7 +100,7 @@ class SymDFS(ForwardReachability):
 
     def _initialize_dfs(self):
         self._init_ivy_actions()
-        self._init_finite_ivy_generator() 
+        self._init_finite_ivy_generator() # makes the c++ file to run it
         self.ivy_executor = FiniteIvyExecutor(self.options, self.instantiator) 
 
     #------------------------------------------------------------
@@ -179,6 +179,8 @@ class SymDFS(ForwardReachability):
         self.protocol.init_reachable_states(self.dfs_immutable_state, protocol_states)
         # representative states
         self.protocol.init_representative_states(self.dfs_repr_states)
+        # is equal to #reachable states >= #unreach states
+        self.protocol.more_reach = bool(int(round(len(self.dfs_explored_states)/pow(2,len(self.dfs_explored_states[0])))))
 
     #------------------------------------------------------------
     # SymDFS: print methods
@@ -206,6 +208,7 @@ class SymDFS(ForwardReachability):
         self._print_reachability()
         if (self.options.writeReach):
             self.protocol.write_reachability()
+        
 
 class BddSymbolic(ForwardReachability):
     def __init__(self, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):

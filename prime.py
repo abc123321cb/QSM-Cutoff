@@ -131,7 +131,7 @@ class PrimeOrbits():
         outF.close()
 
     def _make_orbit(self, values: List[str], protocol : Protocol) -> None:
-        key = make_key(values,protocol)
+        key = make_key(values,protocol) # see how orbit merging is done
         if key in self._orbit_hash and self.options.merge_suborbits:
             self._sub_orbit_count += 1
         if not key in self._orbit_hash or not self.options.merge_suborbits:
@@ -146,7 +146,7 @@ class PrimeOrbits():
             is_sub_repr = False
             orbit.add_prime(prime)
 
-    def _get_block_clauses(self, values: List[str], protocol: Protocol) -> List[List[int]]:
+    def _get_block_clauses(self, values: List[str], protocol: Protocol) -> List[List[int]]: 
         block_clauses = []
         for nvalues in protocol.all_permutations(values):
             clause = self._formula.block(nvalues) 
@@ -155,25 +155,26 @@ class PrimeOrbits():
 
     def _ilp_prime_gen(self, sat_solver, protocol : Protocol):
         for ubound in range(0,protocol.state_atom_num+1):
-            assumptions = self._formula.assume(ubound)
+            assumptions = self._formula.assume(ubound) #adds clause that only upto ubound trues
             result = sat_solver.solve(assumptions)
             while (result):
                 model  = sat_solver.get_model()
-                values = self._formula.single_rail(model)
+                values = self._formula.single_rail(model) # returns a list of strings like ["1","0","-","1"]
                 self._make_orbit(values, protocol)
-                block_clauses  = self._get_block_clauses(values, protocol)
+                block_clauses  = self._get_block_clauses(values, protocol) # returns in form like [[2,3,5],[2,3,6]]
                 sat_solver.append_formula(block_clauses) 
                 result = sat_solver.solve(assumptions)
 
     def _enumerate_prime_gen(self, sat_solver, protocol : Protocol):
+        # a different way to solve the problem it should work but is less efficent
         result = sat_solver.solve()
         while (result):
             model  = sat_solver.get_model()
             values = self._formula.single_rail(model)
             self._make_orbit(values, protocol)
             block_clauses  = self._get_block_clauses(values, protocol)
-            sat_solver.append_formula(block_clauses) 
-            result = sat_solver.solve() 
+            sat_solver.append_formula(block_clauses)
+            result = sat_solver.solve()
 
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
         Prime.set_atoms(atoms_str=protocol.state_atoms)
@@ -194,4 +195,5 @@ class PrimeOrbits():
         vprint(self.options, f'[PRIME NOTE]: number of orbits after merging: {PrimeOrbit.count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of orbits before merging: {PrimeOrbit.count + self._sub_orbit_count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
+        #self._formula.debug_print()
 

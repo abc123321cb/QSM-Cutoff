@@ -146,10 +146,13 @@ def can_skip_forward_reachability(options) -> bool:
 
 def qrm(ivy_name, args):
     # start
-    options    = get_options(ivy_name, args)
+    options    = get_options(ivy_name, args) # basic input handling and some printing
     qrm_result = True
     instance_start(options, ivy_name)
+
     tran_sys     = get_transition_system(options, options.ivy_filename)
+
+
     instantiator = FiniteIvyInstantiator(tran_sys)
     # get reachability
     protocol     = None
@@ -173,14 +176,12 @@ def qrm(ivy_name, args):
         reach_result  = reach_checker.is_rmin_matching_reachability()
         options.step_end()
         if options.convergence_check:
-            try:
-                if reach_result:
-                    sys.exit(0)
-                else:
-                    raise QrmFail()
-            except QrmFail:
-                sys.stderr.write('QrmFail')
-                sys.exit(1) 
+            if reach_result:
+                vprint(options, "Converged", 3)
+                sys.exit(0)
+
+            vprint(options, "No Convergence", 3)
+            sys.exit(1)
         else:
             sys.exit(0)
     else:
@@ -190,7 +191,7 @@ def qrm(ivy_name, args):
 
     # generate prime orbits
     options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.ivy_filename}: {options.size_str}]')
-    prime_orbits = PrimeOrbits(options) 
+    prime_orbits = PrimeOrbits(options)
     prime_orbits.symmetry_aware_enumerate(protocol)               
     options.step_end()
 
