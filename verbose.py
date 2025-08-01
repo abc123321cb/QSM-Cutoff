@@ -45,9 +45,9 @@ def vprint(options, line : str, level=0, disable=False) -> None:
         lineno = caller_frame.f_lineno
         
         # Add caller info to the output
-        location = f'[Called from {filename}, line {lineno}]'
-        full_line = f'{location}\n{line}\n\n'
-        #full_line = f'{line}\n\n'
+        # location = f'[Called from {filename}, line {lineno}]'
+        # full_line = f'{location}\n{line}\n\n'
+        full_line = f'{line}\n\n'
 
         # Output to stdout
         sys.stdout.write(full_line)

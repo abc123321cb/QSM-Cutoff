@@ -180,7 +180,7 @@ class SymDFS(ForwardReachability):
         # representative states
         self.protocol.init_representative_states(self.dfs_repr_states)
         # is equal to #reachable states >= #unreach states
-        self.protocol.more_reach = bool(int(round(len(self.dfs_explored_states)/pow(2,len(self.dfs_explored_states[0])))))
+        self.protocol.more_reach = bool(int(round(len(self.dfs_explored_states)/pow(2,len(protocol_states[0])))))
 
     #------------------------------------------------------------
     # SymDFS: print methods

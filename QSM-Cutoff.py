@@ -114,44 +114,38 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args, incre
     orig_ivy_name = options.instance_name + '.' + options.instance_suffix + f'.{sol_id}.ivy'
     orig_sizes    = get_original_sizes(options) 
     next_sizes    = orig_sizes.copy()
-    has_converge  = True 
+    converged  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes, increase_size)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args
-        try_result   = True
-        converged =                                                                                                                            
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args                                                                                         
         try:
             vprint(options, ' '.join(qrm_args))
             options.close_log_if_exists()
-            converged = not bool(subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, check=True, timeout=options.qrm_to)) 
-            
+            # this line runs qrm.py and sets converged to the apporate value based on the return value of qrm
+            converged = not bool(subprocess.run(qrm_args, stderr=subprocess.PIPE, text=True, timeout=options.qrm_to).returncode) 
             options.append_log_if_exists()
         except subprocess.CalledProcessError as error:
             options.append_log_if_exists()
-            if error.stderr.rstrip()[-7:] == 'QrmFail':
-                try_result = False
-            else:
-                vprint(options, error.stderr)
-                vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
-                vprint(options, '[QRM RESULT]: FAIL')
-                options.print_time()
-                sys.exit(1)
+            vprint(options, error.stderr)
+            vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
+            vprint(options, '[QRM RESULT]: FAIL')
+            options.print_time()
+            sys.exit(1)
         except subprocess.TimeoutExpired:
             options.append_log_if_exists()
             vprint(options, f'[QRM NOTE]: Timeout after {options.qrm_to}')
             vprint(options, '[QRM RESULT]: FAIL')
             options.print_time()
             sys.exit(1)
-        if not try_result:
+        if not converged:
             next_sizes[sort] = size + increase_size
-            has_converge = False
-    if has_converge:
+    if converged:
         cutoff_size_str = options.size_str
-        return has_converge, cutoff_size_str 
+        return converged, cutoff_size_str 
     else:
         next_size_str = get_next_size_string(next_sizes)
         vprint(options, f'next size: {next_size_str}')
-        return has_converge, next_size_str
+        return converged, next_size_str
 
 def finite_ivy_check(options : QrmOptions, sys_args, increase_size) -> bool:
     vprint_instance_banner(options, f'[Finite Inductive Check]: [{options.ivy_filename}: {options.size_str}]', 0)

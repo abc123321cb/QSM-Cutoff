@@ -177,16 +177,16 @@ def qrm(ivy_name, args):
         options.step_end()
         if options.convergence_check:
             if reach_result:
-                vprint(options, "Converged", 3)
+                vprint(options, "Converged", 5)
                 sys.exit(0)
 
-            vprint(options, "No Convergence", 3)
+            vprint(options, "No Convergence", 5)
             sys.exit(1)
         else:
             sys.exit(0)
     else:
         options.step_start('Reduce Equivalent Atoms')
-        protocol.reduce_equivalent_atoms(tran_sys) 
+        protocol.reduce_equivalent_atoms(tran_sys)
         options.step_end()
 
     # generate prime orbits
