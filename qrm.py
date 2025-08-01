@@ -39,6 +39,7 @@ def usage ():
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
     print('-l LOG       write verbose info to LOG (default: off)')
+    print('-n           use transitions instead of states (default: off) (only works for dfs)')
     print('-w           write .reach, .pis, .qpis (default: off)')
     print('                 write reachable states to FILE.reach')
     print('                 write prime orbits to FILE.pis')
@@ -55,9 +56,11 @@ def file_exist(filename) -> bool:
         usage_and_exit ()
     return True
 
+
+# large if else chain setting booleans
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whg")
+        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgn")
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -117,6 +120,8 @@ def get_options(ivy_name, args):
         elif optc == '-g': # NOTE: not for user, used when doing convergence
             options.convergence_check = True
             options.ivy_check = False
+        elif optc == '-n': # transitions
+            options.transition_reach = True
         else:
             usage_and_exit()
     if options.writeLog:

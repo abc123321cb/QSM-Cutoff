@@ -49,7 +49,7 @@ class DfsNode():
 
 class StateOrbit():
     def __init__(self, dfs_state, visit_id):
-        self.repr_state = dfs_state # first visited state in this orbit
+        self.repr_state = dfs_state # first visited state in this orbit (not actually important for the algorithm and for printing only) 
         self.visit_id   = visit_id 
         self.states     = set()
         self.repr_int   = 0         # the minimum value in the orbit
@@ -77,6 +77,9 @@ class SymDFS(ForwardReachability):
         self.dfs_state_orbits    : List[StateOrbit] = []
         self.dfs_max_depth       = 0
         self.dfs_immutable_state = ''
+        self._state2repr: Dict[str, int] = {}
+        self.dfs_explored_edges: set[tuple[int, int]] = set() \
+            if self.options.transition_reach else None
 
         self._initialize_dfs()
     #------------------------------------------------------------
@@ -106,6 +109,11 @@ class SymDFS(ForwardReachability):
     #------------------------------------------------------------
     # SymDFS: core depth first search algorthm
     #------------------------------------------------------------
+
+    def _register_state_orbit(self, node: DfsNode, repr_int: int) -> None:
+        for bits in self.protocol.all_permutations(list(node.dfs_state)):
+            self._state2repr[''.join(bits)] = repr_int
+
     def _create_dfs_node(self):
         dfs_state = self.ivy_executor.get_dfs_state()
         ivy_state = self.ivy_executor.backup_ivy_state()
@@ -116,11 +124,14 @@ class SymDFS(ForwardReachability):
         state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits))
         values   = list(node.dfs_state)
         repr_int = int(node.dfs_state + self.dfs_immutable_state, 2)
+
         for nvalues in self.protocol.all_permutations(values):
             nstate   = ''.join(nvalues)
             repr_int = min(int(nstate + self.dfs_immutable_state, 2), repr_int)
             self.dfs_explored_states.add(nstate)
             state_orbit.states.add(nstate)
+        
+        self._register_state_orbit(node, repr_int)
         self.dfs_repr_states.append(repr_int)
         state_orbit.repr_int = repr_int
         self.dfs_state_orbits.append(state_orbit)
@@ -130,26 +141,69 @@ class SymDFS(ForwardReachability):
 
     def _can_dfs_recur_node(self, node):
         return node.dfs_state not in self.dfs_explored_states
+    
+    def _record_edge(self, parent_repr: int, child_repr: int) -> None:
+        if self.options.transition_reach:
+            self.dfs_explored_edges.add((parent_repr, child_repr))
+
+    def _register_state_orbit_bits(self, dfs_state_bits: str, repr_int: int) -> None:
+        for bits in self.protocol.all_permutations(list(dfs_state_bits)):
+            self._state2repr[''.join(bits)] = repr_int
 
     def _expand_nondeterministic_successors(self, action):
-        ivy_result       = self.ivy_executor.execute_ivy_action(action)
+        """
+        Execute `action`, enumerate every non-deterministic successor, register
+        new orbits, record the (src_repr, dst_repr) edge, and return the list
+        of *new* child nodes that must be explored recursively.
+        """
+        # 1. Snapshot the parent BEFORE mutating the IVy state
+        parent_raw = self.ivy_executor.get_dfs_state()
+
+        #    Ensure the parent orbit is registered
+        if parent_raw not in self._state2repr:
+            parent_repr_int = int(parent_raw + self.dfs_immutable_state, 2)
+            self._register_state_orbit_bits(parent_raw, parent_repr_int)
+
+        parent_repr = self._state2repr[parent_raw]
+
         pending_children = []
+        ivy_result       = self.ivy_executor.execute_ivy_action(action)
+
+        # 2. Handle the stream of INCOMPLETE successors 
         while ivy_result == IVY_ACTION_INCOMPLETE:
             child_node = self._create_dfs_node()
-            if self._can_dfs_recur_node(child_node):
-                self._add_dfs_explored_state(child_node)     
+
+            is_new = self._can_dfs_recur_node(child_node)
+            if is_new:                                         # register orbit
+                self._add_dfs_explored_state(child_node)
+
+            child_repr = self._state2repr[child_node.dfs_state]
+            self._record_edge(parent_repr, child_repr)         # store edge
+
+            if is_new:                                         # recurse later
                 pending_children.append(child_node)
+
             ivy_result = self.ivy_executor.execute_ivy_action(action)
+
+        # 3. Final complete successor I think this is the only one that runs as all the protocals are deterministic
         if ivy_result == IVY_ACTION_COMPLETE:
             child_node = self._create_dfs_node()
-            if self._can_dfs_recur_node(child_node):
-                self._add_dfs_explored_state(child_node)     
-                pending_children.append(child_node)
-        return pending_children
 
+            is_new = self._can_dfs_recur_node(child_node)
+            if is_new:
+                self._add_dfs_explored_state(child_node)
+
+            child_repr = self._state2repr[child_node.dfs_state]
+            self._record_edge(parent_repr, child_repr)
+
+            if is_new:
+                pending_children.append(child_node)
+
+        return pending_children
+    
     def _symmetric_quotient_depth_first_search_recur_node(self, node, level=0):
-        # vprint_title(self.options, f'level {level}', 5)
-        # vprint(self.options, node.dfs_state, 5)
+        vprint_title(self.options, f'level {level}', 5)
+        vprint(self.options, node.dfs_state, 5)
         self.dfs_max_depth = max(level, self.dfs_max_depth)
         for action in self.ivy_actions:
             self._restore_ivy_state(node) 
@@ -197,6 +251,12 @@ class SymDFS(ForwardReachability):
         vprint(self.options, f'[FW NOTE]: number of dfs representative states:     {len(self.dfs_repr_states)}', 2)
         vprint(self.options, f'[FW NOTE]: number of dfs non-representative states: {len(self.dfs_explored_states)-len(self.dfs_repr_states)}', 2)
 
+    def _print_transition_edges(self):
+        if not self.options.transition_reach:
+            return
+        vprint_step_banner(self.options, '[FW RESULT]: Transition Edges', 3)
+        for src, dst in sorted(self.dfs_explored_edges):
+            vprint(self.options, f'{src} → {dst}', 3)
     #------------------------------------------------------------
     # SymDFS: public methods
     #------------------------------------------------------------
@@ -206,6 +266,7 @@ class SymDFS(ForwardReachability):
         self._clean()
         self._print_dfs_statistics()
         self._print_reachability()
+        self._print_transition_edges()
         if (self.options.writeReach):
             self.protocol.write_reachability()
         

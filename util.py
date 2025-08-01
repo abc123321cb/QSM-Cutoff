@@ -24,6 +24,7 @@ class QrmOptions():
         self.prime_gen     = PrimeGen.ilp
         self.useMC = UseMC.sat
         self.mus_mode = MUSMode.enumerate
+        self.transition_reach = False
         self.readReach         = False
         self.early_terminate_reach = False
         self.sanity_check      = False
