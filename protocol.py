@@ -67,7 +67,7 @@ class Protocol():
         self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
         self.predicates       : Dict[str,List[str]]  = {} # (function/constant name, [argsort1, argsort2, ..])
         self.atom_num         : int                  = 0
-        self.state_atom_num     : int                = 0
+        self.state_atom_num     : int                = 0  # = total amount of bits needed.
         self.interpreted_atom_num : int              = 0
         self.atoms            : List[str]            = [] # atom id -> atom name
         self.state_atoms                             = [] # atoms = state_atoms + interpreted_atoms
@@ -79,7 +79,7 @@ class Protocol():
         self.atom_Name2Id     : Dict[str,int]        = {} # atom name -> atom id
         self.atom_sig         : List[List[str]]      = [] # atom id -> [predname, arg1, arg2,..]
         self.set_name2elem_sort_id  : Dict[str, int] = {} # quorum name -> member sort id
-        self._sorts_permutations  = []              
+        self._sorts_permutations  = []
         # reachability
         self.reachable_states : List[str] = [] 
         self.repr_states      : Set[int]  = set()
@@ -245,6 +245,26 @@ class Protocol():
             return format_equal_atom(predicate, new_args)
         else: 
             return format_relational_atom(predicate, new_args)
+    
+    def _to_binary(self, x : int, size : int) -> str:
+        s = ""
+        while x > 0:
+            s = s + str(int(x % 2))
+            x = int(x / 2)
+        while len(s) < size:
+            s = s + "0"
+        return s[::-1] # reverses the string
+
+    # This is a very slow function because the unreachable states grows exponentianly
+    def get_unreachable_states(self):
+        size = len(self.reachable_states[0])
+        l : List[str] = []
+        for i in range(pow(2,size)):
+            num = self._to_binary(i, size)
+            if not (num in self.reachable_states):
+                l.append(num)
+        return l
+
 
     def _permute_values(self, permutation, values : List[str]) -> List[str]:
         # values is a list of '0', '1', '-'

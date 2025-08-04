@@ -5,9 +5,13 @@ from util import QrmOptions, PrimeGen
 from verbose import *
 from pprint import pformat
 
-class DualRailNegation():
+class DualRail():
+    # options is for ilp vs enumerate and printing
+    # protocal that gives the reachable states
+    # positive gives whether to do 
     def __init__(self, options : QrmOptions, protocol : Protocol) -> None:
         self.options = options
+        self.positive = protocol.more_reach
         self.clauses    : List[List[int]] = [] 
         self._totalizer : ITotalizer
         self._state_atom_num  : int = protocol.state_atom_num 
@@ -31,6 +35,11 @@ class DualRailNegation():
         return self._atom_id2vars[atom_id][0]
 
     def _encode(self, protocol : Protocol) -> None:
+        
+        states = protocol.quotient_reachable_states
+        if self.positive:
+            states = protocol.get_unreachable_states()
+        
         # this for loop adds to the clauses (~pvar + ~nvar) 
         for atom_id in range(self._state_atom_num):
             self._set_dualrail_vars(atom_id) 
@@ -40,9 +49,10 @@ class DualRailNegation():
             if self.options.prime_gen == PrimeGen.enumerate:
                 self._var2clause_id[pvar] = []
                 self._var2clause_id[nvar] = []
+        
 
         # this blocks the reachable states the first for loop goes through each state and the secound through each variable in the state
-        for state in protocol.quotient_reachable_states: # use quotient reachable states to prevent excessive redudant orbits
+        for state in states: # use quotient reachable states to prevent excessive redudant orbits
             clause = []
             for (atom_id, value) in enumerate(state):
                 if value == '0':

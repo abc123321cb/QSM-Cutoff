@@ -2,7 +2,7 @@ import sys
 from typing import Dict,List
 from pysat.solvers import Cadical153 as SatSolver 
 from protocol import Protocol 
-from dualrail import DualRailNegation
+from dualrail import DualRail
 from transition_system import TransitionSystem
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from util import QrmOptions, PrimeGen
@@ -112,7 +112,7 @@ class PrimeOrbit():
 class PrimeOrbits():
     def __init__(self, options : QrmOptions) -> None:
         self.orbits      : List[PrimeOrbit] = [] 
-        self._formula    : DualRailNegation
+        self._formula    : DualRail
         self._orbit_hash : Dict[str, PrimeOrbit] = {}
         self._sub_orbit_count = 0 
         self.options = options
@@ -179,7 +179,7 @@ class PrimeOrbits():
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
         Prime.set_atoms(atoms_str=protocol.state_atoms)
         # emumerate prime orbits
-        self._formula = DualRailNegation(self.options, protocol)
+        self._formula = DualRail(self.options, protocol)
         with SatSolver(bootstrap_with=self._formula.clauses) as sat_solver:
             if self.options.prime_gen == PrimeGen.ilp:
                 self._ilp_prime_gen(sat_solver, protocol)
