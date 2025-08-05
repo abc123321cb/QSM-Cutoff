@@ -12,7 +12,7 @@ from prime import *
 from util import UseMC, ForwardMode
 
 class CoverConstraints():
-    def __init__(self, options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits : List[PrimeOrbit], useMC : UseMC) -> None:
+    def __init__(self, options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits : List[PrimeOrbit], useMC : UseMC, is_dnf = False) -> None:
         self.options           = options
         self.tran_sys          = tran_sys
         self.instantiator      = instantiator
@@ -25,6 +25,7 @@ class CoverConstraints():
         self.top_var           = 0
         self.root_top_var      = 0
         self.symbol2var_num    = {}
+        self.is_dnf = is_dnf
         self.atom_vars : List[int] = []
         self.orbit_vars: List[List[int]] = [] # orbit_id -> [suborbit_var1, suborbit_var2, ...]
         
@@ -407,7 +408,7 @@ class CoverConstraints():
                 literals.append(lit) 
             elif val == '0':
                 literals.append(il.Not(lit))
-        return il.Not(il.And(*literals))
+        return ( il.And(*literals) if self.is_dnf else il.Not(il.And(*literals)) )
 
     def init_quantifier_inference_check_solver(self, primes : List[Prime], quantified_orbit):
         top_var = self.top_var
@@ -417,7 +418,8 @@ class CoverConstraints():
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
         vprint(self.options, 'instantiate_quantifier', 5)
         inst_orbit     = self.instantiator.instantiate_quantifier(quantified_orbit)
-        eq_term        = il.Equals(il.And(*primes_clauses), inst_orbit)
+        comb = il.Or if self.is_dnf else il.And
+        eq_term        = il.Equals(comb(*primes_clauses), inst_orbit)
         vprint(self.options, 'tseitin_encode', 5)
         eq_var         = self.tseitin_encode(eq_term, is_root=False)
         # assume neq
@@ -461,7 +463,8 @@ class CoverConstraints():
         def_fmla       = self._get_definition_formula()
         axiom_fmla     = self._get_axiom_formula()
         primes_clauses = [self._get_prime_clause(prime) for prime in primes]
-        neq_term       = il.Not(il.Equals(il.And(*primes_clauses), quantified_orbit)) # do not instantiate qorbit, let SMT solver do it
+        comb = il.Or if self.is_dnf else il.And
+        neq_term = il.Not(il.Equals(comb(*primes_clauses), quantified_orbit)) # do not instantiate qorbit, let SMT solver do it
         check_fmla     = il.And(*[def_fmla, axiom_fmla, neq_term])
         slv.clear()
         self.qinfer_checker  = slv.z3.Solver()

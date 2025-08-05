@@ -2,6 +2,8 @@ import datetime
 import tracemalloc
 from verbose import *
 from enum import Enum
+from pathlib import Path
+import re
 FlowMode    = Enum('FlowMode', ['Synthesize_Rmin', 'Check_Reachability', 'Check_Finite_Inductive'])
 ForwardMode = Enum('ForwardMode', ['Sym_DFS', 'BDD_Symbolic'])
 PrimeGen    = Enum('PrimeGen', ['ilp', 'enumerate'])
@@ -287,3 +289,49 @@ def get_instances_from_yaml(yaml_name):
             size_str = ','.join([f'{k}={v}' for (k,v) in zip(sorts,size_list)])
             instances[ivy_name].append(size_str)
     return instances
+
+def reachable_state_count(options: QrmOptions, size: str, directory: str = "./") -> int:
+    """
+    Count reachable states in <instance_name>.<size>.reach.
+
+    directory : folder containing the .reach file (default: current dir)
+
+    Returns
+    int – number of reachable states
+    """
+
+    fname = f"{options.instance_name}.{size}.reach"
+
+    path  = Path(directory, fname)
+
+    header_prefixes = (
+        "sort",
+        "predicate",
+        "interpreted atoms",
+        "state atoms",
+        "representative states",
+    )
+
+    with open(path, "r") as fh:
+        return sum(
+            1
+            for line in fh
+            if line.strip() and not line.startswith(header_prefixes)
+        )
+    
+def dec_even_pos_num(s: str, sep = r'[=,]+') -> str:
+    """
+    Decrease the first number (> 1) that appears in an *even* slot
+    (2nd, 4th, 6th…) of an underscore-delimited string.
+    """
+
+    parts = re.split(sep,s)
+
+    for i in range(1, len(parts), 2):
+        if parts[i].isdigit():
+            n = int(parts[i])
+            if n > 1:
+                parts[i] = str(n - 1)
+                break
+
+    return "_".join(parts)

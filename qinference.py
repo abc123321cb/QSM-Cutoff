@@ -31,14 +31,36 @@ class QPrime():
         QPrime.atoms    = atoms
         QPrime.tran_sys = tran_sys
 
+
+def _nnf_push_not(f):
+    """Recursively push ¬ inwards until it sits only in front of atoms."""
+    import ivy.logic as lg
+    import ivy.ivy_logic as il
+    if isinstance(f, il.Not):
+        g = f.args[0]
+        # De Morgan
+        if isinstance(g, il.Or):
+            return il.And(*[_nnf_push_not(il.Not(a)) for a in g.args])
+        if isinstance(g, il.And):
+            return il.Or(*[_nnf_push_not(il.Not(a)) for a in g.args])
+        return f                   # already an atom → stop
+    elif isinstance(f, il.Or):
+        return il.Or(*[_nnf_push_not(a) for a in f.args])
+    elif isinstance(f, il.And):
+        return il.And(*[_nnf_push_not(a) for a in f.args])
+    else:
+        return f  
+
 class QInference():
     # static members
     atoms = []
     tran_sys : TransitionSystem
     instantiator : FiniteIvyInstantiator
+    is_dnf : bool
 
-    def __init__(self, orbit : PrimeOrbit, options : QrmOptions):
+    def __init__(self, orbit : PrimeOrbit, options : QrmOptions, is_dnf : bool):
         self.options = options
+        self.is_dnf = is_dnf
         # terms
         add_member_terms = (len(orbit.suborbit_repr_primes) == 1)
         self.qprimes = [QPrime(prime, self.options, add_member_terms) for prime in orbit.suborbit_repr_primes]
@@ -228,6 +250,21 @@ class QInference():
 
         self.qclause = self.qformula.get_qclause()
 
+        # todo check this works for more complex formula I have a feeling this breaks when the cnf is a exists
+
+        # ────────────────────────────────────────────────────────────────
+        # flip prefix **and** negate body when running in DNF mode
+        # ────────────────────────────────────────────────────────────────
+        if self.is_dnf and isinstance(self.qclause, il.ForAll):
+            vars_ = list(self.qclause.variables)
+            body  = getattr(self.qclause, "formula",
+                            getattr(self.qclause, "body",
+                                    self.qclause.to_formula()))
+
+            # distribute the ¬ across ∨/∧ so it lands on atoms
+            neg_body = _nnf_push_not(il.Not(body))    # helper defined once above
+            self.qclause = il.Exists(vars_, neg_body)
+
     #------------------------------------------------   
     # public methods
     #------------------------------------------------
@@ -235,9 +272,10 @@ class QInference():
         return self.qclause
 
     @staticmethod
-    def setup(atoms, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator) -> None:
+    def setup(atoms, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, is_dnf : bool) -> None:
         QInference.atoms    = atoms
         QInference.tran_sys = tran_sys
         QInference.instantiator = instantiator
+        QInference.is_dnf = is_dnf
         QPrime.setup(atoms, tran_sys)
         ConstraintPartitionSignature.setup(tran_sys)

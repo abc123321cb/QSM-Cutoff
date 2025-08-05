@@ -178,13 +178,15 @@ def qrm(ivy_name, args):
         # check reachability converges
         options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.ivy_filename}: {options.size_str}]')
         reach_checker = ReachCheck(options, tran_sys, instantiator, protocol)
-        reach_result  = reach_checker.is_rmin_matching_reachability()
+        last_reach_size = reachable_state_count(options, dec_even_pos_num(options.size_str))
+        reach_result  = reach_checker.is_rmin_matching_reachability() and not (len(protocol.reachable_states) == last_reach_size)
         options.step_end()
         if options.convergence_check:
             if reach_result:
                 vprint(options, "Converged", 5)
                 sys.exit(0)
-
+            if (last_reach_size == len(protocol.reachable_states)):
+                vprint(options, "No new states", 4)
             vprint(options, "No Convergence", 5)
             sys.exit(1)
         else:
@@ -202,7 +204,7 @@ def qrm(ivy_name, args):
 
     # reduction
     options.step_start(f'[RED]: PRIME REDUCTION on [{options.ivy_filename}: {options.size_str}]')
-    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits)
+    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, protocol.more_reach)
     minimizer.reduce_redundant_prime_orbits()
     options.step_end()
 

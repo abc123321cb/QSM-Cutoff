@@ -38,6 +38,7 @@ class DualRail():
         
         states = protocol.quotient_reachable_states
         if self.positive:
+            print("Print unreachable")
             states = protocol.get_unreachable_states()
         
         # this for loop adds to the clauses (~pvar + ~nvar) 

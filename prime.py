@@ -114,7 +114,7 @@ class PrimeOrbits():
         self.orbits      : List[PrimeOrbit] = [] 
         self._formula    : DualRail
         self._orbit_hash : Dict[str, PrimeOrbit] = {}
-        self._sub_orbit_count = 0 
+        self._sub_orbit_count = 0
         self.options = options
         Prime.reset()
         PrimeOrbit.reset()

@@ -65,10 +65,10 @@ class StackLevel():
         self.include_orbit = not self.include_orbit
 
 class Minimizer():
-    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits: List[PrimeOrbit]) -> None: 
+    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits: List[PrimeOrbit], dnf = False) -> None: 
         self.tran_sys      = tran_sys
         self.orbits        = orbits
-        self.cover         = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC)
+        self.cover         = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC, dnf)
         self.max_cost      = 0 
         self.ubound        = 0 
         self.bnb_max_depth = 0
@@ -78,6 +78,7 @@ class Minimizer():
         self.optimal_solutions : List[List[int]] = []
         self.rmin          = []
         self.options = options
+        self.is_dnf = dnf
 
     #------------------------------------------------------------
     # Minimizer: minimization 
@@ -328,13 +329,14 @@ class Minimizer():
 
     def quantifier_inference(self, instantiator: FiniteIvyInstantiator, atoms) -> None:
         from qinference import QInference, QPrime
-        QInference.setup(atoms, self.tran_sys, instantiator)
+        
+        QInference.setup(atoms, self.tran_sys, instantiator, self.is_dnf)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
         for orbit_id in inference_list:
             orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
-            qinf    = QInference(orbit, self.options)
+            qinf    = QInference(orbit, self.options, self.is_dnf)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
@@ -350,14 +352,11 @@ class Minimizer():
         self.ubound   = self.max_cost
 
     def solve_rmin(self) -> List[str]:
-        print("hello: " + str(self.options.all_solutions))
         if self.options.all_solutions:
             self._solve_all()
         else:
             self._solve_one()
-        print("ghost")
         self.set_rmin()
-        print("I think last")
         self.print_rmin()
         self.write_ivy_files()
 

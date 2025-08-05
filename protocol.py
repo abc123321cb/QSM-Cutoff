@@ -67,7 +67,7 @@ class Protocol():
         self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
         self.predicates       : Dict[str,List[str]]  = {} # (function/constant name, [argsort1, argsort2, ..])
         self.atom_num         : int                  = 0
-        self.state_atom_num     : int                = 0  # = total amount of bits needed.
+        self.state_atom_num     : int                = 0  # = total amount of bits needed to repersent the state.
         self.interpreted_atom_num : int              = 0
         self.atoms            : List[str]            = [] # atom id -> atom name
         self.state_atoms                             = [] # atoms = state_atoms + interpreted_atoms
