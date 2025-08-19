@@ -1,0 +1,74 @@
+#lang ivy1.8
+
+type node
+
+relation p(X:node)
+relation q(X:node)
+relation r(X:node)
+
+after init {
+    p(X) := false;
+    q(X) := false;
+    r(X) := false;
+}
+
+action upq(x:node,y:node) = {
+    require ~p(x) & ~q(y);
+    p(x) := true;
+    q(y) := true;
+}
+
+action upr(x:node,y:node) = {
+    require ~p(x) & ~r(y);
+    p(x) := true;
+    r(y) := true;
+}
+
+action downq(x:node,y:node) = {
+    require p(x) & q(y);
+    p(x) := false;
+    q(y) := false;
+}
+
+action downr(x:node,y:node) = {
+    require p(x) & r(y);
+    p(x) := false;
+    r(y) := false;
+}
+
+#invariant p(X) -> exists Y. (q(Y) | r(Y))
+
+export upq
+export upr
+export downq
+export downr
+
+
+invariant [invar_0] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | ~r(NODE2) | ~r(NODE1) | p(NODE4) | p(NODE3) | ((NODE0 ~= NODE1 | NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE2 | NODE0 = NODE3) & (NODE0 ~= NODE4 | NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE2 | NODE0 = NODE3) & (NODE0 ~= NODE3 | NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE0 = NODE4 | NODE3 = NODE4 | NODE0 = NODE3 | NODE1 = NODE4 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 55
+invariant [invar_1] forall NODE3,NODE2,NODE1,NODE4,NODE0. p(NODE2) | ~q(NODE0) | ~r(NODE1) | p(NODE4) | p(NODE3) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE2 | NODE0 = NODE3) & (NODE0 ~= NODE1 | NODE3 = NODE4 | NODE0 = NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE4 | NODE2 = NODE3) & (NODE0 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 41
+invariant [invar_2] forall NODE1,NODE2,NODE0,NODE3. p(NODE2) | p(NODE1) | ~r(NODE1) | ~r(NODE0) | p(NODE3) | ((NODE0 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 19
+invariant [invar_3] forall NODE1. ~r(NODE1) | p(NODE1) | (exists NODE0. (p(NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_4] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | ~r(NODE2) | p(NODE4) | ~r(NODE3) | ~q(NODE1) | ((NODE0 ~= NODE2 | NODE0 ~= NODE4 | NODE1 ~= NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE2 | NODE1 ~= NODE3 | NODE1 = NODE4 | NODE0 = NODE4 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE3 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE4 | NODE3 = NODE4 | NODE0 = NODE3 | NODE1 = NODE4 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 55
+invariant [invar_5] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | ~r(NODE2) | p(NODE4) | p(NODE3) | ~q(NODE1) | ((NODE0 ~= NODE3 | NODE1 ~= NODE2 | NODE1 ~= NODE4 | NODE0 = NODE1) & (NODE0 ~= NODE4 | NODE1 ~= NODE2 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE1 ~= NODE2 | NODE0 = NODE4 | NODE3 = NODE4 | NODE0 = NODE3 | NODE1 = NODE4 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE0 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 55
+invariant [invar_6] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | p(NODE4) | ~q(NODE2) | ~r(NODE3) | ~q(NODE1) | ((NODE0 ~= NODE4 | NODE2 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE4 | NODE2 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE4 | NODE1 = NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE4) & (NODE0 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE3 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 41
+invariant [invar_7] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | ~r(NODE4) | ~q(NODE2) | ~r(NODE3) | ~q(NODE1) | ((NODE1 ~= NODE3 | NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE4 | NODE1 = NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE4)) # qcost: 22
+invariant [invar_8] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~r(NODE2) | ~r(NODE1) | p(NODE4) | ~r(NODE0) | p(NODE3) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 22
+invariant [invar_9] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | ~r(NODE2) | ~r(NODE1) | p(NODE4) | ~r(NODE3) | ((NODE0 ~= NODE4 | NODE0 ~= NODE1 | NODE2 = NODE3 | NODE0 = NODE2 | NODE0 = NODE3) & (NODE0 ~= NODE1 | NODE2 ~= NODE4 | NODE2 = NODE3 | NODE0 = NODE2 | NODE0 = NODE3) & (NODE0 ~= NODE1 | NODE3 = NODE4 | NODE0 = NODE4 | NODE0 = NODE3 | NODE0 = NODE2 | NODE2 = NODE4 | NODE2 = NODE3) & (NODE0 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE3 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 41
+invariant [invar_10] forall NODE3,NODE2,NODE1,NODE4,NODE0. ~q(NODE0) | ~r(NODE2) | ~r(NODE4) | ~r(NODE3) | ~q(NODE1) | ((NODE0 ~= NODE2 | NODE1 ~= NODE4 | NODE1 = NODE3 | NODE0 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE4 | NODE1 = NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE4)) # qcost: 22
+invariant [invar_11] forall NODE1. ~q(NODE1) | ~r(NODE1) | (exists NODE0. (~q(NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_12] forall NODE1. ~q(NODE1) | ~r(NODE1) | (exists NODE0. (~r(NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_13] forall NODE1. ~r(NODE1) | p(NODE1) | (exists NODE0. (~r(NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_14] forall NODE1,NODE2,NODE0,NODE3. ~q(NODE0) | ~q(NODE2) | p(NODE3) | ~q(NODE1) | p(NODE0) | ((NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 19
+invariant [invar_15] forall NODE1. ~q(NODE1) | p(NODE1) | (exists NODE0. (~q(NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_16] forall NODE1,NODE2,NODE0,NODE3. p(NODE2) | ~q(NODE0) | p(NODE3) | ~q(NODE1) | p(NODE0) | ((NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 19
+invariant [invar_17] forall NODE1. ~q(NODE1) | p(NODE1) | (exists NODE0. (p(NODE0) & NODE0 ~= NODE1)) # qcost: 6
+invariant [invar_18] forall NODE3,NODE2,NODE1,NODE4,NODE0. q(NODE4) | r(NODE0) | r(NODE1) | ~p(NODE2) | r(NODE2) | ~p(NODE1) | q(NODE0) | ~p(NODE0) | ~p(NODE3) | ((NODE3 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 28
+invariant [invar_19] forall NODE6,NODE3,NODE4,NODE5,NODE7,NODE1,NODE2,NODE0. r(NODE6) | r(NODE7) | q(NODE4) | q(NODE5) | q(NODE3) | ~p(NODE2) | ~p(NODE1) | ~p(NODE0) | r(NODE3) | ((NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE1 ~= NODE6 | NODE2 ~= NODE5 | NODE2 ~= NODE7 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE6 | NODE1 ~= NODE4 | NODE1 ~= NODE7 | NODE2 ~= NODE5 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE1 ~= NODE7 | NODE2 ~= NODE5 | NODE2 = NODE6 | NODE1 = NODE2 | NODE1 = NODE6 | NODE0 = NODE6 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE3 | NODE1 ~= NODE6 | NODE2 ~= NODE4 | NODE2 ~= NODE7 | NODE1 = NODE2 | NODE0 = NODE5 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE5 | NODE1 = NODE5) & (NODE1 ~= NODE4 | NODE1 ~= NODE6 | NODE2 ~= NODE5 | NODE2 ~= NODE7 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 65
+invariant [invar_20] forall NODE3,NODE2,NODE1,NODE4,NODE0. r(NODE0) | q(NODE3) | ~p(NODE2) | ~p(NODE1) | q(NODE0) | r(NODE4) | ~p(NODE0) | ~p(NODE3) | q(NODE2) | ((NODE2 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 28
+invariant [invar_21] forall NODE3,NODE2,NODE1,NODE4,NODE0. r(NODE0) | r(NODE1) | q(NODE3) | ~p(NODE2) | r(NODE2) | ~p(NODE1) | r(NODE4) | ~p(NODE0) | q(NODE2) | ((NODE3 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE4 | NODE1 = NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE4)) # qcost: 28
+invariant [invar_22] forall NODE3,NODE2,NODE5,NODE1,NODE4,NODE0. r(NODE5) | q(NODE4) | q(NODE3) | r(NODE2) | ~p(NODE1) | r(NODE4) | ~p(NODE0) | r(NODE3) | q(NODE2) | ((NODE0 ~= NODE5 | NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE4 | NODE1 = NODE4 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE4) & (NODE0 ~= NODE3 | NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE5 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE5 | NODE1 = NODE5)) # qcost: 31
+invariant [invar_23] forall NODE1. r(NODE1) | ~p(NODE1) | q(NODE1) | (exists NODE0. ((r(NODE0) | ~p(NODE0)) & NODE0 ~= NODE1)) # qcost: 8
+invariant [invar_24] forall NODE3,NODE2,NODE1,NODE4,NODE0. q(NODE4) | r(NODE0) | q(NODE3) | r(NODE2) | ~p(NODE1) | q(NODE0) | ~p(NODE0) | r(NODE3) | q(NODE2) | ((NODE1 ~= NODE2 | NODE0 = NODE4 | NODE3 = NODE4 | NODE0 = NODE3 | NODE1 = NODE4 | NODE1 = NODE3 | NODE0 = NODE1) & (NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 28
+invariant [invar_25] forall NODE3,NODE2,NODE1,NODE4,NODE0. r(NODE0) | q(NODE3) | ~p(NODE2) | ~p(NODE1) | q(NODE0) | r(NODE4) | ~p(NODE0) | q(NODE2) | q(NODE1) | ((NODE3 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3) & (NODE1 ~= NODE4 | NODE1 = NODE2 | NODE0 = NODE3 | NODE1 = NODE3 | NODE0 = NODE2 | NODE0 = NODE1 | NODE2 = NODE3)) # qcost: 28
+invariant [invar_26] forall NODE1. r(NODE1) | ~p(NODE1) | q(NODE1) | (exists NODE0. ((q(NODE0) | ~p(NODE0)) & NODE0 ~= NODE1)) # qcost: 8
+invariant [invar_27] forall NODE1. r(NODE1) | ~p(NODE1) | q(NODE1) | (exists NODE0. ((r(NODE0) | q(NODE0)) & NODE0 ~= NODE1)) # qcost: 8

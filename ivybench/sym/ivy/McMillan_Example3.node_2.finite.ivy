@@ -1,0 +1,81 @@
+#lang ivy1.8
+
+type node = {node0, node1}
+
+relation p(X:node)
+relation q(X:node)
+relation r(X:node)
+
+after init {
+    p(X) := false;
+    q(X) := false;
+    r(X) := false;
+}
+
+action upq(x:node,y:node) = {
+    require ~p(x) & ~q(y);
+    p(x) := true;
+    q(y) := true;
+}
+
+action upr(x:node,y:node) = {
+    require ~p(x) & ~r(y);
+    p(x) := true;
+    r(y) := true;
+}
+
+action downq(x:node,y:node) = {
+    require p(x) & q(y);
+    p(x) := false;
+    q(y) := false;
+}
+
+action downr(x:node,y:node) = {
+    require p(x) & r(y);
+    p(x) := false;
+    r(y) := false;
+}
+
+invariant p(X) -> exists Y. (q(Y) | r(Y))
+
+export upq
+export upr
+export downq
+export downr
+
+
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Access actions ##
+action get_q(n0: node) returns(qrm_result: bool) = {
+    qrm_result := q(n0)
+}
+export get_q
+
+action get_bool_q(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (q(n0) = result)
+}
+export get_bool_q
+
+action get_r(n0: node) returns(qrm_result: bool) = {
+    qrm_result := r(n0)
+}
+export get_r
+
+action get_bool_r(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (r(n0) = result)
+}
+export get_bool_r
+
+action get_p(n0: node) returns(qrm_result: bool) = {
+    qrm_result := p(n0)
+}
+export get_p
+
+action get_bool_p(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (p(n0) = result)
+}
+export get_bool_p
+

@@ -1,0 +1,22 @@
+#lang ivy1.7
+# Example of false convergence
+
+type node
+
+relation p(N:node)
+
+after init  {
+	p(N) := false;
+}
+
+action enable(n: node, m: node, u: node) = {
+  require ~(n = m) & ~(n = u) & ~(m = u);		# must have 3 distinct nodes
+  require ~p(n);
+  require ~p(m);
+  p(u) := true;
+}
+
+
+export enable
+
+# invariant [invar_0] exists N1,N2. ~(N1=N2) & ~p(N1) & ~p(N2) | forall N. ~p(N)
