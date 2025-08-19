@@ -1,0 +1,91 @@
+#lang ivy1.8
+
+type t
+
+relation p(X:t)
+relation q(X:t)
+relation r(X:t)
+
+# tag: does this p-node pair with q (true) or r (false)?
+relation use_q(X:t)
+
+# p <-> q pairing witnesses
+function pq(X:t) : t
+function qp(X:t) : t
+
+# p <-> r pairing witnesses
+function pr(X:t) : t
+function rp(X:t) : t
+
+after init {
+    p(X) := false;
+    q(X) := false;
+    r(X) := false;
+    # use_q is unconstrained when p(X) is false
+}
+
+action upq(x:t,y:t) = {
+    require ~p(x) & ~q(y);
+    p(x) := true;
+    q(y) := true;
+    use_q(x) := true;
+    pq(x) := y;
+    qp(y) := x;
+}
+
+action upr(x:t,y:t) = {
+    require ~p(x) & ~r(y);
+    p(x) := true;
+    r(y) := true;
+    use_q(x) := false;
+    pr(x) := y;
+    rp(y) := x;
+}
+
+# Remove one p and one q. If x was q-paired, swap inside q.
+# If x was r-paired, move qp(y) over to r using x's r-partner.
+action downq(x:t,y:t) = {
+    require p(x) & q(y);
+    if use_q(x) {
+        pq(qp(y)) := pq(x);
+        qp(pq(x)) := qp(y);
+        # use_q(qp(y)) stays true
+    } else {
+        pr(qp(y)) := pr(x);
+        rp(pr(x)) := qp(y);
+        use_q(qp(y)) := false;
+    };
+    p(x) := false;
+    q(y) := false;
+}
+
+# Remove one p and one r. If x was r-paired, swap inside r.
+# If x was q-paired, move rp(y) over to q using x's q-partner.
+action downr(x:t,y:t) = {
+    require p(x) & r(y);
+    if ~use_q(x) {
+        pr(rp(y)) := pr(x);
+        rp(pr(x)) := rp(y);
+        # use_q(rp(y)) stays false
+    } else {
+        pq(rp(y)) := pq(x);
+        qp(pq(x)) := rp(y);
+        use_q(rp(y)) := true;
+    };
+    p(x) := false;
+    r(y) := false;
+}
+
+invariant p(X) -> exists Y. (q(Y) | r(Y))
+
+invariant p(X) ->
+    ( use_q(X) & q(pq(X)) & qp(pq(X)) = X )
+  | ( ~use_q(X) & r(pr(X)) & rp(pr(X)) = X )
+
+invariant q(Y) -> p(qp(Y)) & use_q(qp(Y))   & pq(qp(Y)) = Y
+invariant r(Y) -> p(rp(Y)) & ~use_q(rp(Y))  & pr(rp(Y)) = Y
+
+export upq
+export upr
+export downq
+export downr

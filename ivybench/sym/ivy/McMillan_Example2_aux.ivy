@@ -1,0 +1,40 @@
+#lang ivy1.8
+
+type t
+
+relation p(X:t)
+relation q(X:t)
+
+function pq(X:t) : t
+function qp(X:t) : t
+
+after init {
+    p(X) := false;
+    q(X) := false;
+}
+
+action up(x:t,y:t) = {
+    require ~p(x) & ~q(y);
+    p(x) := true;
+    q(y) := true;
+    pq(x) := y;
+    qp(y) := x;
+}
+
+action down(x:t,y:t) = {
+    require p(x) & q(y);
+    p(x) := false;
+    q(y) := false;
+    pq(qp(y)) := pq(x);
+    qp(pq(x)) := qp(y);
+}
+
+invariant p(X) -> exists Y. q(Y)
+
+invariant p(X) -> qp(pq(X)) = X & q(pq(X)) # (*)
+invariant q(X) -> pq(qp(X)) = X & p(qp(X)) # (*)
+
+
+export up
+export down
+
