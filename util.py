@@ -108,10 +108,10 @@ class QrmOptions():
         if self.time_start != None and self.time_stamp != None:
             delta   = new_time_stamp - self.time_start 
             seconds = delta.seconds + 1e-6 * delta.microseconds
-            vprint(self, "[QRM NOTE]: Time elapsed since start: %.3f seconds" % (seconds), 1)
+            vprint(self, "[QRM NOTE]: Time elapsed since start: %.3f seconds" % (seconds), 2)
             delta   = new_time_stamp - self.time_stamp 
             seconds = delta.seconds + 1e-6 * delta.microseconds
-            vprint(self, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 1)
+            vprint(self, "[QRM NOTE]: Time elapsed since last: %.3f seconds" % (seconds), 2)
             self.time_stamp = new_time_stamp
         else:
             self.time_start = new_time_stamp
@@ -119,7 +119,7 @@ class QrmOptions():
 
     def print_peak_memory_and_reset(self):
         (_, peak) = tracemalloc.get_traced_memory()
-        vprint(self, f'[QRM NOTE]: Peak memory: {peak} bytes', 1)
+        vprint(self, f'[QRM NOTE]: Peak memory: {peak} bytes', 2)
         tracemalloc.reset_peak()    
 
     def step_start(self, verbose_string):

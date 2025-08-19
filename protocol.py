@@ -368,7 +368,10 @@ class Protocol():
                     state = line.strip()
                     assert( len(state) == self.state_atom_num )
                     self.reachable_states.append(state)
-        vprint(self.options, 'OK', 5)
+
+        self.more_reach = bool(int(round(len(self.reachable_states)/pow(2,self.state_atom_num))))
+        
+        vprint(self.options, 'Reachability successfully initialized', 5)
 
     def reduce_equivalent_atoms(self, tran_sys : TransitionSystem):
         self._reduce_equivalent_atoms(tran_sys)
