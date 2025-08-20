@@ -8,6 +8,7 @@ from ivy import ivy_actions as ia
 from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
 from verbose import *
 
+IA_If = getattr(ia, "IfAction", None) or getattr(ia, "If", None)
 #*************************************************************************
 # utils 
 #*************************************************************************
@@ -254,8 +255,31 @@ class TransitionSystem():
                 fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
                 fmlas.append(fmla)
             return il.And(*fmlas)
+        
+        elif IA_If and isinstance(action, IA_If):
+            # action.args = (cond, then_act[, else_act])
+            # cond is a *current-state* formula
+            cond = il.close_formula(action.args[0])
+
+            then_fmla = self._get_action_formula_recur(action.args[1], params)
+
+            # else branch may be absent or None -> treat as skip (True)
+            else_fmla = (
+                self._get_action_formula_recur(action.args[2], params)
+                if len(action.args) > 2 and action.args[2] is not None
+                else il.And()   # True
+            )
+
+            # if C then T else E   ==>   (C -> T) ∧ (¬C -> E)
+            return il.And(
+                il.Implies(cond, then_fmla),
+                il.Implies(il.Not(cond), else_fmla),
+            )
+
+
         else:
-            assert(0)
+            # unsupported action type if you need to add support for more action types, please do so here
+            raise iu.IvyError(None, f'Cannot handle action {action} of type {type(action)}')
 
     def _get_action_assign_symbols(self, action):
         if isinstance(action, ia.Sequence):

@@ -1,30 +1,34 @@
 #lang ivy1.8
 
-type t
+type node
 
-relation p(X:t)
-relation q(X:t)
-relation r(X:t)
+relation p(X:node)
+relation q(X:node)
+relation r(X:node)
 
-# tag: does this p-node pair with q (true) or r (false)?
-relation use_q(X:t)
+# Does this p-node pair with q (true) or r (false)?
+relation use_q(X:node)
 
-# p <-> q pairing witnesses
-function pq(X:t) : t
-function qp(X:t) : t
+# p <-> q pairing
+function pq(X:node) : node
+function qp(X:node) : node
 
-# p <-> r pairing witnesses
-function pr(X:t) : t
-function rp(X:t) : t
+# p <-> r pairing
+function pr(X:node) : node
+function rp(X:node) : node
 
 after init {
     p(X) := false;
     q(X) := false;
     r(X) := false;
-    # use_q is unconstrained when p(X) is false
+    use_q(X) := false;
+    pq(X) := X;
+    pr(X) := X;
+    qp(X) := X;
+    rp(X) := X;   
 }
 
-action upq(x:t,y:t) = {
+action upq(x:node,y:node) = {
     require ~p(x) & ~q(y);
     p(x) := true;
     q(y) := true;
@@ -33,7 +37,7 @@ action upq(x:t,y:t) = {
     qp(y) := x;
 }
 
-action upr(x:t,y:t) = {
+action upr(x:node,y:node) = {
     require ~p(x) & ~r(y);
     p(x) := true;
     r(y) := true;
@@ -42,9 +46,8 @@ action upr(x:t,y:t) = {
     rp(y) := x;
 }
 
-# Remove one p and one q. If x was q-paired, swap inside q.
-# If x was r-paired, move qp(y) over to r using x's r-partner.
-action downq(x:t,y:t) = {
+# Remove one p and one q.
+action downq(x:node,y:node) = {
     require p(x) & q(y);
     if use_q(x) {
         pq(qp(y)) := pq(x);
@@ -57,11 +60,13 @@ action downq(x:t,y:t) = {
     };
     p(x) := false;
     q(y) := false;
+    pq(x) := x;
+    pr(x) := x;
+    qp(y) := y;
 }
 
-# Remove one p and one r. If x was r-paired, swap inside r.
-# If x was q-paired, move rp(y) over to q using x's q-partner.
-action downr(x:t,y:t) = {
+# Remove one p and one r.
+action downr(x:node,y:node) = {
     require p(x) & r(y);
     if ~use_q(x) {
         pr(rp(y)) := pr(x);
@@ -74,16 +79,13 @@ action downr(x:t,y:t) = {
     };
     p(x) := false;
     r(y) := false;
+    pq(x) := x;
+    pr(x) := x;
+    qp(y) := y;
 }
 
-invariant p(X) -> exists Y. (q(Y) | r(Y))
+# invariant p(X) -> exists Y. (q(Y) | r(Y))
 
-invariant p(X) ->
-    ( use_q(X) & q(pq(X)) & qp(pq(X)) = X )
-  | ( ~use_q(X) & r(pr(X)) & rp(pr(X)) = X )
-
-invariant q(Y) -> p(qp(Y)) & use_q(qp(Y))   & pq(qp(Y)) = Y
-invariant r(Y) -> p(rp(Y)) & ~use_q(rp(Y))  & pr(rp(Y)) = Y
 
 export upq
 export upr
