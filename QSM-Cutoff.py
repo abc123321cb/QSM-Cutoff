@@ -31,6 +31,7 @@ def usage ():
     print('             write reachable states to FILE.reach')
     print('             write prime orbits to FILE.pis')
     print('             write quantified prime orbits to FILE.qpis')
+    print('--graph      Make a graph of the reachable states (default: off) (requires graphviz)')
     print('-h           usage')
 
 def usage_and_exit():
@@ -45,7 +46,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whn")
+        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whn", ["graph"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -118,7 +119,7 @@ def reachability_convergence_check(sol_id, options : QrmOptions, sys_args, incre
     converged  = True 
     for sort, size in orig_sizes.items():
         try_size_str = get_try_increase_sort_size_string(options, sort, orig_sizes, increase_size)
-        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w'] + sys_args                                                                                         
+        qrm_args     = ['python3', 'qrm.py', orig_ivy_name, '-s', try_size_str, '-f', '2', '-g', '-w', '-r'] + sys_args                                                                                         
         try:
             vprint(options, ' '.join(qrm_args))
             options.close_log_if_exists()

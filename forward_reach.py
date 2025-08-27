@@ -9,6 +9,12 @@ from bdd import FormulaInitializer, Bdd
 from verbose import *
 from math import factorial as fact
 import repycudd
+try:
+    from graphviz import Digraph
+except ImportError:
+    Digraph = None
+    pass # graphviz is an optional dependency but needed if -g is used
+
 
 class ForwardReachability():
     def __init__(self,  tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
@@ -78,8 +84,10 @@ class SymDFS(ForwardReachability):
         self.dfs_max_depth       = 0
         self.dfs_immutable_state = ''
         self._state2repr: Dict[str, int] = {}
-        self.dfs_explored_edges: set[tuple[int, int]] = set() \
-            if self.options.transition_reach else None
+        self.collect_edges: bool = options.transition_reach or options.make_graph
+        # self.dfs_explored_edges: set[tuple[int, int]] = set() \
+        #     if self.collect_edges else None
+        self.dfs_explored_edge_labels = {} if self.collect_edges else None
 
         self._initialize_dfs()
     #------------------------------------------------------------
@@ -142,9 +150,9 @@ class SymDFS(ForwardReachability):
     def _can_dfs_recur_node(self, node):
         return node.dfs_state not in self.dfs_explored_states
     
-    def _record_edge(self, parent_repr: int, child_repr: int) -> None:
-        if self.options.transition_reach:
-            self.dfs_explored_edges.add((parent_repr, child_repr))
+    def _record_edge(self, parent_repr: int, child_repr: int, action: str) -> None:
+        if self.collect_edges:
+            self.dfs_explored_edge_labels[(parent_repr, child_repr)] = action
 
     def _register_state_orbit_bits(self, dfs_state_bits: str, repr_int: int) -> None:
         for bits in self.protocol.all_permutations(list(dfs_state_bits)):
@@ -178,14 +186,13 @@ class SymDFS(ForwardReachability):
                 self._add_dfs_explored_state(child_node)
 
             child_repr = self._state2repr[child_node.dfs_state]
-            self._record_edge(parent_repr, child_repr)         # store edge
+            self._record_edge(parent_repr, child_repr, action)         # store edge
 
             if is_new:                                         # recurse later
                 pending_children.append(child_node)
 
             ivy_result = self.ivy_executor.execute_ivy_action(action)
 
-        # 3. Final complete successor I think this is the only one that runs as all the protocals are deterministic
         if ivy_result == IVY_ACTION_COMPLETE:
             child_node = self._create_dfs_node()
 
@@ -194,7 +201,7 @@ class SymDFS(ForwardReachability):
                 self._add_dfs_explored_state(child_node)
 
             child_repr = self._state2repr[child_node.dfs_state]
-            self._record_edge(parent_repr, child_repr)
+            self._record_edge(parent_repr, child_repr, action)
 
             if is_new:
                 pending_children.append(child_node)
@@ -255,8 +262,44 @@ class SymDFS(ForwardReachability):
         if not self.options.transition_reach:
             return
         vprint_step_banner(self.options, '[FW RESULT]: Transition Edges', 3)
-        for src, dst in sorted(self.dfs_explored_edges):
+        for src, dst in sorted(self.dfs_explored_edge_labels.keys()):
             vprint(self.options, f'{src} → {dst}', 3)
+
+    def _render_state_orbit_graph(self) -> None:
+        """
+        Build a DOT graph where each node is a StateOrbit, labeled with its
+        representative state and orbit size. Each directed edge is labeled
+        with the IVy action(s) that produced it.
+        Only runs if options.make_graph is True.
+        """
+        if not self.options.make_graph:
+            return
+        if Digraph is None:
+            vprint(self.options, "[FW NOTE]: graphviz not installed. But -g called skipping graph draw", 5)
+            return
+
+        # Map repr_int -> StateOrbit (for labels)
+        repr2orbit = {orbit.repr_int: orbit for orbit in self.dfs_state_orbits}
+
+        dot = Digraph("state_orbits", engine="dot")
+        dot.attr("graph", rankdir="LR", splines="spline")
+        dot.attr("node", shape="circle", fontsize="11", style="filled", fillcolor="#E8F0FE")
+        dot.attr("edge", fontsize="10", arrowsize="0.8")
+
+        # Nodes: show representative state and orbit size
+        for repr_int, orbit in repr2orbit.items():
+            label = f"{orbit.repr_state}\\norbit size: {len(orbit.states)}"
+            dot.node(str(repr_int), label=label)
+
+        # Edges: aggregate action names on each (src,dst)
+        for (src, dst), label in sorted(self.dfs_explored_edge_labels.items()):
+            if label.casefold() == "qrm_init_protocol":
+                continue
+            dot.edge(str(src), str(dst), label)
+
+        out_file = self.options.instance_name + '.' + self.options.instance_suffix + '.graph'
+        dot.render(out_file, format="svg", cleanup=True)
+    
     #------------------------------------------------------------
     # SymDFS: public methods
     #------------------------------------------------------------
@@ -267,6 +310,7 @@ class SymDFS(ForwardReachability):
         self._print_dfs_statistics()
         self._print_reachability()
         self._print_transition_edges()
+        self._render_state_orbit_graph()
         if (self.options.writeReach):
             self.protocol.write_reachability()
         

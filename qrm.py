@@ -34,7 +34,7 @@ def usage ():
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
     print('-m           disable orbit family (default: on)')
-    print('-k           enalbe sanity checks for quantifier inference and minimization (default: off)')
+    print('-k           enable sanity checks for quantifier inference and minimization (default: off)')
     print('-p 1|2       prime generation: 1. ilp 2. enumerate (default: 1)')
     print('-c sat | mc  use sat solver or exact model counter for coverage estimation (default: sat)')
     print('-v LEVEL     set verbose level (defult:0, max: 5)')
@@ -44,6 +44,7 @@ def usage ():
     print('                 write reachable states to FILE.reach')
     print('                 write prime orbits to FILE.pis')
     print('                 write quantified prime orbits to FILE.qpis')
+    print('-g           Make a graph of the reachable states (default: off) (requires graphviz)')
     print('-h           usage')
 
 def usage_and_exit():
@@ -60,7 +61,7 @@ def file_exist(filename) -> bool:
 # large if else chain setting booleans
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgn")
+        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgn", ["graph"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -122,6 +123,8 @@ def get_options(ivy_name, args):
             options.ivy_check = False
         elif optc == '-n': # transitions
             options.transition_reach = True
+        elif optc == '--graph': #make graph
+            options.make_graph = True
         else:
             usage_and_exit()
     if options.writeLog:

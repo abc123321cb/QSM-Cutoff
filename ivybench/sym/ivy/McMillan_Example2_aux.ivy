@@ -1,19 +1,19 @@
 #lang ivy1.8
 
-type t
+type node
 
-relation p(X:t)
-relation q(X:t)
+relation p(X:node)
+relation q(X:node)
 
-function pq(X:t) : t
-function qp(X:t) : t
+function pq(X:node) : node
+function qp(X:node) : node
 
 after init {
     p(X) := false;
     q(X) := false;
 }
 
-action up(x:t,y:t) = {
+action up(x:node,y:node) = {
     require ~p(x) & ~q(y);
     p(x) := true;
     q(y) := true;
@@ -21,7 +21,7 @@ action up(x:t,y:t) = {
     qp(y) := x;
 }
 
-action down(x:t,y:t) = {
+action down(x:node,y:node) = {
     require p(x) & q(y);
     p(x) := false;
     q(y) := false;
