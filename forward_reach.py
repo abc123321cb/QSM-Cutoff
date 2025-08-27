@@ -15,6 +15,9 @@ except ImportError:
     Digraph = None
     pass # graphviz is an optional dependency but needed if -g is used
 
+import json
+from pathlib import Path
+
 
 class ForwardReachability():
     def __init__(self,  tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, options : QrmOptions):
@@ -299,7 +302,94 @@ class SymDFS(ForwardReachability):
 
         out_file = self.options.instance_name + '.' + self.options.instance_suffix + '.graph'
         dot.render(out_file, format="svg", cleanup=True)
-    
+
+    def _render_state_orbit_graph_cytoscape(self, layout: str = "cose") -> None:
+        """
+        Writes a self-contained HTML (Cytoscape.js) visualizing the state-orbit graph.
+        Nodes show 'repr_state' and 'orbit size: N'. Edges show the Ivy action name.
+        """
+        if not getattr(self.options, "make_graph", False):
+            return
+
+        out_html =  self.options.instance_name + '.' + self.options.instance_suffix + "_cy.html"
+
+        # Build Cytoscape elements
+        nodes = []
+        for orbit in self.dfs_state_orbits:  # list of StateOrbit
+            nid = str(orbit.repr_int)
+            label = f"{orbit.repr_state}\norbit size: {len(orbit.states)}"
+            nodes.append({"data": {"id": nid, "label": label}})
+
+        edges = []
+        IGNORE = {"qrm_init_protocol"}
+        for (src, dst), label in sorted(self.dfs_explored_edge_labels.items()):
+            if label.casefold() in IGNORE: continue
+            edges.append({
+                "data": {
+                    "id": f"{src}->{dst}",
+                    "source": str(src),
+                    "target": str(dst),
+                    "label": str(label),
+                }
+            })
+
+        elements = nodes + edges
+
+        html_text = f"""<!doctype html>
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>State Orbits</title>
+    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+    <style>
+    html, body, #cy {{ width: 100%; height: 100%; margin: 0; padding: 0; }}
+    </style>
+    </head>
+    <body>
+    <div id="cy"></div>
+    <script>
+    const cy = cytoscape({{
+        container: document.getElementById('cy'),
+        elements: {json.dumps(elements)},
+        style: [
+        {{
+            selector: 'node',
+            style: {{
+            'label': 'data(label)',
+            'text-wrap': 'wrap',
+            'text-max-width': 160,
+            'font-size': 12,
+            'background-color': '#E8F0FE',
+            'border-width': 1,
+            'border-color': '#777'
+            }}
+        }},
+        {{
+            selector: 'edge',
+            style: {{
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'arrow-scale': 1,
+            'width': 1.5,
+            'label': 'data(label)',
+            'font-size': 10,
+            'text-rotation': 'autorotate',
+            'text-background-opacity': 1,
+            'text-background-color': '#fff',
+            'text-background-padding': 2
+            }}
+        }}
+        ],
+        layout: {{ name: '{layout}', animate: false }}
+    }});
+    </script>
+    </body>
+    </html>"""
+
+        Path(out_html).write_text(html_text, encoding="utf-8")
+        # You can print where it went:
+        vprint(self.options, f"[FW NOTE]: wrote Cytoscape HTML to {out_html}", 3)
+        
     #------------------------------------------------------------
     # SymDFS: public methods
     #------------------------------------------------------------
@@ -311,6 +401,7 @@ class SymDFS(ForwardReachability):
         self._print_reachability()
         self._print_transition_edges()
         self._render_state_orbit_graph()
+        self._render_state_orbit_graph_cytoscape()
         if (self.options.writeReach):
             self.protocol.write_reachability()
         
