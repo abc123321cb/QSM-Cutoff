@@ -13,7 +13,7 @@ try:
     from graphviz import Digraph
 except ImportError:
     Digraph = None
-    pass # graphviz is an optional dependency but needed if -g is used
+    pass # graphviz is an optional dependency but needed if --graph is used
 
 import json
 from pathlib import Path
@@ -278,7 +278,7 @@ class SymDFS(ForwardReachability):
         if not self.options.make_graph:
             return
         if Digraph is None:
-            vprint(self.options, "[FW NOTE]: graphviz not installed. But -g called skipping graph draw", 5)
+            vprint(self.options, "[FW NOTE]: graphviz not installed. But --graph called skipping graph draw", 5)
             return
 
         # Map repr_int -> StateOrbit (for labels)

@@ -263,7 +263,7 @@ class ReachCheck():
         difference = self.protocol.repr_states - model_repr_states
         if len(difference) > 0:
             vprint(self.options, 'Representatitive states in reachability not in Rmin', 1)
-            vprint(self.options, f'{hex(difference)}', 1)
+            for d in difference: vprint(self.options, f'{hex(d)}', 1)
             model_match = False
         if model_match:
             vprint(self.options, f'[REACH_CHECK RESULT]: PASS')
