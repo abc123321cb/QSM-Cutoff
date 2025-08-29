@@ -169,6 +169,7 @@ def finite_ivy_check(options : QrmOptions, sys_args, increase_size) -> bool:
             if error.stderr == 'QrmFail':
                 try_result = False
             else:
+                vprint(options, "This is a from QSM-Cutoff.py from the error checking it needs to be fixed")
                 vprint(options, error.stderr)
                 vprint(options, f'[QRM NOTE]: Exit with return code {error.returncode}')
                 vprint(options, '[QRM RESULT]: FAIL')
