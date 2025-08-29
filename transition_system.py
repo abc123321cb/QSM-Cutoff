@@ -260,22 +260,18 @@ class TransitionSystem():
             # action.args = (cond, then_act[, else_act])
             # cond is a *current-state* formula
             cond = il.close_formula(action.args[0])
-
             then_fmla = self._get_action_formula_recur(action.args[1], params)
-
             # else branch may be absent or None -> treat as skip (True)
             else_fmla = (
                 self._get_action_formula_recur(action.args[2], params)
                 if len(action.args) > 2 and action.args[2] is not None
                 else il.And()   # True
             )
-
             # if C then T else E   ==>   (C -> T) ∧ (¬C -> E)
             return il.And(
                 il.Implies(cond, then_fmla),
                 il.Implies(il.Not(cond), else_fmla),
             )
-
 
         else:
             # unsupported action type if you need to add support for more action types, please do so here
