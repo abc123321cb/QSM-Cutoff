@@ -39,10 +39,10 @@ def vprint_title(options, line : str, level=0, disable=False) -> None:
 def vprint(options, line : str, level=0, disable=False) -> None:
     if options.verbosity >= level and not disable:
         
-        frame = inspect.currentframe()
-        caller_frame = frame.f_back
-        filename = caller_frame.f_code.co_filename
-        lineno = caller_frame.f_lineno
+        #frame = inspect.currentframe()
+        #caller_frame = frame.f_back
+        #filename = caller_frame.f_code.co_filename
+        #lineno = caller_frame.f_lineno
         
         # Add caller info to the output
         #location = f'[Called from {filename}, line {lineno}]'
@@ -54,4 +54,4 @@ def vprint(options, line : str, level=0, disable=False) -> None:
         sys.stdout.flush()
 
         if options.writeLog:
-            options.write_log(line)
+            options.write_log(full_line)

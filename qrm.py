@@ -7,7 +7,7 @@ import os
 from transition_system import get_transition_system
 from finite_ivy_instantiate import FiniteIvyInstantiator
 from protocol import Protocol
-from forward_reach import ForwardReachability, SymDFS, BddSymbolic
+from forward_reach import SymDFS, BddSymbolic
 from prime import PrimeOrbits
 from minimize import Minimizer
 from run_ivy import check_inductive_and_prove_property, run_finite_ivy_check
