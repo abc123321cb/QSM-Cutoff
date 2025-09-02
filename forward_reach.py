@@ -1,4 +1,5 @@
 from typing import Type, Set, List, Dict
+import hashlib, colorsys
 from util import QrmOptions, ForwardMode
 from transition_system import TransitionSystem
 from protocol import Protocol
@@ -28,7 +29,7 @@ class ForwardReachability():
 
         self.setup()
 
-    def _init_protocol(self):
+    def _init_protocol(self) -> None:
         self.protocol = Protocol(self.options)                
         self.protocol.init_sort(self.tran_sys)
         self.protocol.init_dependent_sort(self.tran_sys)
@@ -303,93 +304,134 @@ class SymDFS(ForwardReachability):
         out_file = self.options.instance_name + '.' + self.options.instance_suffix + '.graph'
         dot.render(out_file, format="svg", cleanup=True)
 
-    def _render_state_orbit_graph_cytoscape(self, layout: str = "cose") -> None:
+    def _export_state_orbit_graph_cx2(self) -> None:
         """
-        Writes a self-contained HTML (Cytoscape.js) visualizing the state-orbit graph.
-        Nodes show 'repr_state' and 'orbit size: N'. Edges show the Ivy action name.
+        Write the state-orbit graph as CX2 (.cx2) for Cytoscape Web/Desktop, with node labels.
+        Uses ndex2.
         """
-        if not getattr(self.options, "make_graph", False):
+        if not self.options.make_graph:
             return
 
-        out_html =  self.options.instance_name + '.' + self.options.instance_suffix + "_cy.html"
+        from ndex2.cx2 import CX2Network  # pip install ndex2
+        from pathlib import Path
 
-        # Build Cytoscape elements
-        nodes = []
-        for orbit in self.dfs_state_orbits:  # list of StateOrbit
-            nid = str(orbit.repr_int)
-            label = f"{orbit.repr_state}\norbit size: {len(orbit.states)}"
-            nodes.append({"data": {"id": nid, "label": label}})
+        out_path = f"{self.options.instance_name}.{self.options.instance_suffix}.cx2"
 
-        edges = []
-        IGNORE = {"qrm_init_protocol"}
-        for (src, dst), label in sorted(self.dfs_explored_edge_labels.items()):
-            if label.casefold() in IGNORE: continue
-            edges.append({
-                "data": {
-                    "id": f"{src}->{dst}",
-                    "source": str(src),
-                    "target": str(dst),
-                    "label": str(label),
+        # ---- Build nodes/edges ----
+        cx2_nodes = []
+        for orbit in self.dfs_state_orbits:
+            nid = int(orbit.repr_int)
+            name = orbit.repr_state
+            cx2_nodes.append({
+                "id": nid,
+                "v": {
+                    "name": name + "\norbit size: " + str(len(orbit.states))
                 }
             })
 
-        elements = nodes + edges
+        IGNORE = {"qrm_init_protocol"}
+        cx2_edges = []
+        for eid, ((src, dst), act) in enumerate(sorted((self.dfs_explored_edge_labels or {}).items()), start=1):
+            if str(act).casefold() in IGNORE:
+                continue
+            cx2_edges.append({"id": eid, "s": int(src), "t": int(dst), "v": {"label": str(act[0])}})
 
-        html_text = f"""<!doctype html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <title>State Orbits</title>
-    <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
-    <style>
-    html, body, #cy {{ width: 100%; height: 100%; margin: 0; padding: 0; }}
-    </style>
-    </head>
-    <body>
-    <div id="cy"></div>
-    <script>
-    const cy = cytoscape({{
-        container: document.getElementById('cy'),
-        elements: {json.dumps(elements)},
-        style: [
-        {{
-            selector: 'node',
-            style: {{
-            'label': 'data(label)',
-            'text-wrap': 'wrap',
-            'text-max-width': 160,
-            'font-size': 12,
-            'background-color': '#E8F0FE',
-            'border-width': 1,
-            'border-color': '#777'
-            }}
-        }},
-        {{
-            selector: 'edge',
-            style: {{
-            'curve-style': 'bezier',
-            'target-arrow-shape': 'triangle',
-            'arrow-scale': 1,
-            'width': 1.5,
-            'label': 'data(label)',
-            'font-size': 10,
-            'text-rotation': 'autorotate',
-            'text-background-opacity': 1,
-            'text-background-color': '#fff',
-            'text-background-padding': 2
-            }}
-        }}
-        ],
-        layout: {{ name: '{layout}', animate: false }}
-    }});
-    </script>
-    </body>
-    </html>"""
+        network_name = f"{self.options.instance_name}.{self.options.instance_suffix}"
 
-        Path(out_html).write_text(html_text, encoding="utf-8")
-        # You can print where it went:
-        vprint(self.options, f"[FW NOTE]: wrote Cytoscape HTML to {out_html}", 3)
+        # ---- Write CX2 via ndex2 ----
+        net = CX2Network()
+        for n in cx2_nodes:
+            net.add_node(node_id=n["id"], attributes=n["v"])
+        for e in cx2_edges:
+            net.add_edge(edge_id=e["id"], source=e["s"], target=e["t"], attributes=e["v"])
+        net.set_network_attributes({"name": network_name})
+
+        def color_from_string(s: str, sat=0.7, light=0.5) -> str:
+            """
+            Deterministically map a string to a vivid HEX color.
+            - hue: hash-based 0..360
+            - saturation/lightness: fixed for readability
+            """
+            h = int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16)
+            hue = (h % 360) / 360.0
+            r, g, b = colorsys.hls_to_rgb(hue, light, sat)  # colorsys uses HLS (L before S)
+            return f"#{int(r*255):02X}{int(g*255):02X}{int(b*255):02X}"
+
+        def build_edge_color_mapping(cx2_edges, attr="label"):
+            """
+            Collect unique string values from edge attribute `attr`
+            and return an 'edgeMapping' entry
+            """
+            vals = []
+            for e in cx2_edges:
+                v = e.get("v", {}).get(attr)
+                if v is not None:
+                    vals.append(str(v))
+            unique_vals = sorted(set(vals))
+            return {
+                "EDGE_LINE_COLOR": {
+                    "type": "DISCRETE",
+                    "definition": {
+                        "attribute": attr,
+                        "type": "string",
+                        "map": [{"v": v, "vp": color_from_string(v)} for v in unique_vals],
+                        "default": "#7A7A7A"
+                    }
+                }
+            }
         
+        
+
+        # Map node labels from the 'name' column; edge labels from 'label'
+        vis = {
+            "default": {
+                "network": {"NETWORK_BACKGROUND_COLOR": "#FFFFFF"},
+                "node":    {"NODE_SHAPE": "round-rectangle",
+                            "NODE_WIDTH": 80.0,
+                            "NODE_HEIGHT": 60.0,},
+                "edge":    {
+                    "EDGE_TARGET_ARROW_SHAPE": "triangle",
+                    "EDGE_TARGET_ARROW_SIZE": 8.0,
+                    "EDGE_SOURCE_ARROW_SHAPE": "none"
+                }
+            },
+
+            "edge": {
+                "EDGE_LABEL_POSITION": {
+                    "JUSTIFICATION": "center",
+                    "MARGIN_X": 0.0,
+                    "MARGIN_Y": 8.0,
+                    "EDGE_ANCHOR": "N",
+                    "LABEL_ANCHOR": "S"
+                },
+                "EDGE_LABEL_BACKGROUND_SHAPE": "round-rectangle",
+                "EDGE_LABEL_BACKGROUND_COLOR": "#FFFFFF",
+                "EDGE_LABEL_BACKGROUND_OPACITY": 1.0
+            },
+
+
+            "nodeMapping": {
+                "NODE_LABEL": {
+                    "type": "PASSTHROUGH",
+                    "definition": {"attribute": "name", "type": "string"}
+                }
+            },
+
+            "edgeMapping": {
+                "EDGE_LABEL": {
+                    "type": "PASSTHROUGH",
+                    "definition": {"attribute": "label", "type": "string"}
+                }
+            }
+        }
+
+        edge_color_map = build_edge_color_mapping(cx2_edges, attr="label")
+        vis["edgeMapping"].update(edge_color_map)
+        net.set_visual_properties(vis)
+
+        net.write_as_raw_cx2(out_path)
+        vprint(self.options, f"[FW NOTE]: wrote CX2 to {out_path}", 3)
+
     #------------------------------------------------------------
     # SymDFS: public methods
     #------------------------------------------------------------
@@ -401,7 +443,7 @@ class SymDFS(ForwardReachability):
         self._print_reachability()
         self._print_transition_edges()
         self._render_state_orbit_graph()
-        self._render_state_orbit_graph_cytoscape()
+        self._export_state_orbit_graph_cx2()
         if (self.options.writeReach):
             self.protocol.write_reachability()
         
