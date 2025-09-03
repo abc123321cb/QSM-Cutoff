@@ -1,6 +1,6 @@
 #lang ivy1.8
 
-type node
+type node = { node0, node1, node2}
 
 relation p(X:node)
 relation q(X:node)
@@ -21,12 +21,7 @@ after init {
     p(X) := false;
     q(X) := false;
     r(X) := false;
-    use_q(X) := false;
-    pq(X) := X;
-    pr(X) := X;
-    qp(X) := X;
-    rp(X) := X;   
-}
+    }
 
 action upq(x:node,y:node) = {
     require ~p(x) & ~q(y);
@@ -60,9 +55,6 @@ action downq(x:node,y:node) = {
     };
     p(x) := false;
     q(y) := false;
-    pq(x) := x;
-    pr(x) := x;
-    qp(y) := y;
 }
 
 # Remove one p and one r.
@@ -79,12 +71,24 @@ action downr(x:node,y:node) = {
     };
     p(x) := false;
     r(y) := false;
-    pq(x) := x;
-    pr(x) := x;
-    qp(y) := y;
 }
 
 # invariant p(X) -> exists Y. (q(Y) | r(Y))
+
+
+# pq/qp invariants (same pattern)
+invariant [invar_pq_1] forall NODE1,NODE0. qp(NODE0) ~= NODE1 | p(NODE1) | ~q(NODE0)
+invariant [invar_pq_2] forall NODE1,NODE0. pq(NODE0) ~= NODE1 | q(NODE1) | ~p(NODE0) | ~use_q(NODE0)
+invariant [invar_pq_3] forall NODE1,NODE0. pq(NODE1) = NODE0 | qp(NODE0) ~= NODE1 | ~q(NODE0)
+invariant [invar_pq_4] forall NODE1,NODE0. pq(NODE0) ~= NODE1 | qp(NODE1) = NODE0 | ~p(NODE0) | ~use_q(NODE0)
+invariant [invar_pq_5] forall NODE1,NODE0. qp(NODE0) ~= NODE1 | use_q(NODE1) | ~q(NODE0)
+
+# pr/rp invariants (symmetric to pq/qp)
+invariant [invar_pr_1] forall NODE1,NODE0. rp(NODE0) ~= NODE1 | p(NODE1) | ~r(NODE0)
+invariant [invar_pr_2] forall NODE1,NODE0. pr(NODE0) ~= NODE1 | r(NODE1) | ~p(NODE0) | use_q(NODE0)
+invariant [invar_pr_3] forall NODE1,NODE0. pr(NODE1) = NODE0 | rp(NODE0) ~= NODE1 | ~r(NODE0)
+invariant [invar_pr_4] forall NODE1,NODE0. pr(NODE0) ~= NODE1 | rp(NODE1) = NODE0 | ~p(NODE0) | use_q(NODE0)
+invariant [invar_pr_5] forall NODE1,NODE0. rp(NODE0) ~= NODE1 | ~use_q(NODE1) | ~r(NODE0)
 
 
 export upq

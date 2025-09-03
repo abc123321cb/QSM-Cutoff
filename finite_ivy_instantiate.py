@@ -305,6 +305,9 @@ class FiniteIvyInstantiator():
                 elif str(args[1]) in constants:
                     return il.Equals(args[0], args[1])
                 else:
+                    arg0_str = str(args[0])
+                    arg1_str = str(args[1])
+                    return il.Equals(args[0], args[1])
                     assert(0) 
             elif (il.is_true(args[0]) or il.is_false(args[0])) and (il.is_true(args[1]) or il.is_false(args[1])):
                 return il.And() if args[0] == args[1] else il.Or()
