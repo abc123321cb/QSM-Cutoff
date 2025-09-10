@@ -175,16 +175,61 @@ class FiniteIvyInstantiator():
         self.dfs_state_vars     = self._get_dfs_variables_from_instantiated_equals(self._instantiated_state_equals)
         self.dfs_interpreted_vars = self._get_dfs_variables_from_instantiated_equals(self._instantiated_interpreted_equals)
 
+
     def _set_protocol_atoms(self):
+        # Build (string, formula, origin) tuples
+        pairs = []
         for atom in self._instantiated_state_equals:
-            self.protocol_state_atoms.append(str(atom))
-        self.protocol_state_atoms_fmlas = self._instantiated_state_equals
+            pairs.append((str(atom), atom, 'state'))
         for atom in self._instantiated_interpreted_equals:
-            self.protocol_interpreted_atoms.append(str(atom))
-        self.protocol_interpreted_atoms_fmlas = self._instantiated_interpreted_equals
-        self.protocol_atoms       = self.protocol_state_atoms + self.protocol_interpreted_atoms
-        self.protocol_atoms_fmlas = self.protocol_state_atoms_fmlas + self.protocol_interpreted_atoms_fmlas
-    
+            pairs.append((str(atom), atom, 'interp'))
+
+        HEAD_ORDER = {'p': 0, 'q': 1, 'pq': 2, 'qp': 3}
+
+        def _parse_head_and_nums(s: str):
+            # match "f(x) = y"
+            m = re.match(r'\s*(\w+)\(([^)]*)\)\s*=\s*(\w+)\s*$', s)
+            if m:
+                head = m.group(1)
+                params = [m.group(2), m.group(3)]
+            else:
+                # match "f(x, y, ...)"
+                m = re.match(r'\s*(\w+)\(([^)]*)\)\s*$', s)
+                if m:
+                    head = m.group(1)
+                    params = [m.group(2)]
+                else:
+                    # match "x = y" (no head symbol)
+                    m = re.match(r'\s*(\w+)\s*=\s*(\w+)\s*$', s)
+                    if m:
+                        head = m.group(1)
+                        params = [m.group(2)]
+                    else:
+                        head, params = s.strip(), []
+
+            # extract the first integer in each param (handles 0, 1, n0, n1, c_2, etc.)
+            nums = []
+            for p in params:
+                mnum = re.search(r'(\d+)', p)
+                nums.append(int(mnum.group(1)) if mnum else 10_000_000)
+            return head, nums
+
+        def _key(triple):
+            s, _, _ = triple
+            head, nums = _parse_head_and_nums(s)
+            return (HEAD_ORDER.get(head, 100),) + tuple(nums) + (s,)
+
+        pairs.sort(key=_key)
+
+        # Fill the outputs in the desired order
+        self.protocol_atoms        = [s for (s, a, t) in pairs]
+        self.protocol_atoms_fmlas  = [a for (s, a, t) in pairs]
+        self.protocol_state_atoms  = [s for (s, a, t) in pairs if t == 'state']
+        self.protocol_state_atoms_fmlas = [a for (s, a, t) in pairs if t == 'state']
+        self.protocol_interpreted_atoms = [s for (s, a, t) in pairs if t == 'interp']
+        self.protocol_interpreted_atoms_fmlas = [a for (s, a, t) in pairs if t == 'interp']
+
+
     def _set_ivy_variables(self):
         ivy_vars      = self._instantiated_indep_vars
         ivy_non_bools = self._instantiated_indep_non_bools
