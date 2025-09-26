@@ -1,0 +1,944 @@
+
+*****************************************************************
+
+	[QRM]: ivybench/sym/ivy/McMillan_Example3.ivy
+
+*****************************************************************
+
+
+***************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+***************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/McMillan_Example3.ivy -s node=1 -f 1 -g -w -v 5 -l ivybench/sym/ivy/McMillan_Example3.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+=============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 3
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 1
+
+[FW NOTE]: number of branching actions: 4
+
+ivy_to_cpp target=qrm McMillan_Example3.node_1.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o McMillan_Example3.node_1.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 McMillan_Example3.node_1.finite.cpp McMillan_Example3.node_1.finite_wrap.cpp -I/usr/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared McMillan_Example3.node_1.finite.o McMillan_Example3.node_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 4.790 seconds
+
+[QRM NOTE]: Time elapsed since last: 4.790 seconds
+
+[QRM NOTE]: Peak memory: 669921 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+
+---------- level 0 ----------
+
+000
+
+
+---------- level 1 ----------
+
+110
+
+
+---------- level 1 ----------
+
+101
+
+[FW NOTE]: dfs max depth: 1
+
+[FW NOTE]: number of total reachable states:        3
+
+[FW NOTE]: number of dfs representative states:     3
+
+[FW NOTE]: number of dfs non-representative states: 0
+
+
+====================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+====================================================================================================
+
+sort: node=['node0']
+predicate: p('node',)
+predicate: r('node',)
+predicate: q('node',)
+interpreted atoms: {}
+state atoms: ['p(node0)', 'q(node0)', 'r(node0)']
+representative states : 0, 6, 5
+
+
+=== State Orbit 0 =====================
+size : 1
+repr state: 000
+lex min decimal: 0x0
+states:
+000
+
+
+
+
+=== State Orbit 1 =====================
+size : 1
+repr state: 110
+lex min decimal: 0x6
+states:
+110
+
+
+
+
+=== State Orbit 2 =====================
+size : 1
+repr state: 101
+lex min decimal: 0x5
+states:
+101
+
+
+
+[QRM NOTE]: Time elapsed since start: 4.805 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
+
+[QRM NOTE]: Peak memory: 180256 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: set()
+
+[QRM NOTE]: Time elapsed since start: 4.807 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
+
+[QRM NOTE]: Peak memory: 177066 bytes
+
+
+====================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+====================================================================================================
+
+
+===============================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+===============================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 01-
+0     : ['q(node0)', '~p(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : 0-1
+1     : ['r(node0)', '~p(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : -11
+2     : ['q(node0)', 'r(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 100
+3     : ['p(node0)', '~q(node0)', '~r(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 4
+
+[PRIME NOTE]: number of orbits before merging: 4
+
+[PRIME NOTE]: number of primes: 4
+
+[QRM NOTE]: Time elapsed since start: 4.811 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 192907 bytes
+
+
+=========================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+=========================================================================================
+
+definition primes: set()
+
+
+New level: 0
+ pending : [0, 1, 2, 3]
+ solution : []
+
+
+Before reduction : 
+ pending  : [0, 1, 2, 3]
+ solution : []
+
+Essensial at level 0 : {0, 1, 2, 3}
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3]
+
+Essensial at level 0 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+
+Covered at level 0 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3]
+
+[QRM NOTE]: Time elapsed since start: 4.815 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 194982 bytes
+
+
+=============================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+=============================================================================================
+
+
+---------- quantifier_inference ----------
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 01-
+0     : ['q(node0)', '~p(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~p(node0)', 'q(node0)']
+
+sign_func_name2args: {'1$p': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$q': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$p$0$0, node$0$q$0$0]}
+
+sig2const: {'node$1$p$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$q$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$q$0$0; node$1$p$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$q$0$0; node$1$p$0$0}
+
+part_sig: ('node$0$q$0$0; node$1$p$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['~p(node0)', 'q(node0)']
+
+func_name2symbol:  {'p': Const('p', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'q': Const('q', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'p': (EnumeratedSort('node', ('node0',)),), 'q': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'1$p': 1, '0$q': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$q$0$0; node$1$p$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$q$0$0; node$1$p$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$q$0; node$1$p$0': [node$0$q$0$0; node$1$p$0$0]}
+
+	identical_single_classes: {'node$0$q$0; node$1$p$0': node$0$q$0$0; node$1$p$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$p': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$q': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['q(NODE0)', '~p(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~q(NODE0) | p(NODE0)
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : 0-1
+1     : ['r(node0)', '~p(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['~p(node0)', 'r(node0)']
+
+sign_func_name2args: {'1$p': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$r': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$1$p$0$0, node$0$r$0$0]}
+
+sig2const: {'node$1$p$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$r$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$r$0$0; node$1$p$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$r$0$0; node$1$p$0$0}
+
+part_sig: ('node$0$r$0$0; node$1$p$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['~p(node0)', 'r(node0)']
+
+func_name2symbol:  {'p': Const('p', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'r': Const('r', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'p': (EnumeratedSort('node', ('node0',)),), 'r': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'1$p': 1, '0$r': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$r$0$0; node$1$p$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$r$0$0; node$1$p$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$r$0; node$1$p$0': [node$0$r$0$0; node$1$p$0$0]}
+
+	identical_single_classes: {'node$0$r$0; node$1$p$0': node$0$r$0$0; node$1$p$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'1$p': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$r': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['r(NODE0)', '~p(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~r(NODE0) | p(NODE0)
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : -11
+2     : ['q(node0)', 'r(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['q(node0)', 'r(node0)']
+
+sign_func_name2args: {'0$q': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '0$r': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$q$0$0, node$0$r$0$0]}
+
+sig2const: {'node$0$q$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$0$r$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$q$0$0; node$0$r$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$q$0$0; node$0$r$0$0}
+
+part_sig: ('node$0$q$0$0; node$0$r$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['q(node0)', 'r(node0)']
+
+func_name2symbol:  {'q': Const('q', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'r': Const('r', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'q': (EnumeratedSort('node', ('node0',)),), 'r': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'0$q': 1, '0$r': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$q$0$0; node$0$r$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$q$0$0; node$0$r$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$q$0; node$0$r$0': [node$0$q$0$0; node$0$r$0$0]}
+
+	identical_single_classes: {'node$0$q$0; node$0$r$0': node$0$q$0$0; node$0$r$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$q': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '0$r': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['r(NODE0)', 'q(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~r(NODE0) | ~q(NODE0)
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 100
+3     : ['p(node0)', '~q(node0)', '~r(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['p(node0)', '~q(node0)', '~r(node0)']
+
+sign_func_name2args: {'0$p': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '1$q': [(Const('node0', EnumeratedSort('node', ('node0',))),)], '1$r': [(Const('node0', EnumeratedSort('node', ('node0',))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0',))): [node$0$p$0$0, node$1$q$0$0, node$1$r$0$0]}
+
+sig2const: {'node$0$p$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$1$q$0$0': Const('node0', EnumeratedSort('node', ('node0',))), 'node$1$r$0$0': Const('node0', EnumeratedSort('node', ('node0',)))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$p$0$0; node$1$q$0$0; node$1$r$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$p$0$0; node$1$q$0$0; node$1$r$0$0}
+
+part_sig: ('node$0$p$0$0; node$1$q$0$0; node$1$r$0$0',)
+
+
+---------- SigGenerator ----------
+
+terms:  ['p(node0)', '~q(node0)', '~r(node0)']
+
+func_name2symbol:  {'p': Const('p', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'q': Const('q', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort())), 'r': Const('r', FunctionSort(EnumeratedSort('node', ('node0',)), BooleanSort()))}
+
+func_name2args_sort:  {'p': (EnumeratedSort('node', ('node0',)),), 'q': (EnumeratedSort('node', ('node0',)),), 'r': (EnumeratedSort('node', ('node0',)),)}
+
+sign_func_name2count:  {'0$p': 1, '1$q': 1, '1$r': 1}
+
+
+---------- ProductArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0',)): [node$0$p$0$0; node$1$q$0$0; node$1$r$0$0]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0',)): node$0$p$0$0; node$1$q$0$0; node$1$r$0$0}
+
+	sort: node
+
+	identical_classes: {'node$0$p$0; node$1$q$0; node$1$r$0': [node$0$p$0$0; node$1$q$0$0; node$1$r$0$0]}
+
+	identical_single_classes: {'node$0$p$0; node$1$q$0; node$1$r$0': node$0$p$0$0; node$1$q$0$0; node$1$r$0$0}
+
+	identical_multi_classes: {}
+
+
+---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.no_merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE0', EnumeratedSort('node', ('node0',)))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$p': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '1$q': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]], '1$r': [[Var('NODE0', EnumeratedSort('node', ('node0',)))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['p(NODE0)', '~r(NODE0)', '~q(NODE0)']
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE0. ~p(NODE0) | r(NODE0) | q(NODE0)
+
+
+=======================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+=======================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 1
+num_suborbits: 1
+0 (*) : 01-
+0     : ['q(node0)', '~p(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~q(NODE0) | p(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 1
+num_suborbits: 1
+1 (*) : 0-1
+1     : ['r(node0)', '~p(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~r(NODE0) | p(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 1
+num_suborbits: 1
+2 (*) : -11
+2     : ['q(node0)', 'r(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~r(NODE0) | ~q(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 3 =====================
+size : 1
+num_suborbits: 1
+3 (*) : 100
+3     : ['p(node0)', '~q(node0)', '~r(node0)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0. ~p(NODE0) | r(NODE0) | q(NODE0)
+qcost : 4
+
+
+
+[QRM NOTE]: Time elapsed since start: 4.873 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.058 seconds
+
+[QRM NOTE]: Peak memory: 487856 bytes
+
+
+======================================================================================
+
+	[MIN]: Minimization on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+======================================================================================
+
+
+New level: 1
+ pending : []
+ solution : [0, 1, 2, 3]
+
+
+Before reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3]
+
+Essensial at level 1 : set()
+
+Before removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+
+After removed
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+
+Covered at level 1 : set()
+
+After reduction : 
+ pending  : []
+ solution : [0, 1, 2, 3]
+
+
+Solution : [0, 1, 2, 3] has cost 13.
+
+
+Before backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3]
+
+After backtrack at level 1
+ pending : []
+ solution : [0, 1, 2, 3]
+
+
+=====================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+=====================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 13
+
+[MIN NOTE]: maximum branch and bound depth: 1
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2, 3]
+
+[MIN NOTE]: solution length: 4
+
+invariant [invar_0] forall NODE0. ~q(NODE0) | p(NODE0) # qcost: 3
+
+invariant [invar_1] forall NODE0. ~r(NODE0) | p(NODE0) # qcost: 3
+
+invariant [invar_2] forall NODE0. ~r(NODE0) | ~q(NODE0) # qcost: 3
+
+invariant [invar_3] forall NODE0. ~p(NODE0) | r(NODE0) | q(NODE0) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 4
+
+[MIN NOTE]: total qCost: 13
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 4.891 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.018 seconds
+
+[QRM NOTE]: Peak memory: 485304 bytes
+
+
+******************************************************************************************************
+
+	[Reachability Convergence Check]: [ivybench/sym/ivy/McMillan_Example3.ivy: node=1]
+
+******************************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/McMillan_Example3.node_1.0.ivy -s node=2 -f 2 -g -w -r -v 5 -l ivybench/sym/ivy/McMillan_Example3.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+---------- Initializing reachability from file ----------
+
+Reachability successfully initialized
+
+
+==================================================================================================================================
+
+	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/McMillan_Example3.node_1.0.ivy: node=2]
+
+==================================================================================================================================
+
+Representatitive states in reachability not in Rmin
+
+0x18
+
+0x12
+
+0x35
+
+[REACH_CHECK RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 0.026 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.026 seconds
+
+[QRM NOTE]: Peak memory: 25592 bytes
+
+No Convergence
+
+next size: node=2
+
+
+***************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/McMillan_Example3.ivy: node=2]
+
+***************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/McMillan_Example3.ivy -s node=2 -f 1 -g -w -v 5 -l ivybench/sym/ivy/McMillan_Example3.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+=============================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example3.ivy: node=2]
+
+=============================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 6
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 2
+
+[FW NOTE]: number of branching actions: 16
+
+ivy_to_cpp target=qrm McMillan_Example3.node_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o McMillan_Example3.node_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 McMillan_Example3.node_2.finite.cpp McMillan_Example3.node_2.finite_wrap.cpp -I/usr/include/python3.12 -c
+
