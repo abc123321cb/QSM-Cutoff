@@ -2427,7 +2427,12 @@ num_suborbits: 2
 num_forall :   3
 num_exists :   0
 num_literals : 6
-quantified form : forall NODE0,NODE2,NODE1. ~p(NODE1) | q(NODE0) | ~p(NODE0) | q(NODE2) | (NODE0 = NODE1 & NODE0 ~= NODE2)
+quantified form : forall NODE0,NODE2,NODE1. ~p(NODE1) | q(NODE0) | ~p(NODE0) | q(NODE2) | 
+(NODE0 = NODE1 & NODE0 ~= NODE2) | (NODE0 = NODE1 & NODE0 = NODE2)
+
+
+opposite: exists NODE0,NODE2,NODE1. p(NODE1) & ~q(NODE0) & p(NODE0) & ~q(NODE2) & 
+(NODE0 ~= NODE1 | NODE0 = NODE2) & (NODE0 ~= NODE1 | NODE0 ~= NODE2)
 qcost : 9
 
 

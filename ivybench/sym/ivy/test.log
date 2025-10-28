@@ -8,11 +8,11 @@
 
 ***************************************************************************************
 
-	[Synthesize Rmin]: [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
+	[Synthesize Rmin]: [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 ***************************************************************************************
 
-python3 qrm.py ivybench/sym/ivy/McMillan_Example2.ivy -s node=1 -f 1 -g -w -v 5 -l ivybench/sym/ivy/test.log
+python3 qrm.py ivybench/sym/ivy/McMillan_Example2.ivy -s node=3 -f 1 -g -w -v 5 -l ivybench/sym/ivy/test.log
 
 
 ---------- Parsing Ivy ----------
@@ -25,7 +25,7 @@ OK
 
 =============================================================================================
 
-	[FW]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
+	[FW]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 =============================================================================================
 
@@ -36,35 +36,35 @@ OK
 
 ==============================================
 
-[FW NOTE]: number of state atoms: 2
+[FW NOTE]: number of state atoms: 6
 
 [FW NOTE]: number of interpreted atoms (e.g. member,le): 0
 
-[FW NOTE]: symmetric group order: 1
+[FW NOTE]: symmetric group order: 6
 
-[FW NOTE]: number of branching actions: 2
+[FW NOTE]: number of branching actions: 18
 
-ivy_to_cpp target=qrm McMillan_Example2.node_1.finite.ivy
+ivy_to_cpp target=qrm McMillan_Example2.node_3.finite.ivy
 
 [IVY_TO_CPP RESULT]: OK
 
-swig -c++ -python -o McMillan_Example2.node_1.finite_wrap.cpp ivy_exec.i
+swig -c++ -python -o McMillan_Example2.node_3.finite_wrap.cpp ivy_exec.i
 
 [SWIG RESULT]: OK
 
-g++ -std=c++11 -fpic -pthread -O3 McMillan_Example2.node_1.finite.cpp McMillan_Example2.node_1.finite_wrap.cpp -I/usr/include/python3.12 -c
+g++ -std=c++11 -fpic -pthread -O3 McMillan_Example2.node_3.finite.cpp McMillan_Example2.node_3.finite_wrap.cpp -I/usr/include/python3.12 -c
 
 [G++ RESULT]: OK
 
-g++ -shared McMillan_Example2.node_1.finite.o McMillan_Example2.node_1.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+g++ -shared McMillan_Example2.node_3.finite.o McMillan_Example2.node_3.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
 
 [LINK RESULT]: OK
 
-[QRM NOTE]: Time elapsed since start: 5.042 seconds
+[QRM NOTE]: Time elapsed since start: 6.012 seconds
 
-[QRM NOTE]: Time elapsed since last: 5.042 seconds
+[QRM NOTE]: Time elapsed since last: 6.012 seconds
 
-[QRM NOTE]: Peak memory: 840618 bytes
+[QRM NOTE]: Peak memory: 839602 bytes
 
 
 ===================================
@@ -76,453 +76,134 @@ g++ -shared McMillan_Example2.node_1.finite.o McMillan_Example2.node_1.finite_wr
 
 ---------- level 0 ----------
 
-00
+000000
 
 
 ---------- level 1 ----------
 
-11
-
-[FW NOTE]: dfs max depth: 1
-
-[FW NOTE]: number of total reachable states:        2
-
-[FW NOTE]: number of dfs representative states:     2
-
-[FW NOTE]: number of dfs non-representative states: 0
-
-
-====================================================================================================
-
-	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-====================================================================================================
-
-sort: node=['node0']
-predicate: p('node',)
-predicate: q('node',)
-interpreted atoms: {}
-state atoms: ['p(node0)', 'q(node0)']
-representative states : 0, 3
-
-
-=== State Orbit 0 =====================
-size : 1
-repr state: 00
-lex min decimal: 0x0
-states:
-00
-
-
-
-
-=== State Orbit 1 =====================
-size : 1
-repr state: 11
-lex min decimal: 0x3
-states:
-11
-
-
-
-[QRM NOTE]: Time elapsed since start: 5.068 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.026 seconds
-
-[QRM NOTE]: Peak memory: 423038 bytes
-
-
-======================================
-
-	Reduce Equivalent Atoms
-
-======================================
-
-[FW NOTE]: equivalent atoms
-
-	p(node0): ['q(node0)']
-
-[FW NOTE]: complement atoms
-
-[FW NOTE]: remove_atom_ids: {1}
-
-[QRM NOTE]: Time elapsed since start: 5.073 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.005 seconds
-
-[QRM NOTE]: Peak memory: 441299 bytes
-
-
-====================================================================================================
-
-	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-====================================================================================================
-
-
-===============================================================================================
-
-	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-===============================================================================================
-
-
-
-[PRIME NOTE]: number of orbits after merging: 0
-
-[PRIME NOTE]: number of orbits before merging: 0
-
-[PRIME NOTE]: number of primes: 0
-
-[QRM NOTE]: Time elapsed since start: 5.080 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.007 seconds
-
-[QRM NOTE]: Peak memory: 484136 bytes
-
-
-=========================================================================================
-
-	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-=========================================================================================
-
-definition primes: set()
-
-
-New level: 0
- pending : []
- solution : []
-
-
-Before reduction : 
- pending  : []
- solution : []
-
-Essensial at level 0 : set()
-
-Before removed
- coverage : []
-
-After removed
- coverage : []
-
-Covered at level 0 : set()
-
-After reduction : 
- pending  : []
- solution : []
-
-[QRM NOTE]: Time elapsed since start: 5.087 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.007 seconds
-
-[QRM NOTE]: Peak memory: 511772 bytes
-
-
-=============================================================================================
-
-	[QI]: Quantifier Inference on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-=============================================================================================
-
-
----------- quantifier_inference ----------
-
-
-=======================================================================================================
-
-	[QI RESULT]: Quantified Prime Orbits on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-=======================================================================================================
-
-[QRM NOTE]: Time elapsed since start: 5.108 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.021 seconds
-
-[QRM NOTE]: Peak memory: 843580 bytes
-
-
-======================================================================================
-
-	[MIN]: Minimization on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-======================================================================================
-
-
-New level: 1
- pending : []
- solution : []
-
-
-Before reduction : 
- pending  : []
- solution : []
-
-Essensial at level 1 : set()
-
-Before removed
- coverage : []
-
-After removed
- coverage : []
-
-Covered at level 1 : set()
-
-After reduction : 
- pending  : []
- solution : []
-
-
-Solution : [] has cost 0.
-
-
-Before backtrack at level 1
- pending : []
- solution : []
-
-After backtrack at level 1
- pending : []
- solution : []
-
-
-=====================================================================================================
-
-	[MIN RESULT]: Minimized Invariants on [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-=====================================================================================================
-
-[MIN NOTE]: number of minimal solution found: 1
-
-[MIN NOTE]: upper bound: 0
-
-[MIN NOTE]: maximum branch and bound depth: 1
-
-[MIN NOTE]: number of definitions: 0
-
-[MIN NOTE]: number of equality relations: 1
-
-invariant [eq_0] forall NODE. p(NODE) = q(NODE) # equivalence relation, qcost: 3
-
-[MIN NOTE]: Solution 0 : []
-
-[MIN NOTE]: solution length: 0
-
-[MIN NOTE]: number of total invariants: 1
-
-[MIN NOTE]: total qCost: 3
-
-
-
-
-[QRM NOTE]: Time elapsed since start: 5.131 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.023 seconds
-
-[QRM NOTE]: Peak memory: 872815 bytes
-
-
-******************************************************************************************************
-
-	[Reachability Convergence Check]: [ivybench/sym/ivy/McMillan_Example2.ivy: node=1]
-
-******************************************************************************************************
-
-python3 qrm.py ivybench/sym/ivy/McMillan_Example2.node_1.0.ivy -s node=2 -f 2 -g -w -r -v 5 -l ivybench/sym/ivy/test.log
-
-
----------- Parsing Ivy ----------
-
-
-Printing isolate this:
-
-OK
-
-
----------- Initializing reachability from file ----------
-
-Reachability successfully initialized
-
-
-==================================================================================================================================
-
-	[REACH_CHECK]: Reachability Convergence Check for Rmin on [ivybench/sym/ivy/McMillan_Example2.node_1.0.ivy: node=2]
-
-==================================================================================================================================
-
-Representatitive states in reachability not in Rmin
-
-0x6
-
-[REACH_CHECK RESULT]: FAIL
-
-[QRM NOTE]: Time elapsed since start: 0.047 seconds
-
-[QRM NOTE]: Time elapsed since last: 0.047 seconds
-
-[QRM NOTE]: Peak memory: 70785 bytes
-
-No Convergence
-
-next size: node=2
-
-
-***************************************************************************************
-
-	[Synthesize Rmin]: [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
-
-***************************************************************************************
-
-python3 qrm.py ivybench/sym/ivy/McMillan_Example2.ivy -s node=2 -f 1 -g -w -v 5 -l ivybench/sym/ivy/test.log
-
-
----------- Parsing Ivy ----------
-
-
-Printing isolate this:
-
-OK
-
-
-=============================================================================================
-
-	[FW]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
-
-=============================================================================================
-
-
-==============================================
-
-	Set up for forward reachability
-
-==============================================
-
-[FW NOTE]: number of state atoms: 4
-
-[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
-
-[FW NOTE]: symmetric group order: 2
-
-[FW NOTE]: number of branching actions: 8
-
-ivy_to_cpp target=qrm McMillan_Example2.node_2.finite.ivy
-
-[IVY_TO_CPP RESULT]: OK
-
-swig -c++ -python -o McMillan_Example2.node_2.finite_wrap.cpp ivy_exec.i
-
-[SWIG RESULT]: OK
-
-g++ -std=c++11 -fpic -pthread -O3 McMillan_Example2.node_2.finite.cpp McMillan_Example2.node_2.finite_wrap.cpp -I/usr/include/python3.12 -c
-
-[G++ RESULT]: OK
-
-g++ -shared McMillan_Example2.node_2.finite.o McMillan_Example2.node_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
-
-[LINK RESULT]: OK
-
-[QRM NOTE]: Time elapsed since start: 5.646 seconds
-
-[QRM NOTE]: Time elapsed since last: 5.646 seconds
-
-[QRM NOTE]: Peak memory: 841662 bytes
-
-
-===================================
-
-	Forward reachability
-
-===================================
-
-
----------- level 0 ----------
-
-0000
-
-
----------- level 1 ----------
-
-1010
+100100
 
 
 ---------- level 2 ----------
 
-1111
+110110
 
 
 ---------- level 3 ----------
 
-0110
+111111
 
-[FW NOTE]: dfs max depth: 3
 
-[FW NOTE]: number of total reachable states:        6
+---------- level 4 ----------
 
-[FW NOTE]: number of dfs representative states:     4
+011101
 
-[FW NOTE]: number of dfs non-representative states: 2
+
+---------- level 5 ----------
+
+001100
+
+[FW NOTE]: dfs max depth: 5
+
+[FW NOTE]: number of total reachable states:        20
+
+[FW NOTE]: number of dfs representative states:     6
+
+[FW NOTE]: number of dfs non-representative states: 14
 
 
 ====================================================================================================
 
-	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 ====================================================================================================
 
-sort: node=['node0', 'node1']
-predicate: q('node',)
+sort: node=['node0', 'node1', 'node2']
 predicate: p('node',)
+predicate: q('node',)
 interpreted atoms: {}
-state atoms: ['p(node0)', 'p(node1)', 'q(node0)', 'q(node1)']
-representative states : 0, 5, 15, 6
+state atoms: ['p(node0)', 'p(node1)', 'p(node2)', 'q(node0)', 'q(node1)', 'q(node2)']
+representative states : 0, 9, 27, 63, 29, 10
 
 
 === State Orbit 0 =====================
 size : 1
-repr state: 0000
+repr state: 000000
 lex min decimal: 0x0
 states:
-0000
+000000
 
 
 
 
 === State Orbit 1 =====================
-size : 2
-repr state: 1010
-lex min decimal: 0x5
+size : 3
+repr state: 100100
+lex min decimal: 0x9
 states:
-0101
-1010
+001001
+100100
+010010
 
 
 
 
 === State Orbit 2 =====================
-size : 1
-repr state: 1111
-lex min decimal: 0xf
+size : 3
+repr state: 110110
+lex min decimal: 0x1b
 states:
-1111
+101101
+110110
+011011
 
 
 
 
 === State Orbit 3 =====================
-size : 2
-repr state: 0110
-lex min decimal: 0x6
+size : 1
+repr state: 111111
+lex min decimal: 0x3f
 states:
-1001
-0110
+111111
 
 
 
-[QRM NOTE]: Time elapsed since start: 5.673 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.026 seconds
+=== State Orbit 4 =====================
+size : 6
+repr state: 011101
+lex min decimal: 0x1d
+states:
+110101
+101011
+110011
+011110
+101110
+011101
 
-[QRM NOTE]: Peak memory: 427564 bytes
+
+
+
+=== State Orbit 5 =====================
+size : 6
+repr state: 001100
+lex min decimal: 0xa
+states:
+010001
+100010
+010100
+100001
+001100
+001010
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.045 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.033 seconds
+
+[QRM NOTE]: Peak memory: 433085 bytes
 
 
 ======================================
@@ -537,34 +218,48 @@ states:
 
 [FW NOTE]: remove_atom_ids: set()
 
-[QRM NOTE]: Time elapsed since start: 5.678 seconds
+[QRM NOTE]: Time elapsed since start: 6.049 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.006 seconds
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
 
-[QRM NOTE]: Peak memory: 441044 bytes
+[QRM NOTE]: Peak memory: 446514 bytes
 
 
 ====================================================================================================
 
-	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 ====================================================================================================
 
 
 ===============================================================================================
 
-	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 ===============================================================================================
 
 
 === Prime Orbit 0 =====================
-size : 2
-num_suborbits: 1
-0 (*) : 001-
-0     : ['q(node0)', '~p(node0)', '~p(node1)']
-1     : 00-1
-1     : ['q(node1)', '~p(node0)', '~p(node1)']
+size : 9
+num_suborbits: 2
+0 (*) : 1-10-0
+0     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node2)']
+1     : 11-00-
+1     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node1)']
+2     : -11-00
+2     : ['p(node1)', 'p(node2)', '~q(node1)', '~q(node2)']
+3 (*) : 11-0-0
+3     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node2)']
+4     : 1-100-
+4     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node1)']
+5     : 11--00
+5     : ['p(node0)', 'p(node1)', '~q(node1)', '~q(node2)']
+6     : -1100-
+6     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node1)']
+7     : 1-1-00
+7     : ['p(node0)', 'p(node2)', '~q(node1)', '~q(node2)']
+8     : -110-0
+8     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -573,12 +268,14 @@ qcost : 0
 
 
 === Prime Orbit 1 =====================
-size : 2
+size : 3
 num_suborbits: 1
-2 (*) : 1-00
-2     : ['p(node0)', '~q(node0)', '~q(node1)']
-3     : -100
-3     : ['p(node1)', '~q(node0)', '~q(node1)']
+9 (*) : 111--0
+9     : ['p(node0)', 'p(node1)', 'p(node2)', '~q(node2)']
+10     : 111-0-
+10     : ['p(node0)', 'p(node1)', 'p(node2)', '~q(node1)']
+11     : 1110--
+11     : ['p(node0)', 'p(node1)', 'p(node2)', '~q(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -587,12 +284,14 @@ qcost : 0
 
 
 === Prime Orbit 2 =====================
-size : 2
+size : 3
 num_suborbits: 1
-4 (*) : 110-
-4     : ['p(node0)', 'p(node1)', '~q(node0)']
-5     : 11-0
-5     : ['p(node0)', 'p(node1)', '~q(node1)']
+12 (*) : -1-000
+12     : ['p(node1)', '~q(node0)', '~q(node1)', '~q(node2)']
+13     : --1000
+13     : ['p(node2)', '~q(node0)', '~q(node1)', '~q(node2)']
+14     : 1--000
+14     : ['p(node0)', '~q(node0)', '~q(node1)', '~q(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -601,12 +300,58 @@ qcost : 0
 
 
 === Prime Orbit 3 =====================
-size : 2
+size : 3
 num_suborbits: 1
-6 (*) : -011
-6     : ['q(node0)', 'q(node1)', '~p(node1)']
-7     : 0-11
-7     : ['q(node0)', 'q(node1)', '~p(node0)']
+15 (*) : 000--1
+15     : ['q(node2)', '~p(node0)', '~p(node1)', '~p(node2)']
+16     : 000-1-
+16     : ['q(node1)', '~p(node0)', '~p(node1)', '~p(node2)']
+17     : 0001--
+17     : ['q(node0)', '~p(node0)', '~p(node1)', '~p(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 9
+num_suborbits: 2
+18 (*) : -001-1
+18     : ['q(node0)', 'q(node2)', '~p(node1)', '~p(node2)']
+19     : -0011-
+19     : ['q(node0)', 'q(node1)', '~p(node1)', '~p(node2)']
+20     : 0-0-11
+20     : ['q(node1)', 'q(node2)', '~p(node0)', '~p(node2)']
+21     : 0-011-
+21     : ['q(node0)', 'q(node1)', '~p(node0)', '~p(node2)']
+22     : 00--11
+22     : ['q(node1)', 'q(node2)', '~p(node0)', '~p(node1)']
+23     : 00-1-1
+23     : ['q(node0)', 'q(node2)', '~p(node0)', '~p(node1)']
+24 (*) : 0-01-1
+24     : ['q(node0)', 'q(node2)', '~p(node0)', '~p(node2)']
+25     : 00-11-
+25     : ['q(node0)', 'q(node1)', '~p(node0)', '~p(node1)']
+26     : -00-11
+26     : ['q(node1)', 'q(node2)', '~p(node1)', '~p(node2)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 3
+num_suborbits: 1
+27 (*) : --0111
+27     : ['q(node0)', 'q(node1)', 'q(node2)', '~p(node2)']
+28     : -0-111
+28     : ['q(node0)', 'q(node1)', 'q(node2)', '~p(node1)']
+29     : 0--111
+29     : ['q(node0)', 'q(node1)', 'q(node2)', '~p(node0)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -615,22 +360,22 @@ qcost : 0
 
 
 
-[PRIME NOTE]: number of orbits after merging: 4
+[PRIME NOTE]: number of orbits after merging: 6
 
-[PRIME NOTE]: number of orbits before merging: 4
+[PRIME NOTE]: number of orbits before merging: 8
 
-[PRIME NOTE]: number of primes: 8
+[PRIME NOTE]: number of primes: 30
 
-[QRM NOTE]: Time elapsed since start: 5.688 seconds
+[QRM NOTE]: Time elapsed since start: 6.063 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.009 seconds
+[QRM NOTE]: Time elapsed since last: 0.014 seconds
 
-[QRM NOTE]: Peak memory: 508642 bytes
+[QRM NOTE]: Peak memory: 539625 bytes
 
 
 =========================================================================================
 
-	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 =========================================================================================
 
@@ -638,57 +383,57 @@ definition primes: set()
 
 
 New level: 0
- pending : [0, 1, 2, 3]
+ pending : [0, 1, 2, 3, 4, 5]
  solution : []
 
 
 Before reduction : 
- pending  : [0, 1, 2, 3]
+ pending  : [0, 1, 2, 3, 4, 5]
  solution : []
 
-Essensial at level 0 : {0, 1, 2, 3}
+Essensial at level 0 : {0, 1, 2, 3, 4, 5}
 
 Before removed
- coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1)]
 
 After removed
- coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1)]
 
 Covered at level 0 : set()
 
 After reduction : 
  pending  : []
- solution : [0, 1, 2, 3]
+ solution : [0, 1, 2, 3, 4, 5]
 
 
 Before reduction : 
  pending  : []
- solution : [0, 1, 2, 3]
+ solution : [0, 1, 2, 3, 4, 5]
 
 Essensial at level 0 : set()
 
 Before removed
- coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1)]
 
 After removed
- coverage : [(0, -1), (1, -1), (2, -1), (3, -1)]
+ coverage : [(0, -1), (1, -1), (2, -1), (3, -1), (4, -1), (5, -1)]
 
 Covered at level 0 : set()
 
 After reduction : 
  pending  : []
- solution : [0, 1, 2, 3]
+ solution : [0, 1, 2, 3, 4, 5]
 
-[QRM NOTE]: Time elapsed since start: 5.696 seconds
+[QRM NOTE]: Time elapsed since start: 6.073 seconds
 
-[QRM NOTE]: Time elapsed since last: 0.009 seconds
+[QRM NOTE]: Time elapsed since last: 0.010 seconds
 
-[QRM NOTE]: Peak memory: 544149 bytes
+[QRM NOTE]: Peak memory: 572318 bytes
 
 
 =============================================================================================
 
-	[QI]: Quantifier Inference on [ivybench/sym/ivy/McMillan_Example2.ivy: node=2]
+	[QI]: Quantifier Inference on [ivybench/sym/ivy/McMillan_Example2.ivy: node=3]
 
 =============================================================================================
 
@@ -697,12 +442,26 @@ After reduction :
 
 
 === Prime Orbit 0 =====================
-size : 2
-num_suborbits: 1
-0 (*) : 001-
-0     : ['q(node0)', '~p(node0)', '~p(node1)']
-1     : 00-1
-1     : ['q(node1)', '~p(node0)', '~p(node1)']
+size : 9
+num_suborbits: 2
+0 (*) : 1-10-0
+0     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node2)']
+1     : 11-00-
+1     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node1)']
+2     : -11-00
+2     : ['p(node1)', 'p(node2)', '~q(node1)', '~q(node2)']
+3 (*) : 11-0-0
+3     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node2)']
+4     : 1-100-
+4     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node1)']
+5     : 11--00
+5     : ['p(node0)', 'p(node1)', '~q(node1)', '~q(node2)']
+6     : -1100-
+6     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node1)']
+7     : 1-1-00
+7     : ['p(node0)', 'p(node2)', '~q(node1)', '~q(node2)']
+8     : -110-0
+8     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node2)']
 num_forall :   0
 num_exists :   0
 num_literals : 0
@@ -717,49 +476,103 @@ qcost : 0
 
 ---------- ConstArgBinding ----------
 
-terms: ['~p(node0)', '~p(node1)', 'q(node0)']
+terms: ['p(node0)', 'p(node2)', '~q(node0)', '~q(node2)']
 
-sign_func_name2args: {'1$p': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1'))),)], '0$q': [(Const('node0', EnumeratedSort('node', ('node0', 'node1'))),)]}
+sign_func_name2args: {'0$p': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '1$q': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
 
-const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1'))): [node$1$p$0$0, node$0$q$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1'))): [node$1$p$0$1]}
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$p$0$0, node$1$q$0$0], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$p$0$1, node$1$q$0$1]}
 
-sig2const: {'node$1$p$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1'))), 'node$1$p$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1'))), 'node$0$q$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1')))}
+sig2const: {'node$0$p$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$p$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$q$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$q$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
 
 
 ---------- ArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$q$0$0; node$1$p$0$0, node$1$p$0$1]}
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$p$0$0; node$1$q$0$0, node$0$p$0$1; node$1$q$0$1]}
 
-sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$q$0$0; node$1$p$0$0 | node$1$p$0$1}
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$p$0$0; node$1$q$0$0 | node$0$p$0$1; node$1$q$0$1}
 
-part_sig: ('node$0$q$0$0; node$1$p$0$0 | node$1$p$0$1',)
+part_sig: ('node$0$p$0$0; node$1$q$0$0 | node$0$p$0$1; node$1$q$0$1',)
+
+
+---------- QPrime ----------
+
+
+---------- ConstArgBinding ----------
+
+terms: ['p(node0)', 'p(node1)', '~q(node0)', '~q(node2)']
+
+sign_func_name2args: {'0$p': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)], '1$q': [(Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))),), (Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))),)]}
+
+const2sigs: {Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$p$0$0, node$1$q$0$0], Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$0$p$0$1], Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2'))): [node$1$q$0$1]}
+
+sig2const: {'node$0$p$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$0$p$0$1': Const('node1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$q$0$0': Const('node0', EnumeratedSort('node', ('node0', 'node1', 'node2'))), 'node$1$q$0$1': Const('node2', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+
+---------- ArgPartition ----------
+
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$p$0$0; node$1$q$0$0, node$0$p$0$1, node$1$q$0$1]}
+
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$p$0$0; node$1$q$0$0 | node$0$p$0$1 | node$1$q$0$1}
+
+part_sig: ('node$0$p$0$0; node$1$q$0$0 | node$0$p$0$1 | node$1$q$0$1',)
 
 
 ---------- SigGenerator ----------
 
-terms:  ['~p(node0)', '~p(node1)', 'q(node0)']
+terms:  ['p(node0)', 'p(node2)', '~q(node0)', '~q(node2)']
 
-func_name2symbol:  {'p': Const('p', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort())), 'q': Const('q', FunctionSort(EnumeratedSort('node', ('node0', 'node1')), BooleanSort()))}
+func_name2symbol:  {'p': Const('p', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort())), 'q': Const('q', FunctionSort(EnumeratedSort('node', ('node0', 'node1', 'node2')), BooleanSort()))}
 
-func_name2args_sort:  {'p': (EnumeratedSort('node', ('node0', 'node1')),), 'q': (EnumeratedSort('node', ('node0', 'node1')),)}
+func_name2args_sort:  {'p': (EnumeratedSort('node', ('node0', 'node1', 'node2')),), 'q': (EnumeratedSort('node', ('node0', 'node1', 'node2')),)}
 
-sign_func_name2count:  {'1$p': 2, '0$q': 1}
+sign_func_name2count:  {'0$p': 2, '1$q': 2}
 
 
 ---------- ProductArgPartition ----------
 
-sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1')): [node$0$q$0$0; node$1$p$0$0, node$1$p$0$1]}
+sort2class_sigs: {EnumeratedSort('node', ('node0', 'node1', 'node2')): [node$0$p$0$0; node$1$q$0$0, node$0$p$0$1, node$1$q$0$1]}
 
-sort2part_sig: {EnumeratedSort('node', ('node0', 'node1')): node$0$q$0$0; node$1$p$0$0 | node$1$p$0$1}
+sort2part_sig: {EnumeratedSort('node', ('node0', 'node1', 'node2')): node$0$p$0$0; node$1$q$0$0 | node$0$p$0$1 | node$1$q$0$1}
 
 	sort: node
 
-	identical_classes: {'node$0$q$0; node$1$p$0': [node$0$q$0$0; node$1$p$0$0], 'node$1$p$0': [node$1$p$0$1]}
+	identical_classes: {'node$0$p$0; node$1$q$0': [node$0$p$0$0; node$1$q$0$0], 'node$0$p$0': [node$0$p$0$1], 'node$1$q$0': [node$1$q$0$1]}
 
-	identical_single_classes: {'node$0$q$0; node$1$p$0': node$0$q$0$0; node$1$p$0$0, 'node$1$p$0': node$1$p$0$1}
+	identical_single_classes: {'node$0$p$0; node$1$q$0': node$0$p$0$0; node$1$q$0$0, 'node$0$p$0': node$0$p$0$1, 'node$1$q$0': node$1$q$0$1}
 
 	identical_multi_classes: {}
 
 
 ---------- QInference: _set_sort_to_quantifier_mode ----------
+
+quantifier mode: node: QuantifierMode.forall
+
+
+---------- QInference: _set_constraint_mode ----------
+
+constraint mode: ConstraintMode.merge
+
+
+---------- QFormula: _set_qvars ----------
+
+forall_qvars: {Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE2', EnumeratedSort('node', ('node0', 'node1', 'node2'))), Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))}
+
+exists_qvars: set()
+
+
+---------- QFormula: _set_signed_func_name_to_args ----------
+
+signed_func_name2args: {'0$p': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE1', EnumeratedSort('node', ('node0', 'node1', 'node2')))]], '1$q': [[Var('NODE0', EnumeratedSort('node', ('node0', 'node1', 'node2')))], [Var('NODE2', EnumeratedSort('node', ('node0', 'node1', 'node2')))]]}
+
+
+---------- QFormula: _set_qterms ----------
+
+qterms: ['p(NODE0)', '~q(NODE0)', '~q(NODE2)', 'p(NODE1)']
+
+use absent constraint
+
+
+---------- QFormula: get_qclause ----------
+
+qclause: forall NODE1,NODE2,NODE0. ~p(NODE0) | q(NODE0) | q(NODE2) | ~p(NODE1) | (NODE0 = NODE1 & NODE0 ~= NODE2)
 

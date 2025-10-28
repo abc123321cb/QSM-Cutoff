@@ -1,0 +1,56 @@
+{n0,n1,n2}
+invariant [invar_3] forall NODE2,NODE0,NODE1. ~p(NODE1) | q(NODE2) | q(NODE1) | ~p(NODE0) | ((NODE0 = NODE1 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1)) # qcost: 11
+
+Isolate this:
+
+    The inductive invariant consists of the following conjectures:
+        McMillan_Example2.node_3.0.ivy: line 31: invar_0
+        McMillan_Example2.node_3.0.ivy: line 32: invar_1
+        McMillan_Example2.node_3.0.ivy: line 33: invar_2
+        McMillan_Example2.node_3.0.ivy: line 34: invar_3
+        McMillan_Example2.node_3.0.ivy: line 35: invar_4
+        McMillan_Example2.node_3.0.ivy: line 36: invar_5
+
+    The following action implementations are present:
+        McMillan_Example2.node_3.0.ivy: line 20: implementation of down
+        McMillan_Example2.node_3.0.ivy: line 14: implementation of up
+
+    The following initializers are present:
+        McMillan_Example2.node_3.0.ivy: line 9: init[after2]
+
+    Initialization must establish the invariant
+        McMillan_Example2.node_3.0.ivy: line 31: invar_0 ... PASS
+        McMillan_Example2.node_3.0.ivy: line 32: invar_1 ... PASS
+        McMillan_Example2.node_3.0.ivy: line 33: invar_2 ... PASS
+        McMillan_Example2.node_3.0.ivy: line 34: invar_3 ... PASS
+        McMillan_Example2.node_3.0.ivy: line 35: invar_4 ... PASS
+        McMillan_Example2.node_3.0.ivy: line 36: invar_5 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:down
+            McMillan_Example2.node_3.0.ivy: line 31: invar_0 ... FAIL
+searching for a small model... done
+[
+    @NODE1 = n1
+    @NODE0 = n1
+    @NODE2 = n1
+]
+call down
+
+{
+    [
+        fml:x = n2
+        fml:y = n1
+    ]
+McMillan_Example2.node_3.0.ivy: line 21: 
+    assume [asrt4] (p(fml:x) & q(fml:y))
+
+McMillan_Example2.node_3.0.ivy: line 22: 
+    p(fml:x) := false
+
+McMillan_Example2.node_3.0.ivy: line 23: 
+    q(fml:y) := false
+
+}
+
+

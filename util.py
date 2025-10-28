@@ -47,6 +47,7 @@ class QrmOptions():
         self.time_start        = None
         self.time_stamp        = None
         self.python_include_path = '/usr/include/python3.12'
+        self.force_signature_inference = True
 
     def get_new_size_copy(self, new_size_str):
         options = QrmOptions()

@@ -31,26 +31,6 @@ class QPrime():
         QPrime.atoms    = atoms
         QPrime.tran_sys = tran_sys
 
-
-def _nnf_push_not(f):
-    """Recursively push ¬ inwards until it sits only in front of atoms."""
-    import ivy.logic as lg
-    import ivy.ivy_logic as il
-    if isinstance(f, il.Not):
-        g = f.args[0]
-        # De Morgan
-        if isinstance(g, il.Or):
-            return il.And(*[_nnf_push_not(il.Not(a)) for a in g.args])
-        if isinstance(g, il.And):
-            return il.Or(*[_nnf_push_not(il.Not(a)) for a in g.args])
-        return f                   # already an atom → stop
-    elif isinstance(f, il.Or):
-        return il.Or(*[_nnf_push_not(a) for a in f.args])
-    elif isinstance(f, il.And):
-        return il.And(*[_nnf_push_not(a) for a in f.args])
-    else:
-        return f  
-
 class QInference():
     # static members
     atoms = []
@@ -61,10 +41,18 @@ class QInference():
     def __init__(self, orbit : PrimeOrbit, options : QrmOptions, is_dnf : bool):
         self.options = options
         self.is_dnf = is_dnf
+        self.orbit = orbit
+        self.terms   = get_terms(QInference.tran_sys, QInference.atoms, orbit.repr_prime)
+
+        self.single_arity = self.all_functions_single_arity()
+
+        if self.all_functions_single_arity() and not options.force_signature_inference:
+            self.single_arity_inference(orbit)
+            return
+        
         # terms
         add_member_terms = (len(orbit.suborbit_repr_primes) == 1)
         self.qprimes = [QPrime(prime, self.options, add_member_terms) for prime in orbit.suborbit_repr_primes]
-        self.terms   = get_terms(QInference.tran_sys, QInference.atoms, self.qprimes[0].prime)
         if add_member_terms:
             self.terms  += add_member_terms_for_dependent_sorts(self.terms, QInference.tran_sys)
         # signatures
@@ -86,6 +74,33 @@ class QInference():
         self.qclause = None
         self._set_qclause()
 
+
+    
+    def single_arity_inference(self, orbit : PrimeOrbit) -> None:
+        # Placeholder for specialized single-arity inference logic
+        vprint(self.options, "Running single-arity inference", 5)
+        # Implement the actual logic here
+        # TODO
+        # Partition the orbit into groups based on equivalent permutations
+        
+        # Implement Goel's Pseudocode
+
+        # Step 1: Partition the orbit into groups based on equivalent permutations
+        
+
+        pass
+
+    def all_functions_single_arity(self) -> bool:
+        for term in self.terms:
+            # Check if term begins with NOT
+            # If it does, get the argument of NOT
+            if isinstance(term, il.Not):
+                term = term.args[0]
+            func_symbol = get_func_symbol(term)
+            if func_symbol.sort.arity != 1:
+                return False
+        return True
+
     def _map_argument_to_exists_var_id(self, arg_signatures: List[ArgumentSignature]):
         sfname2arg_ids      = {}
         red_arg_sig2var_id  = {}
@@ -106,6 +121,23 @@ class QInference():
             var_id = red_arg_sig2var_id[arg_sig.get_reduced_signature()]
             var_id2arg_sigs[var_id].append(arg_sig)
         return var_id2arg_sigs
+
+    def _nnf_push_not(self, f):
+        """Recursively push ¬ inwards until it sits only in front of atoms."""
+        if isinstance(f, il.Not):
+            g = f.args[0]
+            # De Morgan
+            if isinstance(g, il.Or):
+                return il.And(*[self._nnf_push_not(il.Not(a)) for a in g.args])
+            if isinstance(g, il.And):
+                return il.Or(*[self._nnf_push_not(il.Not(a)) for a in g.args])
+            return f                   # already an atom → stop
+        elif isinstance(f, il.Or):
+            return il.Or(*[self._nnf_push_not(a) for a in f.args])
+        elif isinstance(f, il.And):
+            return il.And(*[self._nnf_push_not(a) for a in f.args])
+        else:
+            return f  
 
     def _get_substituted_terms(self, sign_func_name2args):
         qterms = set() 
@@ -250,6 +282,10 @@ class QInference():
 
         self.qclause = self.qformula.get_qclause()
 
+        formula_check = formula_covers_orbit(il.Not(self.qclause), self.orbit, self.tran_sys, self.atoms, self.instantiator)
+        out_str = coverage_result_to_string(formula_check, self.tran_sys, self.atoms)
+        vprint(self.options, f"{out_str}", 5)
+
         # todo check this works for more complex formula I have a feeling this breaks when the cnf is a exists
 
         # ────────────────────────────────────────────────────────────────
@@ -262,7 +298,7 @@ class QInference():
                                     self.qclause.to_formula()))
 
             # distribute the ¬ across ∨/∧ so it lands on atoms
-            neg_body = _nnf_push_not(il.Not(body))    # helper defined once above
+            neg_body = self._nnf_push_not(il.Not(body))    # helper defined once above
             self.qclause = il.Exists(vars_, neg_body)
 
     #------------------------------------------------   
