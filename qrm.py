@@ -125,6 +125,8 @@ def get_options(ivy_name, args):
             options.transition_reach = True
         elif optc == '--graph': #make graph
             options.make_graph = True
+        elif optc == '--for_all': # use only for_all quantifiers
+            options.for_all_quantifiers = True
         else:
             usage_and_exit()
     if options.writeLog:

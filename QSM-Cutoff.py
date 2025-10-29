@@ -32,6 +32,7 @@ def usage ():
     print('             write prime orbits to FILE.pis')
     print('             write quantified prime orbits to FILE.qpis')
     print('--graph      Make a graph of the reachable states (default: off) (requires graphviz)')
+    print('--for_all    Use only for_all quantifiers to quantify primes (default: off)  ')  
     print('-h           usage')
 
 def usage_and_exit():
@@ -46,7 +47,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whn", ["graph"])
+        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whn", ["graph", "for_all"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()

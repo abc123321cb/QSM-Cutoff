@@ -41,9 +41,10 @@ class QrmOptions():
         self.minimize_equality = False
         self.convergence_check = False 
         self.make_graph: bool  = False
+        self.for_all_only: bool = False
         self.ivy_check         = True
         self.ivy_to            = 120 
-        self.qrm_to            = 36000 
+        self.qrm_to            = 36000
         self.time_start        = None
         self.time_stamp        = None
         self.python_include_path = '/usr/include/python3.12'
