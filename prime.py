@@ -9,6 +9,7 @@ from util import QrmOptions, PrimeGen
 from util import FormulaUtility as futil
 from verbose import *
 
+
 def make_key(values: List[str], protocol : Protocol) -> str:
     predicates = []
     for (atom_id, val) in enumerate(values):

@@ -44,7 +44,9 @@ def usage ():
     print('                 write reachable states to FILE.reach')
     print('                 write prime orbits to FILE.pis')
     print('                 write quantified prime orbits to FILE.qpis')
-    print('-g           Make a graph of the reachable states (default: off) (requires graphviz)')
+    print('--graph      Make a graph of the reachable states (default: off) (requires graphviz)')
+    print('--for_all    Use only for_all quantifiers to quantify primes (default: off)')  
+
     print('-h           usage')
 
 def usage_and_exit():
@@ -211,12 +213,21 @@ def qrm(ivy_name, args):
     options.step_start(f'[RED]: PRIME REDUCTION on [{options.ivy_filename}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, protocol.more_reach)
     minimizer.reduce_redundant_prime_orbits()
+
+    for prime in prime_orbits.orbits:
+        print(prime)
+    print("ghost")
+
     options.step_end()
 
     # quantifier inference
     options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
-    minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
+    minimizer.quantifier_inference(instantiator, protocol)
     options.step_end()
+
+    for prime in prime_orbits.orbits:
+        print(prime)
+    print("ghost2")
 
     # minimization
     options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')

@@ -1,5 +1,4 @@
 import sys
-import os
 from os import path
 import subprocess
 import getopt
@@ -32,7 +31,7 @@ def usage ():
     print('             write prime orbits to FILE.pis')
     print('             write quantified prime orbits to FILE.qpis')
     print('--graph      Make a graph of the reachable states (default: off) (requires graphviz)')
-    print('--for_all    Use only for_all quantifiers to quantify primes (default: off)  ')  
+    print('--for_all    Use only for_all quantifiers to quantify primes (default: off)')  
     print('-h           usage')
 
 def usage_and_exit():

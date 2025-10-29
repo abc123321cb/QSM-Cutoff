@@ -60,7 +60,7 @@ class Protocol():
         self.lines   = []
         self.header  = []
         self.options = options
-        # member datas
+        # member data
         self.sorts            : List[str]            = [] # sort id -> sort name 
         self.sort_constants   : List[List[str]]      = [] # sort id -> constant names
         self.sort_Name2Id     : Dict[str,int]        = {} # sort name -> sort id
