@@ -19,7 +19,7 @@ class QrmOptions():
         self.instance_name = ''
         self.ivy_filename  = ''
         self.size_str      = ''
-        self.sizes         = {} # sort name to size
+        self.sizes: dict[str, int] = {} # sort name to size
         self.instance_suffix = ''
         self.flow_mode     = FlowMode.Synthesize_Rmin 
         self.forward_mode  = ForwardMode.Sym_DFS

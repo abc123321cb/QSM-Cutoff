@@ -48,6 +48,16 @@ class Prime():
                 literals.append('~'+Prime._atoms_str[atom_id])
         literals.sort()
         return f'{str(literals)}'
+    
+    def to_list(self) -> List[str]:
+        literals = []
+        for (atom_id, val) in enumerate(self.values):
+            if val == '1':
+                literals.append(Prime._atoms_str[atom_id])
+            elif val == '0':
+                literals.append('~'+Prime._atoms_str[atom_id])
+        literals.sort()
+        return literals
 
     @staticmethod
     def set_atoms(atoms_str) -> None:

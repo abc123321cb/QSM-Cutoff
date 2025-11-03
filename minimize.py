@@ -332,20 +332,18 @@ class Minimizer():
         from qinference import QInference, QPrime
         from inference import Inference
         atoms = protocol.state_atoms_fmla
-        print(atoms)
         QInference.setup(atoms, self.tran_sys, instantiator, self.is_dnf)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending  # equal to range(0,n) where n = number of orbits ex: if 5 orbits, inference_list = [0,1,2,3,4]
         for orbit_id in inference_list:
             orbit = self.orbits[orbit_id]
-            print("Crab")
-            for suborbits in orbit.suborbit_repr_primes:
-                print(suborbits)
             vprint(self.options, str(orbit), 5)
             qinf    = QInference(orbit, self.options, self.is_dnf)
             qclause = qinf.get_qclause()
-            inf = Inference(orbit,self.options,self.is_dnf)
+
+            inf = Inference(orbit,self.options,protocol,self.is_dnf)
             inf.get_qclause()
+            
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
                 self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
