@@ -214,20 +214,12 @@ def qrm(ivy_name, args):
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, protocol.more_reach)
     minimizer.reduce_redundant_prime_orbits()
 
-    for prime in prime_orbits.orbits:
-        print(prime)
-    print("ghost")
-
     options.step_end()
 
     # quantifier inference
     options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
     minimizer.quantifier_inference(instantiator, protocol)
     options.step_end()
-
-    for prime in prime_orbits.orbits:
-        print(prime)
-    print("ghost2")
 
     # minimization
     options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')

@@ -30,8 +30,10 @@ class Inference:
         
         sizes = self.options.sizes # dictionary of sort name to size
         total_results: List[List[tuple]] = []
+        valid_results: List[List[int]] = [] # just contains valid equality functions
         for size in sizes:
             sort_results: List[tuple] = []
+            valid_sort_results: List[tuple] = []
             sort_size = sizes[size]
             sort_results.append((size, sort_size))
             num_sorts = -1
@@ -52,20 +54,34 @@ class Inference:
                     mapped.append(count % sort_size)
                     count = count // sort_size
                 initial_clause = self._replace(initial_clause, mapped, size)
-                sort_results.append((initial_clause, self._check_clause(initial_clause)))
+                valid = self._check_clause(initial_clause)
+                sort_results.append((initial_clause, valid, self.get_e(mapped)))
+                if valid:
+                    valid_sort_results.append(self.get_e(mapped))
 
             total_results.append(sort_results)
+            valid_results.append(valid_sort_results)
 
+            vprint(self.options, "Valid equality functions found:", 2)
+            header = ""
+            for i in range(sort_size):
+                for j in range(i+1, sort_size):
+                    header += " E(" + str(i) + str(j) + ") "
+            vprint(self.options, header, 2)
+            body = ""
+            for results in valid_sort_results:
+                body += str(results) + " "
+            vprint(self.options, body, 2)
 
-        for results in total_results:
-            self._print_chart(results)
+            for results in total_results:
+                self._print_chart(results)
 
 
     # get the equality functions for a given reordering
-    def get_e(l: list[int]) -> list[bool]:
+    def get_e(self, l: list[int]) -> list[bool]:
         r = []
         for i in range(len(l)):
-            for j in range(i, len(l)):
+            for j in range(i+1, len(l)):
                 if l[i] == l[j]:
                     r.append(True)
                 else:
@@ -73,6 +89,8 @@ class Inference:
         return r
 
     def _print_chart(self, results: List[tuple]) -> None:
+        # data in the tuple is (clause, is_valid, e)
+        # the first tuple is (sort, size)
         vprint(self.options, "Enumeration results:", 3, ending="\n")
         vprint(self.options, "---------------------", 3)
         sort = results[0][0]
@@ -80,11 +98,14 @@ class Inference:
         header = ""
         for i in range(size):
             header += sort + str(i) + " "
+        for i in range(size):
+            for j in range(i+1, size):
+                header += " E(" + str(i) + str(j) + ") "
 
         vprint(self.options, header, 3)
 
         for i in range(len(results) - 1):
-            clause, is_valid = results[i + 1]
+            clause, is_valid, e = results[i + 1]
             line = ""
             temp = i
             for _ in range(size):
@@ -92,7 +113,7 @@ class Inference:
                 temp = temp // size
             line = line[::-1]  # reverse the line
 
-            line += " : " + f'{str(self.to_string_list(clause))} ({("VALID" if is_valid else "INVALID")})'
+            line += " : " + f'{str(e)} : {str(self.to_string_list(clause))} : ({("VALID" if is_valid else "INVALID")})'
             vprint(self.options, line, 3, ending="\n")
         vprint(self.options, "\n", 3)
 
@@ -213,8 +234,29 @@ class Inference:
         return False
 
     def _get_quantifier_num(self, prime: Prime) -> int:
-        # Determine the number of quantifiers needed for this prime
-        return 0
+        # Determine the number of quantifiers needed for this prime.
+        # We count the number of unique constant arguments that appear
+        # in the prime's literals. Example: ['p(node1)', 'p(node0)'] -> 2
+        pattern = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]*)\(([^()]*)\)')
+
+        uniques: set[str] = set()
+        for lit in prime.to_list():
+            s = lit.strip()
+            # ignore leading negation
+            if s.startswith('~'):
+                s = s[1:].strip()
+            m = pattern.search(s)
+            if not m:
+                continue
+            args_text = m.group(2).strip()
+            if not args_text:
+                continue
+            for tok in args_text.split(','):
+                tok = tok.strip()
+                if tok:
+                    uniques.add(tok)
+
+        return len(uniques)
 
     def to_string_list(self, signed_ids: Iterable[int]) -> List[str]:
         """Convert 1-based signed atom ids to ['p(node0)', '~q(node1)', ...] for printing."""
