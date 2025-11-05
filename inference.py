@@ -61,6 +61,16 @@ class Inference:
             self._print_chart(results)
 
 
+    # get the equality functions for a given reordering
+    def get_e(l: list[int]) -> list[bool]:
+        r = []
+        for i in range(len(l)):
+            for j in range(i, len(l)):
+                if l[i] == l[j]:
+                    r.append(True)
+                else:
+                    r.append(False)
+        return r
 
     def _print_chart(self, results: List[tuple]) -> None:
         vprint(self.options, "Enumeration results:", 3, ending="\n")
