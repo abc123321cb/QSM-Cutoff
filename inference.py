@@ -30,7 +30,7 @@ class Inference:
         
         sizes = self.options.sizes # dictionary of sort name to size
         total_results: List[List[tuple]] = []
-        valid_results: List[List[int]] = [] # just contains valid equality functions
+        valid_results: list[List[int]] = [] # just contains valid equality functions
         for size in sizes:
             sort_results: List[tuple] = []
             valid_sort_results: List[tuple] = []
