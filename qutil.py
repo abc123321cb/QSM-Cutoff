@@ -168,17 +168,54 @@ def get_func_args_sort(atom, func_symbol):
     return args_sort
 
 # ...existing code...
-def evaluate_ground_formula_on_terms(fmla, terms_set):
-    """Evaluate a quantifier-free ivy formula `fmla` against a set of ground literals (strings)."""
+def evaluate_ground_formula_on_terms(fmla, assignment_dict):
+    """
+    Evaluate a quantifier-free ivy formula `fmla` against an assignment dictionary.
+    assignment_dict: {ground_atom: True/False}
+    """
     if isinstance(fmla, il.Not):
-        return not evaluate_ground_formula_on_terms(fmla.args[0], terms_set)
-    # and / or may be represented as il.And/il.Or or as apps to 'and'/'or'
-    if isinstance(fmla, il.And):
-        return all(evaluate_ground_formula_on_terms(a, terms_set) for a in fmla.args)
-    if isinstance(fmla, il.Or):
-        return any(evaluate_ground_formula_on_terms(a, terms_set) for a in fmla.args)
-    # fallback: treat as atomic formula (App, Equals, etc.)
-    return str(fmla) in terms_set
+        return not evaluate_ground_formula_on_terms(fmla.args[0], assignment_dict)
+    
+    elif isinstance(fmla, il.And):
+        return all(evaluate_ground_formula_on_terms(a, assignment_dict) for a in fmla.args)
+    
+    elif isinstance(fmla, il.Or):
+        return any(evaluate_ground_formula_on_terms(a, assignment_dict) for a in fmla.args)
+    
+    elif isinstance(fmla, il.Implies):
+        left, right = fmla.args
+        return (not evaluate_ground_formula_on_terms(left, assignment_dict) or 
+                evaluate_ground_formula_on_terms(right, assignment_dict))
+    
+    elif isinstance(fmla, il.Iff):
+        left, right = fmla.args
+        return (evaluate_ground_formula_on_terms(left, assignment_dict) == 
+                evaluate_ground_formula_on_terms(right, assignment_dict))
+    
+    elif isinstance(fmla, il.lg.Eq):
+        left, right = fmla.args
+        # For ground terms, check if they're the same constant
+        return left == right
+    
+    elif isinstance(fmla, il.App):
+        # Look up this atom in the assignment dictionary
+        for atom, value in assignment_dict.items():
+            if atoms_equal(atom, fmla):
+                return value
+        # If atom not found, return False (closed world assumption)
+        return False
+    
+    else:
+        raise ValueError(f"Unsupported formula type: {type(fmla)}")
+    
+def atoms_equal(atom1, atom2):
+    """Check if two atoms are equal"""
+    if str(atom1) == str(atom2):
+        return True
+    if isinstance(atom1, il.App) and isinstance(atom2, il.App):
+        if atom1.rep == atom2.rep and len(atom1.args) == len(atom2.args):
+            return all(atoms_equal(a1, a2) for a1, a2 in zip(atom1.args, atom2.args))
+    return False
 
 # ...existing code...
 def _collect_atomic_occurrences(fmla, pos_set, neg_set):

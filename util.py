@@ -155,8 +155,8 @@ class FormulaUtility():
             for arg in formula.args:
                 for flat_arg in FormulaUtility.flatten_and(arg):
                     flat.add(flat_arg)
-        elif (formula.is_not()):
-            formulaNeg = formula.arg[0]
+        elif isinstance(formula, il.Not):
+            formulaNeg = formula.args[0]
             if isinstance(formulaNeg, il.Or):
                 for arg in formulaNeg.args:
                     for flat_arg in FormulaUtility.flatten_or(arg):

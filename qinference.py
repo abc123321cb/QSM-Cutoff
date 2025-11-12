@@ -44,11 +44,11 @@ class QInference():
         self.orbit = orbit
         self.terms   = get_terms(QInference.tran_sys, QInference.atoms, orbit.repr_prime)
 
-        self.single_arity = self.all_functions_single_arity()
+        # self.single_arity = self.all_functions_single_arity()
 
-        if self.all_functions_single_arity() and not options.force_signature_inference:
-            self.single_arity_inference(orbit)
-            return
+        # if self.all_functions_single_arity() and not options.force_signature_inference:
+        #     self.single_arity_inference(orbit)
+        #     return
         
         # terms
         add_member_terms = (len(orbit.suborbit_repr_primes) == 1)
@@ -282,9 +282,9 @@ class QInference():
 
         self.qclause = self.qformula.get_qclause()
 
-        formula_check = formula_covers_orbit(il.Not(self.qclause), self.orbit, self.tran_sys, self.atoms, self.instantiator)
-        out_str = coverage_result_to_string(formula_check, self.tran_sys, self.atoms)
-        vprint(self.options, f"{out_str}", 5)
+        # formula_check = formula_covers_orbit(il.Not(self.qclause), self.orbit, self.tran_sys, self.atoms, self.instantiator)
+        # out_str = coverage_result_to_string(formula_check, self.tran_sys, self.atoms)
+        # vprint(self.options, f"{out_str}", 5)
 
         # todo check this works for more complex formula I have a feeling this breaks when the cnf is a exists
 

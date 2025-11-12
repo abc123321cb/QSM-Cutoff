@@ -1101,7 +1101,8 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. ~q(NODE0) | p(NODE0) | p(NODE1) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0. 
+~q(NODE0) | p(NODE0) | p(NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -1117,7 +1118,8 @@ num_suborbits: 1
 num_forall :   2
 num_exists :   0
 num_literals : 4
-quantified form : forall NODE1,NODE0. q(NODE1) | ~p(NODE0) | q(NODE0) | NODE0 = NODE1
+quantified form : forall NODE1,NODE0.
+ ~p(NODE0) | q(NODE0) | q(NODE1) | NODE0 = NODE1
 qcost : 6
 
 
@@ -2406,29 +2408,18 @@ qclause: forall NODE1. ~q(NODE1) | p(NODE1) | (exists NODE0. (p(NODE0) & NODE0 ~
 === Prime Orbit 0 =====================
 size : 9
 num_suborbits: 2
-0 (*) : 11-00-
-0     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node1)']
-1     : 1-10-0
+0  (*): ['p(node0)', 'p(node1)', '~q(node0)', '~q(node1)']
 1     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node2)']
-2     : -11-00
 2     : ['p(node1)', 'p(node2)', '~q(node1)', '~q(node2)']
-3 (*) : 1-100-
-3     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node1)']
-4     : 11-0-0
+3  (*): ['p(node0)', 'p(node2)', '~q(node0)', '~q(node1)']
 4     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node2)']
-5     : -1100-
 5     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node1)']
-6     : 11--00
 6     : ['p(node0)', 'p(node1)', '~q(node1)', '~q(node2)']
-7     : -110-0
 7     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node2)']
-8     : 1-1-00
 8     : ['p(node0)', 'p(node2)', '~q(node1)', '~q(node2)']
-num_forall :   3
-num_exists :   0
-num_literals : 6
-quantified form : forall NODE0,NODE2,NODE1. ~p(NODE1) | q(NODE0) | ~p(NODE0) | q(NODE2) | 
-(NODE0 = NODE1 & NODE0 ~= NODE2) | (NODE0 = NODE1 & NODE0 = NODE2)
+quantified form : forall NODE0,NODE2,NODE1. 
+ ~p(NODE0) | ~p(NODE1) | q(NODE0) | q(NODE2) | 
+(NODE0 = NODE1) | (NODE0 = NODE2)
 
 
 opposite: exists NODE0,NODE2,NODE1. p(NODE1) & ~q(NODE0) & p(NODE0) & ~q(NODE2) & 
@@ -4717,57 +4708,34 @@ size : 24
 num_suborbits: 2
 84 (*) : 1-1-000-
 84     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node1)', '~q(node2)']
-85     : 1--100-0
 85     : ['p(node0)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node3)']
-86     : 11--000-
 86     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node1)', '~q(node2)']
-87     : 1--10-00
 87     : ['p(node0)', 'p(node3)', '~q(node0)', '~q(node2)', '~q(node3)']
-88     : 11--00-0
 88     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node1)', '~q(node3)']
-89     : 1-1-0-00
 89     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node2)', '~q(node3)']
-90     : -11-000-
 90     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node1)', '~q(node2)']
-91     : -1-100-0
 91     : ['p(node1)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node3)']
-92     : -1-1-000
 92     : ['p(node1)', 'p(node3)', '~q(node1)', '~q(node2)', '~q(node3)']
-93     : -11--000
 93     : ['p(node1)', 'p(node2)', '~q(node1)', '~q(node2)', '~q(node3)']
-94     : --110-00
 94     : ['p(node2)', 'p(node3)', '~q(node0)', '~q(node2)', '~q(node3)']
-95     : --11-000
 95     : ['p(node2)', 'p(node3)', '~q(node1)', '~q(node2)', '~q(node3)']
-96 (*) : 1--1000-
-96     : ['p(node0)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node2)']
-97     : 1-1-00-0
+96  (*): ['p(node0)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node2)']
 97     : ['p(node0)', 'p(node2)', '~q(node0)', '~q(node1)', '~q(node3)']
-98     : 11--0-00
 98     : ['p(node0)', 'p(node1)', '~q(node0)', '~q(node2)', '~q(node3)']
-99     : -1-1000-
 99     : ['p(node1)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node2)']
-100     : -11-00-0
-100     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node1)', '~q(node3)']
-101     : 11---000
 101     : ['p(node0)', 'p(node1)', '~q(node1)', '~q(node2)', '~q(node3)']
-102     : --11000-
 102     : ['p(node2)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node2)']
-103     : -11-0-00
 103     : ['p(node1)', 'p(node2)', '~q(node0)', '~q(node2)', '~q(node3)']
-104     : 1-1--000
 104     : ['p(node0)', 'p(node2)', '~q(node1)', '~q(node2)', '~q(node3)']
-105     : --1100-0
 105     : ['p(node2)', 'p(node3)', '~q(node0)', '~q(node1)', '~q(node3)']
-106     : -1-10-00
 106     : ['p(node1)', 'p(node3)', '~q(node0)', '~q(node2)', '~q(node3)']
-107     : 1--1-000
 107     : ['p(node0)', 'p(node3)', '~q(node1)', '~q(node2)', '~q(node3)']
-num_forall :   4
-num_exists :   0
-num_literals : 15
-quantified form : forall NODE0,NODE2,NODE1,NODE3. q(NODE3) | q(NODE0) | ~p(NODE0) | q(NODE2) | ~p(NODE1) | ((NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE3 | NODE2 = NODE3 | NODE0 = NODE1 | NODE1 = NODE3))
-qcost : 19
+
+quantified form : forall NODE0,NODE2,NODE1,NODE3. q(NODE3) | q(NODE0) |
+ ~p(NODE0) | q(NODE2) | ~p(NODE1) | 
+ ((NODE1 ~= NODE3 | NODE1 = NODE2 | NODE0 = NODE2 | NODE0 = NODE1) & 
+ (NODE0 = NODE2 | NODE1 = NODE2 | NODE0 = NODE3 | 
+ NODE2 = NODE3 | NODE0 = NODE1 | NODE1 = NODE3))
 
 
 
