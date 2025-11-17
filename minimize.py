@@ -341,6 +341,10 @@ class Minimizer():
             qinf    = QInference(orbit, self.options, self.is_dnf)
             qclause = qinf.get_qclause()
 
+            print("Current qclause:")
+            print(qclause)
+            print(type(qclause))
+
             inf = Inference(orbit,self.options,protocol,self.is_dnf)
             inf.get_qclause()
             

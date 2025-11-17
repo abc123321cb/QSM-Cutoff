@@ -1,4 +1,5 @@
-# This code is doing unessary work so we can print all enumarations
+# This code is doing unessary work so we can print all enumarations it needs to be fixed
+# if your getting errors here make sure you have pyeda installed
 import math
 from qformula import QFormula
 from prime import *
@@ -6,9 +7,30 @@ from verbose import *
 from protocol import Protocol
 import re
 from typing import Iterable, List, Sequence
+from itertools import product
+from pyeda.inter import ttvars, truthtable
+from pyeda.boolalg.minimization import espresso_tts
+from ivy import ivy_logic as il
 
 # the list should be turned into a set because order does not matter in a clause
 # dnf is not implemented yet
+
+
+def lit_to_atom(expr):
+    """
+    Turn a PyEDA literal (possibly negated) into an Ivy atom.
+    e_k      -> node_i = node_j
+    ~e_k     -> not (node_i = node_j)
+    """
+    positive = not expr.is_complement()
+    var = expr if positive else expr.args[0]
+
+    k = var_index[var]
+    i, j = pairs[k]
+
+    atom = il.Eq(xs[i], xs[j])        # node<i> = node<j>
+    return atom if positive else il.Not(atom)
+
 
 class Inference:
     def __init__(self, orbit: PrimeOrbit, options: QrmOptions, protocol: Protocol, is_dnf: bool):
@@ -56,7 +78,7 @@ class Inference:
                 initial_clause = self._replace(initial_clause, mapped, size)
                 valid = self._check_clause(initial_clause)
                 sort_results.append((initial_clause, valid, self.get_e(mapped)))
-                if valid:
+                if valid and self.get_e(mapped) not in valid_sort_results:
                     valid_sort_results.append(self.get_e(mapped))
 
             total_results.append(sort_results)
@@ -70,11 +92,15 @@ class Inference:
             vprint(self.options, header, 2)
             body = ""
             for results in valid_sort_results:
-                body += str(results) + " "
+                body += str(results) + "\n"
             vprint(self.options, body, 2)
 
-            for results in total_results:
-                self._print_chart(results)
+            ivy_forall = self.minimize_over_partitions(size, sort_size, valid_sort_results)
+            vprint(self.options, "Minimized equality functions:", 2, ending="\n")
+            vprint(self.options, ivy_forall, 2)
+
+
+
 
 
     # get the equality functions for a given reordering
@@ -87,6 +113,73 @@ class Inference:
                 else:
                     r.append(False)
         return r
+
+    def pair_index_map(self,n):
+        """
+        Return a list of (i, j) pairs in the same order
+        you use in your boolean vectors.
+        """
+        pairs = []
+        for i in range(n):
+            for j in range(i + 1, n):
+                pairs.append((i, j))
+        return pairs
+
+    def is_valid_partition_vector(self,vec, n):
+        """
+        vec: list/tuple of booleans for all pairs (i < j)
+        n:   number of elements being partitioned
+
+        Returns True iff vec is a valid partition vector
+        """
+        pairs = self.pair_index_map(n)
+
+        # Disjoint set (union find)
+        parent = list(range(n))
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(a, b):
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[rb] = ra
+
+        for bit, (i, j) in zip(vec, pairs):
+            if bit:
+                union(i, j)
+
+        for bit, (i, j) in zip(vec, pairs):
+            same_block = (find(i) == find(j))
+            if same_block and not bit:
+                return False
+
+        return True
+
+    def minimize_over_partitions(self, sort_name, n, good_partitions):
+        m = n * (n - 1) // 2
+        E = ttvars('e', m)
+
+        good_set = {tuple(int(b) for b in vec) for vec in good_partitions}
+        table_entries = []
+
+        for bits in product([0, 1], repeat=m):
+            if bits in good_set:
+                table_entries.append('1')
+            elif not self.is_valid_partition_vector(bits, n):
+                table_entries.append('-')
+            else:
+                table_entries.append('0')
+
+        tt = truthtable(E, ''.join(table_entries))
+        f_min, = espresso_tts(tt)
+
+        # Translate to ForAll over node0,node1,...
+        return self._pyeda_to_ivy_forall(sort_name, n, f_min, E)
+
 
     def _print_chart(self, results: List[tuple]) -> None:
         # data in the tuple is (clause, is_valid, e)
@@ -116,8 +209,6 @@ class Inference:
             line += " : " + f'{str(e)} : {str(self.to_string_list(clause))} : ({("VALID" if is_valid else "INVALID")})'
             vprint(self.options, line, 3, ending="\n")
         vprint(self.options, "\n", 3)
-
-
 
     def _swap(self,
         signed_ids: Iterable[int],
@@ -298,4 +389,10 @@ class Inference:
         return self._get_cnf_qclause()  # Placeholder
     
 
-    
+
+
+    def _pyeda_to_ivy_forall(self, sort_name: str, n: int, f_min, E):
+        print(f_min)
+        print(type(f_min))
+        print("fmin") 
+        print(E)
