@@ -16,20 +16,6 @@ from ivy import ivy_logic as il
 # dnf is not implemented yet
 
 
-def lit_to_atom(expr):
-    """
-    Turn a PyEDA literal (possibly negated) into an Ivy atom.
-    e_k      -> node_i = node_j
-    ~e_k     -> not (node_i = node_j)
-    """
-    positive = not expr.is_complement()
-    var = expr if positive else expr.args[0]
-
-    k = var_index[var]
-    i, j = pairs[k]
-
-    atom = il.Eq(xs[i], xs[j])        # node<i> = node<j>
-    return atom if positive else il.Not(atom)
 
 
 class Inference:
@@ -390,9 +376,143 @@ class Inference:
     
 
 
-
     def _pyeda_to_ivy_forall(self, sort_name: str, n: int, f_min, E):
-        print(f_min)
-        print(type(f_min))
-        print("fmin") 
-        print(E)
+        """
+        Convert the minimized PyEDA expression `f_min` over equality bits E
+        into an Ivy formula of the form
+
+            forall N1, ..., Nn. <boolean combination of N_i = N_j>
+
+        The bits are:
+            E[k]  <->  (N_i = N_j)
+        in the order given by self.pair_index_map(n).
+
+        `f_min` is the DNF expression returned by espresso_tts(tt).
+        """
+
+        # 1. Get or create the Ivy sort
+        try:
+            sort = il.find_sort(sort_name)
+        except Exception:
+            # If the sort is not known yet, create it as uninterpreted
+            sort = il.UninterpretedSort(sort_name)
+            try:
+                il.add_sort(sort)
+            except Exception:
+                # If someone else added it concurrently, just re-find it
+                sort = il.find_sort(sort_name)
+
+        # Universally quantified Ivy variables: N1, N2, ..., Nn
+        xs = [il.Variable(f"N{i+1}", sort) for i in range(n)]
+
+        # Pairs (i, j) with i < j, in the same order as bits in E
+        pairs = self.pair_index_map(n)  # length m = n*(n-1)//2
+
+        # 2. Build maps from PyEDA inputs to bit indices
+
+        # E was created as: E = ttvars('e', m)
+        # Each element has .names, .indices, .uniqid
+        uniqid_to_idx: dict[int, int] = {}
+        name_idx_to_idx: dict[tuple[tuple[str, ...], tuple[int, ...]], int] = {}
+
+        for k, v in enumerate(E):
+            names = getattr(v, "names", None)
+            indices = getattr(v, "indices", None)
+            uniqid = getattr(v, "uniqid", None)
+
+            if uniqid is not None:
+                uniqid_to_idx[uniqid] = k
+            if names is not None and indices is not None:
+                key = (tuple(names), tuple(indices))
+                name_idx_to_idx[key] = k
+
+        # 3. Work on DNF and get its AST
+        #
+        # espresso_tts already returns a DNF expression, but to be safe:
+        f_dnf = f_min.to_dnf()
+        ast = f_dnf.to_ast()
+
+        # 4. AST helpers
+
+        def lit_from_var_ast(names, indices, positive=True):
+            """Handle old-style ('var', names, indices) [+ optional 'not']."""
+            key = (tuple(names), tuple(indices))
+            if key not in name_idx_to_idx:
+                raise KeyError(f"Unknown PyEDA variable {names}[{indices}] in minimized expression")
+
+            k = name_idx_to_idx[key]
+            i, j = pairs[k]
+            atom = il.Equals(xs[i], xs[j])
+            return atom if positive else il.Not(atom)
+
+        def lit_from_lit_ast(u):
+            """Handle new-style ('lit', uniqid). Sign encodes complement."""
+            # u > 0  -> positive literal
+            # u < 0  -> complement
+            positive = (u > 0)
+            base_uid = abs(u)
+
+            if base_uid not in uniqid_to_idx:
+                raise KeyError(f"Unknown uniqid {u} in minimized expression")
+
+            k = uniqid_to_idx[base_uid]
+            i, j = pairs[k]
+            atom = il.Equals(xs[i], xs[j])
+            return atom if positive else il.Not(atom)
+
+        def ast_to_ivy(node):
+            """
+            Recursively convert a PyEDA AST into an Ivy term.
+
+            AST forms we care about:
+
+              ('const', 0|1)
+              ('var', names, indices)           [old expr versions]
+              ('lit', uniqid)                   [new expr versions]
+              ('not', sub_ast)
+              ('or', sub1, sub2, ...)
+              ('and', sub1, sub2, ...)
+            """
+            if not isinstance(node, tuple) or not node:
+                raise TypeError(f"Unexpected AST node: {node!r}")
+
+            tag = node[0]
+
+            # constants
+            if tag == "const":
+                val = bool(node[1])
+                # In Ivy, empty And is True, empty Or is False
+                return il.And() if val else il.Or()
+
+            # variable / literal leaf
+            if tag == "var":
+                # old representation: ('var', names, indices)
+                _, names, indices = node
+                return lit_from_var_ast(names, indices, positive=True)
+
+            if tag == "lit":
+                # new representation: ('lit', uniqid)
+                _, u = node
+                return lit_from_lit_ast(u)
+
+            # unary not
+            if tag == "not":
+                # Typically wraps a single literal in older ASTs
+                sub = ast_to_ivy(node[1])
+                return il.Not(sub)
+
+            # N-ary or / and
+            if tag == "or":
+                return il.Or(*(ast_to_ivy(sub) for sub in node[1:]))
+
+            if tag == "and":
+                return il.And(*(ast_to_ivy(sub) for sub in node[1:]))
+
+            # Anything else would be unexpected for a DNF from espresso_tts
+            raise ValueError(f"Unexpected AST operator '{tag}' in minimized expression: {node!r}")
+
+        body = ast_to_ivy(ast)
+
+        # 5. Wrap with universal quantifiers
+        return il.ForAll(xs, body)
+
