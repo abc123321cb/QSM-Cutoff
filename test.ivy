@@ -1,0 +1,65 @@
+#lang ivy1.7
+
+type node
+
+relation le(n1:node, n2:node)
+
+relation held(n:node)
+relation transfer(s:node, d:node)
+
+individual first:node
+
+################################################################################
+# Initial state
+################################################################################
+
+after init {
+    held(n) := n = first;
+    transfer(s,d) := false;
+    le(n1,n2) := true;
+}
+
+
+
+action make_max(x:node) = {
+    # make x the maximal element by setting:
+    #    n <= x for all n
+    #    and NOT (x <= n) for n != x
+    le(n,x) := true;
+    if ~(n = x) {
+        le(x,n) := false;
+    }
+}
+
+################################################################################
+# Protocol actions
+################################################################################
+
+action grant(sender:node, receiver:node) = {
+    require held(sender);
+
+    # sender becomes the newest element
+    call make_max(sender);
+
+    held(sender) := false;
+    transfer(sender, receiver) := true;
+}
+
+action accept(me:node, s:node) = {
+    require transfer(s, me);
+
+    if le(me, s) {
+        held(me) := true;
+
+        # receiver becomes the newest element
+        call make_max(me);
+
+        transfer(s, me) := false;
+    }
+}
+
+################################################################################
+# Safety property
+################################################################################
+
+invariant held(n1) & held(n2) -> n1 = n2

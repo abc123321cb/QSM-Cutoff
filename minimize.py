@@ -346,8 +346,11 @@ class Minimizer():
             print(type(qclause))
 
             inf = Inference(orbit,self.options,protocol,self.is_dnf)
-            inf.get_qclause()
-            
+            newqclause = inf.get_qclause()
+            print("New qclause from inference.py:")
+            print(newqclause)
+            print(type(newqclause))
+
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
                 self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
