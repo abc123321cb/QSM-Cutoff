@@ -251,7 +251,6 @@ class QInference():
         self.qclause = self.qformula.get_qclause()
 
         # todo check this works for more complex formula I have a feeling this breaks when the cnf is a exists
-
         # ────────────────────────────────────────────────────────────────
         # flip prefix **and** negate body when running in DNF mode
         # ────────────────────────────────────────────────────────────────

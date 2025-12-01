@@ -13,18 +13,22 @@ from pyeda.boolalg.minimization import espresso_tts
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
 from qutil import get_terms, get_qterms
+from qinference import *
 from qinference import _nnf_push_not
+from util import FormulaUtility as futil
 
 
 # the list should be turned into a set because order does not matter in a clause
 # dnf is not implemented yet
 
 class Inference:
-    def __init__(self, orbit: PrimeOrbit, options: QrmOptions, protocol: Protocol, is_dnf: bool):
+    def __init__(self, orbit: PrimeOrbit, options: QrmOptions, protocol: Protocol, is_dnf: bool, tran_sys=None):
         self.orbit   = orbit
         self.options = options
         self.protocol = protocol
         self.is_dnf  = is_dnf
+        # Optional TransitionSystem instance (preferred source of Sort objects)
+        self.tran_sys = tran_sys
         self.forall_clauses: List[QFormula] = []
 
 
@@ -168,7 +172,6 @@ class Inference:
 
         # Translate to ForAll over node0,node1,...
         return self._pyeda_to_ivy_forall(sort_name, n, f_min, E)
-
 
     def _print_chart(self, results: List[tuple]) -> None:
         # data in the tuple is (clause, is_valid, e)
@@ -369,164 +372,156 @@ class Inference:
         return out
 
     def _get_cnf_qclause(self):
-        # CNF quantifier inference logic
-        # Build an OR of negated per-prime quantified clauses for the orbit,
-        # and conjoin with any stored forall constraints collected during enumeration.
-        
-        negated_primes = []
-        primes = list(getattr(self.orbit, 'suborbit_repr_primes', []) or [])
-        if not primes:
-            # fallback to repr_prime or orbit.primes
-            p = getattr(self.orbit, 'repr_prime', None)
-            if p is not None:
-                primes = [p]
-            else:
-                primes = list(getattr(self.orbit, 'primes', []))
+        """Construct a CNF-style qclause for this orbit and merge in
+        the minimized per-sort ForAll constraints stored in
+        self.forall_clauses.
+        """
+        # Build per-prime qterms (with quantifier variables) and collect vars        
+        p: Prime = None
+        num_sorts = -1
+        for prime in self.orbit.suborbit_repr_primes:
+            i = self._get_quantifier_num(prime)
+            if i > num_sorts:
+                num_sorts = i
+                p = prime
 
-        # helper to build quantified formula for a single prime (like before)
-        def build_for_prime(prime: Prime):
-            terms = self.prime_to_qterms(prime, use_qvars=False)
 
-            # collect argument names
-            pattern = re.compile(r'([a-zA-Z_][a-zA-Z0-9_]*)\(([^()]*)\)')
-            unique_names: list[str] = []
-            seen: set[str] = set()
-            for lit in prime.to_list():
-                s = lit.strip()
-                if s.startswith('~'):
-                    s = s[1:].strip()
-                m = pattern.search(s)
-                if not m:
-                    continue
-                args_text = m.group(2).strip()
-                if not args_text:
-                    continue
-                for tok in args_text.split(','):
-                    tok = tok.strip()
-                    if tok and tok not in seen:
-                        seen.add(tok)
-                        unique_names.append(tok)
+        prime_bodies = []
+        all_qvars = []  # preserve order, avoid duplicates
+        print("Testing")
+        print(p)
 
-            # build variables and substitution map
-            const_name_to_ast: dict[str, object] = {}
-            for atom in self.protocol.state_atoms_fmla:
-                for c in ilu.used_constants_ast(atom):
-                    cname = str(c)
-                    if cname in seen and cname not in const_name_to_ast:
-                        const_name_to_ast[cname] = c
+        atoms = self.protocol.state_atoms_fmla
+        qterms = get_qterms(self.tran_sys, atoms, p)
+        print(qterms)
+        body = il.And(*qterms) if len(qterms) > 0 else il.And()
+        prime_bodies.append(body)
 
-            var_list = []
-            const_ast_to_var: dict[object, object] = {}
-            sort_counters: dict[str, int] = {}
-            for name in unique_names:
-                const_ast = const_name_to_ast.get(name)
-                sort_obj = None
-                sort_name = None
-                if const_ast is not None:
-                    try:
-                        sort_obj = getattr(const_ast, 'sort', None)
-                    except Exception:
-                        sort_obj = None
-                if sort_obj is None:
-                    for sid, consts in enumerate(self.protocol.sort_constants):
-                        if name in consts:
-                            sort_name = self.protocol.sorts[sid]
-                            break
-                else:
-                    sort_name = getattr(sort_obj, 'name', None)
-                if sort_name is None:
-                    sort_name = 'X'
-                try:
-                    sort = il.find_sort(sort_name)
-                except Exception:
-                    sort = il.UninterpretedSort(sort_name)
-                    try:
-                        il.add_sort(sort)
-                    except Exception:
-                        sort = il.find_sort(sort_name)
-                idx = sort_counters.get(sort_name, 0)
-                sort_counters[sort_name] = idx + 1
-                vname = f"{sort_name.capitalize()}{idx+1}"
-                v = il.Variable(vname, sort)
-                var_list.append(v)
-                if const_ast is not None:
-                    const_ast_to_var[const_ast] = v
+        # extract qvars used (in order of first occurrence)
+        state = il.And(*qterms) if len(qterms) != 0 else il.And()
+        print(state)
+        try:
+            used_qvars = list(ilu.used_constants_in_order_ast(state))
+        except Exception:
+            # fallback: used_constants_ast -> set then sort by str
+            used_qvars = sorted(set(ilu.used_constants_ast(state)), key=str)
 
-            if len(const_ast_to_var) == 0:
-                terms_substituted = terms
-            else:
-                terms_substituted = []
-                for t in terms:
-                    try:
-                        terms_substituted.append(il.substitute(t, const_ast_to_var))
-                    except Exception:
-                        terms_substituted.append(t)
+        for v in used_qvars:
+            if v not in all_qvars:
+                all_qvars.append(v)
 
-            body = il.And(*terms_substituted) if len(terms_substituted) > 0 else il.And()
-            return il.ForAll(var_list, body) if var_list else body
-
-        # Merge stored forall_clauses (from enumerate) into a single forall
-        def get_vars_and_body(fmla):
-            vars_ = getattr(fmla, 'variables', None)
-            if vars_ is None:
-                vars_ = getattr(fmla, 'vars', ())
-            body_ = getattr(fmla, 'body', None)
-            if body_ is None:
-                body_ = getattr(fmla, 'formula', None)
-            if body_ is None:
-                body_ = fmla
-            return list(vars_) if vars_ is not None else [], body_
-
-        merged_forall_vars = []
-        merged_forall_body = il.Or()
-        if getattr(self, 'forall_clauses', None):
-            # sequentially merge and alpha-avoid to prevent name clashes
-            first = True
-            for fc in self.forall_clauses:
-                if first:
-                    vlist, body = get_vars_and_body(fc)
-                    merged_forall_vars = list(vlist)
-                    merged_forall_body = body
-                    first = False
-                else:
-                    # rename fc to avoid clashing with merged vars
-                    fc_ren = il.alpha_avoid(fc, merged_forall_vars)
-                    vlist, body = get_vars_and_body(fc_ren)
-                    merged_forall_vars += list(vlist)
-                    merged_forall_body = il.Or(merged_forall_body, body)
-
-        # Now process primes, renaming each against the merged_forall_vars and previously used prime vars
-        used_vars = list(merged_forall_vars)
-        negated_bodies = []
-        all_prime_vars = []
-        for p in primes:
-            f_p = build_for_prime(p)
-            # rename to avoid colliding with used_vars
-            if used_vars:
-                try:
-                    f_p = il.alpha_avoid(f_p, used_vars)
-                except Exception:
-                    pass
-            vlist, body = get_vars_and_body(f_p)
-            # negate only the body (not the forall) and push the negation inside
-            try:
-                pushed = _nnf_push_not(il.Not(body))
-            except Exception:
-                pushed = il.Not(body)
-            negated_bodies.append(pushed)
-            used_vars += list(vlist)
-            all_prime_vars += list(vlist)
-
-        # Build final body: merged_forall_body AND (OR of negated prime bodies)
-        or_part = il.Or(*negated_bodies) if negated_bodies else il.Or()
-        final_body = il.And(merged_forall_body, or_part)
-
-        # Build a single ForAll quantifying over merged_forall_vars + all_prime_vars
-        total_vars = list(merged_forall_vars) + list(all_prime_vars)
-        if total_vars:
-            return il.ForAll(total_vars, final_body)
+        # base body is OR of prime conjunctions (do NOT negate here —
+        # we'll negate the entire combined formula once below). This
+        # avoids double-negations on the orbit parts.
+        if len(prime_bodies) == 0:
+            base_body = il.Or()
+        elif len(prime_bodies) == 1:
+            base_body = prime_bodies[0]
         else:
-            return final_body
+            base_body = il.Or(*prime_bodies)
+
+        # Merge in forall_clauses: extract their inner bodies and vars
+        extra_bodies = []
+        # Build canonical variables per finite sort using TransitionSystem info
+        sort2canonvars = {}
+        tran_sys = getattr(self, 'tran_sys', None)
+        if tran_sys is not None:
+            for sort, consts in tran_sys.sort2consts.items():
+                qvars = [il.Variable(sort.name.upper() + str(i), sort) for i in range(len(consts))]
+                sort2canonvars[sort] = qvars
+
+        for f in self.forall_clauses:
+            # If it's a ForAll produced by _pyeda_to_ivy_forall, map its bound
+            # variables and any enumerated constants to the canonical qvars.
+            if il.is_forall(f):
+                # build substitution map: old bound var -> canonical var
+                subs = {}
+                for old_var in f.variables:
+                    new_var = None
+                    # prefer mapping by sort+index if possible
+                    try:
+                        name = str(old_var)
+                    except Exception:
+                        name = None
+                    # try to extract trailing digits as index
+                    idx = None
+                    if name is not None:
+                        m = re.search(r"(\d+)$", name)
+                        if m:
+                            try:
+                                idx = int(m.group(1))
+                            except Exception:
+                                idx = None
+                    s = getattr(old_var, 'sort', None)
+                    if s in sort2canonvars and idx is not None and 0 <= idx < len(sort2canonvars[s]):
+                        new_var = sort2canonvars[s][idx]
+                    else:
+                        # fallback: match by name (case-insensitive) among canonical vars
+                        if s in sort2canonvars:
+                            lname = (name or '').lower()
+                            for cv in sort2canonvars[s]:
+                                if str(cv).lower() == lname:
+                                    new_var = cv
+                                    break
+                    if new_var is None:
+                        # last resort: use the old_var unchanged
+                        new_var = old_var
+                    subs[old_var] = new_var
+                    if new_var not in all_qvars:
+                        all_qvars.append(new_var)
+
+                # also map any enumerated constants appearing in the body
+                try:
+                    consts = list(ilu.used_constants_ast(f.body))
+                except Exception:
+                    consts = []
+                for c in consts:
+                    csort = getattr(c, 'sort', None)
+                    if csort in sort2canonvars:
+                        # find index of constant in tran_sys list
+                        try:
+                            consts_list = tran_sys.sort2consts[csort]
+                            idx_c = consts_list.index(c)
+                            subs[c] = sort2canonvars[csort][idx_c]
+                            if subs[c] not in all_qvars:
+                                all_qvars.append(subs[c])
+                        except Exception:
+                            pass
+
+                # apply substitution to the body (don't keep the original ForAll)
+                try:
+                    new_body = il.substitute(f.body, subs)
+                except Exception:
+                    new_body = f.body
+                extra_bodies.append(new_body)
+            else:
+                # if it's not a ForAll, treat it as a plain formula
+                extra_bodies.append(f)
+
+        # Conjoin base body with all extra bodies
+        all_bodies = [base_body] + extra_bodies if len(extra_bodies) > 0 else [base_body]
+
+        combined = il.And(*all_bodies) if len(all_bodies) > 1 else all_bodies[0]
+
+        # Build a qstate: if there are quantifier variables, quantify the
+        # combined body with ForAll over those variables. Then negate the
+        # whole qstate and distribute negation using futil.de_morgan so the
+        # resulting qclause has the same shape/format as qinference's output.
+        qstate = combined
+        if len(all_qvars) > 0:
+            qstate = il.ForAll(all_qvars, qstate)
+
+        try:
+            qclause = il.Not(qstate)
+            # use the same de_morgan helper used by QFormula.get_qclause
+            qclause = futil.de_morgan(qclause)
+            return qclause
+        except Exception:
+            # fallback: return the quantified state or combined body
+            if len(all_qvars) > 0:
+                return il.ForAll(all_qvars, combined)
+            else:
+                return combined
 
     def _get_dnf_qclause(self):
         # DNF quantifier inference logic
@@ -539,7 +534,7 @@ class Inference:
         Convert the minimized PyEDA expression `f_min` over equality bits E
         into an Ivy formula of the form
 
-            forall N1, ..., Nn. <boolean combination of N_i = N_j>
+            forall N0, ..., Nn. <boolean combination of N_i = N_j>
 
         The bits are:
             E[k]  <->  (N_i = N_j)
@@ -547,19 +542,38 @@ class Inference:
 
         `f_min` is the DNF expression returned by espresso_tts(tt).
         """
-        try:
-            sort = il.find_sort(sort_name)
-        except Exception:
-            # If the sort is not known yet, create it as uninterpreted
-            sort = il.UninterpretedSort(sort_name)
+        
+        # silence debug prints in production
+        
+        # Prefer the TransitionSystem's finite-sort (canonical) when available
+        sort = None
+        tran_sys = getattr(self, 'tran_sys', None)
+        if tran_sys is not None:
             try:
-                il.add_sort(sort)
+                sort = tran_sys.get_finite_sort_from_sort_name(sort_name)
             except Exception:
-                # If someone else added it concurrently, just re-find it
-                sort = il.find_sort(sort_name)
+                sort = None
 
-        # Universally quantified Ivy variables: N1, N2, ..., Nn
-        xs = [il.Variable(f"{sort_name.capitalize()}{i+1}", sort) for i in range(n)]
+        # Fallback to ivy registry or create an UninterpretedSort as last resort
+        if sort is None:
+            try:
+                sort = il.find_sort(sort_name)
+            except Exception:
+                vprint(self.options, f"Creating uninterpreted sort {sort_name}", 2)
+                vprint(self.options, f"Sort {sort_name} not found in TransitionSystem or registry; creating UninterpretedSort.", 2)
+                sort = il.UninterpretedSort(sort_name)
+                try:
+                    il.add_sort(sort)
+                except Exception:
+                    sort = il.find_sort(sort_name) or sort
+
+        # Universally quantified Ivy variables: prefer canonical naming
+        # like SORTNAME0, SORTNAME1 to match qinference formatting.
+        tran_sys = getattr(self, 'tran_sys', None)
+        if tran_sys is not None and sort in getattr(tran_sys, 'sort2consts', {}):
+            xs = [il.Variable(sort.name.upper() + str(i), sort) for i in range(n)]
+        else:
+            xs = [il.Variable(f"{sort_name.capitalize()}{i}", sort) for i in range(n)]
 
         # Pairs (i, j) with i < j, in the same order as bits in E
         pairs = self.pair_index_map(n)  # length m = n*(n-1)//2
@@ -672,19 +686,4 @@ class Inference:
         # 5. Wrap with universal quantifiers
         return il.ForAll(xs, body)
     
-    def prime_to_qterms(self, prime: Prime, tran_sys=None, use_qvars=False):
-        """
-        If use_qvars is False: returns the simple IL terms (like get_terms)
-        -> get_terms(tran_sys, atoms, prime) (tran_sys may be None for get_terms)
-        If use_qvars is True: returns qterms (constants replaced by quantifier vars) using get_qterms,
-        which requires tran_sys (TransitionSystem).
-        """
-        atoms = self.protocol.state_atoms_fmla
-        if use_qvars:
-            if tran_sys is None:
-                raise ValueError("tran_sys required when use_qvars=True")
-            return get_qterms(tran_sys, atoms, prime)
-        else:
-            # get_terms signature is (tran_sys, atoms, prime) but tran_sys is unused for this simple conversion
-            return get_terms(None, atoms, prime)
 

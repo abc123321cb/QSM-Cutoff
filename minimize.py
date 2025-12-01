@@ -345,7 +345,7 @@ class Minimizer():
             print(qclause)
             print(type(qclause))
 
-            inf = Inference(orbit,self.options,protocol,self.is_dnf)
+            inf = Inference(orbit,self.options,protocol,self.is_dnf, tran_sys=self.tran_sys)
             newqclause = inf.get_qclause()
             print("New qclause from inference.py:")
             print(newqclause)
