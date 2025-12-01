@@ -164,7 +164,7 @@ def parse_term(term_str, variables, node_sort, size):
     if re.match(r'^node\d+$', term_str):
         node_num = int(term_str[4:])  # Extract number from "nodeX"
         if node_num < size:
-            return il.Constant(term_str, node_sort)
+            return il.Constant(term_str)
         else:
             raise ValueError(f"Node constant {term_str} exceeds domain size {size}")
     

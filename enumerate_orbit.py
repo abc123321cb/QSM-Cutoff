@@ -9,7 +9,6 @@ from qutil import evaluate_ground_formula_on_terms
 from qutil import atoms_equal
 from collections import OrderedDict
 import click
-from parse_formula_string import parse_general_formula
 
 
 from itertools import permutations
@@ -22,27 +21,36 @@ def construct_forall_exists_qformula(size=3):
     p = il.Symbol('p', il.RelationSort([node_sort]))
     q = il.Symbol('q', il.RelationSort([node_sort]))
 
-    NODE0 = il.Variable('NODE0', node_sort)
-    NODE1 = il.Variable('NODE1', node_sort)
-    NODE2 = il.Variable('NODE2', node_sort)
-    NODE3 = il.Variable('NODE3', node_sort)
 
-    neq_01 = il.Not(il.Equals(NODE0, NODE1))
-    not_p0 = il.Not(il.App(p, NODE0))
-    not_p1 = il.Not(il.App(p, NODE1))
-    or_not_p = il.Or(not_p0, not_p1)
-    forall_part = il.ForAll([NODE0, NODE1], il.Or(il.Not(neq_01), or_not_p))
+    # Variables
+    N0 = il.Variable('N0', node_sort)
+    N1 = il.Variable('N1', node_sort)
+    N2 = il.Variable('N2', node_sort) 
+    N3 = il.Variable('N3', node_sort)
 
-    neq_23 = il.Not(il.Equals(NODE2, NODE3))
-    q2 = il.App(q, NODE2)
-    q3 = il.App(q, NODE3)
-    exists_part = il.Exists([NODE2, NODE3], il.And(neq_23, q2, q3))
+    # Inner formula: (N0 = N1) | ~p(N0) | ~p(N1) | (N2 = N3) | ~q(N2) | ~q(N3)
+    eq_01 = il.Equals(N0, N1)
+    not_p0 = il.Not(il.App(p, N0))
+    not_p1 = il.Not(il.App(p, N1))
+    eq_23 = il.Equals(N2, N3)
+    not_q2 = il.Not(il.App(q, N2))
+    not_q3 = il.Not(il.App(q, N3))
+    
+    inner_disjunction = il.Or(eq_01, not_p0, not_p1, eq_23, not_q2, not_q3)
 
-    full_formula = il.Or(forall_part, exists_part)
+    # Inner universal: ∀N2,N3. [inner_disjunction]
+    inner_forall = il.ForAll([N2, N3], inner_disjunction)
 
+    # Outer negation: ¬∀N2,N3. [inner_disjunction]
+    negated_inner = il.Not(inner_forall)
 
+    # Outer universal: ∀N0,N1. [¬∀N2,N3. ...]
+    full_formula = il.ForAll([N0, N1], negated_inner)
 
+    print("Invariant formula:", full_formula)
     return full_formula
+
+
 
 def construct_forall_qformula(size=3):
     node_sort = il.EnumeratedSort('node', [f'node{i}' for i in range(size)])
@@ -489,6 +497,7 @@ def enumerate_orbit(size, forall):
     print("Formula: ", qformula)
     tran_sys = get_trans_sys(size)
     qformula = remove_quantifiers(qformula, tran_sys)
+    print("Quantifier-free: ", qformula)
     enumerate_unsatisfying_assignments(qformula, tran_sys)
     
 
