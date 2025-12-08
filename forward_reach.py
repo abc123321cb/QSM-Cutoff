@@ -58,11 +58,12 @@ class DfsNode():
         self.ivy_state = ivy_state   # value string with delim ',': v0,v1,v2,...
 
 class StateOrbit():
-    def __init__(self, dfs_state, visit_id):
+    def __init__(self, dfs_state, visit_id, state_atoms):
         self.repr_state = dfs_state # first visited state in this orbit (not actually important for the algorithm and for printing only) 
         self.visit_id   = visit_id 
         self.states     = set()
         self.repr_int   = 0         # the minimum value in the orbit
+        self.state_atoms = state_atoms
 
     def __str__(self) -> str:
         lines  = f'\n=== State Orbit {self.visit_id} =====================\n'
@@ -73,6 +74,11 @@ class StateOrbit():
         for state in self.states:
             lines += f'{state}\n'
         lines += '\n'
+        for i, state in enumerate(self.states):
+            lines+= f"State {i}:\n"
+            for atom, bit in zip(self.state_atoms, state):
+                lines+= f"{atom}: {bit}\n"
+            lines+= "\n"
         return lines
 
 class SymDFS(ForwardReachability):
@@ -133,7 +139,7 @@ class SymDFS(ForwardReachability):
         return node 
 
     def _add_dfs_explored_state(self, node):
-        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits))
+        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits), state_atoms=self.protocol.state_atoms)
         values   = list(node.dfs_state)
         repr_int = int(node.dfs_state + self.dfs_immutable_state, 2)
 
@@ -181,6 +187,10 @@ class SymDFS(ForwardReachability):
         pending_children = []
         ivy_result       = self.ivy_executor.execute_ivy_action(action)
 
+        # if action == "QRM_INIT_PROTOCOL":
+        #     self._total_order_initialize()
+
+
         # 2. Handle the stream of INCOMPLETE successors 
         while ivy_result == IVY_ACTION_INCOMPLETE:
             child_node = self._create_dfs_node()
@@ -211,6 +221,46 @@ class SymDFS(ForwardReachability):
                 pending_children.append(child_node)
 
         return pending_children
+    
+
+    # Pseudocode:
+    # Loop over every atom:
+    #   If it's one of the totally-ordered ones (like le, zero, max),
+    #   then initialize it manually:
+    #       If it's le(epoch{i}, epoch{j}), set it to true iff i <= j
+    #       If it's max = epoch{i}, set it to true iff i = n
+    #       If it's zero = epoch{j}, set it to true iff j = 0
+
+
+    def _total_order_initialize(self):
+        assert(self.protocol is not None)
+        node = self._create_dfs_node()
+        ivy_state = node.ivy_state.split(',')
+        dfs_state = list(node.dfs_state)
+        for atom_id, atom_fmla in enumerate(self.protocol.atoms_fmla): # type: ignore
+            atom_func = self.protocol.get_function_symbol_from_atom(atom_fmla)
+            if atom_func in self.tran_sys.axiom_symbols:
+                atom_func_name = atom_func.name
+                if atom_func_name == "le":
+                    # TODO: Check what the arguments of the atom are, and set to true/false accordingly.
+                    # Must somehow get list of possible values.
+                    pass
+                elif atom_func_name == "firste":
+                    pass
+                elif atom_func_name == "max":
+                    const = atom_fmla.args[1]
+                    max_const = self.tran_sys.sort2consts[const.sort][-1]
+                    if const == max_const:
+                        dfs_state[atom_id] = '1'
+                    else:
+                        dfs_state[atom_id] = '0'
+ 
+        self.protocol.atoms_fmla
+
+    
+        
+
+
     
     def _symmetric_quotient_depth_first_search_recur_node(self, node, level=0):
         vprint_title(self.options, f'level {level}', 5)

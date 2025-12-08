@@ -118,7 +118,6 @@ class TransitionSystem():
         # safety
         self.safety_properties= []
 
-
         self.ordered_sorts = dict()
 
 
@@ -180,11 +179,36 @@ class TransitionSystem():
                 if set_sort.name not in self.options.sizes:
                     assert(elem_sort.name in self.options.sizes)
                     self._init_dependent_sort(dep_relation=symbol)
+        
    
+
     def _init_ordered_sorts(self):
+        """
+        Finds totally ordered sorts.
+
+        Iterates through each function a.k.a. symbol, and checks if they're ordered.
+        To be ordered, it must contain the name of a registered ordered symbol (e.g. "le"),
+        and contain two identical sorts. That sort is thus marked as ordered.       
+        """
+        
         for symbol in self.ivy_module.sig.symbols.values():
-            if str(symbol) in registered_ordered_symbols:
-                if len(symbol.sort.dom) == 2 and symbol.sort.dom[]
+            for ordered_symbol in registered_ordered_symbols:
+                # Check if symbol name matches
+                if (str(symbol) == ordered_symbol or
+                    str(symbol).endswith(f".{ordered_symbol}") or
+                    str(symbol).startswith(f"{ordered_symbol}_")):
+                    # Check if it's a binary relation with identical sorts
+                    if (hasattr(symbol.sort, 'dom') and
+                        len(symbol.sort.dom) == 2 and
+                        symbol.sort.dom[0] == symbol.sort.dom[1]):
+                        # Mark the sort as ordered
+                        sort = symbol.sort.dom[0]
+                        self.ordered_sorts[sort.name] = sort
+        
+        vprint(self.options, f"Ordered sorts:", 5)
+        for name in self.ordered_sorts.keys():
+            vprint(self.options, f"{name}")
+
 
 
 
@@ -370,6 +394,7 @@ class TransitionSystem():
             self._init_actions()
             self._init_safety_properties()
             self._init_transition_relation()
+            self._init_ordered_sorts()
 
 
     #------------------------------------------------------------

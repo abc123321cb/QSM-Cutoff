@@ -16,8 +16,6 @@ module total_order(r) = {
     axiom r(X, Y) | r(Y, X)             # Totality
 }
 
-Implies(And(Apply(Const('le', FunctionSort(EnumeratedSort('epoch', ('epoch0', 'epoch1')), EnumeratedSort('epoch', ('epoch0', 'epoch1')), BooleanSort())), Const('epoch0', EnumeratedSort('epoch', ('epoch0', 'epoch1'))), Const('epoch0', EnumeratedSort('epoch', ('epoch0', 'epoch1')))), Apply(Const('le', FunctionSort(EnumeratedSort('epoch', ('epoch0', 'epoch1')), EnumeratedSort('epoch', ('epoch0', 'epoch1')), BooleanSort())), Const('epoch0', EnumeratedSort('epoch', ('epoch0', 'epoch1'))), Const('epoch0', EnumeratedSort('epoch', ('epoch0', 'epoch1'))))), And())
-
 ################################################################################
 #
 # Types, relations and functions describing state of the network
@@ -59,7 +57,7 @@ after init {
     held(X) := X=first;
     ep(N) := firste if N = first else zero;
     transfer(E, N) := false;
-    locked(E, N) := false;
+    locked(E, N) := N = first & E = firste;
 }
 
 action grant(n1:node, n2:node, e:epoch) = {
