@@ -1,0 +1,43 @@
+#lang ivy1.8
+
+type node
+
+relation p(X:node)
+relation q(X:node)
+
+function pq(X:node) : node
+function qp(X:node) : node
+
+after init {
+    p(X) := false;
+    q(X) := false;
+}
+
+action up(x:node,y:node) = {
+    require ~p(x) & ~q(y);
+    p(x) := true;
+    q(y) := true;
+    pq(x) := y;
+    qp(y) := x;
+    if ()
+}
+
+action down(x:node,y:node) = {
+    require p(x) & q(y);
+    p(x) := false;
+    q(y) := false;
+    pq(qp(y)) := pq(x);
+    qp(pq(x)) := qp(y);
+    pq(x) := x;
+    qp(y) := y;
+}
+
+invariant p(X) -> exists Y. q(Y)
+
+invariant p(X) -> qp(pq(X)) = X & q(pq(X)) # (*)
+invariant q(X) -> pq(qp(X)) = X & p(qp(X)) # (*)
+
+
+export up
+export down
+

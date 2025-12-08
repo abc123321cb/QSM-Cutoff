@@ -1,0 +1,1234 @@
+
+****************************************************************
+
+	[QRM]: ivybench/sym/ivy/distributed_lock.ivy
+
+****************************************************************
+
+
+**********************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/sym/ivy/distributed_lock.ivy: node=2,epoch=2]
+
+**********************************************************************************************
+
+python3 qrm.py ivybench/sym/ivy/distributed_lock.ivy -s node=2,epoch=2 -f 1 -g -w -v 5 -l ivybench/sym/ivy/test.log
+
+
+---------- Parsing Ivy ----------
+
+
+Printing isolate this:
+
+OK
+
+
+====================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/sym/ivy/distributed_lock.ivy: node=2,epoch=2]
+
+====================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 26
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 0
+
+[FW NOTE]: symmetric group order: 4
+
+[FW NOTE]: number of branching actions: 12
+
+ivy_to_cpp target=qrm distributed_lock.node_2_epoch_2.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o distributed_lock.node_2_epoch_2.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 distributed_lock.node_2_epoch_2.finite.cpp distributed_lock.node_2_epoch_2.finite_wrap.cpp -I/usr/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared distributed_lock.node_2_epoch_2.finite.o distributed_lock.node_2_epoch_2.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.597 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.597 seconds
+
+[QRM NOTE]: Peak memory: 875000 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+
+---------- level 0 ----------
+
+10011010101011000010000001
+
+[FW NOTE]: dfs max depth: 0
+
+[FW NOTE]: number of total reachable states:        4
+
+[FW NOTE]: number of dfs representative states:     1
+
+[FW NOTE]: number of dfs non-representative states: 3
+
+
+===========================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/sym/ivy/distributed_lock.ivy: node=2,epoch=2]
+
+===========================================================================================================
+
+sort: node=['node0', 'node1']
+sort: epoch=['epoch0', 'epoch1']
+predicate: zero=('epoch',)
+predicate: held('node',)
+predicate: first=('node',)
+predicate: le('epoch', 'epoch')
+predicate: locked('epoch', 'node')
+predicate: ep=('node', 'epoch')
+predicate: transfer('epoch', 'node')
+predicate: max=('epoch',)
+predicate: firste=('epoch',)
+interpreted atoms: {}
+state atoms: ['(ep(node0)=epoch0)', '(ep(node0)=epoch1)', '(ep(node1)=epoch0)', '(ep(node1)=epoch1)', '(first=node0)', '(first=node1)', '(firste=epoch0)', '(firste=epoch1)', 'held(node0)', 'held(node1)', 'le(epoch0,epoch0)', 'le(epoch0,epoch1)', 'le(epoch1,epoch0)', 'le(epoch1,epoch1)', 'locked(epoch0,node0)', 'locked(epoch0,node1)', 'locked(epoch1,node0)', 'locked(epoch1,node1)', '(max=epoch0)', '(max=epoch1)', 'transfer(epoch0,node0)', 'transfer(epoch0,node1)', 'transfer(epoch1,node0)', 'transfer(epoch1,node1)', '(zero=epoch0)', '(zero=epoch1)']
+representative states : 26849409
+
+
+=== State Orbit 0 =====================
+size : 4
+repr state: 10011010101011000010000001
+lex min decimal: 0x199b081
+states:
+10010101011101000001000010
+01100110011011000010000001
+01101001101101000001000010
+10011010101011000010000001
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.618 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.021 seconds
+
+[QRM NOTE]: Peak memory: 476127 bytes
+
+
+======================================
+
+	Reduce Equivalent Atoms
+
+======================================
+
+[FW NOTE]: equivalent atoms
+
+	first = node0: ['held(node0)']
+
+	first = node1: ['held(node1)']
+
+	firste = epoch0: ['max = epoch0']
+
+	firste = epoch1: ['max = epoch1']
+
+	locked(epoch0,node0): ['transfer(epoch0,node0)']
+
+	locked(epoch0,node1): ['transfer(epoch0,node1)']
+
+	locked(epoch1,node0): ['transfer(epoch1,node0)']
+
+	locked(epoch1,node1): ['transfer(epoch1,node1)']
+
+[FW NOTE]: complement atoms
+
+[FW NOTE]: remove_atom_ids: {8, 9, 18, 19, 20, 21, 22, 23}
+
+[QRM NOTE]: Time elapsed since start: 6.629 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.011 seconds
+
+[QRM NOTE]: Peak memory: 498410 bytes
+
+
+===========================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/sym/ivy/distributed_lock.ivy: node=2,epoch=2]
+
+===========================================================================================================
+
+
+======================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/sym/ivy/distributed_lock.ivy: node=2,epoch=2]
+
+======================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : ----------0---------------
+0     : ['~le(epoch0,epoch0)']
+1     : -------------0------------
+1     : ['~le(epoch1,epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 4
+num_suborbits: 1
+2 (*) : --------------1-----------
+2     : ['locked(epoch0,node0)']
+3     : ----------------1---------
+3     : ['locked(epoch1,node0)']
+4     : ---------------1----------
+4     : ['locked(epoch0,node1)']
+5     : -----------------1--------
+5     : ['locked(epoch1,node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 4
+num_suborbits: 1
+6 (*) : 1--0----------------------
+6     : ['(ep(node0)=epoch0)', '~(ep(node1)=epoch1)']
+7     : -10-----------------------
+7     : ['(ep(node0)=epoch1)', '~(ep(node1)=epoch0)']
+8     : -01-----------------------
+8     : ['(ep(node1)=epoch0)', '~(ep(node0)=epoch1)']
+9     : 0--1----------------------
+9     : ['(ep(node1)=epoch1)', '~(ep(node0)=epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 4
+num_suborbits: 2
+10 (*) : -0-0----------------------
+10     : ['~(ep(node0)=epoch1)', '~(ep(node1)=epoch1)']
+11     : 0-0-----------------------
+11     : ['~(ep(node0)=epoch0)', '~(ep(node1)=epoch0)']
+12 (*) : --00----------------------
+12     : ['~(ep(node1)=epoch0)', '~(ep(node1)=epoch1)']
+13     : 00------------------------
+13     : ['~(ep(node0)=epoch0)', '~(ep(node0)=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 4
+num_suborbits: 2
+14 (*) : 11------------------------
+14     : ['(ep(node0)=epoch0)', '(ep(node0)=epoch1)']
+15     : --11----------------------
+15     : ['(ep(node1)=epoch0)', '(ep(node1)=epoch1)']
+16 (*) : 1-1-----------------------
+16     : ['(ep(node0)=epoch0)', '(ep(node1)=epoch0)']
+17     : -1-1----------------------
+17     : ['(ep(node0)=epoch1)', '(ep(node1)=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 1
+num_suborbits: 1
+18 (*) : ------------------------11
+18     : ['(zero=epoch0)', '(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 1
+num_suborbits: 1
+19 (*) : ------------------------00
+19     : ['~(zero=epoch0)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 2
+num_suborbits: 1
+20 (*) : ------0-----------------0-
+20     : ['~(firste=epoch0)', '~(zero=epoch0)']
+21     : -------0-----------------0
+21     : ['~(firste=epoch1)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 2
+num_suborbits: 1
+22 (*) : ------0------------------1
+22     : ['(zero=epoch1)', '~(firste=epoch0)']
+23     : -------0----------------1-
+23     : ['(zero=epoch0)', '~(firste=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 2
+num_suborbits: 1
+24 (*) : ------1-----------------1-
+24     : ['(firste=epoch0)', '(zero=epoch0)']
+25     : -------1-----------------1
+25     : ['(firste=epoch1)', '(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+26 (*) : ------1------------------0
+26     : ['(firste=epoch0)', '~(zero=epoch1)']
+27     : -------1----------------0-
+27     : ['(firste=epoch1)', '~(zero=epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 11 =====================
+size : 1
+num_suborbits: 1
+28 (*) : ------00------------------
+28     : ['~(firste=epoch0)', '~(firste=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+29 (*) : ------11------------------
+29     : ['(firste=epoch0)', '(firste=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 13 =====================
+size : 2
+num_suborbits: 1
+30 (*) : ------1----1--------------
+30     : ['(firste=epoch0)', 'le(epoch0,epoch1)']
+31     : -------1----1-------------
+31     : ['(firste=epoch1)', 'le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 14 =====================
+size : 2
+num_suborbits: 1
+32 (*) : -----------0-------------0
+32     : ['~(zero=epoch1)', '~le(epoch0,epoch1)']
+33     : ------------0-----------0-
+33     : ['~(zero=epoch0)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 15 =====================
+size : 2
+num_suborbits: 1
+34 (*) : ------0----0--------------
+34     : ['~(firste=epoch0)', '~le(epoch0,epoch1)']
+35     : -------0----0-------------
+35     : ['~(firste=epoch1)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 16 =====================
+size : 2
+num_suborbits: 1
+36 (*) : -----------0------------1-
+36     : ['(zero=epoch0)', '~le(epoch0,epoch1)']
+37     : ------------0------------1
+37     : ['(zero=epoch1)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 17 =====================
+size : 2
+num_suborbits: 1
+38 (*) : -----------1------------0-
+38     : ['le(epoch0,epoch1)', '~(zero=epoch0)']
+39     : ------------1------------0
+39     : ['le(epoch1,epoch0)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 18 =====================
+size : 2
+num_suborbits: 1
+40 (*) : -----------1-------------1
+40     : ['(zero=epoch1)', 'le(epoch0,epoch1)']
+41     : ------------1-----------1-
+41     : ['(zero=epoch0)', 'le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 19 =====================
+size : 2
+num_suborbits: 1
+42 (*) : -------0---1--------------
+42     : ['le(epoch0,epoch1)', '~(firste=epoch1)']
+43     : ------0-----1-------------
+43     : ['le(epoch1,epoch0)', '~(firste=epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 20 =====================
+size : 2
+num_suborbits: 1
+44 (*) : -------1---0--------------
+44     : ['(firste=epoch1)', '~le(epoch0,epoch1)']
+45     : ------1-----0-------------
+45     : ['(firste=epoch0)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 21 =====================
+size : 1
+num_suborbits: 1
+46 (*) : -----------00-------------
+46     : ['~le(epoch0,epoch1)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 22 =====================
+size : 1
+num_suborbits: 1
+47 (*) : -----------11-------------
+47     : ['le(epoch0,epoch1)', 'le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 23 =====================
+size : 1
+num_suborbits: 1
+48 (*) : ----00--------------------
+48     : ['~(first=node0)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 24 =====================
+size : 1
+num_suborbits: 1
+49 (*) : ----11--------------------
+49     : ['(first=node0)', '(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 25 =====================
+size : 8
+num_suborbits: 2
+50 (*) : 1----1-0------------------
+50     : ['(ep(node0)=epoch0)', '(first=node1)', '~(firste=epoch1)']
+51     : -1---10-------------------
+51     : ['(ep(node0)=epoch1)', '(first=node1)', '~(firste=epoch0)']
+52     : --1-1--0------------------
+52     : ['(ep(node1)=epoch0)', '(first=node0)', '~(firste=epoch1)']
+53     : ---11-0-------------------
+53     : ['(ep(node1)=epoch1)', '(first=node0)', '~(firste=epoch0)']
+62 (*) : ---1-1-0------------------
+62     : ['(ep(node1)=epoch1)', '(first=node1)', '~(firste=epoch1)']
+63     : --1--10-------------------
+63     : ['(ep(node1)=epoch0)', '(first=node1)', '~(firste=epoch0)']
+64     : -1--1--0------------------
+64     : ['(ep(node0)=epoch1)', '(first=node0)', '~(firste=epoch1)']
+65     : 1---1-0-------------------
+65     : ['(ep(node0)=epoch0)', '(first=node0)', '~(firste=epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 26 =====================
+size : 8
+num_suborbits: 2
+54 (*) : -0---1-0------------------
+54     : ['(first=node1)', '~(ep(node0)=epoch1)', '~(firste=epoch1)']
+55     : 0----10-------------------
+55     : ['(first=node1)', '~(ep(node0)=epoch0)', '~(firste=epoch0)']
+56     : ---01--0------------------
+56     : ['(first=node0)', '~(ep(node1)=epoch1)', '~(firste=epoch1)']
+57     : --0-1-0-------------------
+57     : ['(first=node0)', '~(ep(node1)=epoch0)', '~(firste=epoch0)']
+58 (*) : --0--1-0------------------
+58     : ['(first=node1)', '~(ep(node1)=epoch0)', '~(firste=epoch1)']
+59     : ---0-10-------------------
+59     : ['(first=node1)', '~(ep(node1)=epoch1)', '~(firste=epoch0)']
+60     : 0---1--0------------------
+60     : ['(first=node0)', '~(ep(node0)=epoch0)', '~(firste=epoch1)']
+61     : -0--1-0-------------------
+61     : ['(first=node0)', '~(ep(node0)=epoch1)', '~(firste=epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 27 =====================
+size : 8
+num_suborbits: 2
+66 (*) : 1----1------------------0-
+66     : ['(ep(node0)=epoch0)', '(first=node1)', '~(zero=epoch0)']
+67     : -1---1-------------------0
+67     : ['(ep(node0)=epoch1)', '(first=node1)', '~(zero=epoch1)']
+68     : --1-1-------------------0-
+68     : ['(ep(node1)=epoch0)', '(first=node0)', '~(zero=epoch0)']
+69     : ---11--------------------0
+69     : ['(ep(node1)=epoch1)', '(first=node0)', '~(zero=epoch1)']
+126 (*) : ---1-1------------------0-
+126     : ['(ep(node1)=epoch1)', '(first=node1)', '~(zero=epoch0)']
+127     : --1--1-------------------0
+127     : ['(ep(node1)=epoch0)', '(first=node1)', '~(zero=epoch1)']
+128     : -1--1-------------------0-
+128     : ['(ep(node0)=epoch1)', '(first=node0)', '~(zero=epoch0)']
+129     : 1---1--------------------0
+129     : ['(ep(node0)=epoch0)', '(first=node0)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 28 =====================
+size : 8
+num_suborbits: 2
+70 (*) : 1----1-------------------1
+70     : ['(ep(node0)=epoch0)', '(first=node1)', '(zero=epoch1)']
+71     : -1---1------------------1-
+71     : ['(ep(node0)=epoch1)', '(first=node1)', '(zero=epoch0)']
+72     : --1-1--------------------1
+72     : ['(ep(node1)=epoch0)', '(first=node0)', '(zero=epoch1)']
+73     : ---11-------------------1-
+73     : ['(ep(node1)=epoch1)', '(first=node0)', '(zero=epoch0)']
+130 (*) : ---1-1-------------------1
+130     : ['(ep(node1)=epoch1)', '(first=node1)', '(zero=epoch1)']
+131     : --1--1------------------1-
+131     : ['(ep(node1)=epoch0)', '(first=node1)', '(zero=epoch0)']
+132     : -1--1--------------------1
+132     : ['(ep(node0)=epoch1)', '(first=node0)', '(zero=epoch1)']
+133     : 1---1-------------------1-
+133     : ['(ep(node0)=epoch0)', '(first=node0)', '(zero=epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 29 =====================
+size : 8
+num_suborbits: 2
+74 (*) : 1----1-----0--------------
+74     : ['(ep(node0)=epoch0)', '(first=node1)', '~le(epoch0,epoch1)']
+75     : -1---1------0-------------
+75     : ['(ep(node0)=epoch1)', '(first=node1)', '~le(epoch1,epoch0)']
+76     : --1-1------0--------------
+76     : ['(ep(node1)=epoch0)', '(first=node0)', '~le(epoch0,epoch1)']
+77     : ---11-------0-------------
+77     : ['(ep(node1)=epoch1)', '(first=node0)', '~le(epoch1,epoch0)']
+134 (*) : ---1-1-----0--------------
+134     : ['(ep(node1)=epoch1)', '(first=node1)', '~le(epoch0,epoch1)']
+135     : --1--1------0-------------
+135     : ['(ep(node1)=epoch0)', '(first=node1)', '~le(epoch1,epoch0)']
+136     : -1--1------0--------------
+136     : ['(ep(node0)=epoch1)', '(first=node0)', '~le(epoch0,epoch1)']
+137     : 1---1-------0-------------
+137     : ['(ep(node0)=epoch0)', '(first=node0)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 30 =====================
+size : 8
+num_suborbits: 2
+78 (*) : 1----1------1-------------
+78     : ['(ep(node0)=epoch0)', '(first=node1)', 'le(epoch1,epoch0)']
+79     : -1---1-----1--------------
+79     : ['(ep(node0)=epoch1)', '(first=node1)', 'le(epoch0,epoch1)']
+80     : --1-1-------1-------------
+80     : ['(ep(node1)=epoch0)', '(first=node0)', 'le(epoch1,epoch0)']
+81     : ---11------1--------------
+81     : ['(ep(node1)=epoch1)', '(first=node0)', 'le(epoch0,epoch1)']
+138 (*) : ---1-1------1-------------
+138     : ['(ep(node1)=epoch1)', '(first=node1)', 'le(epoch1,epoch0)']
+139     : --1--1-----1--------------
+139     : ['(ep(node1)=epoch0)', '(first=node1)', 'le(epoch0,epoch1)']
+140     : -1--1-------1-------------
+140     : ['(ep(node0)=epoch1)', '(first=node0)', 'le(epoch1,epoch0)']
+141     : 1---1------1--------------
+141     : ['(ep(node0)=epoch0)', '(first=node0)', 'le(epoch0,epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 31 =====================
+size : 8
+num_suborbits: 2
+82 (*) : 1----11-------------------
+82     : ['(ep(node0)=epoch0)', '(first=node1)', '(firste=epoch0)']
+83     : -1---1-1------------------
+83     : ['(ep(node0)=epoch1)', '(first=node1)', '(firste=epoch1)']
+84     : --1-1-1-------------------
+84     : ['(ep(node1)=epoch0)', '(first=node0)', '(firste=epoch0)']
+85     : ---11--1------------------
+85     : ['(ep(node1)=epoch1)', '(first=node0)', '(firste=epoch1)']
+142 (*) : ---1-11-------------------
+142     : ['(ep(node1)=epoch1)', '(first=node1)', '(firste=epoch0)']
+143     : --1--1-1------------------
+143     : ['(ep(node1)=epoch0)', '(first=node1)', '(firste=epoch1)']
+144     : -1--1-1-------------------
+144     : ['(ep(node0)=epoch1)', '(first=node0)', '(firste=epoch0)']
+145     : 1---1--1------------------
+145     : ['(ep(node0)=epoch0)', '(first=node0)', '(firste=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 32 =====================
+size : 8
+num_suborbits: 2
+86 (*) : -0---1------------------0-
+86     : ['(first=node1)', '~(ep(node0)=epoch1)', '~(zero=epoch0)']
+87     : 0----1-------------------0
+87     : ['(first=node1)', '~(ep(node0)=epoch0)', '~(zero=epoch1)']
+88     : ---01-------------------0-
+88     : ['(first=node0)', '~(ep(node1)=epoch1)', '~(zero=epoch0)']
+89     : --0-1--------------------0
+89     : ['(first=node0)', '~(ep(node1)=epoch0)', '~(zero=epoch1)']
+106 (*) : --0--1------------------0-
+106     : ['(first=node1)', '~(ep(node1)=epoch0)', '~(zero=epoch0)']
+107     : ---0-1-------------------0
+107     : ['(first=node1)', '~(ep(node1)=epoch1)', '~(zero=epoch1)']
+108     : 0---1-------------------0-
+108     : ['(first=node0)', '~(ep(node0)=epoch0)', '~(zero=epoch0)']
+109     : -0--1--------------------0
+109     : ['(first=node0)', '~(ep(node0)=epoch1)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 33 =====================
+size : 8
+num_suborbits: 2
+90 (*) : -0---1-------------------1
+90     : ['(first=node1)', '(zero=epoch1)', '~(ep(node0)=epoch1)']
+91     : 0----1------------------1-
+91     : ['(first=node1)', '(zero=epoch0)', '~(ep(node0)=epoch0)']
+92     : ---01--------------------1
+92     : ['(first=node0)', '(zero=epoch1)', '~(ep(node1)=epoch1)']
+93     : --0-1-------------------1-
+93     : ['(first=node0)', '(zero=epoch0)', '~(ep(node1)=epoch0)']
+110 (*) : --0--1-------------------1
+110     : ['(first=node1)', '(zero=epoch1)', '~(ep(node1)=epoch0)']
+111     : ---0-1------------------1-
+111     : ['(first=node1)', '(zero=epoch0)', '~(ep(node1)=epoch1)']
+112     : 0---1--------------------1
+112     : ['(first=node0)', '(zero=epoch1)', '~(ep(node0)=epoch0)']
+113     : -0--1-------------------1-
+113     : ['(first=node0)', '(zero=epoch0)', '~(ep(node0)=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 34 =====================
+size : 8
+num_suborbits: 2
+94 (*) : -0---1-----0--------------
+94     : ['(first=node1)', '~(ep(node0)=epoch1)', '~le(epoch0,epoch1)']
+95     : 0----1------0-------------
+95     : ['(first=node1)', '~(ep(node0)=epoch0)', '~le(epoch1,epoch0)']
+96     : ---01------0--------------
+96     : ['(first=node0)', '~(ep(node1)=epoch1)', '~le(epoch0,epoch1)']
+97     : --0-1-------0-------------
+97     : ['(first=node0)', '~(ep(node1)=epoch0)', '~le(epoch1,epoch0)']
+114 (*) : --0--1-----0--------------
+114     : ['(first=node1)', '~(ep(node1)=epoch0)', '~le(epoch0,epoch1)']
+115     : ---0-1------0-------------
+115     : ['(first=node1)', '~(ep(node1)=epoch1)', '~le(epoch1,epoch0)']
+116     : 0---1------0--------------
+116     : ['(first=node0)', '~(ep(node0)=epoch0)', '~le(epoch0,epoch1)']
+117     : -0--1-------0-------------
+117     : ['(first=node0)', '~(ep(node0)=epoch1)', '~le(epoch1,epoch0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 35 =====================
+size : 8
+num_suborbits: 2
+98 (*) : -0---1------1-------------
+98     : ['(first=node1)', 'le(epoch1,epoch0)', '~(ep(node0)=epoch1)']
+99     : 0----1-----1--------------
+99     : ['(first=node1)', 'le(epoch0,epoch1)', '~(ep(node0)=epoch0)']
+100     : ---01-------1-------------
+100     : ['(first=node0)', 'le(epoch1,epoch0)', '~(ep(node1)=epoch1)']
+101     : --0-1------1--------------
+101     : ['(first=node0)', 'le(epoch0,epoch1)', '~(ep(node1)=epoch0)']
+118 (*) : --0--1------1-------------
+118     : ['(first=node1)', 'le(epoch1,epoch0)', '~(ep(node1)=epoch0)']
+119     : ---0-1-----1--------------
+119     : ['(first=node1)', 'le(epoch0,epoch1)', '~(ep(node1)=epoch1)']
+120     : 0---1-------1-------------
+120     : ['(first=node0)', 'le(epoch1,epoch0)', '~(ep(node0)=epoch0)']
+121     : -0--1------1--------------
+121     : ['(first=node0)', 'le(epoch0,epoch1)', '~(ep(node0)=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 36 =====================
+size : 8
+num_suborbits: 2
+102 (*) : -0---11-------------------
+102     : ['(first=node1)', '(firste=epoch0)', '~(ep(node0)=epoch1)']
+103     : 0----1-1------------------
+103     : ['(first=node1)', '(firste=epoch1)', '~(ep(node0)=epoch0)']
+104     : ---01-1-------------------
+104     : ['(first=node0)', '(firste=epoch0)', '~(ep(node1)=epoch1)']
+105     : --0-1--1------------------
+105     : ['(first=node0)', '(firste=epoch1)', '~(ep(node1)=epoch0)']
+122 (*) : --0--11-------------------
+122     : ['(first=node1)', '(firste=epoch0)', '~(ep(node1)=epoch0)']
+123     : ---0-1-1------------------
+123     : ['(first=node1)', '(firste=epoch1)', '~(ep(node1)=epoch1)']
+124     : 0---1-1-------------------
+124     : ['(first=node0)', '(firste=epoch0)', '~(ep(node0)=epoch0)']
+125     : -0--1--1------------------
+125     : ['(first=node0)', '(firste=epoch1)', '~(ep(node0)=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 37 =====================
+size : 8
+num_suborbits: 2
+146 (*) : --1-0-------0-------------
+146     : ['(ep(node1)=epoch0)', '~(first=node0)', '~le(epoch1,epoch0)']
+147     : ---10------0--------------
+147     : ['(ep(node1)=epoch1)', '~(first=node0)', '~le(epoch0,epoch1)']
+148     : 1----0------0-------------
+148     : ['(ep(node0)=epoch0)', '~(first=node1)', '~le(epoch1,epoch0)']
+149     : -1---0-----0--------------
+149     : ['(ep(node0)=epoch1)', '~(first=node1)', '~le(epoch0,epoch1)']
+154 (*) : -1--0-------0-------------
+154     : ['(ep(node0)=epoch1)', '~(first=node0)', '~le(epoch1,epoch0)']
+155     : 1---0------0--------------
+155     : ['(ep(node0)=epoch0)', '~(first=node0)', '~le(epoch0,epoch1)']
+156     : ---1-0------0-------------
+156     : ['(ep(node1)=epoch1)', '~(first=node1)', '~le(epoch1,epoch0)']
+157     : --1--0-----0--------------
+157     : ['(ep(node1)=epoch0)', '~(first=node1)', '~le(epoch0,epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 38 =====================
+size : 8
+num_suborbits: 2
+150 (*) : 0---0-------0-------------
+150     : ['~(ep(node0)=epoch0)', '~(first=node0)', '~le(epoch1,epoch0)']
+151     : -0--0------0--------------
+151     : ['~(ep(node0)=epoch1)', '~(first=node0)', '~le(epoch0,epoch1)']
+152     : --0--0------0-------------
+152     : ['~(ep(node1)=epoch0)', '~(first=node1)', '~le(epoch1,epoch0)']
+153     : ---0-0-----0--------------
+153     : ['~(ep(node1)=epoch1)', '~(first=node1)', '~le(epoch0,epoch1)']
+158 (*) : ---00-------0-------------
+158     : ['~(ep(node1)=epoch1)', '~(first=node0)', '~le(epoch1,epoch0)']
+159     : --0-0------0--------------
+159     : ['~(ep(node1)=epoch0)', '~(first=node0)', '~le(epoch0,epoch1)']
+160     : -0---0------0-------------
+160     : ['~(ep(node0)=epoch1)', '~(first=node1)', '~le(epoch1,epoch0)']
+161     : 0----0-----0--------------
+161     : ['~(ep(node0)=epoch0)', '~(first=node1)', '~le(epoch0,epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 39 =====================
+size : 8
+num_suborbits: 2
+162 (*) : 1---0-1-------------------
+162     : ['(ep(node0)=epoch0)', '(firste=epoch0)', '~(first=node0)']
+163     : -1--0--1------------------
+163     : ['(ep(node0)=epoch1)', '(firste=epoch1)', '~(first=node0)']
+164     : --1--01-------------------
+164     : ['(ep(node1)=epoch0)', '(firste=epoch0)', '~(first=node1)']
+165     : ---1-0-1------------------
+165     : ['(ep(node1)=epoch1)', '(firste=epoch1)', '~(first=node1)']
+174 (*) : ---10-1-------------------
+174     : ['(ep(node1)=epoch1)', '(firste=epoch0)', '~(first=node0)']
+175     : --1-0--1------------------
+175     : ['(ep(node1)=epoch0)', '(firste=epoch1)', '~(first=node0)']
+176     : -1---01-------------------
+176     : ['(ep(node0)=epoch1)', '(firste=epoch0)', '~(first=node1)']
+177     : 1----0-1------------------
+177     : ['(ep(node0)=epoch0)', '(firste=epoch1)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 40 =====================
+size : 8
+num_suborbits: 2
+166 (*) : -0--0-1-------------------
+166     : ['(firste=epoch0)', '~(ep(node0)=epoch1)', '~(first=node0)']
+167     : 0---0--1------------------
+167     : ['(firste=epoch1)', '~(ep(node0)=epoch0)', '~(first=node0)']
+168     : ---0-01-------------------
+168     : ['(firste=epoch0)', '~(ep(node1)=epoch1)', '~(first=node1)']
+169     : --0--0-1------------------
+169     : ['(firste=epoch1)', '~(ep(node1)=epoch0)', '~(first=node1)']
+170 (*) : --0-0-1-------------------
+170     : ['(firste=epoch0)', '~(ep(node1)=epoch0)', '~(first=node0)']
+171     : ---00--1------------------
+171     : ['(firste=epoch1)', '~(ep(node1)=epoch1)', '~(first=node0)']
+172     : 0----01-------------------
+172     : ['(firste=epoch0)', '~(ep(node0)=epoch0)', '~(first=node1)']
+173     : -0---0-1------------------
+173     : ['(firste=epoch1)', '~(ep(node0)=epoch1)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 41 =====================
+size : 8
+num_suborbits: 2
+178 (*) : 1---0-------------------0-
+178     : ['(ep(node0)=epoch0)', '~(first=node0)', '~(zero=epoch0)']
+179     : -1--0--------------------0
+179     : ['(ep(node0)=epoch1)', '~(first=node0)', '~(zero=epoch1)']
+180     : --1--0------------------0-
+180     : ['(ep(node1)=epoch0)', '~(first=node1)', '~(zero=epoch0)']
+181     : ---1-0-------------------0
+181     : ['(ep(node1)=epoch1)', '~(first=node1)', '~(zero=epoch1)']
+214 (*) : ---10-------------------0-
+214     : ['(ep(node1)=epoch1)', '~(first=node0)', '~(zero=epoch0)']
+215     : --1-0--------------------0
+215     : ['(ep(node1)=epoch0)', '~(first=node0)', '~(zero=epoch1)']
+216     : -1---0------------------0-
+216     : ['(ep(node0)=epoch1)', '~(first=node1)', '~(zero=epoch0)']
+217     : 1----0-------------------0
+217     : ['(ep(node0)=epoch0)', '~(first=node1)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 42 =====================
+size : 8
+num_suborbits: 2
+182 (*) : 1---0--------------------1
+182     : ['(ep(node0)=epoch0)', '(zero=epoch1)', '~(first=node0)']
+183     : -1--0-------------------1-
+183     : ['(ep(node0)=epoch1)', '(zero=epoch0)', '~(first=node0)']
+184     : --1--0-------------------1
+184     : ['(ep(node1)=epoch0)', '(zero=epoch1)', '~(first=node1)']
+185     : ---1-0------------------1-
+185     : ['(ep(node1)=epoch1)', '(zero=epoch0)', '~(first=node1)']
+218 (*) : ---10--------------------1
+218     : ['(ep(node1)=epoch1)', '(zero=epoch1)', '~(first=node0)']
+219     : --1-0-------------------1-
+219     : ['(ep(node1)=epoch0)', '(zero=epoch0)', '~(first=node0)']
+220     : -1---0-------------------1
+220     : ['(ep(node0)=epoch1)', '(zero=epoch1)', '~(first=node1)']
+221     : 1----0------------------1-
+221     : ['(ep(node0)=epoch0)', '(zero=epoch0)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 43 =====================
+size : 8
+num_suborbits: 2
+186 (*) : 1---0-------1-------------
+186     : ['(ep(node0)=epoch0)', 'le(epoch1,epoch0)', '~(first=node0)']
+187     : -1--0------1--------------
+187     : ['(ep(node0)=epoch1)', 'le(epoch0,epoch1)', '~(first=node0)']
+188     : --1--0------1-------------
+188     : ['(ep(node1)=epoch0)', 'le(epoch1,epoch0)', '~(first=node1)']
+189     : ---1-0-----1--------------
+189     : ['(ep(node1)=epoch1)', 'le(epoch0,epoch1)', '~(first=node1)']
+222 (*) : ---10-------1-------------
+222     : ['(ep(node1)=epoch1)', 'le(epoch1,epoch0)', '~(first=node0)']
+223     : --1-0------1--------------
+223     : ['(ep(node1)=epoch0)', 'le(epoch0,epoch1)', '~(first=node0)']
+224     : -1---0------1-------------
+224     : ['(ep(node0)=epoch1)', 'le(epoch1,epoch0)', '~(first=node1)']
+225     : 1----0-----1--------------
+225     : ['(ep(node0)=epoch0)', 'le(epoch0,epoch1)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 44 =====================
+size : 8
+num_suborbits: 2
+190 (*) : -0--0-------------------0-
+190     : ['~(ep(node0)=epoch1)', '~(first=node0)', '~(zero=epoch0)']
+191     : 0---0--------------------0
+191     : ['~(ep(node0)=epoch0)', '~(first=node0)', '~(zero=epoch1)']
+192     : ---0-0------------------0-
+192     : ['~(ep(node1)=epoch1)', '~(first=node1)', '~(zero=epoch0)']
+193     : --0--0-------------------0
+193     : ['~(ep(node1)=epoch0)', '~(first=node1)', '~(zero=epoch1)']
+202 (*) : --0-0-------------------0-
+202     : ['~(ep(node1)=epoch0)', '~(first=node0)', '~(zero=epoch0)']
+203     : ---00--------------------0
+203     : ['~(ep(node1)=epoch1)', '~(first=node0)', '~(zero=epoch1)']
+204     : 0----0------------------0-
+204     : ['~(ep(node0)=epoch0)', '~(first=node1)', '~(zero=epoch0)']
+205     : -0---0-------------------0
+205     : ['~(ep(node0)=epoch1)', '~(first=node1)', '~(zero=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 45 =====================
+size : 8
+num_suborbits: 2
+194 (*) : -0--0--------------------1
+194     : ['(zero=epoch1)', '~(ep(node0)=epoch1)', '~(first=node0)']
+195     : 0---0-------------------1-
+195     : ['(zero=epoch0)', '~(ep(node0)=epoch0)', '~(first=node0)']
+196     : ---0-0-------------------1
+196     : ['(zero=epoch1)', '~(ep(node1)=epoch1)', '~(first=node1)']
+197     : --0--0------------------1-
+197     : ['(zero=epoch0)', '~(ep(node1)=epoch0)', '~(first=node1)']
+206 (*) : --0-0--------------------1
+206     : ['(zero=epoch1)', '~(ep(node1)=epoch0)', '~(first=node0)']
+207     : ---00-------------------1-
+207     : ['(zero=epoch0)', '~(ep(node1)=epoch1)', '~(first=node0)']
+208     : 0----0-------------------1
+208     : ['(zero=epoch1)', '~(ep(node0)=epoch0)', '~(first=node1)']
+209     : -0---0------------------1-
+209     : ['(zero=epoch0)', '~(ep(node0)=epoch1)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 46 =====================
+size : 8
+num_suborbits: 2
+198 (*) : -0--0-------1-------------
+198     : ['le(epoch1,epoch0)', '~(ep(node0)=epoch1)', '~(first=node0)']
+199     : 0---0------1--------------
+199     : ['le(epoch0,epoch1)', '~(ep(node0)=epoch0)', '~(first=node0)']
+200     : ---0-0------1-------------
+200     : ['le(epoch1,epoch0)', '~(ep(node1)=epoch1)', '~(first=node1)']
+201     : --0--0-----1--------------
+201     : ['le(epoch0,epoch1)', '~(ep(node1)=epoch0)', '~(first=node1)']
+210 (*) : --0-0-------1-------------
+210     : ['le(epoch1,epoch0)', '~(ep(node1)=epoch0)', '~(first=node0)']
+211     : ---00------1--------------
+211     : ['le(epoch0,epoch1)', '~(ep(node1)=epoch1)', '~(first=node0)']
+212     : 0----0------1-------------
+212     : ['le(epoch1,epoch0)', '~(ep(node0)=epoch0)', '~(first=node1)']
+213     : -0---0-----1--------------
+213     : ['le(epoch0,epoch1)', '~(ep(node0)=epoch1)', '~(first=node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 47 =====================
+size : 8
+num_suborbits: 2
+226 (*) : --1-0-0-------------------
+226     : ['(ep(node1)=epoch0)', '~(first=node0)', '~(firste=epoch0)']
+227     : ---10--0------------------
+227     : ['(ep(node1)=epoch1)', '~(first=node0)', '~(firste=epoch1)']
+228     : 1----00-------------------
+228     : ['(ep(node0)=epoch0)', '~(first=node1)', '~(firste=epoch0)']
+229     : -1---0-0------------------
+229     : ['(ep(node0)=epoch1)', '~(first=node1)', '~(firste=epoch1)']
+234 (*) : -1--0-0-------------------
+234     : ['(ep(node0)=epoch1)', '~(first=node0)', '~(firste=epoch0)']
+235     : 1---0--0------------------
+235     : ['(ep(node0)=epoch0)', '~(first=node0)', '~(firste=epoch1)']
+236     : ---1-00-------------------
+236     : ['(ep(node1)=epoch1)', '~(first=node1)', '~(firste=epoch0)']
+237     : --1--0-0------------------
+237     : ['(ep(node1)=epoch0)', '~(first=node1)', '~(firste=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 48 =====================
+size : 8
+num_suborbits: 2
+230 (*) : 0---0-0-------------------
+230     : ['~(ep(node0)=epoch0)', '~(first=node0)', '~(firste=epoch0)']
+231     : -0--0--0------------------
+231     : ['~(ep(node0)=epoch1)', '~(first=node0)', '~(firste=epoch1)']
+232     : --0--00-------------------
+232     : ['~(ep(node1)=epoch0)', '~(first=node1)', '~(firste=epoch0)']
+233     : ---0-0-0------------------
+233     : ['~(ep(node1)=epoch1)', '~(first=node1)', '~(firste=epoch1)']
+238 (*) : ---00-0-------------------
+238     : ['~(ep(node1)=epoch1)', '~(first=node0)', '~(firste=epoch0)']
+239     : --0-0--0------------------
+239     : ['~(ep(node1)=epoch0)', '~(first=node0)', '~(firste=epoch1)']
+240     : -0---00-------------------
+240     : ['~(ep(node0)=epoch1)', '~(first=node1)', '~(firste=epoch0)']
+241     : 0----0-0------------------
+241     : ['~(ep(node0)=epoch0)', '~(first=node1)', '~(firste=epoch1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 49
+
+[PRIME NOTE]: number of orbits before merging: 75
+
+[PRIME NOTE]: number of primes: 242
+
+[QRM NOTE]: Time elapsed since start: 6.701 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.072 seconds
+
+[QRM NOTE]: Peak memory: 1051494 bytes
+
+
+================================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/sym/ivy/distributed_lock.ivy: node=2,epoch=2]
+
+================================================================================================
+
+/home/jonahkel/QSM-Cutoff/env/lib/python3.12/site-packages/ivy/z3/z3core.py:5: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/home/jonahkel/QSM-Cutoff/env/lib/python3.12/site-packages/ivy/z3/z3core.py:5: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Traceback (most recent call last):
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/pydevd.py", line 3729, in <module>
+    main()
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/pydevd.py", line 3714, in main
+    globals = debugger.run(setup["file"], None, None, is_module)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/pydevd.py", line 2698, in run
+    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/pydevd.py", line 2706, in _exec
+    globals = pydevd_runpy.run_path(file, globals, "__main__")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 310, in run_path
+    return _run_module_code(code, init_globals, run_name, pkg_name=pkg_name, script_name=fname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 127, in _run_module_code
+    _run_code(code, mod_globals, init_globals, mod_name, mod_spec, pkg_name, script_name)
+  File "/home/jonahkel/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_runpy.py", line 118, in _run_code
+    exec(code, run_globals)
+  File "qrm.py", line 251, in <module>
+    qrm(sys.argv[1], sys.argv[2:])
+  File "qrm.py", line 210, in qrm
+    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, protocol.more_reach)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/QSM-Cutoff/minimize.py", line 71, in __init__
+    self.cover         = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC, dnf)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 45, in __init__
+    self._init_solvers(orbits)
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 240, in _init_solvers
+    self._init_axioms_formula()
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 170, in _init_axioms_formula
+    axiom_fmla_var = self.tseitin_encode(self.instantiator.axiom_fmla)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 94, in tseitin_encode
+    args = [self.tseitin_encode(arg, is_root) for arg in symbol.args]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 94, in tseitin_encode
+    args = [self.tseitin_encode(arg, is_root) for arg in symbol.args]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 94, in tseitin_encode
+    args = [self.tseitin_encode(arg, is_root) for arg in symbol.args]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jonahkel/QSM-Cutoff/cover_constraints.py", line 92, in tseitin_encode
+    assert(len(symbol.args) > 1) 
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+
+[QRM NOTE]: Exit with return code 1
+
+[QRM RESULT]: FAIL
+
+[QRM NOTE]: Time elapsed since start: 558.122 seconds
+
+[QRM NOTE]: Time elapsed since last: 558.122 seconds
+

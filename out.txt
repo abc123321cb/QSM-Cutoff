@@ -1,0 +1,62 @@
+{n0,n1,n2}
+
+Isolate this:
+
+    The inductive invariant consists of the following conjectures:
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 32: invar_0
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 33: invar_2
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 34: invar_3
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 35: invar_1
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 36: invar_4
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 37: invar_5
+
+    The following action implementations are present:
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 21: implementation of down
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 15: implementation of up
+
+    The following initializers are present:
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 10: init[after2]
+
+    Initialization must establish the invariant
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 32: invar_0 ... PASS
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 33: invar_2 ... PASS
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 34: invar_3 ... PASS
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 35: invar_1 ... PASS
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 36: invar_4 ... PASS
+        ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 37: invar_5 ... PASS
+
+    The following set of external actions must preserve the invariant:
+        (internal) ext:down
+            ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 32: invar_0 ... PASS
+            ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 33: invar_2 ... PASS
+            ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 34: invar_3 ... FAIL
+searching for a small model... done
+invariant [invar_3] forall NODE2,NODE0,NODE1. ~p(NODE1) | q(NODE2) | q(NODE1) | ~p(NODE0) | ((NODE0 = NODE1 & NODE0 ~= NODE2) | (NODE0 = NODE2 & NODE0 = NODE1)) # qcost: 11
+forall NODE2,NODE0,NODE1. ~p(NODE1) | q(NODE1) | ~p(NODE0) |
+
+p(node1) & p(node0) * ~q(node1)
+
+[
+    @NODE1 = n2
+    @NODE2 = n2
+    @NODE0 = n0
+]
+call down
+
+{
+    [
+        fml:y = n2
+        fml:x = n1
+    ]
+ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 22: 
+    assume [asrt4] (p(fml:x) & q(fml:y))
+
+ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 23: 
+    p(fml:x) := false
+
+ivybench/sym/ivy/McMillan_Example2.node_3.0.ivy: line 24: 
+    q(fml:y) := false
+
+}
+
+

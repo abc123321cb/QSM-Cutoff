@@ -48,6 +48,7 @@ class QrmOptions():
         self.time_start        = None
         self.time_stamp        = None
         self.python_include_path = '/usr/include/python3.12'
+        self.force_signature_inference = True
 
     def get_new_size_copy(self, new_size_str):
         options = QrmOptions()
@@ -155,8 +156,8 @@ class FormulaUtility():
             for arg in formula.args:
                 for flat_arg in FormulaUtility.flatten_and(arg):
                     flat.add(flat_arg)
-        elif (formula.is_not()):
-            formulaNeg = formula.arg[0]
+        elif isinstance(formula, il.Not):
+            formulaNeg = formula.args[0]
             if isinstance(formulaNeg, il.Or):
                 for arg in formulaNeg.args:
                     for flat_arg in FormulaUtility.flatten_or(arg):
