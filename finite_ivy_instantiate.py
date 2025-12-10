@@ -329,6 +329,10 @@ class FiniteIvyInstantiator():
         formula = self.recursive_simplify(formula)
         return formula
 
+
+    def get_instantiated_indep_vars(self):
+        return self._instantiated_indep_vars 
+
     def _set_definitions(self):
         def_map = self._tran_sys.definitions
         for def_ast in def_map.values():

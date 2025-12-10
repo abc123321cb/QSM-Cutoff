@@ -58,12 +58,14 @@ class DfsNode():
         self.ivy_state = ivy_state   # value string with delim ',': v0,v1,v2,...
 
 class StateOrbit():
-    def __init__(self, dfs_state, visit_id, state_atoms):
+    def __init__(self, dfs_state, visit_id, state_atoms, ivy_state, ivy_state_atoms):
         self.repr_state = dfs_state # first visited state in this orbit (not actually important for the algorithm and for printing only) 
         self.visit_id   = visit_id 
         self.states     = set()
         self.repr_int   = 0         # the minimum value in the orbit
         self.state_atoms = state_atoms
+        self.ivy_state = ivy_state
+        self.ivy_state_atoms = ivy_state_atoms
 
     def __str__(self) -> str:
         lines  = f'\n=== State Orbit {self.visit_id} =====================\n'
@@ -76,7 +78,7 @@ class StateOrbit():
         lines += '\n'
         for i, state in enumerate(self.states):
             lines+= f"State {i}:\n"
-            for atom, bit in zip(self.state_atoms, state):
+            for atom, bit in zip(self.ivy_state_atoms, self.ivy_state.split(",")):
                 lines+= f"{atom}: {bit}\n"
             lines+= "\n"
         return lines
@@ -139,7 +141,9 @@ class SymDFS(ForwardReachability):
         return node 
 
     def _add_dfs_explored_state(self, node):
-        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits), state_atoms=self.protocol.state_atoms)
+        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits), 
+                                 state_atoms=self.protocol.state_atoms, ivy_state=node.ivy_state,
+                                 ivy_state_atoms=self.instantiator.ivy_state_vars)
         values   = list(node.dfs_state)
         repr_int = int(node.dfs_state + self.dfs_immutable_state, 2)
 
@@ -185,10 +189,14 @@ class SymDFS(ForwardReachability):
         parent_repr = self._state2repr[parent_raw]
 
         pending_children = []
+
+        if action == "QRM_INIT_PROTOCOL":
+            self._total_order_initialize()
+            
         ivy_result       = self.ivy_executor.execute_ivy_action(action)
 
-        # if action == "QRM_INIT_PROTOCOL":
-        #     self._total_order_initialize()
+        if action == "QRM_INIT_PROTOCOL":
+            self._total_order_initialize()
 
 
         # 2. Handle the stream of INCOMPLETE successors 
@@ -236,26 +244,28 @@ class SymDFS(ForwardReachability):
         assert(self.protocol is not None)
         node = self._create_dfs_node()
         ivy_state = node.ivy_state.split(',')
-        dfs_state = list(node.dfs_state)
-        for atom_id, atom_fmla in enumerate(self.protocol.atoms_fmla): # type: ignore
-            atom_func = self.protocol.get_function_symbol_from_atom(atom_fmla)
-            if atom_func in self.tran_sys.axiom_symbols:
-                atom_func_name = atom_func.name
-                if atom_func_name == "le":
-                    # TODO: Check what the arguments of the atom are, and set to true/false accordingly.
-                    # Must somehow get list of possible values.
-                    pass
-                elif atom_func_name == "firste":
-                    pass
-                elif atom_func_name == "max":
-                    const = atom_fmla.args[1]
-                    max_const = self.tran_sys.sort2consts[const.sort][-1]
-                    if const == max_const:
-                        dfs_state[atom_id] = '1'
-                    else:
-                        dfs_state[atom_id] = '0'
- 
-        self.protocol.atoms_fmla
+        for var_id, var_name in enumerate(self.instantiator._instantiated_indep_vars): # type: ignore
+            var_func = self.protocol.get_function_symbol_from_atom(var_name)
+            if var_func in self.tran_sys.axiom_symbols:
+                var_func_name = var_func.name
+                if var_func_name == "le":
+                    first_arg = var_name.args[0]
+                    second_arg = var_name.args[1]
+                    first_arg_index = self.tran_sys.sort2consts[first_arg.sort].index(first_arg)
+                    second_arg_index = self.tran_sys.sort2consts[second_arg.sort].index(second_arg)
+                    ivy_state[var_id] = '1' if first_arg_index <= second_arg_index else '0'
+                elif var_func_name == "firste":
+                    first_const = self.tran_sys.sort2consts[var_name.sort][1]
+                    ivy_state[var_id] = first_const.name
+                elif var_func_name == "max":
+                    max_const = self.tran_sys.sort2consts[var_name.sort][-1]
+                    ivy_state[var_id] = max_const.name
+                elif var_func_name == "zero":
+                    zero_const = self.tran_sys.sort2consts[var_name.sort][0]
+                    ivy_state[var_id] = zero_const.name
+        node.ivy_state = ",".join(ivy_state)
+        self._restore_ivy_state(node)
+        
 
     
         
