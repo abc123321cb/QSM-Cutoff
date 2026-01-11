@@ -56,6 +56,7 @@ class FiniteIvyInstantiator():
         self.instantiated_def_map    = {}
         # axioms
         self.axiom_fmla = None
+        self.interpreted_axioms_str = []
 
         self._set_pretty_instantiations()
 
@@ -353,6 +354,62 @@ class FiniteIvyInstantiator():
             if not il.is_forall(axiom_fmla) and len(free_vars) > 0:
                 axiom_fmla = il.ForAll(free_vars, axiom_fmla)
             self.axiom_fmla = self.instantiate_quantifier(axiom_fmla)
+    
+    def _set_interpreted_axioms(self):
+        """
+        Generate axioms for interpreted symbols like ordering relations.
+        Creates axioms for:
+        - Total ordering on sorts with 'le' relation
+        - zero/max individuals
+        - Distinctness of enumerated constants
+        """
+        axioms = []
+        
+        # Find ordering relations and their sorts
+        for symbol in self._interpreted_vars:
+            symbol_str = str(symbol)
+            
+            # Check for ordering relation (le)
+            if (symbol_str == 'le' or 
+                symbol_str.endswith('.le') or 
+                symbol_str.startswith('le_')):
+                if hasattr(symbol.sort, 'dom') and len(symbol.sort.dom) == 2:
+                    if symbol.sort.dom[0] == symbol.sort.dom[1]:
+                        # Found a total order relation
+                        sort = symbol.sort.dom[0]
+                        sort_name = self._tran_sys.get_sort_name_from_finite_sort(sort)
+                        
+                        if sort in self._tran_sys.sort2consts:
+                            consts = self._tran_sys.sort2consts[sort]
+                            
+                            # Generate ordering axioms: le(c0, c1), le(c1, c2), ...
+                            for i in range(len(consts) - 1):
+                                le_atom = il.apply(symbol, [consts[i], consts[i+1]])
+                                axioms.append(str(le_atom))
+            
+            # Check for zero individual
+            elif symbol_str == 'zero' or symbol_str.endswith('.zero'):
+                if not hasattr(symbol.sort, 'dom') or len(symbol.sort.dom) == 0:
+                    sort = symbol.sort
+                    if sort in self._tran_sys.sort2consts:
+                        consts = self._tran_sys.sort2consts[sort]
+                        if len(consts) > 0:
+                            # zero = first_constant
+                            zero_eq = il.Equals(symbol, consts[0])
+                            axioms.append(str(zero_eq))
+            
+            # Check for max individual
+            elif symbol_str == 'max' or symbol_str.endswith('.max'):
+                if not hasattr(symbol.sort, 'dom') or len(symbol.sort.dom) == 0:
+                    sort = symbol.sort
+                    if sort in self._tran_sys.sort2consts:
+                        consts = self._tran_sys.sort2consts[sort]
+                        if len(consts) > 0:
+                            # max = last_constant
+                            max_eq = il.Equals(symbol, consts[-1])
+                            axioms.append(str(max_eq))
+        
+        self.interpreted_axioms_str = axioms
 
     def _set_pretty_instantiations(self):
         self._set_dfs_variables()
@@ -362,3 +419,4 @@ class FiniteIvyInstantiator():
         self._set_dependent_axioms()
         self._set_definitions()
         self._set_axioms()
+        self._set_interpreted_axioms()

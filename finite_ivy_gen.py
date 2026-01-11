@@ -171,6 +171,13 @@ class FiniteIvyGenerator():
         for axiom in axioms:
             FiniteIvyGenerator.lines.append('axiom ' +axiom+'\n')
 
+    def _add_interpreted_symbol_axiom_lines():
+        FiniteIvyGenerator.lines.append('\n')
+        FiniteIvyGenerator.lines.append('## Interpreted symbol axioms ##\n')
+        axioms = FiniteIvyGenerator.instantiator.interpreted_axioms_str
+        for axiom in axioms:
+            FiniteIvyGenerator.lines.append('axiom ' + axiom + '\n')
+
     def _add_access_action_lines():
         FiniteIvyGenerator.lines.append('\n')
         FiniteIvyGenerator.lines.append('## Access actions ##\n')
@@ -246,6 +253,7 @@ class FiniteIvyGenerator():
         FiniteIvyGenerator._set_lines_from_source_ivy()
         FiniteIvyGenerator._add_comment_lines()
         FiniteIvyGenerator._add_dependent_sort_axiom_lines()
+        FiniteIvyGenerator._add_interpreted_symbol_axiom_lines()
         FiniteIvyGenerator._add_access_action_lines()
         FiniteIvyGenerator._write_lines_to_finite_ivy()
 

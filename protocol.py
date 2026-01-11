@@ -396,4 +396,4 @@ class Protocol():
             return self.get_function_symbol_from_atom(atom_fmla.args[0])
         elif il.is_app(atom_fmla):
             return atom_fmla.func
-        raise AssertionError
+        raise AssertionError(f"Couldn't get function symbol from atom {atom_fmla}")

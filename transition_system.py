@@ -16,7 +16,8 @@ IA_If = getattr(ia, "IfAction", None) or getattr(ia, "If", None)
 registered_dependent_relations           = {}
 registered_dependent_relations['member'] = lambda elem_size : floor(elem_size/2) +1 # member selection function
 set_delim = SET_DELIM
-registered_interpreted_symbols           = set(['member'])
+registered_interpreted_symbols           = set(['member', 'le', 'zero', 
+                                                'max', 'firste', 'first'])
 registered_ordered_symbols = set(['le'])
 
 

@@ -200,13 +200,13 @@ class SymDFS(ForwardReachability):
 
         pending_children = []
 
-        if action == "QRM_INIT_PROTOCOL":
-            self._total_order_initialize()
+        # if action == "QRM_INIT_PROTOCOL":
+        #     self._total_order_initialize()
             
         ivy_result       = self.ivy_executor.execute_ivy_action(action)
 
-        if action == "QRM_INIT_PROTOCOL":
-            self._total_order_initialize()
+        # if action == "QRM_INIT_PROTOCOL":
+        #     self._total_order_initialize()
 
 
         # 2. Handle the stream of INCOMPLETE successors 
