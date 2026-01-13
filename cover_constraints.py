@@ -84,6 +84,21 @@ class CoverConstraints():
         if str(symbol) in self.symbol2var_num:
             return self.symbol2var_num[str(symbol)]
         else:
+            if len(symbol.args) == 0:
+                symbol_var = self.new_var()
+                self.symbol2var_num[str(symbol)] = symbol_var    # remember mapping
+                if isinstance(symbol, il.And):
+                    clause = [symbol_var]
+                elif isinstance(symbol, il.Or):
+                    clause = [-symbol_var]
+                else:
+                    clause = [symbol_var]   #Not sure this makes sense
+                if is_root:
+                    self.root_tseitin_clauses.append(clause)
+                else:
+                    self.instantiated_orbit_tseitin_clauses.append(clause)
+                return symbol_var
+
             if isinstance(symbol, il.Not):
                 return -1*self.tseitin_encode(symbol.args[0], is_root)
             if len(symbol.args) == 1:

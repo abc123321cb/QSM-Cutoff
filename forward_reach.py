@@ -58,11 +58,18 @@ class DfsNode():
         self.ivy_state = ivy_state   # value string with delim ',': v0,v1,v2,...
 
 class StateOrbit():
-    def __init__(self, dfs_state, visit_id):
+    def __init__(self, dfs_state, visit_id, state_atoms, ivy_state, ivy_state_atoms, protocol, tran_sys, instantiator):
         self.repr_state = dfs_state # first visited state in this orbit (not actually important for the algorithm and for printing only) 
+        self.repr_ivy_state = ivy_state
         self.visit_id   = visit_id 
-        self.states     = set()
+        self.states     = []
+        self.ivy_states = []
         self.repr_int   = 0         # the minimum value in the orbit
+        self.state_atoms = state_atoms
+        self.ivy_state_atoms = ivy_state_atoms
+        self.protocol = protocol
+        self.tran_sys = tran_sys
+        self.instantiator = instantiator
 
     def __str__(self) -> str:
         lines  = f'\n=== State Orbit {self.visit_id} =====================\n'
@@ -73,6 +80,15 @@ class StateOrbit():
         for state in self.states:
             lines += f'{state}\n'
         lines += '\n'
+        for i, ivy_state in enumerate(self.ivy_states):
+            lines+= f"State {i}:\n"
+            ivy_state = ivy_state.split(',')
+            for var_id, var_name in enumerate(self.instantiator._instantiated_indep_vars): # type: ignore
+                var_func = self.protocol.get_function_symbol_from_atom(var_name)
+                if var_func not in self.tran_sys.axiom_symbols:
+                    if ivy_state[var_id] != '0':
+                        lines+= f"{self.ivy_state_atoms[var_id]}: {ivy_state[var_id]}\n"
+            lines+= "\n"
         return lines
 
 class SymDFS(ForwardReachability):
@@ -133,7 +149,11 @@ class SymDFS(ForwardReachability):
         return node 
 
     def _add_dfs_explored_state(self, node):
-        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits))
+        state_orbit = StateOrbit(dfs_state=node.dfs_state, visit_id=len(self.dfs_state_orbits), 
+                                 state_atoms=self.protocol.state_atoms, ivy_state=node.ivy_state,
+                                 ivy_state_atoms=self.instantiator.ivy_state_vars,
+                                 tran_sys=self.tran_sys, protocol=self.protocol,
+                                 instantiator=self.instantiator)
         values   = list(node.dfs_state)
         repr_int = int(node.dfs_state + self.dfs_immutable_state, 2)
 
@@ -141,7 +161,8 @@ class SymDFS(ForwardReachability):
             nstate   = ''.join(nvalues)
             repr_int = min(int(nstate + self.dfs_immutable_state, 2), repr_int)
             self.dfs_explored_states.add(nstate)
-            state_orbit.states.add(nstate)
+            state_orbit.states.append(nstate)
+            state_orbit.ivy_states.append(self.dfs_state_to_ivy_state(nstate))
         
         self._register_state_orbit(node, repr_int)
         self.dfs_repr_states.append(repr_int)
@@ -179,7 +200,15 @@ class SymDFS(ForwardReachability):
         parent_repr = self._state2repr[parent_raw]
 
         pending_children = []
+
+        # if action == "QRM_INIT_PROTOCOL":
+        #     self._total_order_initialize()
+            
         ivy_result       = self.ivy_executor.execute_ivy_action(action)
+
+        # if action == "QRM_INIT_PROTOCOL":
+        #     self._total_order_initialize()
+
 
         # 2. Handle the stream of INCOMPLETE successors 
         while ivy_result == IVY_ACTION_INCOMPLETE:
@@ -212,6 +241,45 @@ class SymDFS(ForwardReachability):
 
         return pending_children
     
+
+    # Pseudocode:
+    # Loop over every atom:
+    #   If it's one of the totally-ordered ones (like le, zero, max),
+    #   then initialize it manually:
+    #       If it's le(epoch{i}, epoch{j}), set it to true iff i <= j
+    #       If it's max = epoch{i}, set it to true iff i = n
+    #       If it's zero = epoch{j}, set it to true iff j = 0
+
+
+    def _total_order_initialize(self):
+        assert(self.protocol is not None)
+        node = self._create_dfs_node()
+        ivy_state = node.ivy_state.split(',')
+        for var_id, var_name in enumerate(self.instantiator._instantiated_indep_vars): # type: ignore
+            var_func = self.protocol.get_function_symbol_from_atom(var_name)
+            if var_func in self.tran_sys.axiom_symbols:
+                var_func_name = var_func.name
+                if var_func_name == "le":
+                    first_arg = var_name.args[0]
+                    second_arg = var_name.args[1]
+                    first_arg_index = self.tran_sys.sort2consts[first_arg.sort].index(first_arg)
+                    second_arg_index = self.tran_sys.sort2consts[second_arg.sort].index(second_arg)
+                    ivy_state[var_id] = '1' if first_arg_index <= second_arg_index else '0'
+                elif var_func_name == "firste":
+                    first_const = self.tran_sys.sort2consts[var_name.sort][1]
+                    ivy_state[var_id] = first_const.name
+                elif var_func_name == "max":
+                    max_const = self.tran_sys.sort2consts[var_name.sort][-1]
+                    ivy_state[var_id] = max_const.name
+                elif var_func_name == "zero":
+                    zero_const = self.tran_sys.sort2consts[var_name.sort][0]
+                    ivy_state[var_id] = zero_const.name
+        node.ivy_state = ",".join(ivy_state)
+        self._restore_ivy_state(node)
+        
+
+
+    
     def _symmetric_quotient_depth_first_search_recur_node(self, node, level=0):
         vprint_title(self.options, f'level {level}', 5)
         vprint(self.options, node.dfs_state, 5)
@@ -228,6 +296,63 @@ class SymDFS(ForwardReachability):
         for initial_node in initial_nodes:
             self._symmetric_quotient_depth_first_search_recur_node(initial_node)
         
+
+    def dfs_state_to_ivy_state(self, dfs_state_bits: str) -> str:
+        """
+        Convert a dfs_state bitstring (length == self.protocol.state_atom_num)
+        into a comma-separated ivy_state string whose ordering matches
+        self.instantiator._instantiated_indep_vars / self.instantiator.ivy_state_vars.
+
+        Behavior:
+        - For an equality atom like `f(a)=c`: if the bit is '1', set f(a) -> 'c'.
+          (bits '0' mean "not that constant" and are ignored; only '1' sets a value.)
+        - For predicate (boolean) atoms like `p(a)`: '1' -> 'true', '0' -> 'false',
+          '-' -> '-'.
+        - If no equality atom sets a non-boolean variable, the corresponding
+          entry will be '-' (unknown / don't-care).
+        """
+        assert len(dfs_state_bits) == self.protocol.state_atom_num
+        # map from var (string form of an independent var, e.g. "ep(n0)")
+        # to its value (string)
+        var_values = {}
+
+        for atom_id, bit in enumerate(dfs_state_bits):
+            sig = self.protocol.atom_sig[atom_id]  # e.g. ['ep=', 'n0', 'epoch0'] or ['held', 'n0']
+            pred = sig[0]
+            if pred.endswith('='):  # equality atom: last entry is RHS value
+                func_name = pred[:-1]
+                args = sig[1:-1]
+                rhs = sig[-1]
+                # var key matches str(term) produced in instantiator._instantiated_indep_vars
+                if args:
+                    var_key = func_name + '(' + ','.join(args) + ')'
+                else:
+                    var_key = func_name
+                if bit == '1':
+                    # equality true => set function application to RHS
+                    var_values[var_key] = rhs
+                # bit == '0' gives only negative information; skip
+            else:
+                # boolean predicate
+                func_name = pred
+                args = sig[1:]
+                var_key = func_name + '(' + ','.join(args) + ')'
+                if bit == '1':
+                    var_values[var_key] = '1'
+                elif bit == '0':
+                    var_values[var_key] = '0'
+                else:
+                    var_values[var_key] = '-'
+
+        # build ivy_state list in the order of instantiated_indep_vars
+        ivy_state_vals = []
+        for var_term in self.instantiator._instantiated_indep_vars:  # type: ignore
+            key = str(var_term)
+            # instantiator.ivy_state_vars are built from these values by .replace('.', '__'),
+            # but we compare to raw str(var_term)
+            val = var_values.get(key, '-')
+            ivy_state_vals.append(val)
+        return ','.join(ivy_state_vals)    
     #------------------------------------------------------------
     # SymDFS: utils
     #------------------------------------------------------------

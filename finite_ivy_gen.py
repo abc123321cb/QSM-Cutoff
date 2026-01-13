@@ -130,6 +130,18 @@ class FiniteIvyGenerator():
         line = line + ' = {' + ', '.join(sort_elems) + '}\n'
         return line
 
+    def _get_set_max_line(sort_name):
+        sort = FiniteIvyGenerator.tran_sys.get_finite_sort_from_sort_name(sort_name)
+        sort_elems = FiniteIvyGenerator.tran_sys.get_sort_constants_str(sort)
+        line = f"\tmax := {sort_elems[-1]};\n"
+        return line
+    
+    def _get_set_zero_line(sort_name):
+        sort = FiniteIvyGenerator.tran_sys.get_finite_sort_from_sort_name(sort_name)
+        sort_elems = FiniteIvyGenerator.tran_sys.get_sort_constants_str(sort)
+        line = f"\tzero := {sort_elems[0]};\n"
+        return line
+
     def _set_lines_from_source_ivy():
         source_ivy = open(FiniteIvyGenerator.options.ivy_filename, 'r')
         for line in source_ivy.readlines():
@@ -138,6 +150,14 @@ class FiniteIvyGenerator():
                 sort = line.split(' ')[1]
                 line = FiniteIvyGenerator._get_finite_sort_line(line, sort)
             FiniteIvyGenerator.lines.append(line)
+            # if line.startswith("after init"):
+            #     max_sort_name = FiniteIvyGenerator.instantiator.ivy_non_bool_state_vars.get("max")
+            #     if max_sort_name is not None:
+            #         FiniteIvyGenerator.lines.append(FiniteIvyGenerator._get_set_max_line(max_sort_name))
+            #     zero_sort_name = FiniteIvyGenerator.instantiator.ivy_non_bool_state_vars.get("zero")
+            #     if zero_sort_name is not None:
+            #         FiniteIvyGenerator.lines.append(FiniteIvyGenerator._get_set_zero_line(zero_sort_name))
+
         source_ivy.close()
 
     def _add_comment_lines():
@@ -150,6 +170,13 @@ class FiniteIvyGenerator():
         axioms = FiniteIvyGenerator.instantiator.dep_axioms_str
         for axiom in axioms:
             FiniteIvyGenerator.lines.append('axiom ' +axiom+'\n')
+
+    def _add_interpreted_symbol_axiom_lines():
+        FiniteIvyGenerator.lines.append('\n')
+        FiniteIvyGenerator.lines.append('## Interpreted symbol axioms ##\n')
+        axioms = FiniteIvyGenerator.instantiator.interpreted_axioms_str
+        for axiom in axioms:
+            FiniteIvyGenerator.lines.append('axiom ' + axiom + '\n')
 
     def _add_access_action_lines():
         FiniteIvyGenerator.lines.append('\n')
@@ -226,6 +253,7 @@ class FiniteIvyGenerator():
         FiniteIvyGenerator._set_lines_from_source_ivy()
         FiniteIvyGenerator._add_comment_lines()
         FiniteIvyGenerator._add_dependent_sort_axiom_lines()
+        FiniteIvyGenerator._add_interpreted_symbol_axiom_lines()
         FiniteIvyGenerator._add_access_action_lines()
         FiniteIvyGenerator._write_lines_to_finite_ivy()
 

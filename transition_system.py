@@ -1,5 +1,5 @@
 from itertools import combinations as combinations
-from math import floor as floor 
+from math import floor as floor
 from ivy_parser import parse_ivy
 from ivy import ivy_logic as il
 from ivy import ivy_utils as iu
@@ -8,18 +8,23 @@ from ivy import ivy_actions as ia
 from util import QrmOptions, SET_DELIM, SET_ELEM_DELIM
 from verbose import *
 
+
 IA_If = getattr(ia, "IfAction", None) or getattr(ia, "If", None)
 #*************************************************************************
-# utils 
+# utils
 #*************************************************************************
 registered_dependent_relations           = {}
 registered_dependent_relations['member'] = lambda elem_size : floor(elem_size/2) +1 # member selection function
 set_delim = SET_DELIM
-registered_interpreted_symbols           = set(['member'])
+registered_interpreted_symbols           = set(['member', 'le', 'zero', 
+                                                'max', 'firste', 'first'])
+registered_ordered_symbols = set(['le'])
+
 
 #*************************************************************************
-# helpers 
+# helpers
 #*************************************************************************
+
 
 def get_enum_constant_names(sort_str, size):
     enum_const_names = []
@@ -28,12 +33,15 @@ def get_enum_constant_names(sort_str, size):
         enum_const_names.append(const_name)
     return enum_const_names
 
+
 def get_enum_sort(sort_str, enum_const_names):
     enum_sort = il.EnumeratedSort(sort_str,enum_const_names)
     return enum_sort
 
+
 def get_enum_constants(enum_sort):
     return enum_sort.constructors
+
 
 #*************************************************************************
 # class: DependentType
@@ -56,26 +64,31 @@ class DependentType():
             for elem in elems_in_set:
                 labels.append(str(elem))
             labels.sort()
-            set_label = label_header + SET_DELIM +  SET_ELEM_DELIM.join(labels) 
+            set_label = label_header + SET_DELIM +  SET_ELEM_DELIM.join(labels)
             self.sets.append((set_label, elems_in_set))
+
 
     def set_dep_relation(self, dep_relation):
         self.dep_relation = dep_relation  # e.g. "member"
 
+
     def set_set_sort(self, set_sort):
         self.set_sort     = set_sort      # e.g. "quorum"
 
+
     def get_elements_in_set(self, set_id):
         return  self.sets[set_id][1]
-    
+   
     def get_set_label(self, set_id):
         return  self.sets[set_id][0]
+
 
     def get_set_labels(self):
         labels = []
         for set_obj in self.sets:
             labels.append(set_obj[0])
         return labels
+
 
 #*************************************************************************
 # class: TransistionSystem
@@ -93,20 +106,24 @@ class TransitionSystem():
         # symbols & formulas
         self.symbols          = set()  # all declared symbols
         self.definitions      = dict() # definition symbols to Definition ast
-        self.axiom_fmla       = None 
+        self.axiom_fmla       = None
         self.axiom_symbols    = set()  # symbols that appear in axioms, e.g. member, le
         self.state_symbols    = set()  # state variables (symbols that are un-interpreted)
         self.interpreted_symbols = set() # symbols whose values are interpreted (due to axioms), e.g. member, le
         # dependent sorts
-        self.dep_types        = dict() # "quorum" to quorum meta data (e.g. "member", "node" ...) 
+        self.dep_types        = dict() # "quorum" to quorum meta data (e.g. "member", "node" ...)
         # actions
-        self.exported_action_symbols = [] 
-        self.init_actions     = {} 
-        self.exported_actions = {} 
+        self.exported_action_symbols = []
+        self.init_actions     = {}
+        self.exported_actions = {}
         # safety
         self.safety_properties= []
 
+        self.ordered_sorts = dict()
+
+
         self._initialize()
+
 
     def _init_sort(self, sort_str, sort, size):
         assert(size > 0)
@@ -120,6 +137,7 @@ class TransitionSystem():
         self.sort_inf2fin[sort]      = enum_sort
         self.sort_fin2inf[enum_sort] = sort
 
+
     def _init_sorts(self):
         for sort_str, sort in self.ivy_module.sig.sorts.items():
             size = 0
@@ -131,6 +149,7 @@ class TransitionSystem():
                 size = self.options.sizes[sort_str]
             if size > 0:
                 self._init_sort(sort_str, sort, size)
+
 
     def _init_dependent_sort(self,  dep_relation):
         assert(len(dep_relation.sort.dom) == 2)
@@ -145,11 +164,12 @@ class TransitionSystem():
         self.sorts[set_sort.name]          = enum_sort
         self.sort2consts[enum_sort]        = enum_consts
         self.sort_inf2fin[set_sort]        = enum_sort
-        self.sort_fin2inf[enum_sort]       = set_sort 
+        self.sort_fin2inf[enum_sort]       = set_sort
         fininte_dep_relation = ilu.resort_symbol(dep_relation, self.sort_inf2fin)
         dep_type.set_dep_relation(fininte_dep_relation)
         dep_type.set_set_sort(enum_sort)
         self.dep_types[enum_sort] = dep_type
+
 
     def _init_dependent_sorts(self):
        for symbol in self.ivy_module.sig.symbols.values():
@@ -160,6 +180,39 @@ class TransitionSystem():
                 if set_sort.name not in self.options.sizes:
                     assert(elem_sort.name in self.options.sizes)
                     self._init_dependent_sort(dep_relation=symbol)
+        
+   
+
+    def _init_ordered_sorts(self):
+        """
+        Finds totally ordered sorts.
+
+        Iterates through each function a.k.a. symbol, and checks if they're ordered.
+        To be ordered, it must contain the name of a registered ordered symbol (e.g. "le"),
+        and contain two identical sorts. That sort is thus marked as ordered.       
+        """
+        
+        for symbol in self.ivy_module.sig.symbols.values():
+            for ordered_symbol in registered_ordered_symbols:
+                # Check if symbol name matches
+                if (str(symbol) == ordered_symbol or
+                    str(symbol).endswith(f".{ordered_symbol}") or
+                    str(symbol).startswith(f"{ordered_symbol}_")):
+                    # Check if it's a binary relation with identical sorts
+                    if (hasattr(symbol.sort, 'dom') and
+                        len(symbol.sort.dom) == 2 and
+                        symbol.sort.dom[0] == symbol.sort.dom[1]):
+                        # Mark the sort as ordered
+                        sort = symbol.sort.dom[0]
+                        self.ordered_sorts[sort.name] = sort
+        
+        vprint(self.options, f"Ordered sorts:", 5)
+        for name in self.ordered_sorts.keys():
+            vprint(self.options, f"{name}")
+
+
+
+
 
     def _init_symbols(self):
         for symbol in self.ivy_module.sig.symbols.values():
@@ -170,6 +223,7 @@ class TransitionSystem():
             finite_symbol = ilu.resort_symbol(symbol, self.sort_inf2fin)
             self.symbols.add(finite_symbol)
 
+
     def _init_definitions(self):
         for update in self.ivy_module.updates:
             if type(update) == ia.DerivedUpdate:
@@ -177,14 +231,16 @@ class TransitionSystem():
                 finite_defn = ilu.resort_ast(defn, self.sort_inf2fin)
                 self.definitions[finite_defn.defines()] = finite_defn
 
+
     def _init_axioms(self):
         fmlas = []
         for fmla in self.ivy_module.axioms:
             fmlas.append(fmla)
-        axiom_fmla = il.And(*fmlas) 
+        axiom_fmla = il.And(*fmlas)
         axiom_fmla = ilu.resort_ast(axiom_fmla, self.sort_inf2fin)
         self.axiom_fmla = axiom_fmla
         self.axiom_symbols.update(ilu.used_symbols_ast(axiom_fmla))
+
 
     def _init_state_symbols(self):
         for symbol in self.symbols:
@@ -192,6 +248,7 @@ class TransitionSystem():
                 self.state_symbols.add(symbol)
             else:
                 self.interpreted_symbols.add(symbol)
+
 
     def _init_actions(self):
         exports = set([str(export) for export in self.ivy_module.exports])
@@ -204,16 +261,18 @@ class TransitionSystem():
             finite_action = ilu.resort_ast(action, self.sort_inf2fin)
             if action_name in exports:
                 self.exported_action_symbols.append(action_symbol)
-                self.exported_actions[apply_action_symbol] = finite_action 
+                self.exported_actions[apply_action_symbol] = finite_action
             else:
-                self.init_actions[apply_action_symbol] = finite_action 
+                self.init_actions[apply_action_symbol] = finite_action            
+
 
     def _init_safety_properties(self):
         self.safety_properties = [ilu.resort_ast(il.close_formula(conj.formula), self.sort_inf2fin) for conj in self.ivy_module.labeled_conjs]
 
+
     def _get_action_formula_recur(self, action, params=set()):
         if isinstance(action, ia.Sequence):
-           action_fmlas = [self._get_action_formula_recur(a, params) for a in action.args] 
+           action_fmlas = [self._get_action_formula_recur(a, params) for a in action.args]
            return il.And(*action_fmlas)
         elif isinstance(action, ia.AssertAction) or isinstance(action, ia.AssumeAction):
             assert(hasattr(action, 'formula'))
@@ -222,24 +281,24 @@ class TransitionSystem():
             lhs = action.args[0]
             rhs = action.args[1]
             lhs_vars = ilu.used_variables_ast(lhs)            
-            consts    = ilu.used_constants_ast(lhs) 
+            consts    = ilu.used_constants_ast(lhs)
             consts    = consts.intersection(params)
             var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
             const2var = {c:v for v,c in var2const.items()}
             lhs       = il.substitute(lhs, const2var)
             if_fmla   = il.And(*[il.Equals(v,c) for v,c in var2const.items()])
             then_fmla = rhs
-            else_fmla = lhs 
+            else_fmla = lhs
             next_lhs  = il.substitute(lhs, self.curr2next)
             fmla = il.Equals(next_lhs, il.Ite(if_fmla, then_fmla, else_fmla))
             all_vars = list(lhs_vars) + list(var2const.keys())
             if len(all_vars) > 0:
                 fmla = il.ForAll(all_vars, fmla)
-            return fmla 
+            return fmla
         elif isinstance(action, ia.HavocAction):
             lhs = action.args[0]
             lhs_vars = ilu.used_variables_ast(lhs)            
-            consts    = ilu.used_constants_ast(lhs) 
+            consts    = ilu.used_constants_ast(lhs)
             consts    = consts.intersection(params)
             var2const = {il.Variable(f'{const.sort.name.upper()}{i}', const.sort):const for i,const in enumerate(consts)}
             const2var = {c:v for v,c in var2const.items()}
@@ -255,7 +314,7 @@ class TransitionSystem():
                 fmla = il.ForAll(all_vars, fmla) if len(all_vars) > 0 else fmla
                 fmlas.append(fmla)
             return il.And(*fmlas)
-        
+       
         elif IA_If and isinstance(action, IA_If):
             # action.args = (cond, then_act[, else_act])
             # cond is a *current-state* formula
@@ -273,13 +332,15 @@ class TransitionSystem():
                 il.Implies(il.Not(cond), else_fmla),
             )
 
+
         else:
             # unsupported action type if you need to add support for more action types, please do so here
             raise iu.IvyError(None, f'Cannot handle action {action} of type {type(action)}')
 
+
     def _get_action_assign_symbols(self, action):
         if isinstance(action, ia.Sequence):
-            lhs = set() 
+            lhs = set()
             for a in action.args:
                 lhs.update(self._get_action_assign_symbols(a))
             return lhs
@@ -290,25 +351,27 @@ class TransitionSystem():
         else:
             return set()
 
+
     def _update_action_non_changing_fmlas(self, action, action_fmla):
         assign_symbols = self._get_action_assign_symbols(action)
         fmlas = [action_fmla]
         for state_symbol in self.state_symbols:
-            if state_symbol not in assign_symbols and state_symbol not in self.definitions: 
+            if state_symbol not in assign_symbols and state_symbol not in self.definitions:
                 state_var   = state_symbol
                 argvars     = []
                 if il.is_function_sort(state_symbol.sort):
-                    argvars     = [il.Variable(f'{sort.name.upper()}{i}', sort) for i, sort in enumerate(state_symbol.sort.dom)] 
+                    argvars     = [il.Variable(f'{sort.name.upper()}{i}', sort) for i, sort in enumerate(state_symbol.sort.dom)]
                     state_var   = il.App(state_symbol, *argvars)
                 next_state_var = il.substitute(state_var, self.curr2next)
                 fmla = il.Equals(next_state_var, state_var)
                 if len(argvars) > 0:
-                    fmla = il.ForAll(argvars, fmla) 
+                    fmla = il.ForAll(argvars, fmla)
                 fmlas.append(fmla)
-        return il.And(*fmlas) 
+        return il.And(*fmlas)
+
 
     def _init_transition_relation(self):
-        self.curr2next = {symb:il.Symbol('next_'+symb.name, symb.sort) for symb in self.state_symbols} 
+        self.curr2next = {symb:il.Symbol('next_'+symb.name, symb.sort) for symb in self.state_symbols}
         action_fmlas = []
         for action_symbol, action in self.exported_actions.items():
             action_fmla   = self._get_action_formula_recur(action, params=set(action_symbol.args))
@@ -319,6 +382,7 @@ class TransitionSystem():
                 action_fmla   = il.Exists(list(const2var.values()), action_fmla)
             action_fmlas.append(action_fmla)
         self.transition_relation = il.Or(*action_fmlas)
+
 
     def _initialize(self):
         with self.ivy_module.theory_context():
@@ -331,6 +395,8 @@ class TransitionSystem():
             self._init_actions()
             self._init_safety_properties()
             self._init_transition_relation()
+            self._init_ordered_sorts()
+
 
     #------------------------------------------------------------
     # TransitionSystem: public access methods
@@ -338,42 +404,53 @@ class TransitionSystem():
     def get_sort_name_from_finite_sort(self, sort):
         return sort.name
 
+
     def get_finite_sort_from_sort_name(self, sort_name):
         return self.sorts[sort_name]
 
+
     def get_state_variables(self):
-        return self.state_symbols 
+        return self.state_symbols
+
 
     def get_sort_size(self, sort):
         sort_name = self.get_sort_name_from_finite_sort(sort)
         return self.options.sizes[sort_name]
 
+
     def get_dependent_relation(self, set_sort):
         dep_type  = self.dep_types[set_sort]
         return dep_type.dep_relation
+
 
     def get_dependent_element_sort(self, set_sort):
         dep_type  = self.dep_types[set_sort]
         return dep_type.elem_sort
 
+
     def get_dependent_elements(self, set_sort):
         elem_sort = self.get_dependent_element_sort(set_sort)
         return self.sort2consts[elem_sort]
 
+
     def get_dependent_sets(self, set_sort):
         return self.sort2consts[set_sort]
 
+
     def get_dependent_elements_in_set(self, set_sort, set_id):
         return self.dep_types[set_sort].get_elements_in_set(set_id)
+
 
     def get_set_label(self, set_sort, set_id):
         # e.g. quorum_node0_node1
         return self.dep_types[set_sort].get_set_label(set_id)
 
+
     def get_sort_constants_str(self, sort):
         consts = self.sort2consts[sort]
         consts_str = [str(const) for const in consts]
         return consts_str
+
 
     #------------------------------------------------------------
     # TransitionSystem: update methods
@@ -396,7 +473,7 @@ class TransitionSystem():
         for constraint in constraints:
             consts    = ilu.used_constants_ast(constraint)
             const2var = {}
-            for const in consts: 
+            for const in consts:
                 if il.is_enumerated(const):
                     const2var[const] = il.Variable(const.sort.name.upper(), const.sort)
             constraint = ilu.substitute_constants_ast(constraint, const2var)
@@ -405,7 +482,10 @@ class TransitionSystem():
         self.atom_equivalence_constraints        = constraints
         self.closed_atom_equivalence_constraints = closed_constraints
 
-def get_transition_system(options, ivy_filename): 
+
+def get_transition_system(options, ivy_filename):
     module   = parse_ivy(options, ivy_filename)
     tran_sys = TransitionSystem(options, module)
     return tran_sys
+
+

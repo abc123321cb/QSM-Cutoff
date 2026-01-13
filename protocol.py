@@ -196,7 +196,8 @@ class Protocol():
         for sort_id, constants in enumerate(self.sort_constants):
             sort_name     = self.sorts[sort_id]
             const_id_list = tuple(range(len(constants)))
-            if tran_sys.get_finite_sort_from_sort_name(sort_name) in tran_sys.dep_types:
+            if (tran_sys.get_finite_sort_from_sort_name(sort_name) in tran_sys.dep_types
+                or sort_name in tran_sys.ordered_sorts):
                 all_sorts_permutations.append([const_id_list])
             else:
                 sort_permutations = permutations(const_id_list)
@@ -387,3 +388,12 @@ class Protocol():
             if nvalues and new_insert(nvalues, values_hash):
                 values_list.append(nvalues)
         return values_list 
+    
+    def get_function_symbol_from_atom(self, atom_fmla):
+        if il.is_constant(atom_fmla):
+            return atom_fmla
+        elif il.is_eq(atom_fmla):
+            return self.get_function_symbol_from_atom(atom_fmla.args[0])
+        elif il.is_app(atom_fmla):
+            return atom_fmla.func
+        raise AssertionError(f"Couldn't get function symbol from atom {atom_fmla}")
