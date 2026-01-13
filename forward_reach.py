@@ -86,7 +86,8 @@ class StateOrbit():
             for var_id, var_name in enumerate(self.instantiator._instantiated_indep_vars): # type: ignore
                 var_func = self.protocol.get_function_symbol_from_atom(var_name)
                 if var_func not in self.tran_sys.axiom_symbols:
-                    lines+= f"{self.ivy_state_atoms[var_id]}: {ivy_state[var_id]}\n"
+                    if ivy_state[var_id] != '0':
+                        lines+= f"{self.ivy_state_atoms[var_id]}: {ivy_state[var_id]}\n"
             lines+= "\n"
         return lines
 
