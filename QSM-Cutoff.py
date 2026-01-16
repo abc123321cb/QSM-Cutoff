@@ -47,7 +47,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whn", ["graph"])
+        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whny", ["graph"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()

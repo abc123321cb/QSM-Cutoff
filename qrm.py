@@ -30,6 +30,7 @@ def usage ():
     print('-u           enumerate MUS for strengnthening assertions using MARCO (default: naive enumeration)')
     print('-r           read reachability from .reach file instead of doing forward reachability (default: off)')
     print('-b           use bdd-based symbolic image computation to compute reachable states (default: off, use SymDFS)')
+    print('-y           curry ordered sorts (for epoch-based protocols) (default: off)')
     print('-e           minimize equality constraints for orbit families (default: off)')
     print('-t           early termination for reachability check (default: off)')
     print('-a           disable find all minimal solutions (default: on)')
@@ -61,7 +62,7 @@ def file_exist(filename) -> bool:
 # large if else chain setting booleans
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgn", ["graph"])
+        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgny", ["graph"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -85,6 +86,8 @@ def get_options(ivy_name, args):
             options.readReach = True
         elif optc == '-b':
             options.forward_mode = ForwardMode.BDD_Symbolic
+        elif optc == '-y':
+            options.curry_ordered_sorts = True
         elif optc == '-e':
             options.minimize_equality = True
         elif optc == '-t':
@@ -199,19 +202,25 @@ def qrm(ivy_name, args):
         protocol.reduce_equivalent_atoms(tran_sys)
         options.step_end()
 
-    # generate prime orbits
+    # curry ordered sorts (create curried copy for prime generation)
+    if options.curry_ordered_sorts:
+        options.step_start('Curry Ordered Sorts')
+        curried_protocol = protocol.curry_ordered_sorts(tran_sys)
+        options.step_end()
+
+    # generate prime orbits (using curried protocol if enabled)
     options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.ivy_filename}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options)
-    prime_orbits.symmetry_aware_enumerate(protocol)               
+    prime_orbits.symmetry_aware_enumerate(curried_protocol)               
     options.step_end()
 
     # reduction
     options.step_start(f'[RED]: PRIME REDUCTION on [{options.ivy_filename}: {options.size_str}]')
-    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, protocol.more_reach)
+    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, curried_protocol.more_reach)
     minimizer.reduce_redundant_prime_orbits()
     options.step_end()
 
-    # quantifier inference
+    # quantifier inference (using original protocol's atoms)
     options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
     minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
     options.step_end()

@@ -397,3 +397,164 @@ class Protocol():
         elif il.is_app(atom_fmla):
             return atom_fmla.func
         raise AssertionError(f"Couldn't get function symbol from atom {atom_fmla}")
+
+    #------------------------------------------------------------
+    # Protocol: curry methods 
+    #------------------------------------------------------------
+    
+    def curry_ordered_sorts(self, tran_sys: TransitionSystem) -> 'Protocol':
+        """
+        Create a curried copy of this protocol with ordered sorts flattened.
+        
+        For atoms like voted(epoch, node):
+        - voted(epoch0, node) → voted_epoch0(node)
+        - voted(epoch1, node) → voted_epoch1(node)
+        
+        Returns a new Protocol with curried atom names. The original protocol is unchanged.
+        
+        Returns:
+            Protocol: A new protocol with curried state atoms, or self if no currying needed.
+        """
+        if not tran_sys.ordered_sorts:
+            vprint(self.options, "[CURRY]: No ordered sorts detected, skipping curry", 3)
+            return self
+        
+        vprint_title(self.options, 'Currying Ordered Sorts', 3)
+        
+        # Step 1: Identify atoms to curry and build currying map
+        curry_map = self._build_curry_map(tran_sys)
+        
+        if not curry_map:
+            vprint(self.options, "[CURRY]: No atoms need currying", 3)
+            return self
+        
+        # Step 2: Create a deep copy of the protocol
+        # Note: options contains file handles that can't be deepcopied
+        curried = self._deep_copy()
+        
+        # Step 3: Update atom metadata with curried names in the copy
+        curried._apply_curry_map(curry_map, tran_sys)
+        
+        vprint(self.options, f"[CURRY]: Curried {len(curry_map)} atoms", 3)
+        vprint(self.options, f"[CURRY]: State atom count unchanged: {curried.state_atom_num}", 3)
+        
+        return curried
+    
+    def _build_curry_map(self, tran_sys: TransitionSystem) -> Dict:
+        """
+        Build mapping from original atom_id to its curried form.
+        
+        Each atom maps to exactly one curried atom based on which epoch constant it contains.
+        Example: transfer(epoch0, node0) → transfer_epoch0(node0)
+        
+        Returns:
+            Dict[int, Tuple]: Maps atom_id -> (curried_atom_name, curried_pred, curried_args)
+        """
+        curry_map = {}
+        ordered_sort_names = set(tran_sys.ordered_sorts.keys())
+        
+        for atom_id, atom_sig in enumerate(self.atom_sig):
+            if atom_id >= self.state_atom_num:
+                break  # Only curry state atoms, not interpreted atoms
+            
+            pred_name = atom_sig[0]
+            args = atom_sig[1:]
+            
+            # Find ordered sort arguments
+            ordered_arg_idx = None
+            ordered_const = None
+            
+            for arg_idx, arg in enumerate(args):
+                # Check if this argument is from an ordered sort
+                for sort_name in ordered_sort_names:
+                    sort_consts = self.sort_constants[self.sort_Name2Id[sort_name]]
+                    if arg in sort_consts:
+                        ordered_arg_idx = arg_idx
+                        ordered_const = arg
+                        break
+                if ordered_const:
+                    break
+            
+            # Only curry if atom has exactly one ordered-sort argument
+            if ordered_const is not None and ordered_arg_idx is not None:
+                # Create curried name: pred_epoch0, pred_epoch1, etc.
+                curried_pred = f"{pred_name}_{ordered_const}"
+                
+                # Build curried args (remove ordered arg)
+                curried_args = args[:ordered_arg_idx] + args[ordered_arg_idx+1:]
+                
+                # Create full curried atom name
+                if curried_args:
+                    curried_atom = curried_pred + '(' + ','.join(curried_args) + ')'
+                else:
+                    curried_atom = curried_pred
+                
+                curry_map[atom_id] = (curried_atom, curried_pred, curried_args)
+        
+        return curry_map
+    
+    def _apply_curry_map(self, curry_map: Dict, tran_sys: TransitionSystem):
+        """
+        Apply the curry map to update atom metadata with curried names.
+        This modifies self in-place (used on a copy).
+        """
+        # Build new state atoms list and signature
+        new_state_atoms = []
+        new_state_atoms_fmla = []
+        new_atom_sig = []
+        new_atom_Name2Id = {}
+        new_predicates = self.predicates.copy()
+        
+        for atom_id in range(self.state_atom_num):
+            if atom_id in curry_map:
+                # This atom gets curried (renamed)
+                curried_atom, curried_pred, curried_args = curry_map[atom_id]
+                new_state_atoms.append(curried_atom)
+                new_state_atoms_fmla.append(self.state_atoms_fmla[atom_id])
+                new_atom_sig.append([curried_pred] + curried_args)
+                new_atom_Name2Id[curried_atom] = atom_id
+                
+                # Add curried predicate to predicates dict if not already there
+                if curried_pred not in new_predicates:
+                    # Get the argument sorts for the curried predicate (without the ordered sort)
+                    orig_pred = self.atom_sig[atom_id][0]
+                    if orig_pred in self.predicates:
+                        orig_arg_sorts = self.predicates[orig_pred]
+                        # Find which argument was the ordered sort and remove it
+                        ordered_sort_names = set(tran_sys.ordered_sorts.keys())
+                        curried_arg_sorts = []
+                        for sort in orig_arg_sorts:
+                            if sort not in ordered_sort_names:
+                                curried_arg_sorts.append(sort)
+                        new_predicates[curried_pred] = tuple(curried_arg_sorts)
+            else:
+                # This atom stays as-is
+                new_state_atoms.append(self.state_atoms[atom_id])
+                new_state_atoms_fmla.append(self.state_atoms_fmla[atom_id])
+                new_atom_sig.append(self.atom_sig[atom_id])
+                new_atom_Name2Id[self.state_atoms[atom_id]] = atom_id
+        
+        # State strings remain unchanged - same number of atoms, just renamed
+        # No need to modify reachable_states
+        
+        # Update protocol metadata
+        self.state_atoms = new_state_atoms
+        self.state_atoms_fmla = new_state_atoms_fmla
+        self.atom_sig = new_atom_sig + self.atom_sig[self.state_atom_num:]  # Keep interpreted atoms
+        self.atom_Name2Id = new_atom_Name2Id
+        self.predicates = new_predicates
+        # state_atom_num stays the same
+        
+        # Update combined atom lists
+        self.atoms = self.state_atoms + self.interpreted_atoms
+        self.atoms_fmla = self.state_atoms_fmla + self.interpreted_atoms_fmla
+        # atom_num stays the same
+
+    def _deep_copy(self):
+        import copy
+        saved_options = self.options
+        self.options = None  # Temporarily remove to avoid deepcopy issues
+        curried = copy.deepcopy(self)
+        self.options = saved_options  # Restore
+        curried.options = saved_options  # Share the same options (read-only)
+        return curried

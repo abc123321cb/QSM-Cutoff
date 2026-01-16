@@ -40,6 +40,7 @@ class QrmOptions():
         self.merge_suborbits   = True 
         self.minimize_equality = False
         self.convergence_check = False 
+        self.curry_ordered_sorts = False
         self.make_graph: bool  = False
         self.ivy_check         = True
         self.ivy_to            = 120 
