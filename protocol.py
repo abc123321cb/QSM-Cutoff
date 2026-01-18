@@ -65,7 +65,7 @@ class Protocol():
         self.sort_constants   : List[List[str]]      = [] # sort id -> constant names
         self.sort_Name2Id     : Dict[str,int]        = {} # sort name -> sort id
         self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
-        self.predicates       : Dict[str,List[str]]  = {} # (function/constant name, [argsort1, argsort2, ..])
+        self.predicates       : Dict[str,tuple[str, ...]]  = {} # (function/constant name, [argsort1, argsort2, ..])
         self.atom_num         : int                  = 0
         self.state_atom_num     : int                = 0  # = total amount of bits needed to repersent the state.
         self.interpreted_atom_num : int              = 0
@@ -429,14 +429,13 @@ class Protocol():
             return self
         
         # Step 2: Create a deep copy of the protocol
-        # Note: options contains file handles that can't be deepcopied
         curried = self._deep_copy()
         
         # Step 3: Update atom metadata with curried names in the copy
         curried._apply_curry_map(curry_map, tran_sys)
         
-        vprint(self.options, f"[CURRY]: Curried {len(curry_map)} atoms", 3)
-        vprint(self.options, f"[CURRY]: State atom count unchanged: {curried.state_atom_num}", 3)
+        vprint(self.options, f"[CURRY]: curried {len(curry_map)} atoms", 3)
+        vprint(self.options, f"[CURRY]: curried state atoms: {self.state_atoms}")
         
         return curried
     
@@ -478,7 +477,11 @@ class Protocol():
             # Only curry if atom has exactly one ordered-sort argument
             if ordered_const is not None and ordered_arg_idx is not None:
                 # Create curried name: pred_epoch0, pred_epoch1, etc.
-                curried_pred = f"{pred_name}_{ordered_const}"
+                # If the predicate is an equality, ensure the equal sign stays at the end.
+                if pred_name[-1] == '=':
+                    curried_pred = f"{pred_name[:-1]}_{ordered_const}"
+                else:
+                    curried_pred = f"{pred_name}_{ordered_const}"
                 
                 # Build curried args (remove ordered arg)
                 curried_args = args[:ordered_arg_idx] + args[ordered_arg_idx+1:]
@@ -500,7 +503,6 @@ class Protocol():
         """
         # Build new state atoms list and signature
         new_state_atoms = []
-        new_state_atoms_fmla = []
         new_atom_sig = []
         new_atom_Name2Id = {}
         new_predicates = self.predicates.copy()
@@ -510,7 +512,6 @@ class Protocol():
                 # This atom gets curried (renamed)
                 curried_atom, curried_pred, curried_args = curry_map[atom_id]
                 new_state_atoms.append(curried_atom)
-                new_state_atoms_fmla.append(self.state_atoms_fmla[atom_id])
                 new_atom_sig.append([curried_pred] + curried_args)
                 new_atom_Name2Id[curried_atom] = atom_id
                 
@@ -530,7 +531,6 @@ class Protocol():
             else:
                 # This atom stays as-is
                 new_state_atoms.append(self.state_atoms[atom_id])
-                new_state_atoms_fmla.append(self.state_atoms_fmla[atom_id])
                 new_atom_sig.append(self.atom_sig[atom_id])
                 new_atom_Name2Id[self.state_atoms[atom_id]] = atom_id
         
@@ -539,7 +539,6 @@ class Protocol():
         
         # Update protocol metadata
         self.state_atoms = new_state_atoms
-        self.state_atoms_fmla = new_state_atoms_fmla
         self.atom_sig = new_atom_sig + self.atom_sig[self.state_atom_num:]  # Keep interpreted atoms
         self.atom_Name2Id = new_atom_Name2Id
         self.predicates = new_predicates
