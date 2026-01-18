@@ -554,7 +554,7 @@ class Protocol():
         import copy
         saved_options = self.options
         self.options = None  # Temporarily remove to avoid deepcopy issues
-        curried = copy.deepcopy(self)
+        protocol_copy = copy.deepcopy(self)
         self.options = saved_options  # Restore
-        curried.options = saved_options  # Share the same options (read-only)
-        return curried
+        protocol_copy.options = saved_options  # Share the same options (read-only)
+        return protocol_copy
