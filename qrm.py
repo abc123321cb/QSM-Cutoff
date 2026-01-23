@@ -207,6 +207,8 @@ def qrm(ivy_name, args):
         options.step_start('Curry Ordered Sorts')
         curried_protocol = protocol.curry_ordered_sorts(tran_sys)
         options.step_end()
+    else:
+        curried_protocol = protocol
 
     # generate prime orbits (using curried protocol if enabled)
     options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.ivy_filename}: {options.size_str}]')
@@ -220,9 +222,9 @@ def qrm(ivy_name, args):
     minimizer.reduce_redundant_prime_orbits()
     options.step_end()
 
-    # quantifier inference (using original protocol's atoms)
+    # quantifier inference
     options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
-    minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
+    minimizer.quantifier_inference(instantiator, curried_protocol.state_atoms_fmla)
     options.step_end()
 
     # minimization

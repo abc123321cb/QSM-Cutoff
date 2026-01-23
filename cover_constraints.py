@@ -84,21 +84,6 @@ class CoverConstraints():
         if str(symbol) in self.symbol2var_num:
             return self.symbol2var_num[str(symbol)]
         else:
-            if len(symbol.args) == 0:
-                symbol_var = self.new_var()
-                self.symbol2var_num[str(symbol)] = symbol_var    # remember mapping
-                if isinstance(symbol, il.And):
-                    clause = [symbol_var]
-                elif isinstance(symbol, il.Or):
-                    clause = [-symbol_var]
-                else:
-                    clause = [symbol_var]   #Not sure this makes sense
-                if is_root:
-                    self.root_tseitin_clauses.append(clause)
-                else:
-                    self.instantiated_orbit_tseitin_clauses.append(clause)
-                return symbol_var
-
             if isinstance(symbol, il.Not):
                 return -1*self.tseitin_encode(symbol.args[0], is_root)
             if len(symbol.args) == 1:
@@ -181,9 +166,9 @@ class CoverConstraints():
                     self.root_assume_clauses.append([axiom_var])
                 elif '~'+axiom_str in dep_axioms: # ~member(n,q) not in axioms_str
                     self.root_assume_clauses.append([-1*axiom_var])
-        if self.instantiator.axiom_fmla != None:
-            axiom_fmla_var = self.tseitin_encode(self.instantiator.axiom_fmla)
-            self.root_assume_clauses.append([axiom_fmla_var])
+        # if self.instantiator.axiom_fmla != None:
+        #     axiom_fmla_var = self.tseitin_encode(self.instantiator.axiom_fmla)
+        #     self.root_assume_clauses.append([axiom_fmla_var])
 
     def _init_definitions_formula(self) -> None:
         for def_lhs, def_rhs in self.instantiator.instantiated_def_map.items():
