@@ -548,6 +548,124 @@ class Protocol():
         self.atoms = self.state_atoms + self.interpreted_atoms
         self.atoms_fmla = self.state_atoms_fmla + self.interpreted_atoms_fmla
         # atom_num stays the same
+        
+        # Rebuild state_atoms_fmla with curried predicates
+        self._rebuild_curried_formulas(curry_map, tran_sys)
+    
+    def _rebuild_curried_formulas(self, curry_map: Dict, tran_sys: TransitionSystem):
+        """
+        Rebuild state_atoms_fmla to use curried predicates and arguments.
+        This creates new Ivy formula objects that match the curried atom names.
+        """
+                
+        new_state_atoms_fmla = []
+        curried_symbols = {}  # Store curried symbols locally
+        
+        for atom_id in range(self.state_atom_num):
+            orig_fmla = self.state_atoms_fmla[atom_id]
+            
+            if atom_id in curry_map:
+                # This atom was curried - rebuild the formula
+                curried_atom, curried_pred, curried_args = curry_map[atom_id]
+                
+                # Get or create the curried predicate symbol
+                if curried_pred not in curried_symbols:
+                    # Get the original symbol to determine the type
+                    ordered_sort_names = set(tran_sys.ordered_sorts.keys())
+                    is_equality_with_ordered_rhs = False
+                    
+                    if il.is_eq(orig_fmla):
+                        # For equality formulas like f(x) = y
+                        lhs = orig_fmla.args[0]
+                        rhs = orig_fmla.args[1]
+                        if isinstance(lhs, il.App):
+                            orig_symbol = lhs.func
+                        else:
+                            orig_symbol = lhs
+                        
+                        # Check if RHS (return value) is an ordered sort being curried out
+                        if hasattr(rhs, 'sort') and tran_sys.get_sort_name_from_finite_sort(rhs.sort) in ordered_sort_names:
+                            is_equality_with_ordered_rhs = True
+                    elif isinstance(orig_fmla, il.App):
+                        orig_symbol = orig_fmla.func
+                    else:
+                        orig_symbol = orig_fmla
+                    
+                    # Determine the curried symbol's sort
+                    if il.is_function_sort(orig_symbol.sort):
+                        orig_dom = list(orig_symbol.sort.dom)
+                        orig_rng = orig_symbol.sort.rng
+                        
+                        # Remove ordered sorts from domain
+                        curried_dom = [s for s in orig_dom if tran_sys.get_sort_name_from_finite_sort(s) not in ordered_sort_names]
+                        
+                        # If the range is an ordered sort being curried, change to boolean
+                        if is_equality_with_ordered_rhs:
+                            curried_rng = il.BooleanSort()
+                        else:
+                            curried_rng = orig_rng
+                        
+                        if len(curried_dom) > 0:
+                            curried_sort = il.FunctionSort(*(curried_dom + [curried_rng]))
+                        else:
+                            # All arguments removed - just the return type
+                            curried_sort = curried_rng
+                    else:
+                        curried_sort = orig_symbol.sort
+                    
+                    curried_symbols[curried_pred] = il.Symbol(curried_pred, curried_sort)
+                
+                curried_symbol = curried_symbols[curried_pred]
+                
+                # Build the curried formula
+                # Get the constant objects for the curried args
+                curried_arg_consts = []
+                for arg_name in curried_args:
+                    # Find the constant in the transition system
+                    found = False
+                    for sort, consts in tran_sys.sort2consts.items():
+                        for const in consts:
+                            if str(const) == arg_name:
+                                curried_arg_consts.append(const)
+                                found = True
+                                break
+                        if found:
+                            break
+                
+                # Construct the new formula
+                # Check if this was an equality with ordered sort on RHS - now it's a boolean predicate
+                orig_was_equality = il.is_eq(orig_fmla)
+                ordered_sort_names = set(tran_sys.ordered_sorts.keys())
+                rhs_was_ordered = False
+                
+                if orig_was_equality:
+                    rhs = orig_fmla.args[1]
+                    if hasattr(rhs, 'sort') and tran_sys.get_sort_name_from_finite_sort(rhs.sort) in ordered_sort_names:
+                        rhs_was_ordered = True
+                
+                if curried_pred.endswith('=') and not rhs_was_ordered:
+                    # Still an equality (ordered sort was in domain, not range)
+                    if len(curried_arg_consts) > 1:
+                        lhs = il.App(curried_symbol, *curried_arg_consts[:-1])
+                    else:
+                        lhs = curried_symbol
+                    rhs = curried_arg_consts[-1]
+                    new_fmla = il.Equals(lhs, rhs)
+                elif len(curried_arg_consts) > 0:
+                    # Function application or predicate (including former equalities with ordered RHS)
+                    new_fmla = il.App(curried_symbol, *curried_arg_consts)
+                else:
+                    # Boolean constant
+                    new_fmla = curried_symbol
+                
+                new_state_atoms_fmla.append(new_fmla)
+            else:
+                # This atom wasn't curried - keep original formula
+                new_state_atoms_fmla.append(orig_fmla)
+        
+        # Update the formula lists
+        self.state_atoms_fmla = new_state_atoms_fmla
+        self.atoms_fmla = self.state_atoms_fmla + self.interpreted_atoms_fmla
 
     def _deep_copy(self):
         import copy
