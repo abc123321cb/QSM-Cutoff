@@ -435,7 +435,7 @@ class Protocol():
         curried._apply_curry_map(curry_map, tran_sys)
         
         vprint(self.options, f"[CURRY]: curried {len(curry_map)} atoms", 3)
-        vprint(self.options, f"[CURRY]: curried state atoms: {self.state_atoms}")
+        vprint(self.options, f"[CURRY]: curried state atoms: {curried.state_atoms}")
         
         return curried
     
