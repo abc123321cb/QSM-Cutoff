@@ -1,7 +1,7 @@
 # QSM-Cutoff
 ## Installation
 ```
-git clone --recurse-submodules git@github.com:QSM-Cutoff/QSM-Cutoff.git
+git clone --recurse-submodules git@github.com:abc123321cb/QSM-Cutoff.git
 ```
 1. Set up python environment (recommend python3.12 and above)
 ```
@@ -92,3 +92,4 @@ if missing:
 print("✅  All listed Python packages import correctly.")
 PY
 ```
+
