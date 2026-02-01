@@ -34,7 +34,7 @@ class FiniteIvyExecutor():
         return ','.join(result.strip('\n> = ').split('\n> = '))
 
     def _decode_dfs_state(self, result : str) -> str:
-        return ''.join(result.strip('\n> = ').split('\n> = '))
+        return ''.join(c for c in result if c in '01')
 
     def get_dfs_state(self) -> str:
         self.ivy_exec.ivy_exec_reset_buffer()
