@@ -61,7 +61,12 @@ class FiniteIvyExecutor():
         ivy_state = ivy_state.split(',')
         ivy_state_values = self.ivy_exec.StrVector(len(ivy_state)) 
         for i, value in enumerate(ivy_state):
-            ivy_state_values[i] = value
+            # Prevent C++ std::string null construction error
+            # Replace empty/None values with '-' placeholder
+            if value is None or value == '':
+                ivy_state_values[i] = '-'
+            else:
+                ivy_state_values[i] = str(value)
         self.ivy_exec.ivy_exec_set_state(ivy_state_values)
 
     def execute_ivy_action(self, ivy_action : str) -> int:
