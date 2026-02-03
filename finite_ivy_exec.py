@@ -54,7 +54,10 @@ class FiniteIvyExecutor():
         self.ivy_exec.ivy_exec_reset_buffer()
         self.ivy_exec.ivy_exec_run_actions(self.get_ivy_state_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
+        vprint(self.options, f"[DEBUG] Raw buffer from backup_ivy_state: '{result[:200]}'", 5)
         result = self._decode_ivy_state(result)
+        vprint(self.options, f"[DEBUG] Decoded ivy_state: '{result[:200]}'", 5)
+        vprint(self.options, f"[DEBUG] Number of values after decode: {len(result.split(','))}", 5)
         return result
 
     def restore_ivy_state(self, ivy_state : str):
