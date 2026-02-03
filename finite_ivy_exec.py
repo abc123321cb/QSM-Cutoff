@@ -31,7 +31,14 @@ class FiniteIvyExecutor():
             self.get_ivy_state_vars[i] = 'get_' + state_var
 
     def _decode_ivy_state(self, result : str) -> str:
-        return ','.join(result.strip('\n> = ').split('\n> = '))
+        # Handle both '\n> = ' and '\n= ' separators (environment-dependent)
+        if '\n> = ' in result:
+            return ','.join(result.strip('\n> = ').split('\n> = '))
+        elif '\n= ' in result:
+            return ','.join(result.strip('\n= ').split('\n= '))
+        else:
+            # Fallback: return as-is
+            return result
 
     def _decode_dfs_state(self, result : str) -> str:
         return ''.join(c for c in result if c in '01')
