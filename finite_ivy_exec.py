@@ -61,43 +61,15 @@ class FiniteIvyExecutor():
         self.ivy_exec.ivy_exec_reset_buffer()
         self.ivy_exec.ivy_exec_run_actions(self.get_ivy_state_vars)
         result = self.ivy_exec.ivy_exec_get_buffer()
-        vprint(self.options, f"[DEBUG] Raw buffer from backup_ivy_state: '{result[:200]}'", 5)
         result = self._decode_ivy_state(result)
-        vprint(self.options, f"[DEBUG] Decoded ivy_state: '{result[:200]}'", 5)
-        vprint(self.options, f"[DEBUG] Number of values after decode: {len(result.split(','))}", 5)
         return result
 
     def restore_ivy_state(self, ivy_state : str):
-        # Debug: log the state being restored
-        vprint(self.options, f"[DEBUG] restore_ivy_state called with state length: {len(ivy_state)}", 5)
-        vprint(self.options, f"[DEBUG] Ivy state is {ivy_state}", 5)
-        
         ivy_state_list = ivy_state.split(',')
-        vprint(self.options, f"[DEBUG] Split into {len(ivy_state_list)} values", 5)
-        
-        # Check for problematic values
+        ivy_state_values = self.ivy_exec.StrVector(len(ivy_state_list))
         for i, value in enumerate(ivy_state_list):
-            if value is None:
-                vprint(self.options, f"[ERROR] Found None at index {i}", 1)
-            elif value == '':
-                vprint(self.options, f"[ERROR] Found empty string at index {i}", 1)
-            elif not isinstance(value, str):
-                vprint(self.options, f"[ERROR] Non-string value at index {i}: {type(value)}", 1)
-        
-        try:
-            ivy_state_values = self.ivy_exec.StrVector(len(ivy_state_list))
-            vprint(self.options, f"[DEBUG] Created StrVector of size {len(ivy_state_list)}", 5)
-            
-            for i, value in enumerate(ivy_state_list):
-                ivy_state_values[i] = value
-            
-            vprint(self.options, f"[DEBUG] About to call ivy_exec_set_state", 5)
-            self.ivy_exec.ivy_exec_set_state(ivy_state_values)
-            vprint(self.options, f"[DEBUG] ivy_exec_set_state completed successfully", 5)
-        except Exception as e:
-            vprint(self.options, f"[ERROR] Exception in restore_ivy_state: {type(e).__name__}: {e}", 1)
-            vprint(self.options, f"[ERROR] State was: {ivy_state[:200]}...", 1)
-            raise
+            ivy_state_values[i] = value
+        self.ivy_exec.ivy_exec_set_state(ivy_state_values)
 
     def execute_ivy_action(self, ivy_action : str) -> int:
         prev_result   = self.ivy_exec.ivy_exec_get_buffer()
