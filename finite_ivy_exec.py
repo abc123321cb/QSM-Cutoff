@@ -63,6 +63,7 @@ class FiniteIvyExecutor():
     def restore_ivy_state(self, ivy_state : str):
         # Debug: log the state being restored
         vprint(self.options, f"[DEBUG] restore_ivy_state called with state length: {len(ivy_state)}", 5)
+        vprint(self.options, f"[DEBUG] Ivy state is {ivy_state}", 5)
         
         ivy_state_list = ivy_state.split(',')
         vprint(self.options, f"[DEBUG] Split into {len(ivy_state_list)} values", 5)
