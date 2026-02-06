@@ -347,7 +347,7 @@ class Minimizer():
                 else:
                     vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
         # output result
-        self._print_quantifier_inference(inference_list)
+        self._print_quantifier_inference(sorted(inference_list))
         self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
         self.ubound   = self.max_cost
 

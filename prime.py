@@ -90,7 +90,8 @@ class PrimeOrbit():
         return lines
 
     def add_prime(self, prime: Prime) -> None:
-        if len(self.primes) == 0:
+        # Always keep repr_prime as the lexicographically minimum prime for determinism
+        if len(self.primes) == 0 or prime.literals < self.repr_prime.literals:
             self.repr_prime  = prime
         self.primes.append(prime)
         if prime.is_sub_repr:
@@ -175,6 +176,24 @@ class PrimeOrbits():
             block_clauses  = self._get_block_clauses(values, protocol)
             sat_solver.append_formula(block_clauses)
             result = sat_solver.solve()
+    
+    def _sort_orbits(self):
+        # Sort primes within each orbit for deterministic output
+        for orbit in self.orbits:
+            orbit.primes.sort(key=lambda prime: prime.literals)
+            # Update is_sub_repr flags: only the first prime (lexicographically minimum) should be marked
+            for idx, prime in enumerate(orbit.primes):
+                prime.is_sub_repr = (idx == 0)
+        
+        # Sort orbits by: 1) length of primes (number of literals, ascending), 2) repr_prime literals (lexicographic)
+        # repr_prime is deterministically the lexicographically minimum prime in each orbit
+        def prime_length(orbit):
+            return sum(1 for v in orbit.repr_prime.values if v != '-')
+        self.orbits.sort(key=lambda orbit: (prime_length(orbit), orbit.repr_prime.literals))
+        
+        # Reassign orbit IDs after sorting
+        for idx, orbit in enumerate(self.orbits):
+            orbit.id = idx
 
     def symmetry_aware_enumerate(self, protocol: Protocol) -> None:
         Prime.set_atoms(atoms_str=protocol.state_atoms)
@@ -185,6 +204,9 @@ class PrimeOrbits():
                 self._ilp_prime_gen(sat_solver, protocol)
             elif self.options.prime_gen == PrimeGen.enumerate:
                 self._enumerate_prime_gen(sat_solver, protocol)
+        
+        # sort orbits
+        self._sort_orbits()
 
         # output result
         if self.options.writePrime:
