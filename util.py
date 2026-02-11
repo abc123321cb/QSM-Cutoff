@@ -338,3 +338,7 @@ def dec_even_pos_num(s: str, sep = r'[=,]+') -> str:
                 break
 
     return "_".join(parts)
+
+def uncurry(formula, uncurry_map):
+    pass
+    

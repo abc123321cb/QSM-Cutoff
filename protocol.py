@@ -90,6 +90,8 @@ class Protocol():
         self.quotient_reachable_states : List[str] = []
         # reachable states >= unreachable states
         self.more_reach : bool
+        # curried protocol data structures
+        self.curry_map = {}  # atom_id -> (curried_atom_name, curried_pred, curried_args, original_pred_name)
 
     def init_sort(self, tran_sys : TransitionSystem) -> None:
         for sort in tran_sys.sort2consts.keys():
@@ -422,9 +424,9 @@ class Protocol():
         vprint_title(self.options, 'Currying Ordered Sorts', 3)
         
         # Step 1: Identify atoms to curry and build currying map
-        curry_map = self._build_curry_map(tran_sys)
+        self._build_curry_map(tran_sys)
         
-        if not curry_map:
+        if not self.curry_map:
             vprint(self.options, "[CURRY]: No atoms need currying", 3)
             return self
         
@@ -432,14 +434,14 @@ class Protocol():
         curried = self._deep_copy()
         
         # Step 3: Update atom metadata with curried names in the copy
-        curried._apply_curry_map(curry_map, tran_sys)
+        curried._apply_curry_map(tran_sys)
         
-        vprint(self.options, f"[CURRY]: curried {len(curry_map)} atoms", 3)
+        vprint(self.options, f"[CURRY]: curried {len(self.curry_map)} atoms", 3)
         vprint(self.options, f"[CURRY]: curried state atoms: {self.state_atoms}")
         
         return curried
     
-    def _build_curry_map(self, tran_sys: TransitionSystem) -> Dict:
+    def _build_curry_map(self, tran_sys: TransitionSystem):
         """
         Build mapping from original atom_id to its curried form.
         
@@ -478,7 +480,7 @@ class Protocol():
             if ordered_const is not None and ordered_arg_idx is not None:
                 # Create curried name: pred_epoch0, pred_epoch1, etc.
                 # If the predicate is an equality, ensure the equal sign stays at the end.
-                if pred_name[-1] == '=':
+                if False:# pred_name[-1] == '=':
                     curried_pred = f"{pred_name[:-1]}_{ordered_const}"
                 else:
                     curried_pred = f"{pred_name}_{ordered_const}"
@@ -492,11 +494,10 @@ class Protocol():
                 else:
                     curried_atom = curried_pred
                 
-                curry_map[atom_id] = (curried_atom, curried_pred, curried_args)
-        
-        return curry_map
+                curry_map[atom_id] = (curried_atom, curried_pred, curried_args, atom_sig)
+        self.curry_map = curry_map
     
-    def _apply_curry_map(self, curry_map: Dict, tran_sys: TransitionSystem):
+    def _apply_curry_map(self, tran_sys: TransitionSystem):
         """
         Apply the curry map to update atom metadata with curried names.
         This modifies self in-place (used on a copy).
@@ -508,12 +509,14 @@ class Protocol():
         new_predicates = self.predicates.copy()
         
         for atom_id in range(self.state_atom_num):
-            if atom_id in curry_map:
+            if atom_id in self.curry_map:
                 # This atom gets curried (renamed)
-                curried_atom, curried_pred, curried_args = curry_map[atom_id]
+                curried_atom, curried_pred, curried_args, atom_sig = self.curry_map[atom_id]
                 new_state_atoms.append(curried_atom)
                 new_atom_sig.append([curried_pred] + curried_args)
                 new_atom_Name2Id[curried_atom] = atom_id
+
+                print("debug:", atom_id, "\n", atom_sig[0],"->", curried_atom)
                 
                 # Add curried predicate to predicates dict if not already there
                 if curried_pred not in new_predicates:
@@ -550,9 +553,9 @@ class Protocol():
         # atom_num stays the same
         
         # Rebuild state_atoms_fmla with curried predicates
-        self._rebuild_curried_formulas(curry_map, tran_sys)
+        self._rebuild_curried_formulas(tran_sys)
     
-    def _rebuild_curried_formulas(self, curry_map: Dict, tran_sys: TransitionSystem):
+    def _rebuild_curried_formulas(self, tran_sys: TransitionSystem):
         """
         Rebuild state_atoms_fmla to use curried predicates and arguments.
         This creates new Ivy formula objects that match the curried atom names.
@@ -564,9 +567,9 @@ class Protocol():
         for atom_id in range(self.state_atom_num):
             orig_fmla = self.state_atoms_fmla[atom_id]
             
-            if atom_id in curry_map:
+            if atom_id in self.curry_map:
                 # This atom was curried - rebuild the formula
-                curried_atom, curried_pred, curried_args = curry_map[atom_id]
+                curried_atom, curried_pred, curried_args, pred_name = self.curry_map[atom_id]
                 
                 # Get or create the curried predicate symbol
                 if curried_pred not in curried_symbols:
@@ -675,3 +678,5 @@ class Protocol():
         self.options = saved_options  # Restore
         protocol_copy.options = saved_options  # Share the same options (read-only)
         return protocol_copy
+    
+

@@ -227,6 +227,14 @@ def qrm(ivy_name, args):
     minimizer.quantifier_inference(instantiator, curried_protocol.state_atoms_fmla)
     options.step_end()
 
+    # uncurry prime orbits if curried
+    if options.curry_ordered_sorts:
+        options.step_start('Uncurry and Merge Prime Orbits')
+        prime_orbits.uncurry_orbits(protocol, curried_protocol)
+        vprint(options, 'Uncurrying of prime orbits completed.', 2)
+        options.step_end()
+
+
     # minimization
     options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')
     minimizer.solve_rmin()
