@@ -168,7 +168,7 @@ class QFormula():
                 if sign == '1':
                     qterm = il.Not(qterm)
                 qterms.add(qterm)
-        self.qterms = list(qterms)
+        self.qterms = sorted(list(qterms), key=lambda term: str(term))
         vprint_title(self.options, 'QFormula: _set_qterms', 5)
         vprint(self.options, f'qterms: {[str(term) for term in self.qterms]}', 5)
 
