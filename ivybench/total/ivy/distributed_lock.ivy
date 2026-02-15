@@ -83,7 +83,7 @@ export grant
 export accept
 
 # the safety property
-invariant locked(E, N1) & locked(E, N2) -> N1 = N2
+# invariant locked(E, N1) & locked(E, N2) -> N1 = N2
 
 # epochs transfer to at most one node    
 #invariant [manual_1] transfer(E, N1) & transfer(E, N2) -> N1 = N2
@@ -102,3 +102,18 @@ invariant locked(E, N1) & locked(E, N2) -> N1 = N2
 
 # pending transfer epoch is higher than any transfer's epoch
 #invariant [manual_6] transfer(E, N) & ~le(E, ep(N)) & transfer(F, M) -> le(F, E) 
+
+# python3 qrm.py ivybench/total/ivy/distributed_lock.ivy -s node=3,epoch=4 -f 2 -w -r -v 5 -l test.log -y
+
+invariant [invar_5] forall NODE0. ~locked(zero, NODE0)
+invariant [invar_1] forall NODE0. ~transfer(firste, NODE0)
+invariant [invar_2] forall E. exists NODE0. ~le(E, firste) -> ~transfer(E, NODE0)
+invariant [invar_14] forall E, NODE0, NODE1. ~le(E, firste) -> ~held(NODE0) | ~transfer(E, NODE1)
+invariant [invar_6] forall E0, E1, NODE0, NODE1. ~le(E0, firste) & le(E0, E1) -> ~locked(E1, NODE0) | ~transfer(E0, NODE1)
+invariant [invar_7] forall E. exists NODE0. ~le(E, zero) -> ~locked(E, NODE0)
+invariant [invar_122] forall E0, E1, NODE0, NODE1. le(E0, E1) -> ep(NODE0) ~= E1 | ~transfer(E0, NODE1)
+invariant [invar_123] forall E, NODE0. ~le(E, zero) -> ep(NODE0) ~= E | locked(E, NODE0)
+invariant [invar_126] forall E, NODE0, NODE1. ~le(E, zero) -> ~locked(E, NODE1) | ep(NODE0) ~= E | NODE0 = NODE1
+invariant [invar_160] forall E. exists NODE0. ep(NODE0) ~= E
+invariant [invar_125] forall E0, E1, NODE0. le(E0, E1) -> ~locked(E1, NODE0) | ep(NODE0) ~= E0
+invariant [invar_159] forall E0, E1, NODE0. (E0 ~= E1) -> ep(NODE0) ~= E0 | ep(NODE0) ~= E1

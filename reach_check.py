@@ -66,6 +66,21 @@ class ReachCheck():
         return il.Or(*eq_terms)
 
     def _tseitin_encode(self, symbol) -> int:
+        # Handle boolean constants
+        if il.is_true(symbol):  # il.And() represents true
+            # Create a tautology variable that's always true
+            if not hasattr(self, '_true_var'):
+                self._true_var = self.new_var()
+                self.root_assume_clauses.append([self._true_var])
+            return self._true_var
+        
+        if il.is_false(symbol):  # il.Or() represents false
+            # Create a contradiction variable that's always false
+            if not hasattr(self, '_false_var'):
+                self._false_var = self.new_var()
+                self.root_assume_clauses.append([-1 * self._false_var])
+            return self._false_var
+        
         # e.g. a = b
         if isinstance(symbol, lg.Eq) and il.is_enumerated(symbol.args[0]) and il.is_enumerated(symbol.args[1]):
             symbol = self._get_canonical_equal_term(symbol)
@@ -131,7 +146,11 @@ class ReachCheck():
                 elif '~'+axiom_str in dep_axioms: # ~member(n,q) not in axioms_str
                     self.root_assume_clauses.append([-1*axiom_var])
         if self.instantiator.axiom_fmla != None:
-            axiom_fmla_var = self._tseitin_encode(self.instantiator.axiom_fmla)
+            # First substitute constants like zero, max, first, firste
+            axiom_fmla = self.instantiator.axiom_fmla
+            if self.instantiator.const_subst_map:
+                axiom_fmla = ilu.substitute_constants_ast(axiom_fmla, self.instantiator.const_subst_map)
+            axiom_fmla_var = self._tseitin_encode(axiom_fmla)
             self.root_assume_clauses.append([axiom_fmla_var])
 
     def _init_definitions_formula(self) -> None:
@@ -161,6 +180,10 @@ class ReachCheck():
     def _init_invariants(self) -> None:
         invariants  = []
         for invar in self.tran_sys.safety_properties:
+            # First substitute constants like zero, max, first, firste
+            if self.instantiator.const_subst_map:
+                invar = ilu.substitute_constants_ast(invar, self.instantiator.const_subst_map)
+            # Then instantiate quantifiers
             invar = self.instantiator.instantiate_quantifier(invar)
             if invar != il.And():
                 invariants.append(invar)
