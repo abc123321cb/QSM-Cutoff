@@ -145,13 +145,13 @@ class ReachCheck():
                     self.root_assume_clauses.append([axiom_var])
                 elif '~'+axiom_str in dep_axioms: # ~member(n,q) not in axioms_str
                     self.root_assume_clauses.append([-1*axiom_var])
-        if self.instantiator.axiom_fmla != None:
-            # First substitute constants like zero, max, first, firste
-            axiom_fmla = self.instantiator.axiom_fmla
-            if self.instantiator.const_subst_map:
-                axiom_fmla = ilu.substitute_constants_ast(axiom_fmla, self.instantiator.const_subst_map)
-            axiom_fmla_var = self._tseitin_encode(axiom_fmla)
-            self.root_assume_clauses.append([axiom_fmla_var])
+        # if self.instantiator.axiom_fmla != None:
+        #     # First substitute constants like zero, max, first, firste
+        #     axiom_fmla = self.instantiator.axiom_fmla
+        #     if self.instantiator.const_subst_map:
+        #         axiom_fmla = ilu.substitute_constants_ast(axiom_fmla, self.instantiator.const_subst_map)
+        #     axiom_fmla_var = self._tseitin_encode(axiom_fmla)
+        #     self.root_assume_clauses.append([axiom_fmla_var])
 
     def _init_definitions_formula(self) -> None:
         for def_lhs, def_rhs in self.instantiator.instantiated_def_map.items():
@@ -256,16 +256,40 @@ class ReachCheck():
 
     def _block_model(self, values):
         block_clause = []
-        for atom_id, atom_var in enumerate(self.atom_vars):
+        # Only block based on state atoms, not all atoms
+        for atom_id in range(self.protocol.state_atom_num):
+            atom_var = self.atom_vars[atom_id]
             if values[atom_id] == '1':
                 block_clause.append(-1*atom_var)
             elif values[atom_id] == '0':
                 block_clause.append(atom_var)
         self.sat_solver.add_clause(block_clause)
 
+    def _state_to_readable(self, bit_str):
+        """
+        Convert a state integer to readable atom assignments.
+        
+        Args:
+            state_int: Integer representation of the state
+            state_only: If True, only show state atoms; if False, show all atoms
+        """
+
+        lines = []
+        atoms = self.protocol.state_atoms_fmla 
+        
+        for i, bit in enumerate(bit_str):
+            if i >= len(atoms):
+                break
+            if bit == '1':  # Only show atoms that are true
+                atom_str = str(atoms[i])
+                lines.append(f"    {atom_str}")
+                
+        return '\n'.join(lines) if lines else "    (no atoms set)"
+
     def _compare_symmetry_quotient(self) -> bool:
         (result, values)  = self._get_model()
         model_repr_states = set()
+        model_bit_states = set()
         model_match = True
         while result:
             repr_int = int(''.join(values), 2)
@@ -273,21 +297,28 @@ class ReachCheck():
                 nvalues += values[self.protocol.state_atom_num:]
                 repr_int = min(int(''.join(nvalues), 2), repr_int)
                 self._block_model(nvalues)
-            if not repr_int in self.protocol.repr_states:
-                bit_str = '{0:0{1}b}'.format(repr_int, self.protocol.atom_num)[:self.protocol.state_atom_num]
-                vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}')
+            bit_state = '{0:0{1}b}'.format(repr_int, self.protocol.atom_num)[:self.protocol.state_atom_num]
+            if not repr_int in self.protocol.repr_states and not bit_state in model_bit_states:
+                vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_state}', 1)
+                vprint(self.options, f'State:\n{self._state_to_readable(bit_state)}', 2)
                 model_match = False 
                 if self.options.early_terminate_reach:
                     vprint(self.options, f'[REACH_CHECK RESULT]: FAIL')
                     return model_match
             model_repr_states.add(repr_int)
+            model_bit_states.add(bit_state)
             (result, values) = self._get_model()
 
         difference = self.protocol.repr_states - model_repr_states
         if len(difference) > 0:
             vprint(self.options, 'Representatitive states in reachability not in Rmin', 1)
-            for d in difference: vprint(self.options, f'{hex(d)}', 1)
-            model_match = False
+            for d in difference:
+                bit_state = '{0:0{1}b}'.format(d, self.protocol.atom_num)[:self.protocol.state_atom_num]
+                if bit_state not in model_bit_states:
+                    vprint(self.options, f'{hex(d)}', 1)
+                    vprint(self.options, f'  Binary: {bit_state}', 2)
+                    vprint(self.options, f'  State:\n{self._state_to_readable(bit_state)}', 2)
+                    model_match = False
         if model_match:
             vprint(self.options, f'[REACH_CHECK RESULT]: PASS')
         else:
