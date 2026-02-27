@@ -81,16 +81,16 @@ class PrimeOrbit():
 
     def __str__(self) -> str:
         lines  = f'\n=== Prime Orbit {self.id} =====================\n'
-        # lines += f'size : {len(self.primes)}\n'
-        # lines += f'num_suborbits: {self.num_suborbits}\n'
+        lines += f'size : {len(self.primes)}\n'
+        lines += f'num_suborbits: {self.num_suborbits}\n'
         for prime in self.primes:
             lines += str(prime) 
-        # lines += f'num_forall :   {self.num_forall}\n'
-        # lines += f'num_exists :   {self.num_exists}\n'
-        # lines += f'num_literals : {self.num_literals}\n'
+        lines += f'num_forall :   {self.num_forall}\n'
+        lines += f'num_exists :   {self.num_exists}\n'
+        lines += f'num_literals : {self.num_literals}\n'
         lines += f'quantified form : {self.quantified_form}\n'
         lines += f'qcost : {self.qcost}\n'
-        # lines += '\n'
+        lines += '\n'
         return lines
 
     def add_prime(self, prime: Prime) -> None:
@@ -227,7 +227,7 @@ class PrimeOrbits():
         return newl
 
     def uncurry_orbits(self, old_protocol: Protocol, new_protocol: Protocol) -> None:
-
+        return # stop printing
         vprint(self.options, f'[UNCURRY]: Find super-orbits',3)
         print("debug state atoms: ", len(self.orbits[-1].repr_prime.literals_list))
         print(self.orbits[0])

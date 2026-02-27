@@ -219,12 +219,12 @@ def qrm(ivy_name, args):
     # reduction
     options.step_start(f'[RED]: PRIME REDUCTION on [{options.ivy_filename}: {options.size_str}]')
     minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, curried_protocol.more_reach)
-    minimizer.reduce_redundant_prime_orbits()
+    #minimizer.reduce_redundant_prime_orbits()
     options.step_end()
 
     # quantifier inference
     options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
-    minimizer.quantifier_inference(instantiator, curried_protocol.state_atoms_fmla)
+    minimizer.quantifier_inference(instantiator, curried_protocol.state_atoms_fmla, curried_protocol)
     options.step_end()
 
     # uncurry prime orbits if curried

@@ -57,7 +57,7 @@ after init {
     held(X) := X=first;
     ep(N) := firste if N = first else zero;
     transfer(E, N) := false;
-    locked(E, N) := false;
+    locked(E, N) := N = first & E = firste;
 }
 
 action grant(n1:node, n2:node, e:epoch) = {
@@ -71,12 +71,12 @@ action grant(n1:node, n2:node, e:epoch) = {
 action accept(n:node, e:epoch) = {
     # receive a transfer message and take the lock, sending a locked message
     require transfer(e,n);
-#    transfer(e,n) := *;
-    if ~le(e, ep(n)) {
-        held(n) := true;
-        ep(n) := e;
-        locked(e, n) := true;
-    };
+    require ~le(e,ep(n));
+    transfer(e,n) := false;
+    held(n) := true;
+    ep(n) := e;
+    locked(e, n) := true;
+
 }
 
 export grant

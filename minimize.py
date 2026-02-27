@@ -327,17 +327,32 @@ class Minimizer():
         self._new_level()
         self._reduce()
 
-    def quantifier_inference(self, instantiator: FiniteIvyInstantiator, atoms) -> None:
+    def quantifier_inference(self, instantiator: FiniteIvyInstantiator, atoms, protocol) -> None:
         from qinference import QInference, QPrime
-        
+        from inf import Inference
         QInference.setup(atoms, self.tran_sys, instantiator, self.is_dnf)
         vprint_title(self.options, 'quantifier_inference', 5)
         inference_list = self.solution + self.pending
+        literals = 0
         for orbit_id in inference_list:
             orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
-            qinf    = QInference(orbit, self.options, self.is_dnf)
+            qinf = QInference(orbit, self.options, self.is_dnf)
+            inf = Inference(orbit, self.options, protocol, self.is_dnf)
             qclause = qinf.get_qclause()
+            print("The type of qclause is " + str(type(qclause)))
+            for i in qclause:
+                print("The type is " + str(type(i)) + " and it is " + str(i))
+                for j in i:
+                    print("The type of the next step is " + str(type(j)) + " and it is " + str(j))
+                    try:
+                        for k in j:
+                            print("The type of the final step is " + str(type(k)) + " and it is " + str(k))
+                    except:
+                        pass
+            print("start of new q")
+            newqclause = inf.get_qclause()
+            print("end of new q")
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
                 self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
