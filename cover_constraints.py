@@ -12,10 +12,11 @@ from prime import *
 from util import UseMC, ForwardMode
 
 class CoverConstraints():
-    def __init__(self, options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits : List[PrimeOrbit], useMC : UseMC, is_dnf = False) -> None:
+    def __init__(self, options: QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, protocol : Protocol, orbits : List[PrimeOrbit], useMC : UseMC, is_dnf = False) -> None:
         self.options           = options
         self.tran_sys          = tran_sys
         self.instantiator      = instantiator
+        self.protocol = protocol
         self.sat_solver        = SatSolver() 
         if useMC == UseMC.sat:
             self.sat_counter   = SatCounter()
@@ -146,7 +147,7 @@ class CoverConstraints():
         return literals
 
     def _init_vars(self, orbits : List[PrimeOrbit]) -> None:
-        for atom in self.instantiator.protocol_atoms:
+        for atom in self.protocol.atoms:
             atom_var = self.new_var()
             self.atom_vars.append(atom_var)
             self.symbol2var_num[atom] = atom_var 
@@ -393,7 +394,8 @@ class CoverConstraints():
 
     def block_minimization_check_minterm(self, values):
         block_clause = []
-        for atom_id, atom_var in enumerate(self.atom_vars):
+        for atom_id in range(self.protocol.state_atom_num):
+            atom_var = self.atom_vars[atom_id]
             if values[atom_id] == '1':
                 block_clause.append(-1*atom_var)
             elif values[atom_id] == '0':

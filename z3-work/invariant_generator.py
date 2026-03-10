@@ -119,39 +119,33 @@ def _split_by_indices(s, indices, length=1):
 
 # Test with your variety of inputs
 test_data = """
-forall NODE0. ~locked_epoch0(NODE0) 
-forall NODE0. ~transfer_epoch1(NODE0) 
-forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch3(NODE1) 
-exists NODE0. ~locked_epoch1(NODE0) 
-forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch2(NODE1) 
-exists NODE0. ~transfer_epoch2(NODE0) 
-forall NODE0,NODE1. ~transfer_epoch2(NODE0) | ~transfer_epoch3(NODE1) 
-exists NODE0. ~transfer_epoch3(NODE0) 
-exists NODE0. locked_epoch1(NODE0) 
-exists NODE0. ~ep_epoch0(NODE0) 
-forall NODE0. ~ep_epoch0(NODE0) | ~held(NODE0) 
-forall NODE0. ~ep_epoch0(NODE0) | ~locked_epoch1(NODE0) 
-forall NODE0. ~ep_epoch0(NODE0) | ~locked_epoch2(NODE0) 
-forall NODE0. ~ep_epoch0(NODE0) | ~locked_epoch3(NODE0) 
-exists NODE0. ~ep_epoch1(NODE0) 
-forall NODE0,NODE1. ~ep_epoch1(NODE0) | ~locked_epoch1(NODE1) | NODE0 = NODE1 
-forall NODE0. ~ep_epoch1(NODE0) | ~locked_epoch2(NODE0) 
-forall NODE0. ~ep_epoch1(NODE0) | ~locked_epoch3(NODE0) 
-exists NODE0. ~ep_epoch2(NODE0) 
-forall NODE0,NODE1. ~ep_epoch2(NODE0) | ~locked_epoch2(NODE1) | NODE0 = NODE1 
-forall NODE0. ~ep_epoch2(NODE0) | ~locked_epoch3(NODE0) 
-forall NODE0,NODE1. ~ep_epoch2(NODE0) | ~transfer_epoch2(NODE1) 
-forall NODE0. ~ep_epoch2(NODE0) | locked_epoch2(NODE0) 
-exists NODE0. ~ep_epoch3(NODE0) 
-forall NODE0,NODE1. ~ep_epoch3(NODE0) | ~held(NODE1) | NODE0 = NODE1 
-forall NODE0,NODE1. ~ep_epoch3(NODE0) | ~transfer_epoch2(NODE1) 
-forall NODE0,NODE1. ~ep_epoch3(NODE0) | ~transfer_epoch3(NODE1) 
-forall NODE0. ~ep_epoch3(NODE0) | held(NODE0) 
-forall NODE0. ~ep_epoch3(NODE0) | locked_epoch3(NODE0) 
-exists NODE0. ~held(NODE0) 
-forall NODE0,NODE1. ~ep_epoch1(NODE0) | ~ep_epoch2(NODE1) | ~held(NODE0) | NODE0 = NODE1 
-forall NODE0,NODE1. ~ep_epoch0(NODE0) | ~ep_epoch2(NODE1) | held(NODE1) | transfer_epoch3(NODE0) | transfer_epoch3(NODE1) | NODE0 = NODE1 
-forall NODE0,NODE1. ~ep_epoch1(NODE0) | ~ep_epoch2(NODE1) | held(NODE1) | transfer_epoch3(NODE0) | transfer_epoch3(NODE1) | NODE0 = NODE1 
-forall NODE0,NODE1. ~ep_epoch0(NODE0) | held(NODE1) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | transfer_epoch3(NODE0) | transfer_epoch3(NODE1) | NODE0 = NODE1 
+
+forall NODE0. ~locked_epoch0(NODE0)
+forall NODE0,NODE1. ~transfer_epoch2(NODE0) | ~transfer_epoch3(NODE1)
+exists NODE0. ~transfer_epoch3(NODE0)
+exists NODE0. locked_epoch1(NODE0)
+forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch2(NODE1)
+forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch3(NODE1)
+exists NODE0. ~locked_epoch1(NODE0)
+exists NODE0. ~transfer_epoch2(NODE0)
+exists NODE0. ~locked_epoch2(NODE0)
+forall NODE0. ~locked_epoch2(NODE0) | ep_epoch2(NODE0) | ep_epoch3(NODE0)
+forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0) | held(NODE0) | locked_epoch2(NODE0)
+forall NODE0,NODE1. ~locked_epoch1(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE1) | held(NODE1) | NODE0 = NODE1
+forall NODE0. ~locked_epoch1(NODE0) | ep_epoch1(NODE0) | ep_epoch2(NODE0) | held(NODE0)
+forall NODE0. ~locked_epoch1(NODE0) | ep_epoch1(NODE0) | ep_epoch3(NODE0) | locked_epoch2(NODE0)
+forall NODE0. ep_epoch0(NODE0) | ep_epoch3(NODE0) | locked_epoch1(NODE0) | locked_epoch2(NODE0)
+exists NODE0. ~held(NODE0)
+exists NODE0. ep_epoch0(NODE0) | held(NODE0) | transfer_epoch3(NODE0)
+exists NODE0. ep_epoch1(NODE0) | held(NODE0) | transfer_epoch3(NODE0)
+exists NODE0. held(NODE0) | transfer_epoch2(NODE0) | transfer_epoch3(NODE0)
+forall NODE0,NODE1. ~held(NODE0) | ep_epoch0(NODE1) | ep_epoch3(NODE0) | locked_epoch2(NODE0) | NODE0 = NODE1
+forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch1(NODE0)
+forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch2(NODE0)
+forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch3(NODE0)
+forall NODE0. ~ep_epoch1(NODE0) | ~ep_epoch2(NODE0)
+forall NODE0. ~ep_epoch1(NODE0) | ~ep_epoch3(NODE0)
+forall NODE0. ~ep_epoch2(NODE0) | ~ep_epoch3(NODE0)
+
 """
 print(convert_to_smt(test_data))

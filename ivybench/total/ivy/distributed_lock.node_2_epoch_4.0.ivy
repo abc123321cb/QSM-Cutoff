@@ -103,17 +103,54 @@ export accept
 # pending transfer epoch is higher than any transfer's epoch
 ##invariant [manual_6] transfer(E, N) & ~le(E, ep(N)) & transfer(F, M) -> le(F, E) 
 
-# python3 qrm.py ivybench/total/ivy/distributed_lock.ivy -s node=3,epoch=5 -f 2 -w -v 5 -l test.log -y
+# python3 qrm.py ivybench/total/ivy/distributed_lock.ivy -s node=3,epoch=4 -f 2 -w -g -r -v 5 -l test.log -y
 
-invariant [invar_5] forall NODE0. ~locked(zero, NODE0)
-invariant [invar_1] forall NODE0. ~transfer(firste, NODE0)
-invariant [invar_2] forall E. exists NODE0. ~le(E, firste) -> ~transfer(E, NODE0)
-invariant [invar_14] forall E, NODE0, NODE1. ~le(E, firste) -> ~held(NODE0) | ~transfer(E, NODE1)
-invariant [invar_6] forall E0, E1, NODE0, NODE1. ~le(E0, firste) & le(E0, E1) -> ~locked(E1, NODE0) | ~transfer(E0, NODE1)
-invariant [invar_7] forall E. exists NODE0. ~le(E, zero) -> ~locked(E, NODE0)
-invariant [invar_122] forall E0, E1, NODE0, NODE1. le(E0, E1) -> ep(NODE0) ~= E1 | ~transfer(E0, NODE1)
-invariant [invar_123] forall E, NODE0. ~le(E, zero) -> ep(NODE0) ~= E | locked(E, NODE0)
-invariant [invar_126] forall E, NODE0, NODE1. ~le(E, zero) -> ~locked(E, NODE1) | ep(NODE0) ~= E | NODE0 = NODE1
-invariant [invar_160] forall E. exists NODE0. ep(NODE0) ~= E
-invariant [invar_125] forall E0, E1, NODE0. le(E0, E1) -> ~locked(E1, NODE0) | ep(NODE0) ~= E0
-invariant [invar_159] forall E0, E1, NODE0. (E0 ~= E1) -> ep(NODE0) ~= E0 | ep(NODE0) ~= E1
+## invariant [invar_5] forall NODE0. ~locked(zero, NODE0)
+## invariant [invar_1] forall NODE0. ~transfer(firste, NODE0)
+## invariant [invar_2] forall E. exists NODE0. ~le(E, firste) -> ~transfer(E, NODE0)
+## invariant [invar_14] forall E, NODE0, NODE1. ~le(E, firste) -> ~held(NODE0) | ~transfer(E, NODE1)
+## invariant [invar_6] forall E0, E1, NODE0, NODE1. ~le(E0, firste) & le(E0, E1) -> ~locked(E1, NODE0) | ~transfer(E0, NODE1)
+## invariant [invar_7] forall E. exists NODE0. ~le(E, zero) -> ~locked(E, NODE0)
+## invariant [invar_122] forall E0, E1, NODE0, NODE1. le(E0, E1) -> ep(NODE0) ~= E1 | ~transfer(E0, NODE1)
+## invariant [invar_123] forall E, NODE0. ~le(E, zero) -> ep(NODE0) ~= E | locked(E, NODE0)
+## invariant [invar_126] forall E, NODE0, NODE1. ~le(E, zero) -> ~locked(E, NODE1) | ep(NODE0) ~= E | NODE0 = NODE1
+## invariant [invar_160] forall E. exists NODE0. ep(NODE0) ~= E
+## invariant [invar_125] forall E0, E1, NODE0. le(E0, E1) -> ~locked(E1, NODE0) | ep(NODE0) ~= E0
+## invariant [invar_159] forall E0, E1, NODE0. (E0 ~= E1) -> ep(NODE0) ~= E0 | ep(NODE0) ~= E1
+## invariant [invar_200] forall NODE0. ~locked(zero, NODE0)
+## invariant [invar_201] forall NODE0. ~transfer(firste, NODE0)
+## invariant [invar_202] forall NODE0. ep(NODE0) ~= zero | ~held(NODE0)
+## invariant [invar_203] forall NODE0,NODE1. locked(firste, NODE1) | ep(NODE0) ~= zero | NODE0 = NODE1
+## invariant [invar_204] forall NODE0,NODE1. ep(NODE0) ~= max | ~held(NODE1) | NODE0 = NODE1
+## invariant [invar_205] forall NODE0. held(NODE0) | ep(NODE0) ~= max
+## invariant [invar_206] exists NODE0. ~held(NODE0)
+## invariant [invar_207] forall NODE0,NODE1. ~held(NODE0) | ~locked(max, NODE1) | NODE0 = NODE1
+## invariant [invar_208] forall NODE0. ep(NODE0) = max | ~locked(max, NODE0)
+## invariant [invar_209] forall NODE0. held(NODE0) | ~locked(max, NODE0)
+## invariant [invar_210] forall E0,E1,NODE0,NODE1. le(firste, E0) & le(E0, E1) & E0 ~= E1 -> ~transfer(E1, NODE1) | ~transfer(E0, NODE0)
+## invariant [invar_211] exists NODE0. locked(firste, NODE0)
+invariant [eq_0] forall NODE. ep_epoch3(NODE) = locked_epoch3(NODE) # equivalence relation, qcost: 3
+invariant [eq_1] forall NODE. locked_epoch0(NODE) = transfer_epoch0(NODE) # equivalence relation, qcost: 3
+invariant [eq_2] forall NODE. locked_epoch0(NODE) = transfer_epoch1(NODE) # equivalence relation, qcost: 3
+invariant [invar_0] forall NODE0. ~locked_epoch0(NODE0) # qcost: 2
+invariant [invar_32] forall NODE1,NODE0. ~transfer_epoch2(NODE0) | ~transfer_epoch3(NODE1) # qcost: 4
+invariant [invar_33] exists NODE0. ~transfer_epoch3(NODE0) # qcost: 2
+invariant [invar_34] exists NODE0. locked_epoch1(NODE0) # qcost: 2
+invariant [invar_26] forall NODE1,NODE0. ~held(NODE0) | ~transfer_epoch2(NODE1) # qcost: 4
+invariant [invar_27] forall NODE1,NODE0. ~held(NODE0) | ~transfer_epoch3(NODE1) # qcost: 4
+invariant [invar_28] exists NODE0. ~locked_epoch1(NODE0) # qcost: 2
+invariant [invar_31] exists NODE0. ~transfer_epoch2(NODE0) # qcost: 2
+invariant [invar_29] exists NODE0. ~locked_epoch2(NODE0) # qcost: 2
+invariant [invar_47] forall NODE0. ~locked_epoch2(NODE0) | ep_epoch2(NODE0) | ep_epoch3(NODE0) # qcost: 4
+invariant [invar_174] forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0) | held(NODE0) | locked_epoch2(NODE0) # qcost: 5
+invariant [invar_145] forall NODE1,NODE0. ~locked_epoch1(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE1) | held(NODE1) | NODE0 = NODE1 # qcost: 7
+invariant [invar_149] forall NODE0. ~locked_epoch1(NODE0) | ep_epoch1(NODE0) | ep_epoch2(NODE0) | held(NODE0) # qcost: 5
+invariant [invar_150] forall NODE0. ~locked_epoch1(NODE0) | ep_epoch1(NODE0) | ep_epoch3(NODE0) | locked_epoch2(NODE0) # qcost: 5
+invariant [invar_25] exists NODE0. ~held(NODE0) # qcost: 2
+invariant [invar_229] exists NODE0. ep_epoch0(NODE0) | ep_epoch3(NODE0) | locked_epoch2(NODE0) # qcost: 4
+invariant [invar_232] exists NODE0. ep_epoch0(NODE0) | held(NODE0) | transfer_epoch3(NODE0) # qcost: 4
+invariant [invar_246] exists NODE0. ep_epoch1(NODE0) | held(NODE0) | transfer_epoch3(NODE0) # qcost: 4
+invariant [invar_249] exists NODE0. held(NODE0) | transfer_epoch2(NODE0) | transfer_epoch3(NODE0) # qcost: 4
+invariant [invar_15] exists NODE0. ~ep_epoch2(NODE0) # qcost: 2
+invariant [invar_43] forall NODE1,NODE0. ~held(NODE0) | ~locked_epoch2(NODE1) | ep_epoch3(NODE0) | NODE0 = NODE1 # qcost: 6
+invariant [invar_5] forall NODE0. ~ep_epoch0(NODE0) | ~held(NODE0) # qcost: 3

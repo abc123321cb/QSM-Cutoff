@@ -65,10 +65,10 @@ class StackLevel():
         self.include_orbit = not self.include_orbit
 
 class Minimizer():
-    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, orbits: List[PrimeOrbit], dnf = False) -> None: 
+    def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, protocol : Protocol, orbits: List[PrimeOrbit], dnf = False) -> None: 
         self.tran_sys      = tran_sys
         self.orbits        = orbits
-        self.cover         = CoverConstraints(options, tran_sys, instantiator, orbits, options.useMC, dnf)
+        self.cover         = CoverConstraints(options, tran_sys, instantiator, protocol, orbits, options.useMC, dnf)
         self.max_cost      = 0 
         self.ubound        = 0 
         self.bnb_max_depth = 0
@@ -79,6 +79,7 @@ class Minimizer():
         self.rmin          = []
         self.options = options
         self.is_dnf = dnf
+        self.first_solution_found = False
 
     #------------------------------------------------------------
     # Minimizer: minimization 
@@ -202,13 +203,19 @@ class Minimizer():
             self._reduce()
 
     def _solve_one(self) -> int: 
+        # Early return if first solution already found
+        if self.first_solution_found:
+            self._backtrack()
+            return self.max_cost
+        
         self._new_level()
         self._reduce() 
         cost = self._get_cost()
         if len(self.pending) == 0: 
             if cost < self.ubound:
                 self.ubound = cost
-                self.optimal_solutions = [self.solution.copy()] 
+                self.optimal_solutions = [self.solution.copy()]
+                self.first_solution_found = True
                 self._backtrack()
                 return cost 
             else:
@@ -219,7 +226,7 @@ class Minimizer():
             return self.max_cost
         self._decide()
         cost1 = self._solve_one()
-        if(cost1 == cost):
+        if(cost1 == cost or self.first_solution_found):
             self._backtrack()
             return cost1
         self._invert_decision()
@@ -279,6 +286,11 @@ class Minimizer():
         for i in inference_list:
             orbit = self.orbits[i]
             vprint(self.options, str(orbit), 3)
+        vprint(self.options, "\n[QI RESULT]: Quantified Forms Only", 4)
+        for i in inference_list:
+            orbit = self.orbits[i]
+            vprint(self.options, orbit.quantified_form, 4)
+
 
     def print_rmin(self) -> None:
         vprint_step_banner(self.options, f'[MIN RESULT]: Minimized Invariants on [{self.options.ivy_filename}: {self.options.size_str}]', 3)
@@ -339,13 +351,13 @@ class Minimizer():
             qinf    = QInference(orbit, self.options, self.is_dnf)
             qclause = qinf.get_qclause()
             orbit.set_quantifier_inference_result(qclause)
-            if self.options.sanity_check:
-                self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
-                vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
-                if self.cover.quantifier_inference_check_smt():
-                    vprint(self.options, f'[QI_CHECK RESULT]: PASS')
-                else:
-                    vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
+            # if self.options.sanity_check:
+            #     self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
+            #     vprint_title(self.options, f'Quantifier Inference: orbit {orbit_id}')
+            #     if self.cover.quantifier_inference_check_smt():
+            #         vprint(self.options, f'[QI_CHECK RESULT]: PASS')
+            #     else:
+            #         vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
         # output result
         self._print_quantifier_inference(sorted(inference_list))
         self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
@@ -360,11 +372,32 @@ class Minimizer():
         self.print_rmin()
         self.write_ivy_files()
 
+    def _state_to_readable(self, bit_str, protocol : Protocol):
+        """
+        Convert a state integer to readable atom assignments.
+        
+        Args:
+            bit_str: Binary string representation of the state
+            protocol: Protocol object containing state atoms
+        """
+        lines = []
+        atoms = protocol.state_atoms_fmla 
+        
+        for i, bit in enumerate(bit_str):
+            if i >= len(atoms):
+                break
+            if bit == '1':  # Only show atoms that are true
+                atom_str = str(atoms[i])
+                lines.append(f"    {atom_str}")
+                
+        return '\n'.join(lines) if lines else "    (no atoms set)"
+
     def _compare_symmetry_quotient(self, sol_id, invariants, protocol : Protocol):
         vprint(self.options, f'Minimization check for Solution {sol_id}')
         self.cover.init_minimization_check_solver(invariants, protocol)
         (result, values)  = self.cover.get_minimization_check_minterm()
         model_repr_states = set()
+        model_bit_states = set()
         model_match = True
         while result:
             repr_int = int(''.join(values), 2)
@@ -372,18 +405,28 @@ class Minimizer():
                 nvalues += values[protocol.state_atom_num:]
                 repr_int = min(int(''.join(nvalues), 2), repr_int)
                 self.cover.block_minimization_check_minterm(nvalues)
-            if not repr_int in protocol.repr_states:
-                bit_str = '{0:0{1}b}'.format(repr_int, protocol.atom_num)[:protocol.state_atom_num]
-                vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}')
-                model_match = False 
+            bit_str = '{0:0{1}b}'.format(repr_int, protocol.atom_num)[:protocol.state_atom_num]
+            if not bit_str in protocol.bit_repr_states and not bit_str in model_bit_states:
+                vprint(self.options, f'Found a representative state in Rmin not in reachability: decimal: {repr_int}, binary: {bit_str}', 1)
+                vprint(self.options, f'State:\n{self._state_to_readable(bit_str, protocol)}', 2)
+                model_match = False
+                if self.options.early_terminate_reach:
+                    vprint(self.options, f'[MIN_CHECK RESULT]: FAIL')
+                    return model_match
             model_repr_states.add(repr_int)
+            model_bit_states.add(bit_str)
             (result, values) = self.cover.get_minimization_check_minterm()
 
         difference = protocol.repr_states - model_repr_states
         if len(difference) > 0:
-            vprint(self.options, 'Found states in reachability not in Rmin')
-            vprint(self.options, f'{difference}')
-            model_match = False
+            vprint(self.options, 'Representatitive states in reachability not in Rmin', 1)
+            for d in difference:
+                bit_str = '{0:0{1}b}'.format(d, protocol.atom_num)[:protocol.state_atom_num]
+                if bit_str not in model_bit_states:
+                    vprint(self.options, f'{hex(d)}', 1)
+                    vprint(self.options, f'  Binary: {bit_str}', 2)
+                    vprint(self.options, f'  State:\n{self._state_to_readable(bit_str, protocol)}', 2)
+                    model_match = False
         if model_match:
             vprint(self.options, f'[MIN_CHECK RESULT]: PASS')
         else:

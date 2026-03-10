@@ -180,6 +180,14 @@ def qrm(ivy_name, args):
         options.step_end()
         protocol = fr_solver.protocol
 
+    # curry ordered sorts (create curried copy for prime generation)
+    if options.curry_ordered_sorts:
+        options.step_start('Curry Ordered Sorts')
+        protocol = protocol.curry_ordered_sorts(tran_sys)
+        options.step_end()
+
+
+        
     if options.flow_mode == FlowMode.Check_Reachability:
         # check reachability converges
         options.step_start(f'[REACH_CHECK]: Reachability Convergence Check for Rmin on [{options.ivy_filename}: {options.size_str}]')
@@ -202,29 +210,22 @@ def qrm(ivy_name, args):
         protocol.reduce_equivalent_atoms(tran_sys)
         options.step_end()
 
-    # curry ordered sorts (create curried copy for prime generation)
-    if options.curry_ordered_sorts:
-        options.step_start('Curry Ordered Sorts')
-        curried_protocol = protocol.curry_ordered_sorts(tran_sys)
-        options.step_end()
-    else:
-        curried_protocol = protocol
 
     # generate prime orbits (using curried protocol if enabled)
     options.step_start(f'[PRIME]: Prime Orbit Generatation on [{options.ivy_filename}: {options.size_str}]')
     prime_orbits = PrimeOrbits(options)
-    prime_orbits.symmetry_aware_enumerate(curried_protocol)               
+    prime_orbits.symmetry_aware_enumerate(protocol)               
     options.step_end()
 
     # reduction
     options.step_start(f'[RED]: PRIME REDUCTION on [{options.ivy_filename}: {options.size_str}]')
-    minimizer    = Minimizer(options, tran_sys, instantiator, prime_orbits.orbits, curried_protocol.more_reach)
+    minimizer    = Minimizer(options, tran_sys, instantiator, protocol, prime_orbits.orbits, protocol.more_reach)
     # minimizer.reduce_redundant_prime_orbits()
     options.step_end()
 
     # quantifier inference
     options.step_start(f'[QI]: Quantifier Inference on [{options.ivy_filename}: {options.size_str}]')
-    minimizer.quantifier_inference(instantiator, curried_protocol.state_atoms_fmla)
+    minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
     options.step_end()
 
     # minimization

@@ -1000,49 +1000,47 @@
 (declare-const R21 Bool)  (declare-const R22 Bool)  (declare-const R23 Bool)  (declare-const R24 Bool)  (declare-const R25 Bool)
 (declare-const R26 Bool)  (declare-const R27 Bool)  (declare-const R28 Bool)  (declare-const R29 Bool)  (declare-const R30 Bool)
 (declare-const R31 Bool)  (declare-const R32 Bool)  (declare-const R33 Bool)  (declare-const R34 Bool)
+(declare-const R35 Bool)  (declare-const R36 Bool)  (declare-const R37 Bool)  (declare-const R38 Bool)  (declare-const R39 Bool)
 (declare-const R Bool)
 
 (assert (= R (and 
      R1 R2 R3 R4 R5 R6 R7 R8 R9 R10
-  R11 R12 R13 R14 R15 R16 R17 R18 R19 R20
-  R21 R22 R23 R24 R25 R26 R27 R28 R29 R30
-  R31 R32 R33 R34
+  R11 R12 R13 R14 R15 R16 R17 R18 R19 R20 R21
+  R22 R23 R24 R25 R26 R35 R36 R37
+
 )))
 
 (assert (= R1 (forall ((node0 node)) (not (locked_epoch0 node0)))))
-(assert (= R2 (forall ((node0 node)) (not (transfer_epoch1 node0)))))
-(assert (= R3 (forall ((node0 node) (node1 node)) (or (not (held node0)) (not (transfer_epoch3 node1))))))
-(assert (= R4 (exists ((node0 node)) (not (locked_epoch1 node0)))))
+(assert (= R2 (forall ((node0 node) (node1 node)) (or (not (transfer_epoch2 node0)) (not (transfer_epoch3 node1))))))
+(assert (= R3 (exists ((node0 node)) (not (transfer_epoch3 node0)))))
+(assert (= R4 (exists ((node0 node)) (locked_epoch1 node0))))
 (assert (= R5 (forall ((node0 node) (node1 node)) (or (not (held node0)) (not (transfer_epoch2 node1))))))
-(assert (= R6 (exists ((node0 node)) (not (transfer_epoch2 node0)))))
-(assert (= R7 (forall ((node0 node) (node1 node)) (or (not (transfer_epoch2 node0)) (not (transfer_epoch3 node1))))))
-(assert (= R8 (exists ((node0 node)) (not (transfer_epoch3 node0)))))
-(assert (= R9 (exists ((node0 node)) (locked_epoch1 node0))))
-(assert (= R10 (exists ((node0 node)) (not (ep_epoch0 node0)))))
-(assert (= R11 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (held node0))))))
-(assert (= R12 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (locked_epoch1 node0))))))
-(assert (= R13 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (locked_epoch2 node0))))))
-(assert (= R14 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (locked_epoch3 node0))))))
-(assert (= R15 (exists ((node0 node)) (not (ep_epoch1 node0)))))
-(assert (= R16 (forall ((node0 node) (node1 node)) (or (not (ep_epoch1 node0)) (not (locked_epoch1 node1)) (= node0 node1)))))
-(assert (= R17 (forall ((node0 node)) (or (not (ep_epoch1 node0)) (not (locked_epoch2 node0))))))
-(assert (= R18 (forall ((node0 node)) (or (not (ep_epoch1 node0)) (not (locked_epoch3 node0))))))
-(assert (= R19 (exists ((node0 node)) (not (ep_epoch2 node0)))))
-(assert (= R20 (forall ((node0 node) (node1 node)) (or (not (ep_epoch2 node0)) (not (locked_epoch2 node1)) (= node0 node1)))))
-(assert (= R21 (forall ((node0 node)) (or (not (ep_epoch2 node0)) (not (locked_epoch3 node0))))))
-(assert (= R22 (forall ((node0 node) (node1 node)) (or (not (ep_epoch2 node0)) (not (transfer_epoch2 node1))))))
-(assert (= R23 (forall ((node0 node)) (or (not (ep_epoch2 node0)) (locked_epoch2 node0)))))
-(assert (= R24 (exists ((node0 node)) (not (ep_epoch3 node0)))))
-(assert (= R25 (forall ((node0 node) (node1 node)) (or (not (ep_epoch3 node0)) (not (held node1)) (= node0 node1)))))
-(assert (= R26 (forall ((node0 node) (node1 node)) (or (not (ep_epoch3 node0)) (not (transfer_epoch2 node1))))))
-(assert (= R27 (forall ((node0 node) (node1 node)) (or (not (ep_epoch3 node0)) (not (transfer_epoch3 node1))))))
-(assert (= R28 (forall ((node0 node)) (or (not (ep_epoch3 node0)) (held node0)))))
-(assert (= R29 (forall ((node0 node)) (or (not (ep_epoch3 node0)) (locked_epoch3 node0)))))
-(assert (= R30 (exists ((node0 node)) (not (held node0)))))
-(assert (= R31 (forall ((node0 node) (node1 node)) (or (not (ep_epoch1 node0)) (not (ep_epoch2 node1)) (not (held node0)) (= node0 node1)))))
-(assert (= R32 (forall ((node0 node) (node1 node)) (or (not (ep_epoch0 node0)) (not (ep_epoch2 node1)) (held node1) (transfer_epoch3 node0) (transfer_epoch3 node1) (= node0 node1)))))
-(assert (= R33 (forall ((node0 node) (node1 node)) (or (not (ep_epoch1 node0)) (not (ep_epoch2 node1)) (held node1) (transfer_epoch3 node0) (transfer_epoch3 node1) (= node0 node1)))))
-(assert (= R34 (forall ((node0 node) (node1 node)) (or (not (ep_epoch0 node0)) (held node1) (transfer_epoch2 node0) (transfer_epoch2 node1) (transfer_epoch3 node0) (transfer_epoch3 node1) (= node0 node1)))))
+(assert (= R6 (forall ((node0 node) (node1 node)) (or (not (held node0)) (not (transfer_epoch3 node1))))))
+(assert (= R7 (exists ((node0 node)) (not (locked_epoch1 node0)))))
+(assert (= R8 (exists ((node0 node)) (not (transfer_epoch2 node0)))))
+(assert (= R9 (exists ((node0 node)) (not (locked_epoch2 node0)))))
+(assert (= R10 (forall ((node0 node)) (or (not (locked_epoch2 node0)) (ep_epoch2 node0) (ep_epoch3 node0)))))
+(assert (= R11 (forall ((node0 node)) (or (ep_epoch0 node0) (ep_epoch1 node0) (held node0) (locked_epoch2 node0)))))
+(assert (= R12 (forall ((node0 node) (node1 node)) (or (not (locked_epoch1 node0)) (ep_epoch0 node1) (ep_epoch2 node1) (held node1) (= node0 node1)))))
+(assert (= R13 (forall ((node0 node)) (or (not (locked_epoch1 node0)) (ep_epoch1 node0) (ep_epoch2 node0) (held node0)))))
+(assert (= R14 (forall ((node0 node)) (or (not (locked_epoch1 node0)) (ep_epoch1 node0) (ep_epoch3 node0) (locked_epoch2 node0)))))
+(assert (= R15 (forall ((node0 node)) (or (ep_epoch0 node0) (ep_epoch3 node0) (locked_epoch1 node0) (locked_epoch2 node0)))))
+(assert (= R16 (exists ((node0 node)) (not (held node0)))))
+(assert (= R17 (exists ((node0 node)) (or (ep_epoch0 node0) (held node0) (transfer_epoch3 node0)))))
+(assert (= R18 (exists ((node0 node)) (or (ep_epoch1 node0) (held node0) (transfer_epoch3 node0)))))
+(assert (= R19 (exists ((node0 node)) (or (held node0) (transfer_epoch2 node0) (transfer_epoch3 node0)))))
+(assert (= R20 (forall ((node0 node) (node1 node)) (or (not (held node0)) (ep_epoch0 node1) (ep_epoch3 node0) (locked_epoch2 node0) (= node0 node1)))))
+(assert (= R21 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (ep_epoch1 node0))))))
+(assert (= R22 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (ep_epoch2 node0))))))
+(assert (= R23 (forall ((node0 node)) (or (not (ep_epoch0 node0)) (not (ep_epoch3 node0))))))
+(assert (= R24 (forall ((node0 node)) (or (not (ep_epoch1 node0)) (not (ep_epoch2 node0))))))
+(assert (= R25 (forall ((node0 node)) (or (not (ep_epoch1 node0)) (not (ep_epoch3 node0))))))
+(assert (= R26 (forall ((node0 node)) (or (not (ep_epoch2 node0)) (not (ep_epoch3 node0))))))
+
+(assert (= R35 (forall ((node0 node)) (= (locked_epoch0 node0) (transfer_epoch0 node0)))))
+(assert (= R36 (forall ((node0 node)) (= (locked_epoch0 node0) (transfer_epoch1 node0)))))
+(assert (= R37 (forall ((node0 node)) (= (ep_epoch3 node0) (locked_epoch3 node0)))))
+
 
 
 

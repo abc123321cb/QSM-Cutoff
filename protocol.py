@@ -83,6 +83,7 @@ class Protocol():
         # reachability
         self.reachable_states : List[str] = [] 
         self.repr_states      : Set[int]  = set()
+        self.bit_repr_states : Set[str] = set()
         # equivalence quotient data structures
         self.atom2equivs      = {} 
         self.atom2complements = {}
@@ -188,6 +189,11 @@ class Protocol():
 
     def init_representative_states(self, repr_states : List[int]) -> None:
         self.repr_states = set(repr_states)
+        # Convert repr_states to bitstrings and truncate to only state atoms (from the left)
+        self.bit_repr_states = {
+            '{0:0{1}b}'.format(repr_int, self.atom_num)[:self.state_atom_num]
+            for repr_int in repr_states
+        }
         if self.options.writeReach or self.options.verbosity > 3:
             self.header.append(f'representative states : {', '.join([str(s) for s in repr_states])}')
 

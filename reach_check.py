@@ -180,10 +180,12 @@ class ReachCheck():
     def _init_invariants(self) -> None:
         invariants  = []
         for invar in self.tran_sys.safety_properties:
-            # First substitute constants like zero, max, first, firste
-            if self.instantiator.const_subst_map:
-                invar = ilu.substitute_constants_ast(invar, self.instantiator.const_subst_map)
-            # Then instantiate quantifiers
+            # Commented out because no longer necessary;
+            # atom names are now labeled correctly in CoverConstraints
+            # # First substitute constants like zero, max, first, firste
+            # if self.instantiator.const_subst_map:
+            #     invar = ilu.substitute_constants_ast(invar, self.instantiator.const_subst_map)
+            # # Then instantiate quantifiers
             invar = self.instantiator.instantiate_quantifier(invar)
             if invar != il.And():
                 invariants.append(invar)
@@ -339,33 +341,3 @@ class ReachCheck():
             return self._compare_symmetry_quotient()
         else:
             return self._equivalence_checking()
-
-# ...existing code...
-def evaluate_ground_formula_on_terms(fmla, terms_set):
-    """Evaluate a quantifier-free ivy formula `fmla` against a set of ground literals (strings)."""
-    if isinstance(fmla, il.Not):
-        return not evaluate_ground_formula_on_terms(fmla.args[0], terms_set)
-    # and / or may be represented as il.And/il.Or or as apps to 'and'/'or'
-    if isinstance(fmla, il.And):
-        return all(evaluate_ground_formula_on_terms(a, terms_set) for a in fmla.args)
-    if isinstance(fmla, il.Or):
-        return any(evaluate_ground_formula_on_terms(a, terms_set) for a in fmla.args)
-    # fallback: treat as atomic formula (App, Equals, etc.)
-    return str(fmla) in terms_set
-
-def formula_covers_orbit(qformula, orbit, tran_sys: TransitionSystem, atoms, instantiator):
-    """
-    Return (covers: bool, failed_primes: List[Prime]) indicating whether qformula
-    (quantified formula) holds on every prime in `orbit`.
-    Requires an instantiator that can produce a quantifier-free formula.
-    """
-    # instantiate quantifiers to get quantifier-free formula (assumes instantiator provides this)
-    ground = instantiator.instantiate_quantifier(qformula)
-    failed = []
-    for prime in orbit.primes:
-        terms = get_terms(tran_sys, atoms, prime)   # existing helper: returns ground atoms/Not atoms
-        terms_set = set(str(t) for t in terms)
-        if not evaluate_ground_formula_on_terms(ground, terms_set):
-            failed.append(prime)
-    return (len(failed) == 0, failed)
-# ...existing code...

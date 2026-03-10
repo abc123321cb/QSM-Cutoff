@@ -330,6 +330,9 @@ def dec_even_pos_num(s: str, sep = r'[=,]+') -> str:
 
     parts = re.split(sep,s)
 
+    # return "_".join(parts)
+
+
     for i in range(1, len(parts), 2):
         if parts[i].isdigit():
             n = int(parts[i])
