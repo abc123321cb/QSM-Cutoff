@@ -340,18 +340,20 @@ class Minimizer():
             qinf = QInference(orbit, self.options, self.is_dnf)
             inf = Inference(orbit, self.options, protocol, self.is_dnf)
             qclause = qinf.get_qclause()
-            print("The type of qclause is " + str(type(qclause)))
-            for i in qclause:
-                print("The type is " + str(type(i)) + " and it is " + str(i))
-                for j in i:
-                    print("The type of the next step is " + str(type(j)) + " and it is " + str(j))
-                    try:
-                        for k in j:
-                            print("The type of the final step is " + str(type(k)) + " and it is " + str(k))
-                    except:
-                        pass
+            print(qclause)
+            # print("The type of qclause is " + str(type(qclause)))
+            # for i in qclause:
+            #     print("The type is " + str(type(i)) + " and it is " + str(i))
+            #     for j in i:
+            #         print("The type of the next step is " + str(type(j)) + " and it is " + str(j))
+            #         try:
+            #             for k in j:
+            #                 print("The type of the final step is " + str(type(k)) + " and it is " + str(k))
+            #         except:
+            #             pass
             print("start of new q")
             newqclause = inf.get_qclause()
+            print(newqclause)
             print("end of new q")
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
