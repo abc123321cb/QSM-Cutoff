@@ -1,18 +1,15 @@
-import math
 from qformula import QFormula
 from prime import *
 from verbose import *
 from protocol import Protocol
 import re
-from typing import Iterable, List, Sequence
-from itertools import product, permutations
+from typing import List
+from itertools import permutations
 from pyeda.inter import exprvar, truthtable
 from pyeda.boolalg.minimization import espresso_tts
 from ivy import ivy_logic as il
 from ivy import ivy_logic_utils as ilu
-from qutil import get_terms, get_qterms
 from qinference import *
-from util import FormulaUtility as futil
 
 # To use this class first initilize it then call get_qclause to get a forall statement for a for_all statement
 class Inference:
@@ -52,32 +49,30 @@ class Inference:
         if not clause:
             return il.And()
 
+        # Makes the repr_prime become [(bool is_negated, string function name, list of sorts)]
+        # so it turns ~l(node1) into (True, 'l', ['node1'])
         parsed_clause = [self._parse_literal(lit) for lit in clause]
-
-        slot_descriptors = []
-        lifted_literals = []
-        for literal in parsed_clause:
-            _, pred, args = literal
-            lifted_args = []
-            for arg_idx, concrete in enumerate(args):
-                slot_id = len(slot_descriptors)
-                slot_descriptors.append((pred, arg_idx, concrete))
-                lifted_args.append(f'N{slot_id}')
-            lifted_literals.append(self._format_literal(literal[0], pred, lifted_args))
-
-        slot_count = len(slot_descriptors)
+        slot_sort_names = self._get_slot_sort_names(parsed_clause)
+        slot_count = len(slot_sort_names)
         if slot_count <= 1:
             return il.And()
 
-        pair_list = [(i, j) for i in range(slot_count - 1) for j in range(i + 1, slot_count)]
+        pair_list = [
+            (i, j)
+            for i in range(slot_count - 1)
+            for j in range(i + 1, slot_count)
+            if slot_sort_names[i] == slot_sort_names[j]
+        ]
         eq_vars = [f'e{i}{j}' for i, j in pair_list]
-        eq_bit_index = {(i, j): idx for idx, (i, j) in enumerate(pair_list)}
 
-        positive_assignments = self._collect_positive_assignments(parsed_clause, eq_bit_index, slot_count)
+        positive_assignments = self._collect_positive_assignments(parsed_clause, pair_list, slot_count)
         if len(positive_assignments) == 0:
-            positive_assignments.add(self._build_bitvector_from_args(parsed_clause, eq_bit_index, slot_count))
+            positive_assignments.add(self._build_bitvector_from_args(parsed_clause, pair_list))
 
         var_count = len(eq_vars)
+        if var_count == 0:
+            return il.And() if tuple() in positive_assignments else il.Or()
+
         vars_tt = [exprvar(name) for name in eq_vars]
         table_bits = []
         for mask in range(1 << var_count):
@@ -105,6 +100,28 @@ class Inference:
             pred = m_rel.group(1)
             args = [arg.strip() for arg in m_rel.group(2).split(',') if arg.strip()]
             return (is_neg, pred, args)
+
+        # Handle: func(args)=var without parens, e.g. _epoch3(node0)=ep
+        m_fun_var_eq = re.match(r'^([\w.]+)\(([^)]*)\)=([\w.]+)$', token)
+        if m_fun_var_eq:
+            func = m_fun_var_eq.group(1)
+            func_args = [arg.strip() for arg in m_fun_var_eq.group(2).split(',') if arg.strip()]
+            rhs = m_fun_var_eq.group(3).strip()
+            return (is_neg, rhs + '=' + func, func_args)
+
+        # Handle: var=func(args) without parens, e.g. ep=_epoch3(node0)
+        m_var_fun_eq = re.match(r'^([\w.]+)=([\w.]+)\(([^)]*)\)$', token)
+        if m_var_fun_eq:
+            lhs = m_var_fun_eq.group(1).strip()
+            func = m_var_fun_eq.group(2).strip()
+            func_args = [arg.strip() for arg in m_var_fun_eq.group(3).split(',') if arg.strip()]
+            return (is_neg, lhs + '=' + func, func_args)
+
+        # Handle: var=var without parens, e.g. ep=epoch0
+        m_simple_eq = re.match(r'^([\w.]+)=([\w.]+)$', token)
+        if m_simple_eq:
+            pred = m_simple_eq.group(1) + '='
+            return (is_neg, pred, [m_simple_eq.group(2).strip()])
 
         if token.startswith('(') and token.endswith(')') and '=' in token:
             inner = token[1:-1].strip()
@@ -139,7 +156,53 @@ class Inference:
         is_neg, pred, args = parsed_literal
         return (is_neg, pred, len(args))
 
-    def _collect_positive_assignments(self, parsed_clause, eq_bit_index, slot_count):
+    def _get_slot_sort_names(self, parsed_clause):
+        const_to_sort = {}
+        for sort_id, consts in enumerate(self.protocol.sort_constants):
+            sort_name = self.protocol.sorts[sort_id]
+            for c in consts:
+                const_to_sort[c] = sort_name
+
+        slot_sort_names = []
+        for _, pred, args in parsed_clause:
+            pred_sorts = self.protocol.predicates.get(pred, ())
+            for arg_idx, arg in enumerate(args):
+                sort_name = None
+                if arg_idx < len(pred_sorts):
+                    sort_name = pred_sorts[arg_idx]
+                elif arg in const_to_sort:
+                    sort_name = const_to_sort[arg]
+                else:
+                    raise ValueError(f'Cannot determine sort for argument {arg} at {pred}[{arg_idx}]')
+                slot_sort_names.append(sort_name)
+        return slot_sort_names
+
+    def _build_slot_labels(self, slot_sort_names):
+        per_sort_count = {}
+        labels = []
+
+        for sort_name in slot_sort_names:
+            sort_key = str(sort_name)
+            idx = per_sort_count.get(sort_key, 0)
+            per_sort_count[sort_key] = idx + 1
+            label = self.protocol.get_sort_quantifier_name(sort_key, idx)
+            labels.append(label)
+
+        return labels
+
+    def _collect_positive_assignments(self, parsed_clause, pair_list, slot_count):
+        """
+        Compute all equality bit-vectors that are realizable by matching the
+        representative parsed clause against each prime in the orbit.
+
+        A "positive assignment" is a tuple of 0/1 bits aligned with `pair_list`:
+        bit k corresponds to pair `pair_list[k]` and is 1 iff the two slots are
+        assigned the same concrete constant under a consistent literal matching.
+
+        Matching is done per literal signature (negation, predicate, arity), and
+        all permutations within each signature group are explored. Any complete,
+        conflict-free slot-to-constant mapping contributes one positive bit-vector.
+        """
         positive = set()
         slot_offsets = self._compute_slot_offsets(parsed_clause)
         template_groups = {}
@@ -147,7 +210,7 @@ class Inference:
             key = self._signature_key(lit)
             template_groups.setdefault(key, []).append((idx, lit))
 
-        for prime in self.orbit.primes:
+        for prime in self.orbit.suborbit_repr_primes:
             parsed_prime = [self._parse_literal(lit) for lit in prime.literals_list]
             prime_groups = {}
             for lit in parsed_prime:
@@ -171,22 +234,21 @@ class Inference:
                 continue
 
             self._expand_group_assignments(
-                parsed_clause,
                 slot_offsets,
                 group_maps,
                 0,
                 {},
                 positive,
-                eq_bit_index,
+                pair_list,
                 slot_count,
             )
 
         return positive
 
-    def _expand_group_assignments(self, parsed_clause, slot_offsets, group_maps, gid, slot_to_const, positive, eq_bit_index, slot_count):
+    def _expand_group_assignments(self, slot_offsets, group_maps, gid, slot_to_const, positive, pair_list, slot_count):
         if gid >= len(group_maps):
             if len(slot_to_const) == slot_count:
-                bits = self._bitvector_from_slot_map(slot_to_const, eq_bit_index, slot_count)
+                bits = self._bitvector_from_slot_map(slot_to_const, pair_list)
                 positive.add(bits)
             return
 
@@ -212,7 +274,7 @@ class Inference:
                 if conflict:
                     break
             if not conflict:
-                self._expand_group_assignments(parsed_clause, slot_offsets, group_maps, gid + 1, local, positive, eq_bit_index, slot_count)
+                self._expand_group_assignments(slot_offsets, group_maps, gid + 1, local, positive, pair_list, slot_count)
 
     def _compute_slot_offsets(self, parsed_clause):
         offsets = [0]
@@ -225,23 +287,19 @@ class Inference:
     def _slot_id_from_literal_arg(self, slot_offsets, lit_idx, arg_idx):
         return slot_offsets[lit_idx] + arg_idx
 
-    def _bitvector_from_slot_map(self, slot_to_const, eq_bit_index, slot_count):
-        bits = [0] * len(eq_bit_index)
-        for i in range(slot_count - 1):
-            for j in range(i + 1, slot_count):
-                idx = eq_bit_index[(i, j)]
-                bits[idx] = 1 if slot_to_const[i] == slot_to_const[j] else 0
+    def _bitvector_from_slot_map(self, slot_to_const, pair_list):
+        bits = [0] * len(pair_list)
+        for idx, (i, j) in enumerate(pair_list):
+            bits[idx] = 1 if slot_to_const[i] == slot_to_const[j] else 0
         return tuple(bits)
 
-    def _build_bitvector_from_args(self, parsed_clause, eq_bit_index, slot_count):
+    def _build_bitvector_from_args(self, parsed_clause, pair_list):
         slot_constants = []
         for _, _, args in parsed_clause:
             slot_constants.extend(args)
-        bits = [0] * len(eq_bit_index)
-        for i in range(slot_count - 1):
-            for j in range(i + 1, slot_count):
-                idx = eq_bit_index[(i, j)]
-                bits[idx] = 1 if slot_constants[i] == slot_constants[j] else 0
+        bits = [0] * len(pair_list)
+        for idx, (i, j) in enumerate(pair_list):
+            bits[idx] = 1 if slot_constants[i] == slot_constants[j] else 0
         return tuple(bits)
 
     def _is_valid_partition(self, bits, pair_list, slot_count):
@@ -273,18 +331,18 @@ class Inference:
     # we then convert e01 and so on into the right format for the rest of the code so the And(e01 OR(e12 e02))
     # turns into forall N0,N1,N2. (N0=N1 & (N1=N2 | N0=N2)) -> orbit stuff 
 
-    def _lifted_orbit_literals(self, parsed_clause):
+    def _lifted_orbit_literals(self, parsed_clause, slot_labels):
         lifted = []
         slot_id = 0
         for is_neg, pred, args in parsed_clause:
             lifted_args = []
             for _ in args:
-                lifted_args.append(f'N{slot_id}')
+                lifted_args.append(slot_labels[slot_id])
                 slot_id += 1
             lifted.append(self._format_literal(is_neg, pred, lifted_args))
         return lifted
 
-    def _pyeda_expr_to_eq_string(self, expression):
+    def _pyeda_expr_to_eq_string(self, expression, slot_labels):
         if expression is None:
             return 'true'
         if not hasattr(expression, 'to_ast'):
@@ -301,8 +359,10 @@ class Inference:
             m = re.fullmatch(r'e(\d+)(\d+)', name)
             if not m:
                 return name
-            i, j = m.group(1), m.group(2)
-            return f'N{i} = N{j}'
+            i, j = int(m.group(1)), int(m.group(2))
+            left = slot_labels[i]
+            right = slot_labels[j]
+            return f'{left} = {right}'
 
         def walk(node):
             tag = node[0]
@@ -338,14 +398,12 @@ class Inference:
     def _get_cnf_qclause(self, expression):
         clause = list(self.orbit.repr_prime.literals_list)
         parsed_clause = [self._parse_literal(lit) for lit in clause]
-        lifted_literals = self._lifted_orbit_literals(parsed_clause)
+        slot_sort_names = self._get_slot_sort_names(parsed_clause)
+        slot_labels = self._build_slot_labels(slot_sort_names)
+        lifted_literals = self._lifted_orbit_literals(parsed_clause, slot_labels)
 
-        slot_count = 0
-        for _, _, args in parsed_clause:
-            slot_count += len(args)
-
-        qvars = [f'N{i}' for i in range(slot_count)]
-        eq_part = self._pyeda_expr_to_eq_string(expression)
+        qvars = list(slot_labels)
+        eq_part = self._pyeda_expr_to_eq_string(expression, slot_labels)
         orbit_part = ' & '.join(lifted_literals) if len(lifted_literals) > 0 else 'true'
 
         body = f'({eq_part} -> ({orbit_part}))'

@@ -352,7 +352,7 @@ class Minimizer():
             #         except:
             #             pass
             print("start of new q")
-            newqclause = inf.get_qclause()
+            newqclause = inf.get_qclause()["qclause"]
             print(newqclause)
             print("end of new q")
             orbit.set_quantifier_inference_result(qclause)

@@ -63,6 +63,7 @@ class Protocol():
         # member datas
         self.sorts            : List[str]            = [] # sort id -> sort name 
         self.sort_constants   : List[List[str]]      = [] # sort id -> constant names
+        self.sort_quantifier_prefix : Dict[str, str] = {} # sort name -> qvar prefix (simple policy: SORTNAME)
         self.sort_Name2Id     : Dict[str,int]        = {} # sort name -> sort id
         self.constant_Name2Id : Dict[str,int]        = {} # const name -> const id
         self.predicates       : Dict[str,tuple[str, ...]]  = {} # (function/constant name, [argsort1, argsort2, ..])
@@ -100,11 +101,22 @@ class Protocol():
             sort_id     = len(self.sorts)
             self.sorts.append(sort_name)
             self.sort_constants.append(consts_str)
+            self.sort_quantifier_prefix[sort_name] = sort_name.upper()
             self.sort_Name2Id[sort_name] = sort_id
             for (const_id, const) in enumerate(consts_str):
                 self.constant_Name2Id[const]=const_id
             if self.options.writeReach or self.options.verbosity > 3:
                 self.header.append(f'sort: {sort_name}={consts_str}')
+
+    def get_sort_quantifier_prefix(self, sort_name: str) -> str:
+        if sort_name in self.sort_quantifier_prefix:
+            return self.sort_quantifier_prefix[sort_name]
+        prefix = sort_name.upper()
+        self.sort_quantifier_prefix[sort_name] = prefix
+        return prefix
+
+    def get_sort_quantifier_name(self, sort_name: str, index: int) -> str:
+        return f"{self.get_sort_quantifier_prefix(sort_name)}{index}"
 
     def init_dependent_sort(self, tran_sys : TransitionSystem) -> None:
         for (set_sort, dep_type) in tran_sys.dep_types.items():

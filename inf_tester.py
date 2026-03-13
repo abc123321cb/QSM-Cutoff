@@ -8,12 +8,19 @@ from inf import Inference
 class FakePrime:
 	def __init__(self, literals_list):
 		self.literals_list = literals_list
-
+	def __str__(self) -> str:
+		s = ""
+		for i in self.literals_list:
+			s += i + ", "
+		return s
 
 class FakeOrbit:
 	def __init__(self, repr_literals, prime_literals_list):
 		self.repr_prime = FakePrime(repr_literals)
-		self.primes = [FakePrime(lits) for lits in prime_literals_list]
+		all_primes = [FakePrime(lits) for lits in prime_literals_list]
+		self.primes = all_primes
+		self.suborbit_repr_primes = all_primes
+		self.suborbitrepr_primes = all_primes
 
 
 class InferenceEnumerateTests(unittest.TestCase):
@@ -67,6 +74,7 @@ class InferenceEnumerateTests(unittest.TestCase):
 			sorts=['node'],
 			sort_constants=[sorted(consts)],
 			predicates=predicates,
+			get_sort_quantifier_name=lambda sort_name, idx: f'{str(sort_name).upper()}{idx}',
 		)
 
 	def _make_inf(self, repr_literals, primes):
@@ -78,7 +86,7 @@ class InferenceEnumerateTests(unittest.TestCase):
 	def test_empty_clause(self):
 		inf = self._make_inf([], [[]])
 		out = inf.get_qclause()
-		print("empty clause final value")
+		print("\nempty clause final value")
 		print(out)
 
 
@@ -91,7 +99,7 @@ class InferenceEnumerateTests(unittest.TestCase):
 		inf = self._make_inf(repr_lits, primes)
 		out = inf.get_qclause()
 
-		print("2 arg clause final value")
+		print("\n2 arg clause final value")
 		print(out)
 
 	def test_multiple_literals_with_negation(self):
@@ -103,8 +111,50 @@ class InferenceEnumerateTests(unittest.TestCase):
 		inf = self._make_inf(repr_lits, primes)
 		out = inf.get_qclause()
 
-		print("multi literal clause final value")
+		print("\nmulti literal clause final value")
 		print(out)
+
+	def test_no_cross_sort_equality_vars(self):
+		repr_lits = ['mix(node0,epoch0)']
+		primes = [
+			['mix(node0,epoch0)'],
+		]
+		orbit = FakeOrbit(repr_lits, primes)
+		options = SimpleNamespace()
+		protocol = SimpleNamespace(
+			sorts=['node', 'epoch'],
+			sort_constants=[['node0', 'node1'], ['epoch0', 'epoch1']],
+			predicates={'mix': ('node', 'epoch')},
+			get_sort_quantifier_name=lambda sort_name, idx: f'{str(sort_name).upper()}{idx}',
+		)
+		inf = Inference(orbit=orbit, options=options, protocol=protocol, is_dnf=False)
+		out = inf.get_qclause()
+
+		self.assertNotRegex(str(out['restrictions']), r'e\d+\d+')
+		print("\nmixed sort clause final value")
+		print(out)
+
+	def test_multiple_suborbit_representatives(self):
+		repr_lits = ['e(node0,node1)']
+		primes = [
+			['e(node0,node1)'],
+			['e(node0,node0)'],
+			['e(node1,node0)'],
+		]
+		orbit = FakeOrbit(repr_lits, primes)
+		orbit.suborbit_repr_primes = [orbit.primes[0], orbit.primes[1]]
+		orbit.suborbitrepr_primes = orbit.suborbit_repr_primes
+
+		options = SimpleNamespace()
+		protocol = self._build_fake_protocol(repr_lits, primes)
+		inf = Inference(orbit=orbit, options=options, protocol=protocol, is_dnf=False)
+		out = inf.get_qclause()
+
+		self.assertRegex(out['qclause'], r'\(true\s*->')
+		self.assertNotRegex(str(out['restrictions']), r'e\d+\d+')
+		print("\nmultiple suborbit representatives final value")
+		print(out)
+
 
 
 if __name__ == '__main__':
