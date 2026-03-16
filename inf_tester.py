@@ -150,9 +150,23 @@ class InferenceEnumerateTests(unittest.TestCase):
 		inf = Inference(orbit=orbit, options=options, protocol=protocol, is_dnf=False)
 		out = inf.get_qclause()
 
-		self.assertRegex(out['qclause'], r'\(true\s*->')
+		self.assertRegex(str(out['qclause']), r'(~e\(NODE0,NODE1\)|\(true\s*->)')
 		self.assertNotRegex(str(out['restrictions']), r'e\d+\d+')
 		print("\nmultiple suborbit representatives final value")
+		print(out)
+
+	def test_forced_equality_merges_quantifiers(self):
+		repr_lits = ['e(node0,node0)']
+		primes = [
+			['e(node0,node0)'],
+			['e(node1,node1)'],
+		]
+		inf = self._make_inf(repr_lits, primes)
+		out = inf.get_qclause()
+
+		self.assertRegex(str(out['qclause']), r'^forall NODE0')
+		self.assertNotIn('NODE1', str(out['qclause']))
+		print("\nforced equality merges quantifiers final value")
 		print(out)
 
 

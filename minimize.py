@@ -351,10 +351,10 @@ class Minimizer():
             #                 print("The type of the final step is " + str(type(k)) + " and it is " + str(k))
             #         except:
             #             pass
-            print("start of new q")
+            print("new q:")
             newqclause = inf.get_qclause()["qclause"]
             print(newqclause)
-            print("end of new q")
+            print("\n\n")
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
                 self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)

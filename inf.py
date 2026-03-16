@@ -25,7 +25,8 @@ class Inference:
 
     def get_qclause(self):
         restrictions = self.enumerate()
-        qclause = self._get_cnf_qclause(restrictions)
+        large_qclause = self._get_cnf_qclause(restrictions)
+        qclause = self.combine_redundant_sorts(large_qclause, restrictions)
         return {
             'qclause': qclause,
             'restrictions': restrictions,
@@ -331,6 +332,257 @@ class Inference:
     # we then convert e01 and so on into the right format for the rest of the code so the And(e01 OR(e12 e02))
     # turns into forall N0,N1,N2. (N0=N1 & (N1=N2 | N0=N2)) -> orbit stuff 
 
+    def _nnf_push_not(self, f):
+        if isinstance(f, il.Not):
+            g = f.args[0]
+            if isinstance(g, il.Not):
+                return self._nnf_push_not(g.args[0])
+            if isinstance(g, il.Or):
+                return il.And(*[self._nnf_push_not(il.Not(a)) for a in g.args])
+            if isinstance(g, il.And):
+                return il.Or(*[self._nnf_push_not(il.Not(a)) for a in g.args])
+            return f
+        if isinstance(f, il.Or):
+            return il.Or(*[self._nnf_push_not(a) for a in f.args])
+        if isinstance(f, il.And):
+            return il.And(*[self._nnf_push_not(a) for a in f.args])
+        return f
+
+    def _build_label_to_var(self, slot_sort_names, slot_labels):
+        sort_map = {
+            str(sort_name): il.EnumeratedSort(str(sort_name), list(self.protocol.sort_constants[sort_id]))
+            for sort_id, sort_name in enumerate(self.protocol.sorts)
+        }
+        label_to_var = {}
+        for label, sort_name in zip(slot_labels, slot_sort_names):
+            if label not in label_to_var:
+                label_to_var[label] = il.Variable(label, sort_map[str(sort_name)])
+        return label_to_var
+
+    def _evaluate_pyeda_ast(self, node, assignment, uniqid_to_name):
+        tag = node[0]
+        if tag == 'const':
+            return bool(node[1])
+        if tag == 'lit':
+            lit_id = node[1]
+            name = uniqid_to_name.get(abs(lit_id), f'e{abs(lit_id)}')
+            value = assignment.get(name, False)
+            return value if lit_id > 0 else not value
+        if tag == 'not':
+            return not self._evaluate_pyeda_ast(node[1], assignment, uniqid_to_name)
+        if tag == 'and':
+            return all(self._evaluate_pyeda_ast(child, assignment, uniqid_to_name) for child in node[1:])
+        if tag == 'or':
+            return any(self._evaluate_pyeda_ast(child, assignment, uniqid_to_name) for child in node[1:])
+        if tag == 'xor':
+            value = False
+            for child in node[1:]:
+                value ^= self._evaluate_pyeda_ast(child, assignment, uniqid_to_name)
+            return value
+        return False
+
+    def _iter_pyeda_models(self, expression):
+        if not hasattr(expression, 'to_ast'):
+            if il.is_true(expression):
+                yield {}
+            return
+        inputs = list(expression.inputs)
+        uniqid_to_name = {
+            getattr(var, 'uniqid', None): getattr(var, 'name', None)
+            for var in inputs
+            if getattr(var, 'uniqid', None) is not None and getattr(var, 'name', None) is not None
+        }
+        names = [name for name in (getattr(var, 'name', None) for var in inputs) if name is not None]
+        ast = expression.to_ast()
+        for mask in range(1 << len(names)):
+            assignment = {
+                names[idx]: bool((mask >> idx) & 1)
+                for idx in range(len(names))
+            }
+            if self._evaluate_pyeda_ast(ast, assignment, uniqid_to_name):
+                yield assignment
+
+    def _restriction_is_unsat(self, restrictions):
+        if hasattr(restrictions, 'to_ast'):
+            for _ in self._iter_pyeda_models(restrictions):
+                return False
+            return True
+        return il.is_false(restrictions)
+
+    def _restriction_forces_equality(self, restrictions, var_name):
+        if self._restriction_is_unsat(restrictions):
+            return False
+        if not hasattr(restrictions, 'to_ast'):
+            return False
+        saw_model = False
+        for assignment in self._iter_pyeda_models(restrictions):
+            saw_model = True
+            if not assignment.get(var_name, False):
+                return False
+        return saw_model
+
+    def _pyeda_expr_to_ivy_formula(self, expression, slot_labels, label_to_var):
+        if expression is None:
+            return il.And()
+        if not hasattr(expression, 'to_ast'):
+            if il.is_true(expression):
+                return il.And()
+            if il.is_false(expression):
+                return il.Or()
+            return il.And()
+
+        uniqid_to_name = {}
+        for var in expression.inputs:
+            uniqid = getattr(var, 'uniqid', None)
+            name = getattr(var, 'name', None)
+            if uniqid is not None and name is not None:
+                uniqid_to_name[uniqid] = name
+
+        def eq_atom(name):
+            match = re.fullmatch(r'e(\d+)(\d+)', name)
+            if not match:
+                return il.And()
+            left_idx, right_idx = int(match.group(1)), int(match.group(2))
+            return il.Equals(label_to_var[slot_labels[left_idx]], label_to_var[slot_labels[right_idx]])
+
+        def walk(node):
+            tag = node[0]
+            if tag == 'const':
+                return il.And() if bool(node[1]) else il.Or()
+            if tag == 'lit':
+                lit_id = node[1]
+                atom = eq_atom(uniqid_to_name.get(abs(lit_id), f'e{abs(lit_id)}'))
+                return atom if lit_id > 0 else il.Not(atom)
+            if tag == 'not':
+                return il.Not(walk(node[1]))
+            if tag == 'and':
+                return il.And(*[walk(sub) for sub in node[1:]])
+            if tag == 'or':
+                return il.Or(*[walk(sub) for sub in node[1:]])
+            if tag == 'xor':
+                parts = [walk(sub) for sub in node[1:]]
+                if len(parts) == 0:
+                    return il.Or()
+                acc = parts[0]
+                for part in parts[1:]:
+                    acc = il.Or(il.And(acc, il.Not(part)), il.And(il.Not(acc), part))
+                return acc
+            return il.And()
+
+        return walk(expression.to_ast())
+
+    def _simplify_formula(self, formula):
+        args = [self._simplify_formula(arg) for arg in formula.args]
+        if isinstance(formula, il.Not):
+            inner = args[0]
+            if il.is_true(inner):
+                return il.Or()
+            if il.is_false(inner):
+                return il.And()
+            if isinstance(inner, il.Not):
+                return inner.args[0]
+            return il.Not(inner)
+        if isinstance(formula, il.Or):
+            reduced = []
+            seen = set()
+            for arg in args:
+                if il.is_true(arg):
+                    return il.And()
+                if il.is_false(arg):
+                    continue
+                key = str(arg)
+                if key not in seen:
+                    seen.add(key)
+                    reduced.append(arg)
+            return il.Or(*reduced)
+        if isinstance(formula, il.And):
+            reduced = []
+            seen = set()
+            for arg in args:
+                if il.is_false(arg):
+                    return il.Or()
+                if il.is_true(arg):
+                    continue
+                key = str(arg)
+                if key not in seen:
+                    seen.add(key)
+                    reduced.append(arg)
+            return il.And(*reduced)
+        if isinstance(formula, il.Implies):
+            left, right = args
+            if il.is_false(left) or il.is_true(right):
+                return il.And()
+            if il.is_true(left):
+                return right
+            if il.is_false(right):
+                return self._simplify_formula(il.Not(left))
+            if left == right:
+                return il.And()
+            return il.Implies(left, right)
+        if il.is_eq(formula):
+            left, right = args
+            if left == right:
+                return il.And()
+            if (il.is_true(left) or il.is_false(left)) and (il.is_true(right) or il.is_false(right)):
+                return il.And() if left == right else il.Or()
+            if il.is_true(left):
+                return right
+            if il.is_true(right):
+                return left
+            if il.is_false(left):
+                return self._simplify_formula(il.Not(right))
+            if il.is_false(right):
+                return self._simplify_formula(il.Not(left))
+            return il.Equals(left, right)
+        return formula
+
+    def _build_lifted_orbit_formula(self, parsed_clause, slot_sort_names, slot_labels, label_to_var=None):
+        if label_to_var is None:
+            label_to_var = self._build_label_to_var(slot_sort_names, slot_labels)
+        symbol_cache = {}
+        atoms = []
+        slot_id = 0
+
+        def get_symbol(name, dom_sorts, rng_sort=None):
+            key = (name, tuple(str(sort) for sort in dom_sorts), str(rng_sort) if rng_sort is not None else None)
+            if key in symbol_cache:
+                return symbol_cache[key]
+            if rng_sort is None:
+                symbol_sort = il.RelationSort(list(dom_sorts))
+            elif len(dom_sorts) == 0:
+                symbol_sort = rng_sort
+            else:
+                symbol_sort = il.FunctionSort(*(list(dom_sorts) + [rng_sort]))
+            symbol_cache[key] = il.Symbol(name, symbol_sort)
+            return symbol_cache[key]
+
+        for is_neg, pred, args in parsed_clause:
+            arg_terms = []
+            for _ in args:
+                arg_terms.append(label_to_var[slot_labels[slot_id]])
+                slot_id += 1
+
+            if pred.endswith('='):
+                head = pred[:-1]
+                if len(arg_terms) == 0:
+                    atom = il.Equals(get_symbol(head, [], None), get_symbol(head, [], None))
+                elif len(arg_terms) == 1:
+                    lhs = get_symbol(head, [], arg_terms[0].sort)
+                    atom = il.Equals(lhs, arg_terms[0])
+                else:
+                    lhs = il.App(
+                        get_symbol(head, [term.sort for term in arg_terms[:-1]], arg_terms[-1].sort),
+                        *arg_terms[:-1],
+                    )
+                    atom = il.Equals(lhs, arg_terms[-1])
+            else:
+                rel = get_symbol(pred, [term.sort for term in arg_terms], None)
+                atom = il.App(rel, *arg_terms) if len(arg_terms) > 0 else rel
+
+            atoms.append(il.Not(atom) if is_neg else atom)
+
+        return il.And(*atoms)
+
     def _lifted_orbit_literals(self, parsed_clause, slot_labels):
         lifted = []
         slot_id = 0
@@ -400,13 +652,116 @@ class Inference:
         parsed_clause = [self._parse_literal(lit) for lit in clause]
         slot_sort_names = self._get_slot_sort_names(parsed_clause)
         slot_labels = self._build_slot_labels(slot_sort_names)
-        lifted_literals = self._lifted_orbit_literals(parsed_clause, slot_labels)
+        label_to_var = self._build_label_to_var(slot_sort_names, slot_labels)
+        antecedent = self._simplify_formula(self._pyeda_expr_to_ivy_formula(expression, slot_labels, label_to_var))
+        orbit_formula = self._build_lifted_orbit_formula(parsed_clause, slot_sort_names, slot_labels, label_to_var)
+        negated_orbit_formula = self._simplify_formula(self._nnf_push_not(il.Not(orbit_formula)))
+        body_formula = self._simplify_formula(il.Implies(antecedent, negated_orbit_formula))
 
-        qvars = list(slot_labels)
-        eq_part = self._pyeda_expr_to_eq_string(expression, slot_labels)
-        orbit_part = ' & '.join(lifted_literals) if len(lifted_literals) > 0 else 'true'
-
-        body = f'({eq_part} -> ({orbit_part}))'
+        qvars = []
+        seen = set()
+        for label in slot_labels:
+            if label in seen:
+                continue
+            seen.add(label)
+            qvars.append(label_to_var[label])
         if len(qvars) == 0:
-            return body
-        return f'forall {",".join(qvars)}. {body}'
+            return body_formula
+        return il.ForAll(qvars, body_formula)
+
+    # this function takes the expression and looks at the expression so if we have something like 
+    # forall NODE0,NODE1. (NODE0 = NODE1 -> (~locked_epoch3(NODE0) | ep=_epoch3(NODE1)))
+    # We can actually just combine NODE0 and NODE1 to 
+    # forall NODE0. true -> (~locked_epoch3(NODE0) | ep=_epoch3(NODE0))
+    # which will simplify the expression.
+    # This will actually check the domain size so if we are at size 2 for nodes
+    # NODE0 != NODE1 & NODE0 != NODE2
+    # Will actually combine node1 and node2 because the above expression at size 2 implies
+    # NODE1 = NODE2 
+    def combine_redundant_sorts(self, expression, restrictions):
+        clause = list(self.orbit.repr_prime.literals_list)
+        if not clause:
+            return expression
+
+        if not isinstance(expression, il.ForAll):
+            return expression
+
+        parsed_clause = [self._parse_literal(lit) for lit in clause]
+        slot_sort_names = self._get_slot_sort_names(parsed_clause)
+        slot_labels = self._build_slot_labels(slot_sort_names)
+        slot_count = len(slot_sort_names)
+
+        if self._restriction_is_unsat(restrictions):
+            return il.And()
+
+        qvars = list(il.quantifier_vars(expression))
+        body_formula = il.quantifier_body(expression)
+
+        name_to_var = {}
+        for qvar in qvars:
+            name = getattr(qvar, 'name', getattr(qvar, 'rep', str(qvar)))
+            name_to_var[name] = qvar
+
+        slot_vars = []
+        for label in slot_labels:
+            qvar = name_to_var.get(label)
+            if qvar is None:
+                return expression
+            slot_vars.append(qvar)
+
+        pair_list = [
+            (i, j)
+            for i in range(slot_count - 1)
+            for j in range(i + 1, slot_count)
+            if slot_sort_names[i] == slot_sort_names[j]
+        ]
+
+        parent = list(range(slot_count))
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(left, right):
+            root_left, root_right = find(left), find(right)
+            if root_left != root_right:
+                parent[root_right] = root_left
+
+        for left_idx, right_idx in pair_list:
+            if self._restriction_forces_equality(restrictions, f'e{left_idx}{right_idx}'):
+                union(left_idx, right_idx)
+
+        subs = {}
+        for idx, qvar in enumerate(slot_vars):
+            rep_var = slot_vars[find(idx)]
+            if qvar != rep_var:
+                subs[qvar] = rep_var
+
+        if len(subs) > 0:
+            body_formula = il.substitute(body_formula, subs)
+        body_formula = self._simplify_formula(body_formula)
+
+        used_vars = ilu.used_variables_ast(body_formula)
+        ordered_qvars = []
+        seen = set()
+        for qvar in slot_vars:
+            rep_var = subs.get(qvar, qvar)
+            if rep_var in seen:
+                continue
+            seen.add(rep_var)
+            if rep_var in used_vars:
+                ordered_qvars.append(rep_var)
+        for qvar in qvars:
+            rep_var = subs.get(qvar, qvar)
+            if rep_var in seen:
+                continue
+            seen.add(rep_var)
+            if rep_var in used_vars:
+                ordered_qvars.append(rep_var)
+
+        if len(ordered_qvars) == 0:
+            return body_formula
+        return il.ForAll(ordered_qvars, body_formula)
+    
