@@ -3,6 +3,7 @@ from types import SimpleNamespace
 import re
 
 from inf import Inference
+from ivy import ivy_logic as il
 
 
 class FakePrime:
@@ -24,6 +25,18 @@ class FakeOrbit:
 
 
 class InferenceEnumerateTests(unittest.TestCase):
+	def _collect_var_nodes(self, term):
+		vars_found = []
+
+		def walk(node):
+			if type(node).__name__ == 'Var':
+				vars_found.append(node)
+			for arg in getattr(node, 'args', []):
+				walk(arg)
+
+		walk(term)
+		return vars_found
+
 	def _build_fake_protocol(self, repr_literals, primes):
 		all_literals = list(repr_literals)
 		for p in primes:
@@ -168,6 +181,26 @@ class InferenceEnumerateTests(unittest.TestCase):
 		self.assertNotIn('NODE1', str(out['qclause']))
 		print("\nforced equality merges quantifiers final value")
 		print(out)
+
+	def test_forced_equality_reuses_quantified_var_object(self):
+		repr_lits = ['e(node0,node0)']
+		primes = [
+			['e(node0,node0)'],
+			['e(node1,node1)'],
+		]
+		inf = self._make_inf(repr_lits, primes)
+		out = inf.get_qclause()
+
+		qclause = out['qclause']
+		self.assertIsInstance(qclause, il.ForAll)
+		qvars = list(il.quantifier_vars(qclause))
+		self.assertEqual(len(qvars), 1)
+		qvar = qvars[0]
+
+		body = il.quantifier_body(qclause)
+		body_vars = self._collect_var_nodes(body)
+		self.assertGreaterEqual(len(body_vars), 2)
+		self.assertTrue(all(v is qvar for v in body_vars))
 
 
 

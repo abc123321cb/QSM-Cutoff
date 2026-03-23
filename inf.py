@@ -15,6 +15,20 @@ from qinference import *
 class Inference:
     
     def __init__(self, orbit: PrimeOrbit, options: QrmOptions, protocol: Protocol, is_dnf: bool):
+        """Initialize inference state for deriving quantified orbit clauses.
+
+        Args:
+            orbit: Orbit data containing representative and suborbit primes.
+            options: Runtime options for quantifier inference.
+            protocol: Protocol metadata (sorts, constants, predicates).
+            is_dnf: Flag indicating whether caller is using DNF mode.
+
+        Returns:
+            None.
+
+        Example:
+            inf = Inference(orbit, options, protocol, is_dnf=False)
+        """
         self.orbit   = orbit
         self.options = options
         self.protocol = protocol
@@ -24,6 +38,21 @@ class Inference:
 
 
     def get_qclause(self):
+        """Compute final quantified clause, restrictions, and source orbit literals.
+
+        Args:
+            None.
+
+        Returns:
+            A dict with keys:
+                qclause: Ivy AST formula after redundant-sort merging.
+                restrictions: Minimized equality restriction expression.
+                orbit_literals: Representative orbit literals as strings.
+
+        Example:
+            out = inf.get_qclause()
+            # out['qclause'] is an Ivy AST ForAll/Formula
+        """
         restrictions = self.enumerate()
         large_qclause = self._get_cnf_qclause(restrictions)
         qclause = self.combine_redundant_sorts(large_qclause, restrictions)
@@ -46,6 +75,19 @@ class Inference:
     # Note all functions here until _get_cnf_qclauses are for enumerate
     # RETURNS: something like And(e01 OR(e12 e02)) note it should always be a and on the outer layer
     def enumerate(self):
+        """Enumerate valid equalities and minimize them into a restriction formula.
+
+        Args:
+            None.
+
+        Returns:
+            A minimized Boolean expression (PyEDA AST) over eij equalities,
+            or Ivy true/false formulas for degenerate cases.
+
+        Example:
+            expr = inf.enumerate()
+            # expr can look like And(~e01, e12)
+        """
         clause = list(self.orbit.repr_prime.literals_list)
         if not clause:
             return il.And()
@@ -91,6 +133,19 @@ class Inference:
         return minimized_expr if minimized_expr is not None else il.And()
 
     def _parse_literal(self, literal: str):
+        """Parse one literal string into normalized tuple form.
+
+        Args:
+            literal: Literal string in relation or equality style syntax.
+
+        Returns:
+            A tuple (is_negated, predicate_key, args) where args is a list of
+            argument tokens.
+
+        Example:
+            inf._parse_literal('~e(node0,node1)')
+            # (True, 'e', ['node0', 'node1'])
+        """
         token = literal.strip()
         is_neg = token.startswith('~')
         if is_neg:
@@ -140,6 +195,20 @@ class Inference:
         return (is_neg, token, [])
 
     def _format_literal(self, is_neg: bool, pred: str, args: List[str]) -> str:
+        """Render a normalized literal tuple back into source-like string form.
+
+        Args:
+            is_neg: Whether the literal is negated.
+            pred: Predicate/function marker from parsed form.
+            args: Literal arguments.
+
+        Returns:
+            Formatted literal string.
+
+        Example:
+            inf._format_literal(True, 'e', ['NODE0', 'NODE1'])
+            # '~e(NODE0,NODE1)'
+        """
         body = pred
         if pred.endswith('='):
             f = pred[:-1]
@@ -154,10 +223,33 @@ class Inference:
         return ('~' if is_neg else '') + body
 
     def _signature_key(self, parsed_literal):
+        """Build grouping key used for literal-shape matching.
+
+        Args:
+            parsed_literal: Parsed literal tuple (is_neg, pred, args).
+
+        Returns:
+            Tuple key (is_neg, pred, arity).
+
+        Example:
+            inf._signature_key((True, 'e', ['node0', 'node1']))
+            # (True, 'e', 2)
+        """
         is_neg, pred, args = parsed_literal
         return (is_neg, pred, len(args))
 
     def _get_slot_sort_names(self, parsed_clause):
+        """Infer sort name for every argument slot in clause order.
+
+        Args:
+            parsed_clause: List of parsed literals.
+
+        Returns:
+            List of sort names, one per flattened argument slot.
+
+        Example:
+            # for ['mix(node0,epoch0)'] -> ['node', 'epoch']
+        """
         const_to_sort = {}
         for sort_id, consts in enumerate(self.protocol.sort_constants):
             sort_name = self.protocol.sorts[sort_id]
@@ -179,6 +271,18 @@ class Inference:
         return slot_sort_names
 
     def _build_slot_labels(self, slot_sort_names):
+        """Create quantifier variable labels for each argument slot.
+
+        Args:
+            slot_sort_names: Flattened slot sort sequence.
+
+        Returns:
+            Slot label list aligned with slot_sort_names.
+
+        Example:
+            inf._build_slot_labels(['node', 'node', 'epoch'])
+            # ['NODE0', 'NODE1', 'EPOCH0']
+        """
         per_sort_count = {}
         labels = []
 
@@ -192,17 +296,18 @@ class Inference:
         return labels
 
     def _collect_positive_assignments(self, parsed_clause, pair_list, slot_count):
-        """
-        Compute all equality bit-vectors that are realizable by matching the
-        representative parsed clause against each prime in the orbit.
+        """Collect all realizable equality bit-vectors from orbit representatives.
 
-        A "positive assignment" is a tuple of 0/1 bits aligned with `pair_list`:
-        bit k corresponds to pair `pair_list[k]` and is 1 iff the two slots are
-        assigned the same concrete constant under a consistent literal matching.
+        Args:
+            parsed_clause: Parsed representative clause literals.
+            pair_list: Slot-index pairs corresponding to equality variables.
+            slot_count: Number of flattened argument slots.
 
-        Matching is done per literal signature (negation, predicate, arity), and
-        all permutations within each signature group are explored. Any complete,
-        conflict-free slot-to-constant mapping contributes one positive bit-vector.
+        Returns:
+            Set of tuples; each tuple is a 0/1 assignment aligned with pair_list.
+
+        Example:
+            # may return {(1, 0, 1), (0, 1, 0)} for three equality pairs
         """
         positive = set()
         slot_offsets = self._compute_slot_offsets(parsed_clause)
@@ -247,6 +352,23 @@ class Inference:
         return positive
 
     def _expand_group_assignments(self, slot_offsets, group_maps, gid, slot_to_const, positive, pair_list, slot_count):
+        """Recursively enumerate consistent literal-group matchings.
+
+        Args:
+            slot_offsets: Prefix offsets for slot indexing by literal.
+            group_maps: Per-signature matching/permutation data.
+            gid: Current group index in recursion.
+            slot_to_const: Current partial slot-to-constant map.
+            positive: Output set collecting realized bit-vectors.
+            pair_list: Slot pairs for equality bits.
+            slot_count: Total number of slots.
+
+        Returns:
+            None. Updates positive in place.
+
+        Example:
+            # called internally to explore all group permutations recursively
+        """
         if gid >= len(group_maps):
             if len(slot_to_const) == slot_count:
                 bits = self._bitvector_from_slot_map(slot_to_const, pair_list)
@@ -278,6 +400,17 @@ class Inference:
                 self._expand_group_assignments(slot_offsets, group_maps, gid + 1, local, positive, pair_list, slot_count)
 
     def _compute_slot_offsets(self, parsed_clause):
+        """Compute prefix sums used to flatten (literal,arg) positions to slot IDs.
+
+        Args:
+            parsed_clause: Parsed literals.
+
+        Returns:
+            Prefix-offset list of length len(parsed_clause) + 1.
+
+        Example:
+            # arg counts [2, 1, 3] -> [0, 2, 3, 6]
+        """
         offsets = [0]
         total = 0
         for _, _, args in parsed_clause:
@@ -286,15 +419,52 @@ class Inference:
         return offsets
 
     def _slot_id_from_literal_arg(self, slot_offsets, lit_idx, arg_idx):
+        """Map literal index and argument index to global flattened slot ID.
+
+        Args:
+            slot_offsets: Prefix offsets for literals.
+            lit_idx: Literal index in parsed clause.
+            arg_idx: Argument index inside the literal.
+
+        Returns:
+            Integer slot ID.
+
+        Example:
+            # offsets [0,2,5], lit_idx=1, arg_idx=2 -> 4
+        """
         return slot_offsets[lit_idx] + arg_idx
 
     def _bitvector_from_slot_map(self, slot_to_const, pair_list):
+        """Convert slot-constant map to equality bit-vector over pair_list.
+
+        Args:
+            slot_to_const: Mapping slot ID -> concrete constant.
+            pair_list: Slot-index pairs.
+
+        Returns:
+            Tuple of 0/1 bits indicating equality for each slot pair.
+
+        Example:
+            # pair (0,1) is 1 if slot_to_const[0] == slot_to_const[1]
+        """
         bits = [0] * len(pair_list)
         for idx, (i, j) in enumerate(pair_list):
             bits[idx] = 1 if slot_to_const[i] == slot_to_const[j] else 0
         return tuple(bits)
 
     def _build_bitvector_from_args(self, parsed_clause, pair_list):
+        """Build default equality bit-vector from representative literal arguments.
+
+        Args:
+            parsed_clause: Parsed representative literals.
+            pair_list: Slot-index pairs.
+
+        Returns:
+            Tuple of 0/1 equality bits.
+
+        Example:
+            # parsed args ['node0','node0'] with pair (0,1) -> (1,)
+        """
         slot_constants = []
         for _, _, args in parsed_clause:
             slot_constants.extend(args)
@@ -304,6 +474,19 @@ class Inference:
         return tuple(bits)
 
     def _is_valid_partition(self, bits, pair_list, slot_count):
+        """Check if bit assignment encodes a valid equivalence relation.
+
+        Args:
+            bits: Candidate 0/1 equality assignment.
+            pair_list: Slot-index pairs corresponding to bits.
+            slot_count: Number of slots.
+
+        Returns:
+            True if assignment is transitively consistent, otherwise False.
+
+        Example:
+            # bits for e01=1, e12=1, e02=0 are invalid (violates transitivity)
+        """
         parent = list(range(slot_count))
 
         def find(x):
@@ -333,6 +516,17 @@ class Inference:
     # turns into forall N0,N1,N2. (N0=N1 & (N1=N2 | N0=N2)) -> orbit stuff 
 
     def _nnf_push_not(self, f):
+        """Push negations inward to produce a lightweight NNF formula.
+
+        Args:
+            f: Ivy AST formula.
+
+        Returns:
+            Ivy AST with negations pushed through And/Or where handled.
+
+        Example:
+            # ~(a | b) -> (~a & ~b)
+        """
         if isinstance(f, il.Not):
             g = f.args[0]
             if isinstance(g, il.Not):
@@ -349,6 +543,18 @@ class Inference:
         return f
 
     def _build_label_to_var(self, slot_sort_names, slot_labels):
+        """Create a label-to-variable mapping using protocol sort definitions.
+
+        Args:
+            slot_sort_names: Sort names by slot index.
+            slot_labels: Variable labels by slot index.
+
+        Returns:
+            Dict mapping each label to an Ivy variable object.
+
+        Example:
+            # {'NODE0': Var('NODE0', ...), 'NODE1': Var('NODE1', ...)}
+        """
         sort_map = {
             str(sort_name): il.EnumeratedSort(str(sort_name), list(self.protocol.sort_constants[sort_id]))
             for sort_id, sort_name in enumerate(self.protocol.sorts)
@@ -360,6 +566,19 @@ class Inference:
         return label_to_var
 
     def _evaluate_pyeda_ast(self, node, assignment, uniqid_to_name):
+        """Evaluate a PyEDA AST node under a Boolean variable assignment.
+
+        Args:
+            node: PyEDA AST tuple.
+            assignment: Mapping variable name -> Boolean value.
+            uniqid_to_name: Mapping PyEDA literal IDs to variable names.
+
+        Returns:
+            Boolean result of evaluating node under assignment.
+
+        Example:
+            # evaluates ('and', ('lit', 1), ('not', ('lit', 2)))
+        """
         tag = node[0]
         if tag == 'const':
             return bool(node[1])
@@ -382,6 +601,17 @@ class Inference:
         return False
 
     def _iter_pyeda_models(self, expression):
+        """Enumerate satisfying assignments for a PyEDA expression.
+
+        Args:
+            expression: PyEDA expression or Ivy true/false fallback.
+
+        Returns:
+            Generator of assignments as dicts name -> bool.
+
+        Example:
+            # yields {'e01': True, 'e12': False}, ... for satisfying models
+        """
         if not hasattr(expression, 'to_ast'):
             if il.is_true(expression):
                 yield {}
@@ -403,6 +633,17 @@ class Inference:
                 yield assignment
 
     def _restriction_is_unsat(self, restrictions):
+        """Determine whether the restriction formula has no satisfying model.
+
+        Args:
+            restrictions: Restriction expression (PyEDA or Ivy fallback).
+
+        Returns:
+            True if unsatisfiable, else False.
+
+        Example:
+            # returns True when no assignment satisfies restrictions
+        """
         if hasattr(restrictions, 'to_ast'):
             for _ in self._iter_pyeda_models(restrictions):
                 return False
@@ -410,6 +651,19 @@ class Inference:
         return il.is_false(restrictions)
 
     def _restriction_forces_equality(self, restrictions, var_name):
+        """Check whether all satisfying models force a given equality variable true.
+
+        Args:
+            restrictions: Restriction expression (PyEDA or Ivy fallback).
+            var_name: Equality variable name (e.g., e01).
+
+        Returns:
+            True if var_name is true in every satisfying model, else False.
+
+        Example:
+            inf._restriction_forces_equality(expr, 'e01')
+            # True means e01 is logically implied by expr
+        """
         if self._restriction_is_unsat(restrictions):
             return False
         if not hasattr(restrictions, 'to_ast'):
@@ -422,6 +676,19 @@ class Inference:
         return saw_model
 
     def _pyeda_expr_to_ivy_formula(self, expression, slot_labels, label_to_var):
+        """Translate minimized PyEDA expression into Ivy equality formula AST.
+
+        Args:
+            expression: PyEDA expression over eij variables.
+            slot_labels: Slot labels by index.
+            label_to_var: Mapping from labels to Ivy variables.
+
+        Returns:
+            Ivy formula equivalent to the given PyEDA expression.
+
+        Example:
+            # e01 & ~e12 -> (NODE0 = NODE1) & ~(NODE1 = NODE2)
+        """
         if expression is None:
             return il.And()
         if not hasattr(expression, 'to_ast'):
@@ -472,6 +739,17 @@ class Inference:
         return walk(expression.to_ast())
 
     def _simplify_formula(self, formula):
+        """Apply lightweight algebraic simplifications over Ivy AST formulas.
+
+        Args:
+            formula: Ivy formula to simplify.
+
+        Returns:
+            Simplified Ivy formula.
+
+        Example:
+            # simplifies (true -> phi) to phi
+        """
         args = [self._simplify_formula(arg) for arg in formula.args]
         if isinstance(formula, il.Not):
             inner = args[0]
@@ -537,6 +815,20 @@ class Inference:
         return formula
 
     def _build_lifted_orbit_formula(self, parsed_clause, slot_sort_names, slot_labels, label_to_var=None):
+        """Build Ivy AST formula for the representative orbit clause over slot vars.
+
+        Args:
+            parsed_clause: Parsed representative literals.
+            slot_sort_names: Sort names by flattened slot.
+            slot_labels: Slot labels by flattened slot.
+            label_to_var: Optional prebuilt label-to-variable map.
+
+        Returns:
+            Ivy conjunction formula representing lifted orbit literals.
+
+        Example:
+            # ['e(node0,node1)'] -> e(NODE0,NODE1)
+        """
         if label_to_var is None:
             label_to_var = self._build_label_to_var(slot_sort_names, slot_labels)
         symbol_cache = {}
@@ -584,6 +876,18 @@ class Inference:
         return il.And(*atoms)
 
     def _lifted_orbit_literals(self, parsed_clause, slot_labels):
+        """Create string-form lifted literals using slot labels as arguments.
+
+        Args:
+            parsed_clause: Parsed representative literals.
+            slot_labels: Slot labels by flattened slot.
+
+        Returns:
+            List of lifted literal strings.
+
+        Example:
+            # ['~e(node0,node1)'] -> ['~e(NODE0,NODE1)']
+        """
         lifted = []
         slot_id = 0
         for is_neg, pred, args in parsed_clause:
@@ -595,6 +899,18 @@ class Inference:
         return lifted
 
     def _pyeda_expr_to_eq_string(self, expression, slot_labels):
+        """Render PyEDA equality expression into readable string using slot labels.
+
+        Args:
+            expression: PyEDA expression over eij variables.
+            slot_labels: Slot labels by index.
+
+        Returns:
+            String representation of the Boolean equality expression.
+
+        Example:
+            # e01 | ~e12 -> '(NODE0 = NODE1 | ~(NODE1 = NODE2))'
+        """
         if expression is None:
             return 'true'
         if not hasattr(expression, 'to_ast'):
@@ -648,6 +964,18 @@ class Inference:
         return walk(expression.to_ast())
 
     def _get_cnf_qclause(self, expression):
+        """Construct initial quantified Ivy clause from restrictions and orbit body.
+
+        Args:
+            expression: Restriction expression produced by enumerate().
+
+        Returns:
+            Ivy formula, usually a ForAll with implication body.
+
+        Example:
+            q = inf._get_cnf_qclause(expr)
+            # forall NODE... . (restrictions -> negated_orbit)
+        """
         clause = list(self.orbit.repr_prime.literals_list)
         parsed_clause = [self._parse_literal(lit) for lit in clause]
         slot_sort_names = self._get_slot_sort_names(parsed_clause)
@@ -679,6 +1007,18 @@ class Inference:
     # Will actually combine node1 and node2 because the above expression at size 2 implies
     # NODE1 = NODE2 
     def combine_redundant_sorts(self, expression, restrictions):
+        """Merge forced-equal quantified variables and rebuild a smaller quantifier list.
+
+        Args:
+            expression: Ivy quantified formula produced by _get_cnf_qclause.
+            restrictions: Restriction expression over eij equalities.
+
+        Returns:
+            Ivy formula with redundant quantified variables merged/eliminated.
+
+        Example:
+            # if restrictions force NODE0 = NODE1, drops NODE1 from quantifiers
+        """
         clause = list(self.orbit.repr_prime.literals_list)
         if not clause:
             return expression
