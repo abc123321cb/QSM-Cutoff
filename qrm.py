@@ -228,12 +228,12 @@ def qrm(ivy_name, args):
     options.step_end()
 
     # uncurry prime orbits if curried
-    if options.curry_ordered_sorts:
-        options.step_start('Uncurry and Merge Prime Orbits')
-        prime_orbits.uncurry_orbits(protocol, curried_protocol)
-        vprint(options, 'Uncurrying of prime orbits completed.', 2)
-        options.step_end()
-
+    # if options.curry_ordered_sorts:
+    #     options.step_start('Uncurry and Merge Prime Orbits')
+    #     prime_orbits.uncurry_orbits(protocol, curried_protocol)
+    #     vprint(options, 'Uncurrying of prime orbits completed.', 2)
+    #     options.step_end()
+    prime_orbits.print_orbits_grouped_by_value()
 
     # minimization
     options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')

@@ -79,6 +79,10 @@ class StateOrbit():
         lines += f'states:\n'
         for state in self.states:
             lines += f'{state}\n'
+        # lines += '\n'
+        # lines += f'hex states:\n'
+        # for state in self.states:
+        #     lines += f'{hex(int(state, 2))}\n'
         lines += '\n'
         for i, ivy_state in enumerate(self.ivy_states):
             lines+= f"State {i}:\n"

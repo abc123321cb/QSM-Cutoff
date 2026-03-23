@@ -1,5 +1,5 @@
 import sys
-from typing import Dict,List
+from typing import Dict, List, Any, Optional
 from pysat.solvers import Cadical153 as SatSolver 
 from protocol import Protocol 
 from dualrail import DualRail
@@ -20,6 +20,69 @@ def make_key(values: List[str], protocol : Protocol) -> str:
             predicates.append('~'+protocol.atom_sig[atom_id][0])
     predicates.sort()
     return str(predicates)
+
+# this is bad code only for this one protocol it needs to be genrelized
+_ORBIT_GROUP_DIGIT_RE = re.compile(r"\d+")
+
+
+def get_orbit_group_key(obj, protocol: Protocol | None = None):
+    """Return a coarse (protocol-specific) key for grouping prime orbits.
+
+    This is currently tailored to protocols like `distributed_lock` where
+    constant names carry indices (e.g. NODE0/NODE1, epoch2/epoch3, ...).
+
+    The key is built by:
+    - taking the orbit representative's literals (or an explicit literal list)
+    - stripping all digits from predicate/constant names
+    - returning a hashable multiset of the resulting normalized signatures
+
+    Args:
+        obj: `PrimeOrbit`, `Prime`, or `List[str]` of literals.
+        protocol: optional, used to normalize via `protocol.atom_sig` when
+            available. If omitted, falls back to string-based normalization.
+
+    Returns:
+        A hashable multiset key (frozenset of (term, count) pairs).
+    """
+
+    def strip_digits(text: str) -> str:
+        return _ORBIT_GROUP_DIGIT_RE.sub("", text)
+
+    # Accept PrimeOrbit / Prime / raw literal list
+    if hasattr(obj, "repr_prime") and hasattr(obj.repr_prime, "literals_list"):
+        literals = obj.repr_prime.literals_list
+    elif hasattr(obj, "literals_list"):
+        literals = obj.literals_list
+    else:
+        literals = obj
+
+    if not isinstance(literals, list):
+        raise TypeError("get_orbit_group_key expects a PrimeOrbit, Prime, or List[str]")
+
+    terms = []
+    for lit in literals:
+        if not isinstance(lit, str):
+            raise TypeError("get_orbit_group_key expects a list of literal strings")
+
+        sign = '-'
+        atom = lit
+        if lit.startswith('~'):
+            atom = lit[1:]
+        else:
+            sign = '+'
+
+        # Prefer structured normalization via atom_sig when possible
+        if protocol is not None and atom in protocol.atom_Name2Id:
+            atom_id = protocol.atom_Name2Id[atom]
+            sig = protocol.atom_sig[atom_id]
+            pred = strip_digits(sig[0])
+            args = tuple(strip_digits(a) for a in sig[1:])
+            terms.append((sign, pred, args))
+        else:
+            # Fall back to string-level normalization
+            terms.append((sign, strip_digits(atom)))
+
+    return frozenset(Counter(terms).items())
 
 class Prime():
     # static members
@@ -70,6 +133,11 @@ class PrimeOrbit():
         self.id         : int = PrimeOrbit.count   
         self.num_suborbits = 0
         self.suborbit_repr_primes : List[Prime] = []
+
+        # orbit-grouping (coarser than symmetry orbit)
+        self.group_key: Any = None
+        self.group_id: Optional[int] = None
+        self.group_size: Optional[int] = None
 
         # quantifier inference
         self.num_forall   = 0 
@@ -137,6 +205,9 @@ class PrimeOrbits():
         self._formula    : DualRail
         self._orbit_hash : Dict[str, PrimeOrbit] = {}
         self._sub_orbit_count = 0
+        # orbit groups (computed on demand)
+        self.orbit_groups_by_value: Dict[Any, List[PrimeOrbit]] = {}
+        self.orbit_groups_list: List[List[PrimeOrbit]] = []
         self.options = options
         Prime.reset()
         PrimeOrbit.reset()
@@ -146,6 +217,67 @@ class PrimeOrbits():
         for orbit in self.orbits:
             lines += str(orbit) 
         return lines
+
+    def format_orbits_grouped_by_value(self, protocol: Protocol | None = None) -> str:
+        """Pretty-print orbits grouped by `get_orbit_group_key`.
+
+        This is intentionally separate from `__str__` so you can switch between
+        the old printing behavior and this grouped view.
+
+        Args:
+            protocol: Optional protocol to enable signature-based normalization
+                in `get_orbit_group_key`.
+        """
+        self.build_orbit_groups_by_value(protocol=protocol)
+        groups = self.orbit_groups_by_value
+
+        # deterministic ordering: larger groups first, then key string
+        sorted_groups = sorted(groups.items(), key=lambda kv: (-len(kv[1]), str(kv[0])))
+
+        out_lines: List[str] = []
+        out_lines.append(f"number of orbit groups: {len(sorted_groups)}")
+        for group_id, (key, orbits) in enumerate(sorted_groups):
+            orbits_sorted = sorted(orbits, key=lambda o: o.id)
+            out_lines.append(
+                f"\n================= Orbit_group {group_id} size {len(orbits_sorted)} ================="
+            )
+            out_lines.append(f"value: {key}")
+            for orbit in orbits_sorted:
+                out_lines.append(f"[orbit {orbit.id}] value: {orbit.group_key}")
+                out_lines.append(str(orbit).rstrip())
+        out_lines.append("")
+        return "\n".join(out_lines)
+
+    def print_orbits_grouped_by_value(self, protocol: Protocol | None = None) -> None:
+        print(self.format_orbits_grouped_by_value(protocol=protocol), end="")
+
+    def build_orbit_groups_by_value(self, protocol: Protocol | None = None) -> Dict[Any, List[PrimeOrbit]]:
+        """Compute and cache orbit groups, and store membership on each PrimeOrbit.
+
+        After calling this:
+        - `self.orbit_groups_by_value[key]` gives the list of orbits in that group
+        - each `PrimeOrbit` has `.group_key`, `.group_id`, `.group_size` populated
+        - `self.orbit_groups_list` stores the groups in a deterministic order
+        """
+        groups: Dict[Any, List[PrimeOrbit]] = defaultdict(list)
+        for orbit in self.orbits:
+            key = get_orbit_group_key(orbit, protocol=protocol)
+            orbit.group_key = key
+            groups[key].append(orbit)
+
+        # deterministic ordering: larger groups first, then key string
+        ordered = sorted(groups.items(), key=lambda kv: (-len(kv[1]), str(kv[0])))
+        self.orbit_groups_by_value = {k: v for (k, v) in ordered}
+        self.orbit_groups_list = [v for (_, v) in ordered]
+
+        # store group ids and sizes on each orbit
+        for group_id, (_, orbits) in enumerate(ordered):
+            group_size = len(orbits)
+            for orbit in orbits:
+                orbit.group_id = group_id
+                orbit.group_size = group_size
+
+        return self.orbit_groups_by_value
 
     def _write_primes(self, filename) -> None:
         outF = open(filename, "w")

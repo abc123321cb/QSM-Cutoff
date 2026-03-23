@@ -338,9 +338,9 @@ class Minimizer():
             orbit = self.orbits[orbit_id]
             vprint(self.options, str(orbit), 5)
             qinf = QInference(orbit, self.options, self.is_dnf)
-            inf = Inference(orbit, self.options, protocol, self.is_dnf)
+            #inf = Inference(orbit, self.options, protocol, self.is_dnf)
             qclause = qinf.get_qclause()
-            print(qclause)
+            #print(qclause)
             # print("The type of qclause is " + str(type(qclause)))
             # for i in qclause:
             #     print("The type is " + str(type(i)) + " and it is " + str(i))
@@ -351,10 +351,10 @@ class Minimizer():
             #                 print("The type of the final step is " + str(type(k)) + " and it is " + str(k))
             #         except:
             #             pass
-            print("new q:")
-            newqclause = inf.get_qclause()["qclause"]
-            print(newqclause)
-            print("\n\n")
+            #print("new q:")
+            #newqclause = inf.get_qclause()["qclause"]
+            #print(newqclause)
+            #print("\n\n")
             orbit.set_quantifier_inference_result(qclause)
             if self.options.sanity_check:
                 self.cover.init_quantifier_inference_check_solver_smt(orbit.primes, qclause)
