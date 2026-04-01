@@ -16,7 +16,7 @@ from z3 import (
 
 TOKEN_RE = re.compile(
     r"\s*("
-    r"forall|exists|~=|!=|=|\||&|~|\(|\)|,|\.|"
+    r"forall|exists|=>|~=|!=|=|\||&|~|\(|\)|\[|\]|,|\.|"
     r"[A-Za-z_][A-Za-z0-9_]*"
     r")"
 )
@@ -81,9 +81,11 @@ def rewrite_invariant_line(line: str) -> str:
 
 @dataclass
 class ParsedInvariant:
-    quant: Optional[str]          # "forall", "exists", or None
-    vars: List[ExprRef]           # bound vars (as Z3 Consts)
-    body: ExprRef                 # body using those vars
+    # A sequence of quantifier blocks such as:
+    #   [("forall", [EPOCH0]), ("exists", [NODE0, NODE1])]
+    # representing: forall EPOCH0. exists NODE0,NODE1. body
+    quant_blocks: List[Tuple[str, List[ExprRef]]]
+    body: ExprRef
 
 
 class Z3ClauseParser:
@@ -199,12 +201,16 @@ class Z3ClauseParser:
         self.i = 0
         self.env = {}
 
-        quant = None
-        vars_out: List[ExprRef] = []
-
+        quant_blocks: List[Tuple[str, List[ExprRef]]] = []
         if self._peek() in ("forall", "exists"):
-            quant = self._pop()
-            vars_out = self._parse_varlist_until_dot()
+            # Support mixed prefixes like: forall EPOCH0, exists NODE0.
+            while self._peek() in ("forall", "exists"):
+                q = self._pop()
+                vars_out = self._parse_varlist_until_quant_or_dot()
+                if not vars_out:
+                    raise ParseError("Empty quantified variable list")
+                quant_blocks.append((q, vars_out))
+                self._accept(",")
             self._expect(".")
 
         body = self._parse_expr()
@@ -212,10 +218,17 @@ class Z3ClauseParser:
         if self._peek() is not None:
             raise ParseError(f"Unexpected token '{self._peek()}' at end")
 
-        return ParsedInvariant(quant=quant, vars=vars_out, body=body)
+        return ParsedInvariant(quant_blocks=quant_blocks, body=body)
     
     def _parse_expr(self) -> ExprRef:
-        return self._parse_or()
+        return self._parse_implies()
+
+    def _parse_implies(self) -> ExprRef:
+        left = self._parse_or()
+        if self._accept("=>"):
+            right = self._parse_implies()  # right-associative
+            return Or(Not(left), right)
+        return left
 
     def _parse_or(self) -> ExprRef:
         left = self._parse_and()
@@ -240,37 +253,28 @@ class Z3ClauseParser:
             self._expect(")")
             return e
 
+        if self._accept("["):
+            e = self._parse_expr()
+            self._expect("]")
+            return e
+
         return self._parse_atom_or_equality()
-
-    def _parse_atom_or_equality(self) -> ExprRef:
-        left_ast = self._parse_term_ast()
-
-        if self._accept("="):
-            right_ast = self._parse_term_ast()
-            return self._term_to_z3(left_ast) == self._term_to_z3(right_ast)
-
-        if self._accept("!=") or self._accept("~="):   # <-- accept both
-            right_ast = self._parse_term_ast()
-            return self._term_to_z3(left_ast) != self._term_to_z3(right_ast)
-
-        return self._atom_to_z3(left_ast)
     
     def parse_atom(self, atom_str: str) -> ExprRef:
         atom_str = strip_wrapping_parens(atom_str)
         pi = self.parse_invariant_line(atom_str)
-        if pi.quant is not None:
+        if pi.quant_blocks:
             raise ParseError("State atom unexpectedly contains a quantifier")
         return pi.body
 
     # ------------- grammar -------------
-    def _parse_varlist_until_dot(self) -> List[ExprRef]:
+    def _parse_varlist_until_quant_or_dot(self) -> List[ExprRef]:
         out: List[ExprRef] = []
-        saw = False
         while True:
             t = self._peek()
             if t is None:
                 raise ParseError("Unexpected end while reading quantified variable list")
-            if t == ".":
+            if t == "." or t in ("forall", "exists"):
                 break
             if t == ",":
                 self._pop()
@@ -283,28 +287,14 @@ class Z3ClauseParser:
             v = Const(name, self._infer_var_sort(name))
             self.env[name] = v
             out.append(v)
-            saw = True
-        if not saw:
-            raise ParseError("Empty quantified variable list")
         return out
-
-    def _parse_disjunction(self) -> ExprRef:
-        lits = [self._parse_literal()]
-        while self._accept("|"):
-            lits.append(self._parse_literal())
-        return lits[0] if len(lits) == 1 else Or(lits)
-
-    def _parse_literal(self) -> ExprRef:
-        neg = self._accept("~")
-        atom = self._parse_atom_or_equality()
-        return Not(atom) if neg else atom
 
     def _parse_atom_or_equality(self) -> ExprRef:
         left_ast = self._parse_term_ast()
         if self._accept("="):
             right_ast = self._parse_term_ast()
             return self._term_to_z3(left_ast) == self._term_to_z3(right_ast)
-        if self._accept("!="):
+        if self._accept("!=") or self._accept("~="):
             right_ast = self._parse_term_ast()
             return self._term_to_z3(left_ast) != self._term_to_z3(right_ast)
         return self._atom_to_z3(left_ast)
@@ -330,6 +320,30 @@ class Z3ClauseParser:
             return self.env[name]
         if name in self.predeclared:
             return self.predeclared[name]
+
+        # Epoch aliases: treat designated names as concrete epoch constants.
+        # This matches typical Ivy encodings where:
+        #   zero  == epoch0
+        #   firste == epoch1
+        #   max   == last epoch in the finite domain
+        if self.EpochSort is not None and self.epoch_names:
+            lname = name.lower()
+            target_epoch: Optional[str] = None
+            if lname == "zero":
+                target_epoch = "epoch0"
+            elif lname == "firste":
+                target_epoch = "epoch1"
+            elif lname == "max":
+                target_epoch = self.epoch_names[-1]
+
+            if target_epoch is not None:
+                for k, v in self.predeclared.items():
+                    if k.lower() == target_epoch.lower():
+                        return v
+                raise ParseError(
+                    f"Alias '{name}' used but '{target_epoch}' not found in epoch constants"
+                )
+
         if name in self.bool_consts:
             raise ParseError(f"Symbol '{name}' used as term but previously used as Bool atom")
         c = self.term_consts.get(name)
@@ -398,9 +412,12 @@ class Z3ClauseParser:
 # State file parsing
 # ----------------------------
 
-def read_states_file(path: str) -> Tuple[List[str], List[str]]:
+def read_states_file(path: str) -> Tuple[List[str], List[str], Dict[str, str]]:
     """
-    Returns (atoms_list, bitstrings_list).
+    Returns (atoms_list, bitstrings_list, interpreted_atoms).
+
+    interpreted_atoms is a dict mapping atom strings to "0"/"1".
+    If the file has no 'interpreted atoms: {...}' block, this is {}.
     """
     with open(path, "r", encoding="utf-8") as f:
         text = f.read()
@@ -412,6 +429,11 @@ def read_states_file(path: str) -> Tuple[List[str], List[str]]:
 
     atoms_str = m.group(1)
     atoms: List[str] = ast.literal_eval(atoms_str)
+
+    interpreted_atoms: Dict[str, str] = {}
+    m2 = re.search(r"interpreted atoms:\s*(\{[\s\S]*?\})", text)
+    if m2:
+        interpreted_atoms = ast.literal_eval(m2.group(1))
 
     bitstrings: List[str] = []
     for line in text.splitlines():
@@ -431,7 +453,7 @@ def read_states_file(path: str) -> Tuple[List[str], List[str]]:
             + ", ".join(sorted({str(len(b)) for b in bad}))
         )
 
-    return atoms, bitstrings
+    return atoms, bitstrings, interpreted_atoms
 
 def extract_domain_constants(atoms: List[str]) -> Tuple[List[str], List[str]]:
     nodes = set()
@@ -450,31 +472,45 @@ def extract_domain_constants(atoms: List[str]) -> Tuple[List[str], List[str]]:
 # ----------------------------
 
 def ground_invariant(pi: ParsedInvariant, domains: Dict[SortRef, List[ExprRef]]) -> ExprRef:
-    if pi.quant is None:
+    """Ground ParsedInvariant by enumerating its finite domains.
+
+    Supports mixed quantifier prefixes such as:
+      forall EPOCH0, exists NODE0. body
+    which ground to:
+      And_{EPOCH0} Or_{NODE0} body
+    """
+
+    if not pi.quant_blocks:
         return pi.body
 
-    if not pi.vars:
-        return pi.body
+    def ground_from(block_index: int, expr: ExprRef) -> ExprRef:
+        if block_index >= len(pi.quant_blocks):
+            return expr
 
-    dom_lists: List[List[ExprRef]] = []
-    for v in pi.vars:
-        vs = v.sort()
-        if vs not in domains or not domains[vs]:
-            raise ValueError(f"No finite domain provided for sort {vs} (var {v})")
-        dom_lists.append(domains[vs])
+        quant, vars_in_block = pi.quant_blocks[block_index]
+        if not vars_in_block:
+            return ground_from(block_index + 1, expr)
 
-    instances: List[ExprRef] = []
-    for values in itertools.product(*dom_lists):
-        subs = [(pi.vars[i], values[i]) for i in range(len(pi.vars))]
-        inst = substitute(pi.body, subs)
-        instances.append(inst)
+        dom_lists: List[List[ExprRef]] = []
+        for v in vars_in_block:
+            vs = v.sort()
+            if vs not in domains or not domains[vs]:
+                raise ValueError(f"No finite domain provided for sort {vs} (var {v})")
+            dom_lists.append(domains[vs])
 
-    if pi.quant == "forall":
-        return And(instances) if instances else True
-    if pi.quant == "exists":
-        return Or(instances) if instances else False
+        instances: List[ExprRef] = []
+        for values in itertools.product(*dom_lists):
+            subs = [(vars_in_block[i], values[i]) for i in range(len(vars_in_block))]
+            inst_expr = substitute(expr, subs)
+            instances.append(ground_from(block_index + 1, inst_expr))
 
-    raise ValueError(f"Unknown quantifier: {pi.quant}")
+        if quant == "forall":
+            return And(instances) if instances else True
+        if quant == "exists":
+            return Or(instances) if instances else False
+        raise ValueError(f"Unknown quantifier: {quant}")
+
+    return ground_from(0, pi.body)
 
 # ----------------------------
 # Main comparison logic
@@ -496,7 +532,7 @@ def model_to_bitstring(model, atoms_z3: List[ExprRef]) -> str:
     return "".join(out)
 
 def main(invariants_path: str, states_path: str, spurious_limit: int = 10) -> None:
-    atoms, reachable_bits = read_states_file(states_path)
+    atoms, reachable_bits, interpreted_atoms = read_states_file(states_path)
     node_names, epoch_names = extract_domain_constants(atoms)
 
     parser = Z3ClauseParser(node_names=node_names, epoch_names=epoch_names)
@@ -504,6 +540,15 @@ def main(invariants_path: str, states_path: str, spurious_limit: int = 10) -> No
 
     # Parse state atoms into Z3 expressions (in a fixed order)
     atoms_z3: List[ExprRef] = [parser.parse_atom(a) for a in atoms]
+
+    # Fixed constraints from interpreted atoms (e.g., le(epochi,epochj), (zero=epoch0), ...)
+    interpreted_constraints: List[ExprRef] = []
+    for atom_str, bit in interpreted_atoms.items():
+        try:
+            a = parser.parse_atom(atom_str)
+        except Exception as e:
+            raise ParseError(f"Could not parse interpreted atom '{atom_str}': {e}") from e
+        interpreted_constraints.append(a if str(bit) == "1" else Not(a))
 
     # Parse and ground invariants
     parsed_invs: List[ParsedInvariant] = []
@@ -537,6 +582,8 @@ def main(invariants_path: str, states_path: str, spurious_limit: int = 10) -> No
     for si, bits in enumerate(reachable_bits):
         s = Solver()
         s.add(bitstring_to_constraints(atoms_z3, bits))
+        if interpreted_constraints:
+            s.add(interpreted_constraints)
         violated = []
         for ii, inv in enumerate(invs_ground):
             s.push()
@@ -562,6 +609,8 @@ def main(invariants_path: str, states_path: str, spurious_limit: int = 10) -> No
     if spurious_limit > 0:
         base = Solver()
         base.add(invs_ground)
+        if interpreted_constraints:
+            base.add(interpreted_constraints)
 
         # Exclude all known reachable valuations
         for bits in reachable_bits:

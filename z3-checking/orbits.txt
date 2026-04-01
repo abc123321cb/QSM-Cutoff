@@ -1,0 +1,12 @@
+forall EPOCH0, forall NODE0. le(EPOCH0, firste) => ~transfer(EPOCH0, NODE0)
+forall EPOCH0, exists NODE0. ~le(EPOCH0, firste) => ~transfer(EPOCH0, NODE0)
+forall EPOCH0, exists NODE0. ~le(EPOCH0, zero) => ~locked(EPOCH0, NODE0)
+forall EPOCH0, exists NODE0. ep(NODE0) ~= EPOCH0
+forall EPOCH0, forall NODE0. ~le(EPOCH0, zero) => [ep(NODE0) = EPOCH0 => locked(EPOCH0, NODE0)]
+forall EPOCH0, EPOCH1, forall NODE0. ~le(EPOCH1, EPOCH0) => [ep(NODE0) = EPOCH0 => ~locked(EPOCH1, NODE0)]
+forall EPOCH0, EPOCH1, forall NODE0. ep(NODE0) = EPOCH0 & ep(NODE0) = EPOCH1 => EPOCH0 = EPOCH1
+forall EPOCH0, EPOCH1, forall NODE0, NODE1. ~le(EPOCH1, EPOCH0) => [transfer(EPOCH0, NODE0) => ~transfer(EPOCH1, NODE1)]
+forall EPOCH0, EPOCH1, forall NODE0, NODE1. le(EPOCH0, EPOCH1) => [transfer(EPOCH0, NODE0) => ~locked(EPOCH1, NODE1)]
+forall EPOCH0, forall NODE0, NODE1. transfer(EPOCH0, NODE0) => ~held(NODE1)
+forall EPOCH0, EPOCH1, forall NODE0, NODE1. le(EPOCH0, EPOCH1) => [transfer(EPOCH0, NODE0) => ep(NODE1) ~= EPOCH1]
+forall EPOCH0, forall NODE0, NODE1. (NODE0 ~= NODE1) => [ep(NODE0) = EPOCH0 => ~locked(EPOCH0, NODE1)]
