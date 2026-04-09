@@ -1,0 +1,21 @@
+# Toy "orbits" / invariants that *exactly* characterize the two reachable states in reach_toy.txt
+# Formatted to look like your real orbits.txt: quantifiers, NODE0-style variables, and clause-ish lines.
+
+# For all nodes, held(NODE0) iff ep(NODE0)=epoch0
+forall NODE0. held(NODE0) => ep(NODE0)=epoch0
+forall NODE0. ep(NODE0)=epoch0 => held(NODE0)
+
+# The two concrete nodes must have different epochs (with only epoch0/epoch1 in the domain, this forces the swap)
+ep(node0) != ep(node1)
+
+# Explicit (redundant) disjunctions, to mimic typical orbit clause shapes
+forall NODE0. ep(NODE0)=epoch0 | ep(NODE0)=epoch1
+
+# Exactly one node is held (redundant given the above, but useful as a sanity check)
+forall NODE0. held(NODE0) => (NODE0=node0 | NODE0=node1)
+held(node0) => ~held(node1)
+held(node1) => ~held(node0)
+exists NODE0. held(NODE0)
+
+# (Redundant) held implies one of the epochs equalities
+forall NODE0. held(NODE0) => (ep(NODE0)=epoch0 | ep(NODE0)=epoch1)

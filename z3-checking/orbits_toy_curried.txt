@@ -1,0 +1,21 @@
+# Same logical constraints as orbits_toy.txt, but using curried spellings that
+# z3FindCover.py rewrites/uncurries in rewrite_invariant_line().
+
+# For all nodes, held(NODE0) iff ep(NODE0)=epoch0 (written in curried ep forms)
+forall NODE0. held(NODE0) => ep=_epoch0(NODE0)
+forall NODE0. ep_epoch0(NODE0) => held(NODE0)
+
+# The two concrete nodes must have different epochs
+ep(node0) != ep(node1)
+
+# Explicit (redundant) disjunctions using curried forms
+forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0)
+
+# Exactly one node is held (redundant, but mirrors orbit clause patterns)
+forall NODE0. held(NODE0) => (NODE0=node0 | NODE0=node1)
+held(node0) => ~held(node1)
+held(node1) => ~held(node0)
+held(node0) | held(node1)
+
+# (Redundant) held implies one of the curried epoch equalities
+forall NODE0. held(NODE0) => (ep_epoch0(NODE0) | ep_epoch1(NODE0))

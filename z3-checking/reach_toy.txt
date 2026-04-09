@@ -1,0 +1,19 @@
+# Minimal toy reachability file for z3FindCover.py
+# Only the block starting with the exact text 'state atoms:' (below) and the bitstring lines are required.
+
+state atoms: [
+    "(ep(node0)=epoch0)",
+    "(ep(node0)=epoch1)",
+    "(ep(node1)=epoch0)",
+    "(ep(node1)=epoch1)",
+    "held(node0)",
+    "held(node1)",
+]
+
+interpreted atoms: {}
+
+# Two reachable states (bitstrings over the 6 atoms above):
+#  - state 0: ep(node0)=epoch0, ep(node1)=epoch1, held(node0)
+#  - state 1: ep(node0)=epoch1, ep(node1)=epoch0, held(node1)
+100110
+011001
