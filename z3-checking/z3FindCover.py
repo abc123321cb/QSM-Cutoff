@@ -5,10 +5,18 @@ import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Any
 
-from z3 import (
-    And, Or, Not, BoolSort, EnumSort, Function, Const, Bool,
-    Solver, substitute, sat, ExprRef, FuncDeclRef, SortRef
-)
+try:
+    # Typical `z3-solver` layout
+    from z3 import (
+        And, Or, Not, BoolSort, EnumSort, Function, Const, Bool,
+        Solver, substitute, sat, ExprRef, FuncDeclRef, SortRef,
+    )
+except ImportError:
+    # Some environments install a `z3` package that exposes these via `z3.z3`.
+    from z3.z3 import (
+        And, Or, Not, BoolSort, EnumSort, Function, Const, Bool,
+        Solver, substitute, sat, ExprRef, FuncDeclRef, SortRef,
+    )
 
 # ----------------------------
 # Parsing helpers
@@ -73,9 +81,15 @@ def rewrite_invariant_line(line: str) -> str:
         v = m.group(2)
         return f"ep({v})=epoch{k}"
 
+    def rep_ep_curried(m):
+        k = m.group(1)
+        v = m.group(2)
+        return f"ep({v})=epoch{k}"
+
     line = re.sub(r"\blocked_epoch(\d+)\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)", rep_locked, line)
     line = re.sub(r"\btransfer_epoch(\d+)\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)", rep_transfer, line)
     line = re.sub(r"\bep\s*=\s*_epoch(\d+)\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)", rep_ep_epoch, line)
+    line = re.sub(r"\bep_epoch(\d+)\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)", rep_ep_curried, line)
 
     return line
 
@@ -531,7 +545,14 @@ def model_to_bitstring(model, atoms_z3: List[ExprRef]) -> str:
         out.append("1" if str(v) == "True" else "0")
     return "".join(out)
 
-def main(invariants_path: str, states_path: str, spurious_limit: int = 10) -> None:
+def main(
+    invariants_path: str,
+    states_path: str,
+    spurious_limit: int = 10,
+    debug_rewrite: bool = False,
+    debug_rewrite_all: bool = False,
+    debug_rewrite_limit: int = 200,
+) -> None:
     atoms, reachable_bits, interpreted_atoms = read_states_file(states_path)
     node_names, epoch_names = extract_domain_constants(atoms)
 
@@ -552,16 +573,32 @@ def main(invariants_path: str, states_path: str, spurious_limit: int = 10) -> No
 
     # Parse and ground invariants
     parsed_invs: List[ParsedInvariant] = []
+    rewrite_printed = 0
     with open(invariants_path, "r", encoding="utf-8") as f:
         for lineno, raw in enumerate(f, start=1):
-            line = raw.strip()
-            if not line or line.startswith("#"):
+            original = raw.strip()
+            if not original or original.startswith("#"):
                 continue
-            line = rewrite_invariant_line(line)
+
+            line = rewrite_invariant_line(original)
+
+            if debug_rewrite and (debug_rewrite_all or line != original):
+                if debug_rewrite_limit < 0:
+                    # treat negative as "no limit"
+                    pass
+                if debug_rewrite_limit == 0 or rewrite_printed < debug_rewrite_limit:
+                    if line == original:
+                        print(f"[REWRITE:{lineno}] {line}")
+                    else:
+                        print(f"[REWRITE:{lineno}] {original}  ==>  {line}")
+                    rewrite_printed += 1
             try:
                 parsed_invs.append(parser.parse_invariant_line(line))
             except ParseError as e:
                 raise ParseError(f"{invariants_path}:{lineno}: {e}\n  line: {raw.rstrip()}") from e
+
+    if debug_rewrite and debug_rewrite_limit != 0 and rewrite_printed >= debug_rewrite_limit:
+        print(f"[REWRITE] printed first {rewrite_printed} rewritten lines (limit reached)")
 
     domains: Dict[SortRef, List[ExprRef]] = {}
     if decls["NodeSort"] is not None:
@@ -639,6 +676,29 @@ if __name__ == "__main__":
     ap.add_argument("invariants_file", help="Text file, one invariant per line")
     ap.add_argument("states_file", help="File containing 'state atoms: [...]' and bitstrings")
     ap.add_argument("--spurious-limit", type=int, default=10, help="How many spurious states to enumerate (0 disables)")
+    ap.add_argument(
+        "--debug-rewrite",
+        action="store_true",
+        help="Print invariant lines after rewrite/uncurrying (only when changed)",
+    )
+    ap.add_argument(
+        "--debug-rewrite-all",
+        action="store_true",
+        help="Print rewritten invariants even if unchanged",
+    )
+    ap.add_argument(
+        "--debug-rewrite-limit",
+        type=int,
+        default=200,
+        help="Max rewritten lines to print (0=all, negative=no limit)",
+    )
     args = ap.parse_args()
 
-    main(args.invariants_file, args.states_file, spurious_limit=args.spurious_limit)
+    main(
+        args.invariants_file,
+        args.states_file,
+        spurious_limit=args.spurious_limit,
+        debug_rewrite=args.debug_rewrite,
+        debug_rewrite_all=args.debug_rewrite_all,
+        debug_rewrite_limit=args.debug_rewrite_limit,
+    )

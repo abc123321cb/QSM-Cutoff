@@ -63,6 +63,7 @@ after init {
 action grant(n1:node, n2:node, e:epoch) = {
     # release the lock and send a transfer message
     require held(n1);
+    require (forall E2:epoch . le(ep(n1), E2) & le(E2, e) -> E2 = ep(n1) | E2 = e);
     require ~le(e, ep(n1));   # jump to some strictly higher epoch
     transfer(e, n2) := true;
     held(n1) := false;
