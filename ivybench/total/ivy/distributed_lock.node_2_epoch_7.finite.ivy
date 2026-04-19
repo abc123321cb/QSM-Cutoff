@@ -1,0 +1,239 @@
+#lang ivy1.7
+
+#
+# An Ivy model of the toy lock example from https://github.com/Microsoft/Ironclad/blob/master/ironfleet/src/Dafny/Distributed/Protocol/Lock/Node.i.dfy
+#
+# For a description of the protocol, see the IronFleet paper
+# (https://www.microsoft.com/en-us/research/wp-content/uploads/2015/10/ironfleet.pdf),
+# Figure 4
+#
+
+# A total order helper module
+module total_order(r) = {
+    axiom r(X,X)                        # Reflexivity
+    axiom r(X, Y) & r(Y, Z) -> r(X, Z)  # Transitivity
+    axiom r(X, Y) & r(Y, X) -> X = Y    # Anti-symmetry
+    axiom r(X, Y) | r(Y, X)             # Totality
+}
+
+################################################################################
+#
+# Types, relations and functions describing state of the network
+#
+################################################################################
+
+type node = {node0, node1}
+type epoch = {epoch0, epoch1, epoch2, epoch3, epoch4, epoch5, epoch6}
+
+# epochs are totally ordered with a least element called zero
+relation le(X:epoch, Y:epoch)
+instantiate total_order(le)
+individual zero:epoch
+axiom le(zero, X)
+individual max:epoch
+axiom le(X, max)
+
+function ep(N:node) : epoch # ep(n) is the current epoch of node n
+
+relation held(N:node) # held(n) is true iff the lock is currently held by node n
+
+# transfer messages
+relation transfer(E:epoch, N:node)  # the node is the message destination
+
+# locked messages
+relation locked(E:epoch, N:node)  # the node is the message source
+
+################################################################################
+#
+# Protocol description
+#
+################################################################################
+individual first:node
+individual firste:epoch
+axiom firste ~= zero
+
+after init {
+    # initially exactly one node holds the lock, and everyone has epoch zero
+    held(X) := X=first;
+    ep(N) := firste if N = first else zero;
+    transfer(E, N) := false;
+    locked(E, N) := N = first & E = firste;
+}
+
+action grant(n1:node, n2:node, e:epoch) = {
+    # release the lock and send a transfer message
+    require held(n1);
+    require ~le(e, ep(n1));   # e must be strictly higher than current epoch
+    # no epoch can lie strictly between ep(n1) and e (i.e., e is next-higher)
+    require (forall E2:epoch . le(ep(n1), E2) & le(E2, e) -> E2 = ep(n1) | E2 = e);
+    transfer(e, n2) := true;
+    held(n1) := false;
+}
+
+action accept(n:node, e:epoch) = {
+    # receive a transfer message and take the lock, sending a locked message
+    require transfer(e,n);
+    require ~le(e,ep(n));
+    transfer(e,n) := false;
+    held(n) := true;
+    ep(n) := e;
+    locked(e, n) := true;
+
+}
+
+export grant
+export accept
+
+# the safety property
+# invariant locked(E, N1) & locked(E, N2) -> N1 = N2
+
+# epochs transfer to at most one node    
+#invariant [manual_1] transfer(E, N1) & transfer(E, N2) -> N1 = N2
+
+# if a node sent a locked msg, the node's epoch is now higher
+#invariant [manual_2] locked(E, N) -> le(E, ep(N))
+
+# holding node's epoch is higher than any other node's epoch (this implies a single node holds the lock)
+#invariant [manual_3] held(N) & N ~= M -> ~le(ep(N), ep(M))
+
+# holding node's epoch is higher than any transfer's epoch
+#invariant [manual_4] held(N) & transfer(E, M) -> le(E, ep(N))
+
+# pending transfer epoch is higher than any node's epoch
+#invariant [manual_5] transfer(E, N) & ~le(E, ep(N)) -> ~le(E, ep(M))
+
+# pending transfer epoch is higher than any transfer's epoch
+#invariant [manual_6] transfer(E, N) & ~le(E, ep(N)) & transfer(F, M) -> le(F, E) 
+
+# python3 qrm.py ivybench/total/ivy/distributed_lock.ivy -s node=3,epoch=4 -f 2 -w -g -r -v 5 -l test.log -y
+
+# invariant [invar_5] forall NODE0. ~locked(zero, NODE0)
+# invariant [invar_1] forall NODE0. ~transfer(firste, NODE0)
+# invariant [invar_2] forall E. exists NODE0. ~le(E, firste) -> ~transfer(E, NODE0)
+# invariant [invar_14] forall E, NODE0, NODE1. ~le(E, firste) -> ~held(NODE0) | ~transfer(E, NODE1)
+# invariant [invar_6] forall E0, E1, NODE0, NODE1. ~le(E0, firste) & le(E0, E1) -> ~locked(E1, NODE0) | ~transfer(E0, NODE1)
+# invariant [invar_7] forall E. exists NODE0. ~le(E, zero) -> ~locked(E, NODE0)
+# invariant [invar_122] forall E0, E1, NODE0, NODE1. le(E0, E1) -> ep(NODE0) ~= E1 | ~transfer(E0, NODE1)
+# invariant [invar_123] forall E, NODE0. ~le(E, zero) -> ep(NODE0) ~= E | locked(E, NODE0)
+# invariant [invar_126] forall E, NODE0, NODE1. ~le(E, zero) -> ~locked(E, NODE1) | ep(NODE0) ~= E | NODE0 = NODE1
+# invariant [invar_160] forall E. exists NODE0. ep(NODE0) ~= E
+# invariant [invar_125] forall E0, E1, NODE0. le(E0, E1) -> ~locked(E1, NODE0) | ep(NODE0) ~= E0
+# invariant [invar_159] forall E0, E1, NODE0. (E0 ~= E1) -> ep(NODE0) ~= E0 | ep(NODE0) ~= E1
+# invariant [invar_200] forall NODE0. ~locked(zero, NODE0)
+# invariant [invar_201] forall NODE0. ~transfer(firste, NODE0)
+# invariant [invar_202] forall NODE0. ep(NODE0) ~= zero | ~held(NODE0)
+# invariant [invar_203] forall NODE0,NODE1. locked(firste, NODE1) | ep(NODE0) ~= zero | NODE0 = NODE1
+# invariant [invar_204] forall NODE0,NODE1. ep(NODE0) ~= max | ~held(NODE1) | NODE0 = NODE1
+# invariant [invar_205] forall NODE0. held(NODE0) | ep(NODE0) ~= max
+# invariant [invar_206] exists NODE0. ~held(NODE0)
+# invariant [invar_207] forall NODE0,NODE1. ~held(NODE0) | ~locked(max, NODE1) | NODE0 = NODE1
+# invariant [invar_208] forall NODE0. ep(NODE0) = max | ~locked(max, NODE0)
+# invariant [invar_209] forall NODE0. held(NODE0) | ~locked(max, NODE0)
+# invariant [invar_210] forall E0,E1,NODE0,NODE1. le(firste, E0) & le(E0, E1) & E0 ~= E1 -> ~transfer(E1, NODE1) | ~transfer(E0, NODE0)
+# invariant [invar_211] exists NODE0. locked(firste, NODE0)
+### For QRM DFS reachability ###
+
+## Dependent relation axioms ##
+
+## Interpreted symbol axioms ##
+axiom firste = epoch1
+axiom le(epoch0,epoch1)
+axiom le(epoch1,epoch2)
+axiom le(epoch2,epoch3)
+axiom le(epoch3,epoch4)
+axiom le(epoch4,epoch5)
+axiom le(epoch5,epoch6)
+axiom max = epoch6
+axiom zero = epoch0
+
+## Access actions ##
+action get_le(e0: epoch, e1: epoch) returns(qrm_result: bool) = {
+    qrm_result := le(e0, e1)
+}
+export get_le
+
+action get_bool_le(e0: epoch, e1: epoch, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (le(e0, e1) = result)
+}
+export get_bool_le
+
+action get_ep(n0: node) returns(qrm_result: epoch) = {
+    qrm_result := ep(n0)
+}
+export get_ep
+
+action get_bool_ep(n0: node, result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (ep(n0) = result)
+}
+export get_bool_ep
+
+action get_held(n0: node) returns(qrm_result: bool) = {
+    qrm_result := held(n0)
+}
+export get_held
+
+action get_bool_held(n0: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (held(n0) = result)
+}
+export get_bool_held
+
+action get_locked(e0: epoch, n1: node) returns(qrm_result: bool) = {
+    qrm_result := locked(e0, n1)
+}
+export get_locked
+
+action get_bool_locked(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (locked(e0, n1) = result)
+}
+export get_bool_locked
+
+action get_firste returns(qrm_result: epoch) = {
+    qrm_result := firste
+}
+export get_firste
+
+action get_bool_firste(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (firste = result)
+}
+export get_bool_firste
+
+action get_first returns(qrm_result: node) = {
+    qrm_result := first
+}
+export get_first
+
+action get_bool_first(result: node) returns(qrm_result: bool) = {
+    qrm_result := (first = result)
+}
+export get_bool_first
+
+action get_zero returns(qrm_result: epoch) = {
+    qrm_result := zero
+}
+export get_zero
+
+action get_bool_zero(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (zero = result)
+}
+export get_bool_zero
+
+action get_max returns(qrm_result: epoch) = {
+    qrm_result := max
+}
+export get_max
+
+action get_bool_max(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (max = result)
+}
+export get_bool_max
+
+action get_transfer(e0: epoch, n1: node) returns(qrm_result: bool) = {
+    qrm_result := transfer(e0, n1)
+}
+export get_transfer
+
+action get_bool_transfer(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (transfer(e0, n1) = result)
+}
+export get_bool_transfer
+

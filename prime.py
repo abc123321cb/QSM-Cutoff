@@ -66,6 +66,7 @@ class PrimeOrbit():
         self.id         : int = PrimeOrbit.count   
         self.num_suborbits = 0
         self.suborbit_repr_primes : List[Prime] = []
+        self.sig         :  tuple[int, ...]
 
         # quantifier inference
         self.num_forall   = 0 
@@ -218,4 +219,96 @@ class PrimeOrbits():
         vprint(self.options, f'[PRIME NOTE]: number of orbits before merging: {PrimeOrbit.count + self._sub_orbit_count}', 2)
         vprint(self.options, f'[PRIME NOTE]: number of primes: {Prime.count}', 2)
         #self._formula.debug_print()
+
+class OrbitGroup():
+    def __init__(self) -> None:
+        self.orbits     : List[PrimeOrbit] = []
+        self.id         : int
+
+        # quantifier inference
+        self.sig         :  tuple[int, ...]
+
+        self.num_forall   = 0 
+        self.num_exists   = 0 
+        self.num_literals = 0 
+        
+        self.pattern : int
+        
+        self.qcost        = 0
+    
+        
+    def __repr__(self):
+        return ''.join(str(x) for x in self.sig)
+
+class OrbitGroups():
+    def __init__(self, orbits: List[PrimeOrbit], protocol : Protocol, state_vars, options : QrmOptions) -> None:
+        self.groups : List[OrbitGroup] = []
+        self.options = options
+        self.protocol = protocol
+        self.state_vars = [state_var.name for state_var in state_vars]
+
+        self.sig_to_group = {}
+
+        self.init_groups(orbits)
+        # self.group_singletons()
+        self.sort_groups()
+
+
+    
+    def init_groups(self, orbits: List[PrimeOrbit]):
+        for orbit in orbits:
+            sig = [0] * (len(self.state_vars) * 2 + 2)
+
+            for atom_idx in range(self.protocol.state_atom_num):
+                value = orbit.repr_prime.values[atom_idx]
+                if value != '-':
+                    assert(value == '0' or value == '1')
+                    var_name = self.protocol.atom_sig[atom_idx][0].rstrip('=')
+                    sig_idx = self.state_vars.index(var_name) * 2
+                    if value == '0': sig_idx += 1
+                    sig[sig_idx] += 1
+            
+            sig[-2] = orbit.num_forall
+            sig[-1] = orbit.num_exists
+
+            sig = tuple(sig)
+            orbit.sig = sig
+
+
+            if sig not in self.sig_to_group:
+                new_orbit_group = OrbitGroup()
+                new_orbit_group.orbits.append(orbit)
+                new_orbit_group.sig = sig
+                new_orbit_group.num_forall = orbit.num_forall
+                new_orbit_group.num_exists = orbit.num_exists
+                new_orbit_group.num_literals = orbit.num_literals
+                if (new_orbit_group.num_forall >= 1):
+                    new_orbit_group.pattern = sum(sig[:-2])
+                else:
+                    assert(new_orbit_group.num_exists >= 1)
+                    new_orbit_group.pattern = sum(min(1, literal) for literal in sig[:-2])
+                new_orbit_group.qcost = orbit.qcost
+                self.sig_to_group[sig] = new_orbit_group
+            else:
+                self.sig_to_group[sig].orbits.append(orbit)
+            
+
+    def group_singletons(self):
+        # Group singletons and pin them to the beginning of the group list
+        singleton_group = OrbitGroup()
+        singleton_group.sig = (0,)
+        singleton_group.qcost = 0
+        for group in self.sig_to_group.values():
+            if len(group.orbits) == 1:
+                singleton_group.orbits.append(group.orbits[0])
+        self.sig_to_group = {sig:group for sig, group in self.sig_to_group.items()
+                              if len(group.orbits) > 1}
+        self.sig_to_group[(0,)] = singleton_group
+
+    
+    def sort_groups(self):
+        self.groups = list(self.sig_to_group.values())
+        self.groups.sort(key=lambda group: (group.qcost, group.sig))
+        for idx, group in enumerate(self.groups):
+            group.id = idx
 

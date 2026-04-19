@@ -32,6 +32,7 @@ def usage ():
     print('             write reachable states to FILE.reach')
     print('             write prime orbits to FILE.pis')
     print('             write quantified prime orbits to FILE.qpis')
+    print('--csv        write orbit CSV output (default: off)')
     print('--graph      Make a graph of the reachable states (default: off) (requires graphviz)')
     print('-h           usage')
 
@@ -47,7 +48,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whny", ["graph"])
+        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whny", ["graph", "csv"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -68,6 +69,8 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
             options.set_sizes(optv)
             sys_args.remove(optc)
             sys_args.remove(optv)
+        elif optc == '--csv':
+            pass
     return options
 
 def synthesize_Rmin_and_ivy_check(options : QrmOptions, sys_args) -> bool:
@@ -226,6 +229,7 @@ def qsm_cutoff(ivy_name, args):
     Rmin_solutions  = []
     while not qrm_result:
         synthesize_Rmin_and_ivy_check(options, sys_args)
+        exit(0)
         num_solution = get_number_of_Rmin_solutions(options)
         sizes_str = []
         increase_size = 0   

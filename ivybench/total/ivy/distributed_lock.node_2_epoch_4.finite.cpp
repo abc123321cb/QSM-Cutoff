@@ -675,26 +675,22 @@ void distributed_lock__node_2_epoch_4__finite::__init(){
 void distributed_lock__node_2_epoch_4__finite::ext__grant(node n1, node n2, epoch e){
         ivy_assume(held[n1], "distributed_lock.node_2_epoch_4.finite.ivy: line 65");
         ivy_assume(!le[e][ep[n1]], "distributed_lock.node_2_epoch_4.finite.ivy: line 66");
+        int __tmp4;
+        __tmp4 = 1;
+        for (int E2 = 0; E2 < 4; E2++) {
+            if (!(!(le[ep[n1]][E2] && le[E2][e]) || ((E2 == ep[n1]) || (E2 == e)))) __tmp4 = 0;
+        }
+        ivy_assume(__tmp4, "distributed_lock.node_2_epoch_4.finite.ivy: line 68");
         transfer[e][n2] = true;
         held[n1] = false;
 }
 void distributed_lock__node_2_epoch_4__finite::ext__accept(node n, epoch e){
-        ivy_assume(transfer[e][n], "distributed_lock.node_2_epoch_4.finite.ivy: line 73");
-        ivy_assume(!le[e][ep[n]], "distributed_lock.node_2_epoch_4.finite.ivy: line 74");
+        ivy_assume(transfer[e][n], "distributed_lock.node_2_epoch_4.finite.ivy: line 75");
+        ivy_assume(!le[e][ep[n]], "distributed_lock.node_2_epoch_4.finite.ivy: line 76");
         transfer[e][n] = false;
         held[n] = true;
         ep[n] = e;
         locked[e][n] = true;
-}
-distributed_lock__node_2_epoch_4__finite::epoch distributed_lock__node_2_epoch_4__finite::ext__get_zero(){
-    distributed_lock__node_2_epoch_4__finite::epoch qrm_result;
-    qrm_result = zero;
-    return qrm_result;
-}
-bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_zero(epoch result){
-    bool qrm_result;
-    qrm_result = (zero == result);
-    return qrm_result;
 }
 distributed_lock__node_2_epoch_4__finite::epoch distributed_lock__node_2_epoch_4__finite::ext__get_max(){
     distributed_lock__node_2_epoch_4__finite::epoch qrm_result;
@@ -706,14 +702,44 @@ bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_max(epoch result){
     qrm_result = (max == result);
     return qrm_result;
 }
-distributed_lock__node_2_epoch_4__finite::node distributed_lock__node_2_epoch_4__finite::ext__get_first(){
-    distributed_lock__node_2_epoch_4__finite::node qrm_result;
-    qrm_result = first;
+bool distributed_lock__node_2_epoch_4__finite::ext__get_le(epoch e0, epoch e1){
+    bool qrm_result;
+    qrm_result = le[e0][e1];
     return qrm_result;
 }
-bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_first(node result){
+bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_le(epoch e0, epoch e1, bool result){
     bool qrm_result;
-    qrm_result = (first == result);
+    qrm_result = (le[e0][e1] == result);
+    return qrm_result;
+}
+distributed_lock__node_2_epoch_4__finite::epoch distributed_lock__node_2_epoch_4__finite::ext__get_zero(){
+    distributed_lock__node_2_epoch_4__finite::epoch qrm_result;
+    qrm_result = zero;
+    return qrm_result;
+}
+bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_zero(epoch result){
+    bool qrm_result;
+    qrm_result = (zero == result);
+    return qrm_result;
+}
+bool distributed_lock__node_2_epoch_4__finite::ext__get_locked(epoch e0, node n1){
+    bool qrm_result;
+    qrm_result = locked[e0][n1];
+    return qrm_result;
+}
+bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_locked(epoch e0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (locked[e0][n1] == result);
+    return qrm_result;
+}
+bool distributed_lock__node_2_epoch_4__finite::ext__get_transfer(epoch e0, node n1){
+    bool qrm_result;
+    qrm_result = transfer[e0][n1];
+    return qrm_result;
+}
+bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_transfer(epoch e0, node n1, bool result){
+    bool qrm_result;
+    qrm_result = (transfer[e0][n1] == result);
     return qrm_result;
 }
 distributed_lock__node_2_epoch_4__finite::epoch distributed_lock__node_2_epoch_4__finite::ext__get_ep(node n0){
@@ -736,36 +762,6 @@ bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_held(node n0, bool 
     qrm_result = (held[n0] == result);
     return qrm_result;
 }
-bool distributed_lock__node_2_epoch_4__finite::ext__get_transfer(epoch e0, node n1){
-    bool qrm_result;
-    qrm_result = transfer[e0][n1];
-    return qrm_result;
-}
-bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_transfer(epoch e0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (transfer[e0][n1] == result);
-    return qrm_result;
-}
-bool distributed_lock__node_2_epoch_4__finite::ext__get_locked(epoch e0, node n1){
-    bool qrm_result;
-    qrm_result = locked[e0][n1];
-    return qrm_result;
-}
-bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_locked(epoch e0, node n1, bool result){
-    bool qrm_result;
-    qrm_result = (locked[e0][n1] == result);
-    return qrm_result;
-}
-bool distributed_lock__node_2_epoch_4__finite::ext__get_le(epoch e0, epoch e1){
-    bool qrm_result;
-    qrm_result = le[e0][e1];
-    return qrm_result;
-}
-bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_le(epoch e0, epoch e1, bool result){
-    bool qrm_result;
-    qrm_result = (le[e0][e1] == result);
-    return qrm_result;
-}
 distributed_lock__node_2_epoch_4__finite::epoch distributed_lock__node_2_epoch_4__finite::ext__get_firste(){
     distributed_lock__node_2_epoch_4__finite::epoch qrm_result;
     qrm_result = firste;
@@ -774,6 +770,16 @@ distributed_lock__node_2_epoch_4__finite::epoch distributed_lock__node_2_epoch_4
 bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_firste(epoch result){
     bool qrm_result;
     qrm_result = (firste == result);
+    return qrm_result;
+}
+distributed_lock__node_2_epoch_4__finite::node distributed_lock__node_2_epoch_4__finite::ext__get_first(){
+    distributed_lock__node_2_epoch_4__finite::node qrm_result;
+    qrm_result = first;
+    return qrm_result;
+}
+bool distributed_lock__node_2_epoch_4__finite::ext__get_bool_first(node result){
+    bool qrm_result;
+    qrm_result = (first == result);
     return qrm_result;
 }
 void distributed_lock__node_2_epoch_4__finite::__tick(int __timeout){

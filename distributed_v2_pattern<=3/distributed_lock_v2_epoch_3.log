@@ -1,0 +1,2518 @@
+
+*********************************************************************
+
+	[QRM]: ivybench/total/ivy/distributed_lock_v2.ivy
+
+*********************************************************************
+
+
+***************************************************************************************************
+
+	[Synthesize Rmin]: [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+***************************************************************************************************
+
+python3 qrm.py ivybench/total/ivy/distributed_lock_v2.ivy -s node=2,epoch=3 -f 1 -g -w -v 4 -l distributed_lock_v2_epoch_3.log -y -a -k
+
+epoch
+
+
+=========================================================================================================
+
+	[FW]: Forward Reachability on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+=========================================================================================================
+
+
+==============================================
+
+	Set up for forward reachability
+
+==============================================
+
+[FW NOTE]: number of state atoms: 20
+
+[FW NOTE]: number of interpreted atoms (e.g. member,le): 20
+
+[FW NOTE]: symmetric group order: 12
+
+[FW NOTE]: number of branching actions: 18
+
+ivy_to_cpp target=qrm distributed_lock_v2.node_2_epoch_3.finite.ivy
+
+[IVY_TO_CPP RESULT]: OK
+
+swig -c++ -python -o distributed_lock_v2.node_2_epoch_3.finite_wrap.cpp ivy_exec.i
+
+[SWIG RESULT]: OK
+
+g++ -std=c++11 -fpic -pthread -O3 distributed_lock_v2.node_2_epoch_3.finite.cpp distributed_lock_v2.node_2_epoch_3.finite_wrap.cpp -I/usr/include/python3.12 -c
+
+[G++ RESULT]: OK
+
+g++ -shared distributed_lock_v2.node_2_epoch_3.finite.o distributed_lock_v2.node_2_epoch_3.finite_wrap.o -o _ivy_exec.so -lm -lstdc++
+
+[LINK RESULT]: OK
+
+[QRM NOTE]: Time elapsed since start: 6.340 seconds
+
+[QRM NOTE]: Time elapsed since last: 6.340 seconds
+
+[QRM NOTE]: Peak memory: 681980 bytes
+
+
+===================================
+
+	Forward reachability
+
+===================================
+
+[FW NOTE]: dfs max depth: 2
+
+[FW NOTE]: number of total reachable states:        10
+
+[FW NOTE]: number of dfs representative states:     5
+
+[FW NOTE]: number of dfs non-representative states: 5
+
+
+================================================================================================================
+
+	[FW RESULT]: Forward Reachability on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+================================================================================================================
+
+sort: node=['node0', 'node1']
+sort: epoch=['epoch0', 'epoch1', 'epoch2']
+predicate: le('epoch', 'epoch')
+predicate: max=('epoch',)
+predicate: transfer('epoch', 'node')
+predicate: ep=('node', 'epoch')
+predicate: first=('node',)
+predicate: firste=('epoch',)
+predicate: zero=('epoch',)
+predicate: held('node',)
+predicate: locked('epoch', 'node')
+interpreted atoms: {'(first=node0)': '1', '(first=node1)': '0', '(firste=epoch0)': '0', '(firste=epoch1)': '1', '(firste=epoch2)': '0', 'le(epoch0,epoch0)': '1', 'le(epoch0,epoch1)': '1', 'le(epoch0,epoch2)': '1', 'le(epoch1,epoch0)': '0', 'le(epoch1,epoch1)': '1', 'le(epoch1,epoch2)': '1', 'le(epoch2,epoch0)': '0', 'le(epoch2,epoch1)': '0', 'le(epoch2,epoch2)': '1', '(max=epoch0)': '0', '(max=epoch1)': '0', '(max=epoch2)': '1', '(zero=epoch0)': '1', '(zero=epoch1)': '0', '(zero=epoch2)': '0'}
+state atoms: ['(ep(node0)=epoch0)', '(ep(node0)=epoch1)', '(ep(node0)=epoch2)', '(ep(node1)=epoch0)', '(ep(node1)=epoch1)', '(ep(node1)=epoch2)', 'held(node0)', 'held(node1)', 'locked(epoch0,node0)', 'locked(epoch0,node1)', 'locked(epoch1,node0)', 'locked(epoch1,node1)', 'locked(epoch2,node0)', 'locked(epoch2,node1)', 'transfer(epoch0,node0)', 'transfer(epoch0,node1)', 'transfer(epoch1,node0)', 'transfer(epoch1,node1)', 'transfer(epoch2,node0)', 'transfer(epoch2,node1)']
+representative states : 352187938380, 343600100940, 214883202636, 343599052364, 180523464268
+
+
+=== State Orbit 0 =====================
+size : 2
+repr state: 01010010000000000000
+lex min decimal: 0x520009764c
+states:
+01010010000000000000
+10001001000000000000
+
+State 0:
+ep(node0): epoch1
+ep(node1): epoch0
+held(node0): 1
+
+State 1:
+ep(node0): epoch0
+ep(node1): epoch1
+held(node1): 1
+
+
+
+
+=== State Orbit 1 =====================
+size : 2
+repr state: 01010000000000000010
+lex min decimal: 0x500029764c
+states:
+01010000000000000010
+10001000000000000001
+
+State 0:
+ep(node0): epoch1
+ep(node1): epoch0
+transfer(epoch2,node0): 1
+
+State 1:
+ep(node0): epoch0
+ep(node1): epoch1
+transfer(epoch2,node1): 1
+
+
+
+
+=== State Orbit 2 =====================
+size : 2
+repr state: 00110010000010000000
+lex min decimal: 0x320809764c
+states:
+00110010000010000000
+10000101000001000000
+
+State 0:
+ep(node0): epoch2
+ep(node1): epoch0
+held(node0): 1
+locked(epoch2,node0): 1
+
+State 1:
+ep(node0): epoch0
+ep(node1): epoch2
+held(node1): 1
+locked(epoch2,node1): 1
+
+
+
+
+=== State Orbit 3 =====================
+size : 2
+repr state: 01010000000000000001
+lex min decimal: 0x500019764c
+states:
+01010000000000000001
+10001000000000000010
+
+State 0:
+ep(node0): epoch1
+ep(node1): epoch0
+transfer(epoch2,node1): 1
+
+State 1:
+ep(node0): epoch0
+ep(node1): epoch1
+transfer(epoch2,node0): 1
+
+
+
+
+=== State Orbit 4 =====================
+size : 2
+repr state: 01000101000001000000
+lex min decimal: 0x2a0809764c
+states:
+01000101000001000000
+00101010000010000000
+
+State 0:
+ep(node0): epoch1
+ep(node1): epoch2
+held(node1): 1
+locked(epoch2,node1): 1
+
+State 1:
+ep(node0): epoch2
+ep(node1): epoch1
+held(node0): 1
+locked(epoch2,node0): 1
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.377 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.037 seconds
+
+[QRM NOTE]: Peak memory: 195059 bytes
+
+
+==================================
+
+	Curry Ordered Sorts
+
+==================================
+
+
+---------- Currying Ordered Sorts ----------
+
+[CURRY]: curried 18 atoms
+
+[CURRY]: curried state atoms: ['ep_epoch0(node0)', 'ep_epoch1(node0)', 'ep_epoch2(node0)', 'ep_epoch0(node1)', 'ep_epoch1(node1)', 'ep_epoch2(node1)', 'held(node0)', 'held(node1)', 'locked_epoch0(node0)', 'locked_epoch0(node1)', 'locked_epoch1(node0)', 'locked_epoch1(node1)', 'locked_epoch2(node0)', 'locked_epoch2(node1)', 'transfer_epoch0(node0)', 'transfer_epoch0(node1)', 'transfer_epoch1(node0)', 'transfer_epoch1(node1)', 'transfer_epoch2(node0)', 'transfer_epoch2(node1)']
+
+[QRM NOTE]: Time elapsed since start: 6.382 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.005 seconds
+
+[QRM NOTE]: Peak memory: 233600 bytes
+
+
+================================================================================================================
+
+	[PRIME]: Prime Orbit Generatation on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+================================================================================================================
+
+
+===========================================================================================================
+
+	[PRIME RESULT]: Prime Orbits on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+===========================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : --------1-----------
+0     : ['locked_epoch0(node0)']
+1     : ---------1----------
+1     : ['locked_epoch0(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : ----------1---------
+2     : ['locked_epoch1(node0)']
+3     : -----------1--------
+3     : ['locked_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+4 (*) : --------------1-----
+4     : ['transfer_epoch0(node0)']
+5     : ---------------1----
+5     : ['transfer_epoch0(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+6 (*) : ----------------1---
+6     : ['transfer_epoch1(node0)']
+7     : -----------------1--
+7     : ['transfer_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+23 (*) : 1--1----------------
+23     : ['ep_epoch0(node0)', 'ep_epoch0(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 5 =====================
+size : 2
+num_suborbits: 1
+21 (*) : 11------------------
+21     : ['ep_epoch0(node0)', 'ep_epoch1(node0)']
+22     : ---11---------------
+22     : ['ep_epoch0(node1)', 'ep_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 6 =====================
+size : 2
+num_suborbits: 1
+34 (*) : 1-1-----------------
+34     : ['ep_epoch0(node0)', 'ep_epoch2(node0)']
+33     : ---1-1--------------
+33     : ['ep_epoch0(node1)', 'ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 7 =====================
+size : 2
+num_suborbits: 1
+24 (*) : 1-----1-------------
+24     : ['ep_epoch0(node0)', 'held(node0)']
+25     : ---1---1------------
+25     : ['ep_epoch0(node1)', 'held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 8 =====================
+size : 2
+num_suborbits: 1
+48 (*) : 1-----------1-------
+48     : ['ep_epoch0(node0)', 'locked_epoch2(node0)']
+49     : ---1---------1------
+49     : ['ep_epoch0(node1)', 'locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 9 =====================
+size : 1
+num_suborbits: 1
+37 (*) : -1--1---------------
+37     : ['ep_epoch1(node0)', 'ep_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+36 (*) : -11-----------------
+36     : ['ep_epoch1(node0)', 'ep_epoch2(node0)']
+35     : ----11--------------
+35     : ['ep_epoch1(node1)', 'ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 11 =====================
+size : 2
+num_suborbits: 1
+38 (*) : -1----------1-------
+38     : ['ep_epoch1(node0)', 'locked_epoch2(node0)']
+39     : ----1--------1------
+39     : ['ep_epoch1(node1)', 'locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+50 (*) : --1--1--------------
+50     : ['ep_epoch2(node0)', 'ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 13 =====================
+size : 2
+num_suborbits: 1
+31 (*) : --1----1------------
+31     : ['ep_epoch2(node0)', 'held(node1)']
+30     : -----11-------------
+30     : ['ep_epoch2(node1)', 'held(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 14 =====================
+size : 2
+num_suborbits: 1
+47 (*) : --1----------1------
+47     : ['ep_epoch2(node0)', 'locked_epoch2(node1)']
+46     : -----1------1-------
+46     : ['ep_epoch2(node1)', 'locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 15 =====================
+size : 4
+num_suborbits: 2
+13 (*) : --1---------------1-
+13     : ['ep_epoch2(node0)', 'transfer_epoch2(node0)']
+10     : --1----------------1
+10     : ['ep_epoch2(node0)', 'transfer_epoch2(node1)']
+11     : -----1------------1-
+11     : ['ep_epoch2(node1)', 'transfer_epoch2(node0)']
+12     : -----1-------------1
+12     : ['ep_epoch2(node1)', 'transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 16 =====================
+size : 2
+num_suborbits: 1
+29 (*) : --1---0-------------
+29     : ['ep_epoch2(node0)', '~held(node0)']
+28     : -----1-0------------
+28     : ['ep_epoch2(node1)', '~held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 17 =====================
+size : 2
+num_suborbits: 1
+27 (*) : --1---------0-------
+27     : ['ep_epoch2(node0)', '~locked_epoch2(node0)']
+26     : -----1-------0------
+26     : ['ep_epoch2(node1)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 18 =====================
+size : 1
+num_suborbits: 1
+32 (*) : ------11------------
+32     : ['held(node0)', 'held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 19 =====================
+size : 2
+num_suborbits: 1
+45 (*) : ------1------1------
+45     : ['held(node0)', 'locked_epoch2(node1)']
+44     : -------1----1-------
+44     : ['held(node1)', 'locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 20 =====================
+size : 4
+num_suborbits: 2
+15 (*) : ------1-----------1-
+15     : ['held(node0)', 'transfer_epoch2(node0)']
+18     : ------1------------1
+18     : ['held(node0)', 'transfer_epoch2(node1)']
+19     : -------1----------1-
+19     : ['held(node1)', 'transfer_epoch2(node0)']
+14     : -------1-----------1
+14     : ['held(node1)', 'transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 21 =====================
+size : 1
+num_suborbits: 1
+51 (*) : ------------11------
+51     : ['locked_epoch2(node0)', 'locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 22 =====================
+size : 4
+num_suborbits: 2
+17 (*) : ------------1-----1-
+17     : ['locked_epoch2(node0)', 'transfer_epoch2(node0)']
+8     : ------------1------1
+8     : ['locked_epoch2(node0)', 'transfer_epoch2(node1)']
+9     : -------------1----1-
+9     : ['locked_epoch2(node1)', 'transfer_epoch2(node0)']
+16     : -------------1-----1
+16     : ['locked_epoch2(node1)', 'transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 23 =====================
+size : 2
+num_suborbits: 1
+40 (*) : --0---------1-------
+40     : ['locked_epoch2(node0)', '~ep_epoch2(node0)']
+41     : -----0-------1------
+41     : ['locked_epoch2(node1)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 24 =====================
+size : 2
+num_suborbits: 1
+42 (*) : ------0-----1-------
+42     : ['locked_epoch2(node0)', '~held(node0)']
+43     : -------0-----1------
+43     : ['locked_epoch2(node1)', '~held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 25 =====================
+size : 1
+num_suborbits: 1
+20 (*) : ------------------11
+20     : ['transfer_epoch2(node0)', 'transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 26 =====================
+size : 4
+num_suborbits: 2
+62 (*) : 1---0-------------1-
+62     : ['ep_epoch0(node0)', 'transfer_epoch2(node0)', '~ep_epoch1(node1)']
+65     : 1---0--------------1
+65     : ['ep_epoch0(node0)', 'transfer_epoch2(node1)', '~ep_epoch1(node1)']
+64     : -0-1--------------1-
+64     : ['ep_epoch0(node1)', 'transfer_epoch2(node0)', '~ep_epoch1(node0)']
+63     : -0-1---------------1
+63     : ['ep_epoch0(node1)', 'transfer_epoch2(node1)', '~ep_epoch1(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 27 =====================
+size : 2
+num_suborbits: 1
+76 (*) : 1---00--------------
+76     : ['ep_epoch0(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node1)']
+77     : -001----------------
+77     : ['ep_epoch0(node1)', '~ep_epoch1(node0)', '~ep_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 28 =====================
+size : 2
+num_suborbits: 1
+74 (*) : 1---0--0------------
+74     : ['ep_epoch0(node0)', '~ep_epoch1(node1)', '~held(node1)']
+75     : -0-1--0-------------
+75     : ['ep_epoch0(node1)', '~ep_epoch1(node0)', '~held(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 29 =====================
+size : 2
+num_suborbits: 1
+78 (*) : 1---0--------0------
+78     : ['ep_epoch0(node0)', '~ep_epoch1(node1)', '~locked_epoch2(node1)']
+79     : -0-1--------0-------
+79     : ['ep_epoch0(node1)', '~ep_epoch1(node0)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 30 =====================
+size : 2
+num_suborbits: 1
+98 (*) : -1-0--1-------------
+98     : ['ep_epoch1(node0)', 'held(node0)', '~ep_epoch0(node1)']
+99     : 0---1--1------------
+99     : ['ep_epoch1(node1)', 'held(node1)', '~ep_epoch0(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 31 =====================
+size : 2
+num_suborbits: 1
+91 (*) : -1---0-1------------
+91     : ['ep_epoch1(node0)', 'held(node1)', '~ep_epoch2(node1)']
+90     : --0-1-1-------------
+90     : ['ep_epoch1(node1)', 'held(node0)', '~ep_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 32 =====================
+size : 2
+num_suborbits: 1
+89 (*) : -1-----1-----0------
+89     : ['ep_epoch1(node0)', 'held(node1)', '~locked_epoch2(node1)']
+88     : ----1-1-----0-------
+88     : ['ep_epoch1(node1)', 'held(node0)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 33 =====================
+size : 4
+num_suborbits: 2
+100 (*) : -1-0--------------1-
+100     : ['ep_epoch1(node0)', 'transfer_epoch2(node0)', '~ep_epoch0(node1)']
+59     : -1-0---------------1
+59     : ['ep_epoch1(node0)', 'transfer_epoch2(node1)', '~ep_epoch0(node1)']
+58     : 0---1-------------1-
+58     : ['ep_epoch1(node1)', 'transfer_epoch2(node0)', '~ep_epoch0(node0)']
+101     : 0---1--------------1
+101     : ['ep_epoch1(node1)', 'transfer_epoch2(node1)', '~ep_epoch0(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 34 =====================
+size : 2
+num_suborbits: 1
+53 (*) : -1-0-0--------------
+53     : ['ep_epoch1(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node1)']
+52     : 0-0-1---------------
+52     : ['ep_epoch1(node1)', '~ep_epoch0(node0)', '~ep_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 35 =====================
+size : 2
+num_suborbits: 1
+55 (*) : -1-0---0------------
+55     : ['ep_epoch1(node0)', '~ep_epoch0(node1)', '~held(node1)']
+54     : 0---1-0-------------
+54     : ['ep_epoch1(node1)', '~ep_epoch0(node0)', '~held(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 36 =====================
+size : 2
+num_suborbits: 1
+57 (*) : -1-0---------0------
+57     : ['ep_epoch1(node0)', '~ep_epoch0(node1)', '~locked_epoch2(node1)']
+56     : 0---1-------0-------
+56     : ['ep_epoch1(node1)', '~ep_epoch0(node0)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 37 =====================
+size : 2
+num_suborbits: 1
+94 (*) : --100---------------
+94     : ['ep_epoch2(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+95     : 00---1--------------
+95     : ['ep_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 38 =====================
+size : 2
+num_suborbits: 1
+92 (*) : ---00-1-------------
+92     : ['held(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+93     : 00-----1------------
+93     : ['held(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 39 =====================
+size : 2
+num_suborbits: 1
+86 (*) : --00--1-------------
+86     : ['held(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)']
+87     : 0----0-1------------
+87     : ['held(node1)', '~ep_epoch0(node0)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 40 =====================
+size : 2
+num_suborbits: 1
+84 (*) : ---0--1-----0-------
+84     : ['held(node0)', '~ep_epoch0(node1)', '~locked_epoch2(node0)']
+85     : 0------1-----0------
+85     : ['held(node1)', '~ep_epoch0(node0)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 41 =====================
+size : 2
+num_suborbits: 1
+80 (*) : -00---1-------------
+80     : ['held(node0)', '~ep_epoch1(node0)', '~ep_epoch2(node0)']
+81     : ----00-1------------
+81     : ['held(node1)', '~ep_epoch1(node1)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 42 =====================
+size : 2
+num_suborbits: 1
+82 (*) : -0----1-----0-------
+82     : ['held(node0)', '~ep_epoch1(node0)', '~locked_epoch2(node0)']
+83     : ----0--1-----0------
+83     : ['held(node1)', '~ep_epoch1(node1)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 43 =====================
+size : 2
+num_suborbits: 1
+96 (*) : ---00-------1-------
+96     : ['locked_epoch2(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+97     : 00-----------1------
+97     : ['locked_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 44 =====================
+size : 2
+num_suborbits: 1
+102 (*) : 0--0--------------1-
+102     : ['transfer_epoch2(node0)', '~ep_epoch0(node0)', '~ep_epoch0(node1)']
+103     : 0--0---------------1
+103     : ['transfer_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch0(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 45 =====================
+size : 4
+num_suborbits: 2
+104 (*) : 00----------------1-
+104     : ['transfer_epoch2(node0)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+66     : ---00-------------1-
+66     : ['transfer_epoch2(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+67     : 00-----------------1
+67     : ['transfer_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+105     : ---00--------------1
+105     : ['transfer_epoch2(node1)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 46 =====================
+size : 2
+num_suborbits: 1
+60 (*) : -0--0-------------1-
+60     : ['transfer_epoch2(node0)', '~ep_epoch1(node0)', '~ep_epoch1(node1)']
+61     : -0--0--------------1
+61     : ['transfer_epoch2(node1)', '~ep_epoch1(node0)', '~ep_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 47 =====================
+size : 2
+num_suborbits: 1
+71 (*) : 000-----------------
+71     : ['~ep_epoch0(node0)', '~ep_epoch1(node0)', '~ep_epoch2(node0)']
+70     : ---000--------------
+70     : ['~ep_epoch0(node1)', '~ep_epoch1(node1)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 48 =====================
+size : 2
+num_suborbits: 1
+73 (*) : 00----0-------------
+73     : ['~ep_epoch0(node0)', '~ep_epoch1(node0)', '~held(node0)']
+72     : ---00--0------------
+72     : ['~ep_epoch0(node1)', '~ep_epoch1(node1)', '~held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 49 =====================
+size : 2
+num_suborbits: 1
+69 (*) : 00----------0-------
+69     : ['~ep_epoch0(node0)', '~ep_epoch1(node0)', '~locked_epoch2(node0)']
+68     : ---00--------0------
+68     : ['~ep_epoch0(node1)', '~ep_epoch1(node1)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 50 =====================
+size : 2
+num_suborbits: 1
+107 (*) : 1------0----------00
+107     : ['ep_epoch0(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+106     : ---1--0-----------00
+106     : ['ep_epoch0(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 51 =====================
+size : 1
+num_suborbits: 1
+123 (*) : 00-00---------------
+123     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node0)', '~ep_epoch1(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 52 =====================
+size : 1
+num_suborbits: 1
+126 (*) : 0-00-0--------------
+126     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 53 =====================
+size : 2
+num_suborbits: 1
+114 (*) : 0-00---0------------
+114     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)', '~held(node1)']
+113     : 0--0-00-------------
+113     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node1)', '~held(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 54 =====================
+size : 2
+num_suborbits: 1
+125 (*) : 0-00---------0------
+125     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)', '~locked_epoch2(node1)']
+124     : 0--0-0------0-------
+124     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node1)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 55 =====================
+size : 1
+num_suborbits: 1
+110 (*) : 0--0--00------------
+110     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~held(node0)', '~held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 56 =====================
+size : 2
+num_suborbits: 1
+111 (*) : 0--0--0------0------
+111     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~held(node0)', '~locked_epoch2(node1)']
+112     : 0--0---0----0-------
+112     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~held(node1)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 57 =====================
+size : 1
+num_suborbits: 1
+127 (*) : 0--0--------00------
+127     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~locked_epoch2(node0)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 58 =====================
+size : 1
+num_suborbits: 1
+122 (*) : -00-00--------------
+122     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node0)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 59 =====================
+size : 2
+num_suborbits: 1
+118 (*) : -00-0--0------------
+118     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node0)', '~held(node1)']
+117     : -0--000-------------
+117     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node1)', '~held(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 60 =====================
+size : 2
+num_suborbits: 1
+119 (*) : -00-0--------0------
+119     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node0)', '~locked_epoch2(node1)']
+120     : -0--00------0-------
+120     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node1)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 61 =====================
+size : 1
+num_suborbits: 1
+109 (*) : -0--0-00------------
+109     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~held(node0)', '~held(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 62 =====================
+size : 2
+num_suborbits: 1
+115 (*) : -0--0-0------0------
+115     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~held(node0)', '~locked_epoch2(node1)']
+116     : -0--0--0----0-------
+116     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~held(node1)', '~locked_epoch2(node0)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 63 =====================
+size : 1
+num_suborbits: 1
+121 (*) : -0--0-------00------
+121     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~locked_epoch2(node0)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 64 =====================
+size : 1
+num_suborbits: 1
+108 (*) : ------00----------00
+108     : ['~held(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 65 =====================
+size : 2
+num_suborbits: 1
+139 (*) : -1---00-----------00
+139     : ['ep_epoch1(node0)', '~ep_epoch2(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+138     : --0-1--0----------00
+138     : ['ep_epoch1(node1)', '~ep_epoch2(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 66 =====================
+size : 2
+num_suborbits: 1
+137 (*) : -1----0------0----00
+137     : ['ep_epoch1(node0)', '~held(node0)', '~locked_epoch2(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+136     : ----1--0----0-----00
+136     : ['ep_epoch1(node1)', '~held(node1)', '~locked_epoch2(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 67 =====================
+size : 2
+num_suborbits: 1
+130 (*) : 0----00-----------00
+130     : ['~ep_epoch0(node0)', '~ep_epoch2(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+131     : --00---0----------00
+131     : ['~ep_epoch0(node1)', '~ep_epoch2(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 68 =====================
+size : 2
+num_suborbits: 1
+128 (*) : 0-----0------0----00
+128     : ['~ep_epoch0(node0)', '~held(node0)', '~locked_epoch2(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+129     : ---0---0----0-----00
+129     : ['~ep_epoch0(node1)', '~held(node1)', '~locked_epoch2(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 69 =====================
+size : 2
+num_suborbits: 1
+133 (*) : -00----0----------00
+133     : ['~ep_epoch1(node0)', '~ep_epoch2(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+132     : ----000-----------00
+132     : ['~ep_epoch1(node1)', '~ep_epoch2(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+=== Prime Orbit 70 =====================
+size : 2
+num_suborbits: 1
+135 (*) : -0-----0----0-----00
+135     : ['~ep_epoch1(node0)', '~held(node1)', '~locked_epoch2(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+134     : ----0-0------0----00
+134     : ['~ep_epoch1(node1)', '~held(node0)', '~locked_epoch2(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   0
+num_literals : 0
+quantified form : None
+qcost : 0
+
+
+
+[PRIME NOTE]: number of orbits after merging: 71
+
+[PRIME NOTE]: number of orbits before merging: 77
+
+[PRIME NOTE]: number of primes: 140
+
+[QRM NOTE]: Time elapsed since start: 6.426 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.044 seconds
+
+[QRM NOTE]: Peak memory: 503945 bytes
+
+
+=====================================================================================================
+
+	[RED]: PRIME REDUCTION on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+=====================================================================================================
+
+[QRM NOTE]: Time elapsed since start: 6.430 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.004 seconds
+
+[QRM NOTE]: Peak memory: 463562 bytes
+
+
+=========================================================================================================
+
+	[QI]: Quantifier Inference on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+=========================================================================================================
+
+
+===================================================================================================================
+
+	[QI RESULT]: Quantified Prime Orbits on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+===================================================================================================================
+
+
+=== Prime Orbit 0 =====================
+size : 2
+num_suborbits: 1
+0 (*) : --------1-----------
+0     : ['locked_epoch0(node0)']
+1     : ---------1----------
+1     : ['locked_epoch0(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : forall NODE0. ~locked_epoch0(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 1 =====================
+size : 2
+num_suborbits: 1
+2 (*) : ----------1---------
+2     : ['locked_epoch1(node0)']
+3     : -----------1--------
+3     : ['locked_epoch1(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : forall NODE0. ~locked_epoch1(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 2 =====================
+size : 2
+num_suborbits: 1
+4 (*) : --------------1-----
+4     : ['transfer_epoch0(node0)']
+5     : ---------------1----
+5     : ['transfer_epoch0(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : forall NODE0. ~transfer_epoch0(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 3 =====================
+size : 2
+num_suborbits: 1
+6 (*) : ----------------1---
+6     : ['transfer_epoch1(node0)']
+7     : -----------------1--
+7     : ['transfer_epoch1(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 1
+quantified form : forall NODE0. ~transfer_epoch1(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 4 =====================
+size : 1
+num_suborbits: 1
+23 (*) : 1--1----------------
+23     : ['ep_epoch0(node0)', 'ep_epoch0(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~ep_epoch0(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 5 =====================
+size : 2
+num_suborbits: 1
+21 (*) : 11------------------
+21     : ['ep_epoch0(node0)', 'ep_epoch1(node0)']
+22     : ---11---------------
+22     : ['ep_epoch0(node1)', 'ep_epoch1(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch1(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 6 =====================
+size : 2
+num_suborbits: 1
+34 (*) : 1-1-----------------
+34     : ['ep_epoch0(node0)', 'ep_epoch2(node0)']
+33     : ---1-1--------------
+33     : ['ep_epoch0(node1)', 'ep_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 7 =====================
+size : 2
+num_suborbits: 1
+24 (*) : 1-----1-------------
+24     : ['ep_epoch0(node0)', 'held(node0)']
+25     : ---1---1------------
+25     : ['ep_epoch0(node1)', 'held(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch0(NODE0) | ~held(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 8 =====================
+size : 2
+num_suborbits: 1
+48 (*) : 1-----------1-------
+48     : ['ep_epoch0(node0)', 'locked_epoch2(node0)']
+49     : ---1---------1------
+49     : ['ep_epoch0(node1)', 'locked_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch0(NODE0) | ~locked_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 9 =====================
+size : 1
+num_suborbits: 1
+37 (*) : -1--1---------------
+37     : ['ep_epoch1(node0)', 'ep_epoch1(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~ep_epoch1(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 10 =====================
+size : 2
+num_suborbits: 1
+36 (*) : -11-----------------
+36     : ['ep_epoch1(node0)', 'ep_epoch2(node0)']
+35     : ----11--------------
+35     : ['ep_epoch1(node1)', 'ep_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch1(NODE0) | ~ep_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 11 =====================
+size : 2
+num_suborbits: 1
+38 (*) : -1----------1-------
+38     : ['ep_epoch1(node0)', 'locked_epoch2(node0)']
+39     : ----1--------1------
+39     : ['ep_epoch1(node1)', 'locked_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch1(NODE0) | ~locked_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 12 =====================
+size : 1
+num_suborbits: 1
+50 (*) : --1--1--------------
+50     : ['ep_epoch2(node0)', 'ep_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~ep_epoch2(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 13 =====================
+size : 2
+num_suborbits: 1
+31 (*) : --1----1------------
+31     : ['ep_epoch2(node0)', 'held(node1)']
+30     : -----11-------------
+30     : ['ep_epoch2(node1)', 'held(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0,NODE1. ~ep_epoch2(NODE0) | ~held(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 14 =====================
+size : 2
+num_suborbits: 1
+47 (*) : --1----------1------
+47     : ['ep_epoch2(node0)', 'locked_epoch2(node1)']
+46     : -----1------1-------
+46     : ['ep_epoch2(node1)', 'locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0,NODE1. ~ep_epoch2(NODE0) | ~locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 15 =====================
+size : 4
+num_suborbits: 2
+13 (*) : --1---------------1-
+13     : ['ep_epoch2(node0)', 'transfer_epoch2(node0)']
+10     : --1----------------1
+10     : ['ep_epoch2(node0)', 'transfer_epoch2(node1)']
+11     : -----1------------1-
+11     : ['ep_epoch2(node1)', 'transfer_epoch2(node0)']
+12     : -----1-------------1
+12     : ['ep_epoch2(node1)', 'transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,NODE1. ~ep_epoch2(NODE0) | ~transfer_epoch2(NODE1)
+qcost : 4
+
+
+
+
+=== Prime Orbit 16 =====================
+size : 2
+num_suborbits: 1
+29 (*) : --1---0-------------
+29     : ['ep_epoch2(node0)', '~held(node0)']
+28     : -----1-0------------
+28     : ['ep_epoch2(node1)', '~held(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch2(NODE0) | held(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 17 =====================
+size : 2
+num_suborbits: 1
+27 (*) : --1---------0-------
+27     : ['ep_epoch2(node0)', '~locked_epoch2(node0)']
+26     : -----1-------0------
+26     : ['ep_epoch2(node1)', '~locked_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~ep_epoch2(NODE0) | locked_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 18 =====================
+size : 1
+num_suborbits: 1
+32 (*) : ------11------------
+32     : ['held(node0)', 'held(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~held(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 19 =====================
+size : 2
+num_suborbits: 1
+45 (*) : ------1------1------
+45     : ['held(node0)', 'locked_epoch2(node1)']
+44     : -------1----1-------
+44     : ['held(node1)', 'locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0,NODE1. ~held(NODE0) | ~locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 5
+
+
+
+
+=== Prime Orbit 20 =====================
+size : 4
+num_suborbits: 2
+15 (*) : ------1-----------1-
+15     : ['held(node0)', 'transfer_epoch2(node0)']
+18     : ------1------------1
+18     : ['held(node0)', 'transfer_epoch2(node1)']
+19     : -------1----------1-
+19     : ['held(node1)', 'transfer_epoch2(node0)']
+14     : -------1-----------1
+14     : ['held(node1)', 'transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch2(NODE1)
+qcost : 4
+
+
+
+
+=== Prime Orbit 21 =====================
+size : 1
+num_suborbits: 1
+51 (*) : ------------11------
+51     : ['locked_epoch2(node0)', 'locked_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~locked_epoch2(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 22 =====================
+size : 4
+num_suborbits: 2
+17 (*) : ------------1-----1-
+17     : ['locked_epoch2(node0)', 'transfer_epoch2(node0)']
+8     : ------------1------1
+8     : ['locked_epoch2(node0)', 'transfer_epoch2(node1)']
+9     : -------------1----1-
+9     : ['locked_epoch2(node1)', 'transfer_epoch2(node0)']
+16     : -------------1-----1
+16     : ['locked_epoch2(node1)', 'transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0,NODE1. ~locked_epoch2(NODE0) | ~transfer_epoch2(NODE1)
+qcost : 4
+
+
+
+
+=== Prime Orbit 23 =====================
+size : 2
+num_suborbits: 1
+40 (*) : --0---------1-------
+40     : ['locked_epoch2(node0)', '~ep_epoch2(node0)']
+41     : -----0-------1------
+41     : ['locked_epoch2(node1)', '~ep_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~locked_epoch2(NODE0) | ep_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 24 =====================
+size : 2
+num_suborbits: 1
+42 (*) : ------0-----1-------
+42     : ['locked_epoch2(node0)', '~held(node0)']
+43     : -------0-----1------
+43     : ['locked_epoch2(node1)', '~held(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 2
+quantified form : forall NODE0. ~locked_epoch2(NODE0) | held(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 25 =====================
+size : 1
+num_suborbits: 1
+20 (*) : ------------------11
+20     : ['transfer_epoch2(node0)', 'transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 1
+quantified form : exists NODE0. ~transfer_epoch2(NODE0)
+qcost : 2
+
+
+
+
+=== Prime Orbit 26 =====================
+size : 4
+num_suborbits: 2
+62 (*) : 1---0-------------1-
+62     : ['ep_epoch0(node0)', 'transfer_epoch2(node0)', '~ep_epoch1(node1)']
+65     : 1---0--------------1
+65     : ['ep_epoch0(node0)', 'transfer_epoch2(node1)', '~ep_epoch1(node1)']
+64     : -0-1--------------1-
+64     : ['ep_epoch0(node1)', 'transfer_epoch2(node0)', '~ep_epoch1(node0)']
+63     : -0-1---------------1
+63     : ['ep_epoch0(node1)', 'transfer_epoch2(node1)', '~ep_epoch1(node0)']
+num_forall :   3
+num_exists :   0
+num_literals : 7
+quantified form : forall NODE1,NODE0,NODE2. ~ep_epoch0(NODE0) | ~transfer_epoch2(NODE1) | ep_epoch1(NODE2) | ((NODE0 ~= NODE1 | NODE0 = NODE2) & (NODE1 ~= NODE2 | NODE0 = NODE1))
+qcost : 10
+
+
+
+
+=== Prime Orbit 27 =====================
+size : 2
+num_suborbits: 1
+76 (*) : 1---00--------------
+76     : ['ep_epoch0(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node1)']
+77     : -001----------------
+77     : ['ep_epoch0(node1)', '~ep_epoch1(node0)', '~ep_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch0(NODE0) | ep_epoch1(NODE1) | ep_epoch2(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 28 =====================
+size : 2
+num_suborbits: 1
+74 (*) : 1---0--0------------
+74     : ['ep_epoch0(node0)', '~ep_epoch1(node1)', '~held(node1)']
+75     : -0-1--0-------------
+75     : ['ep_epoch0(node1)', '~ep_epoch1(node0)', '~held(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch0(NODE0) | ep_epoch1(NODE1) | held(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 29 =====================
+size : 2
+num_suborbits: 1
+78 (*) : 1---0--------0------
+78     : ['ep_epoch0(node0)', '~ep_epoch1(node1)', '~locked_epoch2(node1)']
+79     : -0-1--------0-------
+79     : ['ep_epoch0(node1)', '~ep_epoch1(node0)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch0(NODE0) | ep_epoch1(NODE1) | locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 30 =====================
+size : 2
+num_suborbits: 1
+98 (*) : -1-0--1-------------
+98     : ['ep_epoch1(node0)', 'held(node0)', '~ep_epoch0(node1)']
+99     : 0---1--1------------
+99     : ['ep_epoch1(node1)', 'held(node1)', '~ep_epoch0(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ~held(NODE0) | ep_epoch0(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 31 =====================
+size : 2
+num_suborbits: 1
+91 (*) : -1---0-1------------
+91     : ['ep_epoch1(node0)', 'held(node1)', '~ep_epoch2(node1)']
+90     : --0-1-1-------------
+90     : ['ep_epoch1(node1)', 'held(node0)', '~ep_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ~held(NODE1) | ep_epoch2(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 32 =====================
+size : 2
+num_suborbits: 1
+89 (*) : -1-----1-----0------
+89     : ['ep_epoch1(node0)', 'held(node1)', '~locked_epoch2(node1)']
+88     : ----1-1-----0-------
+88     : ['ep_epoch1(node1)', 'held(node0)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ~held(NODE1) | locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 33 =====================
+size : 4
+num_suborbits: 2
+100 (*) : -1-0--------------1-
+100     : ['ep_epoch1(node0)', 'transfer_epoch2(node0)', '~ep_epoch0(node1)']
+59     : -1-0---------------1
+59     : ['ep_epoch1(node0)', 'transfer_epoch2(node1)', '~ep_epoch0(node1)']
+58     : 0---1-------------1-
+58     : ['ep_epoch1(node1)', 'transfer_epoch2(node0)', '~ep_epoch0(node0)']
+101     : 0---1--------------1
+101     : ['ep_epoch1(node1)', 'transfer_epoch2(node1)', '~ep_epoch0(node0)']
+num_forall :   3
+num_exists :   0
+num_literals : 7
+quantified form : forall NODE1,NODE0,NODE2. ~ep_epoch1(NODE0) | ~transfer_epoch2(NODE1) | ep_epoch0(NODE2) | ((NODE1 ~= NODE2 | NODE0 = NODE1) & (NODE0 ~= NODE1 | NODE0 = NODE2))
+qcost : 10
+
+
+
+
+=== Prime Orbit 34 =====================
+size : 2
+num_suborbits: 1
+53 (*) : -1-0-0--------------
+53     : ['ep_epoch1(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node1)']
+52     : 0-0-1---------------
+52     : ['ep_epoch1(node1)', '~ep_epoch0(node0)', '~ep_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 35 =====================
+size : 2
+num_suborbits: 1
+55 (*) : -1-0---0------------
+55     : ['ep_epoch1(node0)', '~ep_epoch0(node1)', '~held(node1)']
+54     : 0---1-0-------------
+54     : ['ep_epoch1(node1)', '~ep_epoch0(node0)', '~held(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ep_epoch0(NODE1) | held(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 36 =====================
+size : 2
+num_suborbits: 1
+57 (*) : -1-0---------0------
+57     : ['ep_epoch1(node0)', '~ep_epoch0(node1)', '~locked_epoch2(node1)']
+56     : 0---1-------0-------
+56     : ['ep_epoch1(node1)', '~ep_epoch0(node0)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ep_epoch0(NODE1) | locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 37 =====================
+size : 2
+num_suborbits: 1
+94 (*) : --100---------------
+94     : ['ep_epoch2(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+95     : 00---1--------------
+95     : ['ep_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~ep_epoch2(NODE0) | ep_epoch0(NODE1) | ep_epoch1(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 38 =====================
+size : 2
+num_suborbits: 1
+92 (*) : ---00-1-------------
+92     : ['held(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+93     : 00-----1------------
+93     : ['held(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~held(NODE0) | ep_epoch0(NODE1) | ep_epoch1(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 39 =====================
+size : 2
+num_suborbits: 1
+86 (*) : --00--1-------------
+86     : ['held(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)']
+87     : 0----0-1------------
+87     : ['held(node1)', '~ep_epoch0(node0)', '~ep_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~held(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE0) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 40 =====================
+size : 2
+num_suborbits: 1
+84 (*) : ---0--1-----0-------
+84     : ['held(node0)', '~ep_epoch0(node1)', '~locked_epoch2(node0)']
+85     : 0------1-----0------
+85     : ['held(node1)', '~ep_epoch0(node0)', '~locked_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~held(NODE0) | ep_epoch0(NODE1) | locked_epoch2(NODE0) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 41 =====================
+size : 2
+num_suborbits: 1
+80 (*) : -00---1-------------
+80     : ['held(node0)', '~ep_epoch1(node0)', '~ep_epoch2(node0)']
+81     : ----00-1------------
+81     : ['held(node1)', '~ep_epoch1(node1)', '~ep_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0. ~held(NODE0) | ep_epoch1(NODE0) | ep_epoch2(NODE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 42 =====================
+size : 2
+num_suborbits: 1
+82 (*) : -0----1-----0-------
+82     : ['held(node0)', '~ep_epoch1(node0)', '~locked_epoch2(node0)']
+83     : ----0--1-----0------
+83     : ['held(node1)', '~ep_epoch1(node1)', '~locked_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0. ~held(NODE0) | ep_epoch1(NODE0) | locked_epoch2(NODE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 43 =====================
+size : 2
+num_suborbits: 1
+96 (*) : ---00-------1-------
+96     : ['locked_epoch2(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+97     : 00-----------1------
+97     : ['locked_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~locked_epoch2(NODE0) | ep_epoch0(NODE1) | ep_epoch1(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 44 =====================
+size : 2
+num_suborbits: 1
+102 (*) : 0--0--------------1-
+102     : ['transfer_epoch2(node0)', '~ep_epoch0(node0)', '~ep_epoch0(node1)']
+103     : 0--0---------------1
+103     : ['transfer_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch0(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~transfer_epoch2(NODE0) | ep_epoch0(NODE0) | ep_epoch0(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 45 =====================
+size : 4
+num_suborbits: 2
+104 (*) : 00----------------1-
+104     : ['transfer_epoch2(node0)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+66     : ---00-------------1-
+66     : ['transfer_epoch2(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+67     : 00-----------------1
+67     : ['transfer_epoch2(node1)', '~ep_epoch0(node0)', '~ep_epoch1(node0)']
+105     : ---00--------------1
+105     : ['transfer_epoch2(node1)', '~ep_epoch0(node1)', '~ep_epoch1(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0,NODE1. ~transfer_epoch2(NODE0) | ep_epoch0(NODE1) | ep_epoch1(NODE1)
+qcost : 5
+
+
+
+
+=== Prime Orbit 46 =====================
+size : 2
+num_suborbits: 1
+60 (*) : -0--0-------------1-
+60     : ['transfer_epoch2(node0)', '~ep_epoch1(node0)', '~ep_epoch1(node1)']
+61     : -0--0--------------1
+61     : ['transfer_epoch2(node1)', '~ep_epoch1(node0)', '~ep_epoch1(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 4
+quantified form : forall NODE0,NODE1. ~transfer_epoch2(NODE0) | ep_epoch1(NODE0) | ep_epoch1(NODE1) | NODE0 = NODE1
+qcost : 6
+
+
+
+
+=== Prime Orbit 47 =====================
+size : 2
+num_suborbits: 1
+71 (*) : 000-----------------
+71     : ['~ep_epoch0(node0)', '~ep_epoch1(node0)', '~ep_epoch2(node0)']
+70     : ---000--------------
+70     : ['~ep_epoch0(node1)', '~ep_epoch1(node1)', '~ep_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0) | ep_epoch2(NODE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 48 =====================
+size : 2
+num_suborbits: 1
+73 (*) : 00----0-------------
+73     : ['~ep_epoch0(node0)', '~ep_epoch1(node0)', '~held(node0)']
+72     : ---00--0------------
+72     : ['~ep_epoch0(node1)', '~ep_epoch1(node1)', '~held(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0) | held(NODE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 49 =====================
+size : 2
+num_suborbits: 1
+69 (*) : 00----------0-------
+69     : ['~ep_epoch0(node0)', '~ep_epoch1(node0)', '~locked_epoch2(node0)']
+68     : ---00--------0------
+68     : ['~ep_epoch0(node1)', '~ep_epoch1(node1)', '~locked_epoch2(node1)']
+num_forall :   1
+num_exists :   0
+num_literals : 3
+quantified form : forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0) | locked_epoch2(NODE0)
+qcost : 4
+
+
+
+
+=== Prime Orbit 50 =====================
+size : 2
+num_suborbits: 1
+107 (*) : 1------0----------00
+107     : ['ep_epoch0(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+106     : ---1--0-----------00
+106     : ['ep_epoch0(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ~ep_epoch0(NODE0) | held(NODE1) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 51 =====================
+size : 1
+num_suborbits: 1
+123 (*) : 00-00---------------
+123     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch1(node0)', '~ep_epoch1(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 52 =====================
+size : 1
+num_suborbits: 1
+126 (*) : 0-00-0--------------
+126     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch0(NODE0) | ep_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 53 =====================
+size : 2
+num_suborbits: 1
+114 (*) : 0-00---0------------
+114     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)', '~held(node1)']
+113     : 0--0-00-------------
+113     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node1)', '~held(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ep_epoch0(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE1) | held(NODE0) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 54 =====================
+size : 2
+num_suborbits: 1
+125 (*) : 0-00---------0------
+125     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node0)', '~locked_epoch2(node1)']
+124     : 0--0-0------0-------
+124     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~ep_epoch2(node1)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ep_epoch0(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE1) | locked_epoch2(NODE0) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 55 =====================
+size : 1
+num_suborbits: 1
+110 (*) : 0--0--00------------
+110     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~held(node0)', '~held(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch0(NODE0) | held(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 56 =====================
+size : 2
+num_suborbits: 1
+111 (*) : 0--0--0------0------
+111     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~held(node0)', '~locked_epoch2(node1)']
+112     : 0--0---0----0-------
+112     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~held(node1)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ep_epoch0(NODE0) | ep_epoch0(NODE1) | held(NODE0) | locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 57 =====================
+size : 1
+num_suborbits: 1
+127 (*) : 0--0--------00------
+127     : ['~ep_epoch0(node0)', '~ep_epoch0(node1)', '~locked_epoch2(node0)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch0(NODE0) | locked_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 58 =====================
+size : 1
+num_suborbits: 1
+122 (*) : -00-00--------------
+122     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node0)', '~ep_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch1(NODE0) | ep_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 59 =====================
+size : 2
+num_suborbits: 1
+118 (*) : -00-0--0------------
+118     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node0)', '~held(node1)']
+117     : -0--000-------------
+117     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node1)', '~held(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ep_epoch1(NODE0) | ep_epoch1(NODE1) | ep_epoch2(NODE1) | held(NODE0) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 60 =====================
+size : 2
+num_suborbits: 1
+119 (*) : -00-0--------0------
+119     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node0)', '~locked_epoch2(node1)']
+120     : -0--00------0-------
+120     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~ep_epoch2(node1)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ep_epoch1(NODE0) | ep_epoch1(NODE1) | ep_epoch2(NODE0) | locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 61 =====================
+size : 1
+num_suborbits: 1
+109 (*) : -0--0-00------------
+109     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~held(node0)', '~held(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch1(NODE0) | held(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 62 =====================
+size : 2
+num_suborbits: 1
+115 (*) : -0--0-0------0------
+115     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~held(node0)', '~locked_epoch2(node1)']
+116     : -0--0--0----0-------
+116     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~held(node1)', '~locked_epoch2(node0)']
+num_forall :   2
+num_exists :   0
+num_literals : 5
+quantified form : forall NODE0,NODE1. ep_epoch1(NODE0) | ep_epoch1(NODE1) | held(NODE0) | locked_epoch2(NODE1) | NODE0 = NODE1
+qcost : 7
+
+
+
+
+=== Prime Orbit 63 =====================
+size : 1
+num_suborbits: 1
+121 (*) : -0--0-------00------
+121     : ['~ep_epoch1(node0)', '~ep_epoch1(node1)', '~locked_epoch2(node0)', '~locked_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. ep_epoch1(NODE0) | locked_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 64 =====================
+size : 1
+num_suborbits: 1
+108 (*) : ------00----------00
+108     : ['~held(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   0
+num_exists :   1
+num_literals : 2
+quantified form : exists NODE0. held(NODE0) | transfer_epoch2(NODE0)
+qcost : 3
+
+
+
+
+=== Prime Orbit 65 =====================
+size : 2
+num_suborbits: 1
+139 (*) : -1---00-----------00
+139     : ['ep_epoch1(node0)', '~ep_epoch2(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+138     : --0-1--0----------00
+138     : ['ep_epoch1(node1)', '~ep_epoch2(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 6
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | ep_epoch2(NODE1) | held(NODE0) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 8
+
+
+
+
+=== Prime Orbit 66 =====================
+size : 2
+num_suborbits: 1
+137 (*) : -1----0------0----00
+137     : ['ep_epoch1(node0)', '~held(node0)', '~locked_epoch2(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+136     : ----1--0----0-----00
+136     : ['ep_epoch1(node1)', '~held(node1)', '~locked_epoch2(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 6
+quantified form : forall NODE0,NODE1. ~ep_epoch1(NODE0) | held(NODE0) | locked_epoch2(NODE1) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 8
+
+
+
+
+=== Prime Orbit 67 =====================
+size : 2
+num_suborbits: 1
+130 (*) : 0----00-----------00
+130     : ['~ep_epoch0(node0)', '~ep_epoch2(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+131     : --00---0----------00
+131     : ['~ep_epoch0(node1)', '~ep_epoch2(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 6
+quantified form : forall NODE0,NODE1. ep_epoch0(NODE0) | ep_epoch2(NODE1) | held(NODE0) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 8
+
+
+
+
+=== Prime Orbit 68 =====================
+size : 2
+num_suborbits: 1
+128 (*) : 0-----0------0----00
+128     : ['~ep_epoch0(node0)', '~held(node0)', '~locked_epoch2(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+129     : ---0---0----0-----00
+129     : ['~ep_epoch0(node1)', '~held(node1)', '~locked_epoch2(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 6
+quantified form : forall NODE0,NODE1. ep_epoch0(NODE0) | held(NODE0) | locked_epoch2(NODE1) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 8
+
+
+
+
+=== Prime Orbit 69 =====================
+size : 2
+num_suborbits: 1
+133 (*) : -00----0----------00
+133     : ['~ep_epoch1(node0)', '~ep_epoch2(node0)', '~held(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+132     : ----000-----------00
+132     : ['~ep_epoch1(node1)', '~ep_epoch2(node1)', '~held(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 6
+quantified form : forall NODE0,NODE1. ep_epoch1(NODE0) | ep_epoch2(NODE0) | held(NODE1) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 8
+
+
+
+
+=== Prime Orbit 70 =====================
+size : 2
+num_suborbits: 1
+135 (*) : -0-----0----0-----00
+135     : ['~ep_epoch1(node0)', '~held(node1)', '~locked_epoch2(node0)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+134     : ----0-0------0----00
+134     : ['~ep_epoch1(node1)', '~held(node0)', '~locked_epoch2(node1)', '~transfer_epoch2(node0)', '~transfer_epoch2(node1)']
+num_forall :   2
+num_exists :   0
+num_literals : 6
+quantified form : forall NODE0,NODE1. ep_epoch1(NODE0) | held(NODE1) | locked_epoch2(NODE0) | transfer_epoch2(NODE0) | transfer_epoch2(NODE1) | NODE0 = NODE1
+qcost : 8
+
+
+
+[QRM NOTE]: Time elapsed since start: 6.789 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.359 seconds
+
+[QRM NOTE]: Peak memory: 865645 bytes
+
+
+=================================================================================================
+
+	[OG]: Orbit Groups on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+=================================================================================================
+
+[QRM NOTE]: Time elapsed since start: 6.791 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.002 seconds
+
+[QRM NOTE]: Peak memory: 900221 bytes
+
+
+==================================================================================================
+
+	[MIN]: Minimization on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+==================================================================================================
+
+
+=================================================================================================================
+
+	[MIN RESULT]: Minimized Invariants on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+=================================================================================================================
+
+[MIN NOTE]: number of minimal solution found: 1
+
+[MIN NOTE]: upper bound: 27
+
+[MIN NOTE]: maximum branch and bound depth: 26
+
+[MIN NOTE]: number of definitions: 0
+
+[MIN NOTE]: number of equality relations: 0
+
+[MIN NOTE]: Solution 0 : [0, 1, 2, 3, 64, 20, 25, 18, 4, 9, 12, 23, 16, 42]
+
+[MIN NOTE]: solution length: 14
+
+invariant [invar_0] forall NODE0. ~locked_epoch0(NODE0) # qcost: 2
+
+invariant [invar_1] forall NODE0. ~locked_epoch1(NODE0) # qcost: 2
+
+invariant [invar_2] forall NODE0. ~transfer_epoch0(NODE0) # qcost: 2
+
+invariant [invar_3] forall NODE0. ~transfer_epoch1(NODE0) # qcost: 2
+
+invariant [invar_64] exists NODE0. held(NODE0) | transfer_epoch2(NODE0) # qcost: 3
+
+invariant [invar_20] forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch2(NODE1) # qcost: 4
+
+invariant [invar_25] exists NODE0. ~transfer_epoch2(NODE0) # qcost: 2
+
+invariant [invar_18] exists NODE0. ~held(NODE0) # qcost: 2
+
+invariant [invar_4] exists NODE0. ~ep_epoch0(NODE0) # qcost: 2
+
+invariant [invar_9] exists NODE0. ~ep_epoch1(NODE0) # qcost: 2
+
+invariant [invar_12] exists NODE0. ~ep_epoch2(NODE0) # qcost: 2
+
+invariant [invar_23] forall NODE0. ~locked_epoch2(NODE0) | ep_epoch2(NODE0) # qcost: 3
+
+invariant [invar_16] forall NODE0. ~ep_epoch2(NODE0) | held(NODE0) # qcost: 3
+
+invariant [invar_42] forall NODE0. ~held(NODE0) | ep_epoch1(NODE0) | locked_epoch2(NODE0) # qcost: 4
+
+[MIN NOTE]: number of total invariants: 14
+
+[MIN NOTE]: total qCost: 27
+
+
+
+
+[QRM NOTE]: Time elapsed since start: 68.677 seconds
+
+[QRM NOTE]: Time elapsed since last: 61.886 seconds
+
+[QRM NOTE]: Peak memory: 914997 bytes
+
+
+====================================================================================================================
+
+	[MIN_CHECK] Minimization Sanity Check on [ivybench/total/ivy/distributed_lock_v2.ivy: node=2,epoch=3]
+
+====================================================================================================================
+
+Minimization check for Solution 0
+
+Representatitive states in reachability not in Rmin
+
+[MIN_CHECK RESULT]: PASS
+
+[QRM NOTE]: Time elapsed since start: 68.706 seconds
+
+[QRM NOTE]: Time elapsed since last: 0.028 seconds
+
+[QRM NOTE]: Peak memory: 924089 bytes
+

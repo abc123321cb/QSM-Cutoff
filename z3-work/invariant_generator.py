@@ -1,10 +1,12 @@
 import re
+import sys
+from pathlib import Path
 
 def convert_to_smt(text):
     lines = text.strip().split('\n')
     smt_lines = []
     
-    for i, line in enumerate(lines, 1):
+    for i, line in enumerate(lines, 0):
         line = line.strip()
         if not line or line.startswith(';'): continue
         
@@ -117,35 +119,26 @@ def _split_by_indices(s, indices, length=1):
     parts.append(s[start:])
     return parts
 
-# Test with your variety of inputs
-test_data = """
+def load_invariants_text(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        text = f.read().strip()
+    if not text:
+        raise ValueError(f"No invariants found in {file_path}")
+    return text
 
-forall NODE0. ~locked_epoch0(NODE0)
-forall NODE0,NODE1. ~transfer_epoch2(NODE0) | ~transfer_epoch3(NODE1)
-exists NODE0. ~transfer_epoch3(NODE0)
-exists NODE0. locked_epoch1(NODE0)
-forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch2(NODE1)
-forall NODE0,NODE1. ~held(NODE0) | ~transfer_epoch3(NODE1)
-exists NODE0. ~locked_epoch1(NODE0)
-exists NODE0. ~transfer_epoch2(NODE0)
-exists NODE0. ~locked_epoch2(NODE0)
-forall NODE0. ~locked_epoch2(NODE0) | ep_epoch2(NODE0) | ep_epoch3(NODE0)
-forall NODE0. ep_epoch0(NODE0) | ep_epoch1(NODE0) | held(NODE0) | locked_epoch2(NODE0)
-forall NODE0,NODE1. ~locked_epoch1(NODE0) | ep_epoch0(NODE1) | ep_epoch2(NODE1) | held(NODE1) | NODE0 = NODE1
-forall NODE0. ~locked_epoch1(NODE0) | ep_epoch1(NODE0) | ep_epoch2(NODE0) | held(NODE0)
-forall NODE0. ~locked_epoch1(NODE0) | ep_epoch1(NODE0) | ep_epoch3(NODE0) | locked_epoch2(NODE0)
-forall NODE0. ep_epoch0(NODE0) | ep_epoch3(NODE0) | locked_epoch1(NODE0) | locked_epoch2(NODE0)
-exists NODE0. ~held(NODE0)
-exists NODE0. ep_epoch0(NODE0) | held(NODE0) | transfer_epoch3(NODE0)
-exists NODE0. ep_epoch1(NODE0) | held(NODE0) | transfer_epoch3(NODE0)
-exists NODE0. held(NODE0) | transfer_epoch2(NODE0) | transfer_epoch3(NODE0)
-forall NODE0,NODE1. ~held(NODE0) | ep_epoch0(NODE1) | ep_epoch3(NODE0) | locked_epoch2(NODE0) | NODE0 = NODE1
-forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch1(NODE0)
-forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch2(NODE0)
-forall NODE0. ~ep_epoch0(NODE0) | ~ep_epoch3(NODE0)
-forall NODE0. ~ep_epoch1(NODE0) | ~ep_epoch2(NODE0)
-forall NODE0. ~ep_epoch1(NODE0) | ~ep_epoch3(NODE0)
-forall NODE0. ~ep_epoch2(NODE0) | ~ep_epoch3(NODE0)
 
-"""
-print(convert_to_smt(test_data))
+def main():
+    default_invariants_path = Path(__file__).with_name('simplified_invars.txt')
+    invariants_path = Path(sys.argv[1]) if len(sys.argv) > 1 else default_invariants_path
+
+    if not invariants_path.exists():
+        raise FileNotFoundError(
+            f"Invariant file not found: {invariants_path}. "
+            f"Create it or pass a file path as the first argument."
+        )
+
+    print(convert_to_smt(load_invariants_text(invariants_path)))
+
+
+if __name__ == '__main__':
+    main()

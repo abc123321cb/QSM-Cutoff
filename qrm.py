@@ -45,6 +45,7 @@ def usage ():
     print('                 write reachable states to FILE.reach')
     print('                 write prime orbits to FILE.pis')
     print('                 write quantified prime orbits to FILE.qpis')
+    print('--csv        write orbit CSV output (default: off)')
     print('-g           Make a graph of the reachable states (default: off) (requires graphviz)')
     print('-h           usage')
 
@@ -62,7 +63,7 @@ def file_exist(filename) -> bool:
 # large if else chain setting booleans
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgny", ["graph"])
+        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgny", ["graph", "csv"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -87,7 +88,7 @@ def get_options(ivy_name, args):
         elif optc == '-b':
             options.forward_mode = ForwardMode.BDD_Symbolic
         elif optc == '-y':
-            options.curry_ordered_sorts = True
+            options.total_order = True
         elif optc == '-e':
             options.minimize_equality = True
         elif optc == '-t':
@@ -128,6 +129,8 @@ def get_options(ivy_name, args):
             options.transition_reach = True
         elif optc == '--graph': #make graph
             options.make_graph = True
+        elif optc == '--csv':
+            options.write_orbit_csv = True
         else:
             usage_and_exit()
     if options.writeLog:
@@ -157,7 +160,7 @@ def can_skip_forward_reachability(options) -> bool:
 
 def qrm(ivy_name, args):
     # start
-    options    = get_options(ivy_name, args) # basic input handling and some printing
+    options : QrmOptions    = get_options(ivy_name, args) # basic input handling and some printing
     qrm_result = True
     instance_start(options, ivy_name)
 
@@ -181,8 +184,9 @@ def qrm(ivy_name, args):
         protocol = fr_solver.protocol
 
     # curry ordered sorts (create curried copy for prime generation)
-    if options.curry_ordered_sorts:
+    if options.total_order:
         options.step_start('Curry Ordered Sorts')
+        uncurried_protocol = protocol
         protocol = protocol.curry_ordered_sorts(tran_sys)
         options.step_end()
 
@@ -206,9 +210,12 @@ def qrm(ivy_name, args):
         else:
             sys.exit(0)
     else:
-        options.step_start('Reduce Equivalent Atoms')
-        protocol.reduce_equivalent_atoms(tran_sys)
-        options.step_end()
+        if options.total_order:
+            protocol.quotient_reachable_states = protocol.reachable_states
+        else:
+            options.step_start('Reduce Equivalent Atoms')
+            protocol.reduce_equivalent_atoms(tran_sys)
+            options.step_end()
 
 
     # generate prime orbits (using curried protocol if enabled)
@@ -228,9 +235,19 @@ def qrm(ivy_name, args):
     minimizer.quantifier_inference(instantiator, protocol.state_atoms_fmla)
     options.step_end()
 
+    # orbit groups
+    if options.total_order:
+        options.step_start(f'[OG]: Orbit Groups on [{options.ivy_filename}: {options.size_str}]')
+        minimizer.set_orbit_groups(uncurried_protocol, instantiator._state_vars)
+        if options.write_orbit_csv:
+            minimizer._write_orbit_csv()
+        options.step_end()
+
     # minimization
     options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')
-    minimizer.solve_rmin()
+    result = minimizer.solve_rmin()
+    if not result:
+        raise QrmFail()
     options.step_end()
 
     # minimization sanity check

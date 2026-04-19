@@ -1,5 +1,6 @@
 import os
-from typing import List,Set
+import csv
+from typing import Dict, List, Set
 from transition_system import TransitionSystem
 from prime import *
 from cover_constraints import CoverConstraints
@@ -60,6 +61,8 @@ class StackLevel():
         self.orbit_id             = -1 
         self.include_orbit        = True 
         self.unpended : List[int] = [] 
+        self.decision_targets: List[int] = []
+        self.decision_added: List[int] = []
 
     def _switch_branch(self) -> None:
         self.include_orbit = not self.include_orbit
@@ -68,24 +71,64 @@ class Minimizer():
     def __init__(self, options : QrmOptions, tran_sys : TransitionSystem, instantiator : FiniteIvyInstantiator, protocol : Protocol, orbits: List[PrimeOrbit], dnf = False) -> None: 
         self.tran_sys      = tran_sys
         self.orbits        = orbits
+        self.orbit_groups : OrbitGroups
         self.cover         = CoverConstraints(options, tran_sys, instantiator, protocol, orbits, options.useMC, dnf)
+        self.max_orbit_qcost = 6
         self.max_cost      = 0 
         self.ubound        = 0 
         self.bnb_max_depth = 0
         self.decision_stack : List[StackLevel] = []
         self.pending    : List[int] = list(range(len(orbits)))
+        self.pending_orbit_groups : List[OrbitGroup]
+        self.orbit_to_group_id: Dict[int, int] = {}
         self.solution   : List[int] = []
+        self.solution_orbit_groups : List[OrbitGroup]
         self.optimal_solutions : List[List[int]] = []
         self.rmin          = []
         self.options = options
         self.is_dnf = dnf
         self.first_solution_found = False
+        self._last_inference_list : List[int] = []
+
+
+    def _remove_high_cost_from_pending(self):
+        max_pattern = 3
+        # self.pending = [i for i, orbit in enumerate(self.orbits) if orbit.qcost <= self.max_orbit_qcost]
+
+        # skipped = len(self.orbits) - len(self.pending)
+        # if skipped > 0:
+        #     vprint(self.options, f'[MIN NOTE]: skipped {skipped} orbits with qcost > {self.max_orbit_qcost}', 3)
+
+        allowed_groups = sorted([group for group in self.orbit_groups.groups
+            if group.pattern <= max_pattern], key=lambda group: group.sig)
+        allowed_orbit_ids = {
+            orbit.id
+            for group in allowed_groups
+            for orbit in group.orbits
+        }
+        self.pending = [orbit_id for orbit_id in self.pending if orbit_id in allowed_orbit_ids]
+
+        sanity_result = True
+        protocol = self.orbit_groups.protocol
+        if self.options.forward_mode == ForwardMode.Sym_DFS:
+            sanity_result = self._compare_symmetry_quotient(0, self.pending, protocol)
+        else:
+            sanity_result = self._equivalence_checking(0, self.pending, protocol)
+        
+        if not sanity_result:
+            return False
+        
+        return True
 
     #------------------------------------------------------------
     # Minimizer: minimization 
     #------------------------------------------------------------
     def _get_cost(self) -> int:
-        s = sum([self.orbits[i].qcost for i in self.solution])
+        if self._use_group_bnb():
+            selected_group_ids = self._orbit_ids_to_group_ids(self.solution)
+            s = sum([self.orbit_groups.groups[group_id].qcost for group_id in selected_group_ids])
+        else:
+            s = sum([self.orbits[i].qcost for i in self.solution])
         vprint(self.options, f'\nSolution : {self.solution} has cost {s}.', 5)
         return s
 
@@ -93,13 +136,62 @@ class Minimizer():
         max_val = 0
         max_id  = -1
         for i in self.pending:
-            orbit = self.orbits[i]
             coverage = self.cover.coverage[i]
             if coverage > max_val:
                 max_val = coverage
                 max_id  = i
         assert(max_val > 0 and max_id >=0)
         return max_id
+
+    def _use_group_bnb(self) -> bool:
+        return bool(self.options.total_order and getattr(self, 'orbit_groups', None) is not None)
+
+    def _get_pending_group_ids(self) -> List[int]:
+        pending_set = set(self.pending)
+        return [
+            group.id for group in self.orbit_groups.groups
+            if any(orbit.id in pending_set for orbit in group.orbits)
+        ]
+
+    def _get_pending_orbits_in_group(self, group_id: int) -> List[int]:
+        pending_set = set(self.pending)
+        group = self.orbit_groups.groups[group_id]
+        return [orbit.id for orbit in group.orbits if orbit.id in pending_set]
+
+    def _get_max_coverage_group_id(self) -> int:
+        min_val = (float('inf'), float('inf'))
+        min_id = -1
+        for group_id in self._get_pending_group_ids():
+            group = self.orbit_groups.groups[group_id]
+            pending_count = len(self._get_pending_orbits_in_group(group_id))
+            score = (group.qcost, pending_count)
+            if score < min_val:
+                min_val = score
+                min_id = group_id
+        assert(min_val[0] > 0 and min_id >= 0)
+        return min_id
+
+    def _orbit_ids_to_group_ids(self, orbit_ids: List[int]) -> List[int]:
+        if not self._use_group_bnb():
+            return []
+        group_ids = {
+            self.orbit_to_group_id[orbit_id]
+            for orbit_id in orbit_ids
+            if orbit_id in self.orbit_to_group_id
+        }
+        return sorted(group_ids)
+
+    def _format_pending_solution_log(self) -> str:
+        if self._use_group_bnb():
+            pending_groups = self._orbit_ids_to_group_ids(self.pending)
+            solution_groups = self._orbit_ids_to_group_ids(self.solution)
+            return (
+                f'pending : {self.pending}\n'
+                f'pending_groups : {pending_groups}\n'
+                f'solution : {self.solution}\n'
+                f'solution_groups : {solution_groups}'
+            )
+        return f'pending : {self.pending}\nsolution : {self.solution}'
 
     def _get_initial_phase(self) -> bool:
         # hot start
@@ -109,10 +201,15 @@ class Minimizer():
         assert(len(self.decision_stack))
         top = self.decision_stack[-1]
         if top.include_orbit:
-            assert(top.orbit_id == self.solution.pop())
+            assert(len(self.solution) >= len(top.decision_added))
+            if len(top.decision_added) > 0:
+                assert(self.solution[-len(top.decision_added):] == top.decision_added)
+                del self.solution[-len(top.decision_added):]
         top._switch_branch()
+        top.decision_added = []
         if top.include_orbit:
-            self.solution.append(top.orbit_id)
+            self.solution.extend(top.decision_targets)
+            top.decision_added = top.decision_targets.copy()
         vprint(self.options, f'\nInvert decision for {top.orbit_id} at level {top.level}', 5)
 
     def _new_level(self) -> None:
@@ -120,34 +217,41 @@ class Minimizer():
         start_id = len(self.solution)
         self.bnb_max_depth = max(level, self.bnb_max_depth)
         self.decision_stack.append(StackLevel(level,start_id))
-        vprint(self.options, f'\nNew level: {level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'\nNew level: {level}\n{self._format_pending_solution_log()}', 5)
 
     def _decide(self) -> None:
-        # decide orbit id and initial phase
+        # decide orbit/group id and initial phase
         assert(len(self.decision_stack))
         top = self.decision_stack[-1]
-        top.orbit_id      = self._get_max_coverage_id() 
+        if self._use_group_bnb():
+            top.orbit_id = self._get_max_coverage_group_id()
+            top.decision_targets = self._get_pending_orbits_in_group(top.orbit_id)
+            cov_msg = [(group_id, len(self._get_pending_orbits_in_group(group_id))) for group_id in self._get_pending_group_ids()]
+        else:
+            top.orbit_id = self._get_max_coverage_id()
+            top.decision_targets = [top.orbit_id]
+            cov_msg = [(i, c) for (i, c) in enumerate(self.cover.coverage)]
         top.include_orbit = self._get_initial_phase() 
         vprint(self.options, f'\nDecide in level {top.level} among pending : {self.pending}', 5)
-        vprint(self.options, f'Coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+        vprint(self.options, f'Coverage : {cov_msg}', 5)
         vprint(self.options, f'Decide {top.orbit_id} with phase {top.include_orbit} at level {top.level}', 5)
         # update pending and solution accordingly
-        top.unpended.append(top.orbit_id)
-        self.pending.remove(top.orbit_id)
+        self._unpend(set(top.decision_targets))
         if top.include_orbit:
-            self.solution.append(top.orbit_id)
-        vprint(self.options, f'After decision at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+            self.solution.extend(top.decision_targets)
+            top.decision_added = top.decision_targets.copy()
+        vprint(self.options, f'After decision at level {top.level}\n{self._format_pending_solution_log()}', 5)
 
     def _backtrack(self) -> None:
         assert(len(self.decision_stack))
         top = self.decision_stack[-1]
-        vprint(self.options,f'\nBefore backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options,f'\nBefore backtrack at level {top.level}\n{self._format_pending_solution_log()}', 5)
         # restore pending and solution
         self.pending.extend(top.unpended)
         if len(self.solution) > top.solution_start_idx:
             del self.solution[top.solution_start_idx:]
         self.decision_stack.pop()
-        vprint(self.options, f'After backtrack at level {top.level}\n pending : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'After backtrack at level {top.level}\n{self._format_pending_solution_log()}', 5)
     
     def _collect_essentials(self) -> Set[int]:
         essentials = set()
@@ -161,19 +265,44 @@ class Minimizer():
             vprint(self.options, f'Essensial at level {top.level} : {essentials}', 5)
         return essentials
 
+    def _collect_essential_groups(self) -> Set[int]:
+        essentials = set()
+        for group_id in self._get_pending_group_ids():
+            group = self.orbit_groups.groups[group_id]
+            if self.cover.is_essential_group(group, self.pending, self.solution):
+                essentials.update(self._get_pending_orbits_in_group(group_id))
+        if self.options.verbosity >=5:
+            assert(len(self.decision_stack))
+            top = self.decision_stack[-1]
+            vprint(self.options, f'Essensial at level {top.level} : {essentials}', 5)
+        return essentials
+    
+
     def _collect_covered(self) -> Set[int]:
         vprint(self.options, f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
         covered = set()
-        self.cover.reset_coverage()
         for i in self.pending:
             orbit = self.orbits[i]
-            coverage = self.cover.get_coverage(orbit, self.solution)
-            if coverage == 0:
+            if not self.cover.has_coverage(orbit, self.solution):
                 covered.add(i)
         if self.options.verbosity >=5:
             assert(len(self.decision_stack))
             top = self.decision_stack[-1]
             vprint(self.options, f'After removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+            vprint(self.options, f'Covered at level {top.level} : {covered}', 5)
+        return covered
+
+    def _collect_covered_groups(self) -> Set[int]:
+        vprint(self.options, f'Before removed\n coverage : {[(i,c) for (i,c) in enumerate(self.cover.coverage)]}', 5)
+        covered = set()
+        for group_id in self._get_pending_group_ids():
+            group = self.orbit_groups.groups[group_id]
+            if not self.cover.has_coverage_group(group, self.solution):
+                covered.update(self._get_pending_orbits_in_group(group_id))
+        if self.options.verbosity >=5:
+            assert(len(self.decision_stack))
+            top = self.decision_stack[-1]
+            vprint(self.options, f'After removed\n covered_groups : {sorted(self._get_pending_group_ids())}', 5)
             vprint(self.options, f'Covered at level {top.level} : {covered}', 5)
         return covered
 
@@ -184,29 +313,29 @@ class Minimizer():
         top.unpended.extend(removed)
     
     def _add_essentials(self) -> bool:
-        essentials = self._collect_essentials()
+        essentials = self._collect_essential_groups() if self._use_group_bnb() else self._collect_essentials()
         self.solution += list(essentials)
         self._unpend(essentials)
         return len(essentials) > 0
     
     def _remove_covered(self) -> bool:
-        covered = self._collect_covered()
+        covered = self._collect_covered_groups() if self._use_group_bnb() else self._collect_covered()
         self._unpend(covered)
         return len(covered) > 0
 
     def _reduce(self) -> None:
-        vprint(self.options, f'\nBefore reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'\nBefore reduction : \n{self._format_pending_solution_log()}', 5)
         has_essential = self._add_essentials()
         has_covered   = self._remove_covered()
-        vprint(self.options, f'After reduction : \n pending  : {self.pending}\n solution : {self.solution}', 5)
+        vprint(self.options, f'After reduction : \n{self._format_pending_solution_log()}', 5)
         if has_essential or has_covered:
             self._reduce()
 
     def _solve_one(self) -> int: 
         # Early return if first solution already found
-        if self.first_solution_found:
-            self._backtrack()
-            return self.max_cost
+        # if self.first_solution_found:
+        #     self._backtrack()
+        #     return self.max_cost
         
         self._new_level()
         self._reduce() 
@@ -226,7 +355,7 @@ class Minimizer():
             return self.max_cost
         self._decide()
         cost1 = self._solve_one()
-        if(cost1 == cost or self.first_solution_found):
+        if(cost1 == cost):
             self._backtrack()
             return cost1
         self._invert_decision()
@@ -274,6 +403,94 @@ class Minimizer():
     #------------------------------------------------------------
     # Minimizer: helpers 
     #------------------------------------------------------------
+    def _write_orbit_csv(self) -> None:
+        if not getattr(self.options, 'write_orbit_csv', False):
+            return
+
+        orbit_to_group = {}
+        if getattr(self, 'orbit_groups', None) is not None:
+            for group in self.orbit_groups.groups:
+                for orbit in group.orbits:
+                    orbit_to_group[orbit.id] = group
+
+        csv_filename = self.options.instance_name + '.' + self.options.instance_suffix + '.orbits.csv'
+        with open(csv_filename, 'w', newline='') as csv_file:
+            writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
+            row_headers = [
+                'Orbit',
+                'pattern',
+                'SQI',
+                'qcost',
+                'Bit String',
+                '# literals',
+                'Group',
+                'Group Size',
+                'Sig',
+                'Number sig',
+                'Literal sig'
+            ]
+            row_headers.extend(self.orbit_groups.state_vars)
+            for var in self.orbit_groups.state_vars:
+                row_headers.extend(["#" + var + "=1", "#" + var + "=0"])
+            row_headers.extend(["#forall", "#exists"])
+
+            writer.writerow(row_headers)
+
+            for i in self._last_inference_list:
+                orbit = self.orbits[i]
+                bit_string = ''.join(orbit.repr_prime.values)
+                group = orbit_to_group.get(orbit.id)
+                group_id = group.id if group is not None else ''
+                pattern = group.pattern if group is not None else ''
+                group_size = len(group.orbits) if group is not None else ''
+                number_sig = ''.join(str(x) for x in orbit.sig) if orbit is not None else ''
+                row = [
+                    orbit.id,
+                    pattern,
+                    str(orbit.quantified_form),
+                    orbit.qcost,
+                    bit_string,
+                    orbit.num_literals,
+                    group_id,
+                    group_size,
+                ]
+
+                
+                atom_literals = [lit.rstrip('=') for lit in list(zip(*self.orbit_groups.protocol.atom_sig))[0]]
+                var_bit_strings = []
+
+
+                for var in self.orbit_groups.state_vars:
+                    left_atom_num = atom_literals.index(var)
+                    right_atom_num = len(atom_literals) - 1 - atom_literals[::-1].index(var)
+                    var_bit_string = bit_string[left_atom_num:right_atom_num+1]
+                    var_bit_strings.append(var_bit_string)
+
+                lit_sig = ""
+                for var, var_bit_string in zip(self.orbit_groups.state_vars, var_bit_strings):
+                    if '1' in var_bit_string:
+                        lit_sig += var[0] + '1'
+                    if '0' in var_bit_string:
+                        lit_sig += var[0] + '0'
+                
+                if orbit.num_exists > 0:
+                    row.append(lit_sig)
+                else:
+                    row.append(number_sig)
+
+                row.append(number_sig)                
+                row.append(lit_sig)
+
+                row.extend(var_bit_strings)
+                for var_bit_string in var_bit_strings:
+                    row.append(var_bit_string.count('1'))
+                    row.append(var_bit_string.count('0'))
+                
+                row.append(orbit.num_forall)
+                row.append(orbit.num_exists)
+
+                writer.writerow(row)
+
     def _print_quantifier_inference(self, inference_list) -> None:
         if self.options.writeQI:
             prime_filename   = self.options.instance_name + '.' + self.options.instance_suffix + '.qpis'
@@ -286,10 +503,10 @@ class Minimizer():
         for i in inference_list:
             orbit = self.orbits[i]
             vprint(self.options, str(orbit), 3)
-        vprint(self.options, "\n[QI RESULT]: Quantified Forms Only", 4)
+        vprint(self.options, "\n[QI RESULT]: Quantified Forms Only", 5)
         for i in inference_list:
             orbit = self.orbits[i]
-            vprint(self.options, orbit.quantified_form, 4)
+            vprint(self.options, orbit.quantified_form, 5)
 
 
     def print_rmin(self) -> None:
@@ -359,11 +576,35 @@ class Minimizer():
             #     else:
             #         vprint(self.options, f'[QI_CHECK RESULT]: FAIL')
         # output result
-        self._print_quantifier_inference(sorted(inference_list))
+        self._last_inference_list = sorted(inference_list)
+        self._print_quantifier_inference(self._last_inference_list)
         self.max_cost = 1 + sum([orbit.qcost for orbit in self.orbits])
         self.ubound   = self.max_cost
 
+    def set_orbit_groups(self, uncurried_protocol : Protocol, state_vars):
+        self.orbit_groups = OrbitGroups(self.orbits, uncurried_protocol, state_vars, self.options)
+        self.orbit_to_group_id = {}
+        for group in self.orbit_groups.groups:
+            for orbit in group.orbits:
+                self.orbit_to_group_id[orbit.id] = group.id
+        if self.options.verbosity >= 5:
+            vprint_title(self.options, 'set_orbit_groups', 5)
+            vprint(self.options, f'group_count: {len(self.orbit_groups.groups)}', 5)
+            for group in self.orbit_groups.groups:
+                orbit_ids = sorted([orbit.id for orbit in group.orbits])
+                vprint(
+                    self.options,
+                    f'group {group.id}: size={len(group.orbits)} qcost={group.qcost} sig={group.sig} orbits={orbit_ids}',
+                    5,
+                )
+            mapping = sorted(self.orbit_to_group_id.items())
+            vprint(self.options, f'orbit_to_group_id: {mapping}', 5)
+
     def solve_rmin(self) -> List[str]:
+        if self._use_group_bnb():
+            self._remove_high_cost_from_pending()
+            self.max_cost = 1 + sum([group.qcost for group in self.orbit_groups.groups])
+            self.ubound = self.max_cost
         if self.options.all_solutions:
             self._solve_all()
         else:
@@ -371,6 +612,7 @@ class Minimizer():
         self.set_rmin()
         self.print_rmin()
         self.write_ivy_files()
+        return True
 
     def _state_to_readable(self, bit_str, protocol : Protocol):
         """

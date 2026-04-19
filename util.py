@@ -33,6 +33,7 @@ class QrmOptions():
         self.writeReach        = False
         self.writePrime        = False
         self.writeQI           = False
+        self.write_orbit_csv   = False
         self.writeLog          = False
         self.log_name          = ''
         self.log_fout          = None
@@ -40,7 +41,7 @@ class QrmOptions():
         self.merge_suborbits   = True 
         self.minimize_equality = False
         self.convergence_check = False 
-        self.curry_ordered_sorts = False
+        self.total_order = False
         self.make_graph: bool  = False
         self.ivy_check         = True
         self.ivy_to            = 120 

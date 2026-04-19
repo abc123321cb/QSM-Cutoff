@@ -63,7 +63,9 @@ after init {
 action grant(n1:node, n2:node, e:epoch) = {
     # release the lock and send a transfer message
     require held(n1);
-    require ~le(e, ep(n1));   # jump to some strictly higher epoch
+    require ~le(e, ep(n1));   # e must be strictly higher than current epoch
+    # no epoch can lie strictly between ep(n1) and e (i.e., e is next-higher)
+    require (forall E2:epoch . le(ep(n1), E2) & le(E2, e) -> E2 = ep(n1) | E2 = e);
     transfer(e, n2) := true;
     held(n1) := false;
 }
@@ -142,16 +144,6 @@ axiom max = epoch3
 axiom zero = epoch0
 
 ## Access actions ##
-action get_zero returns(qrm_result: epoch) = {
-    qrm_result := zero
-}
-export get_zero
-
-action get_bool_zero(result: epoch) returns(qrm_result: bool) = {
-    qrm_result := (zero = result)
-}
-export get_bool_zero
-
 action get_max returns(qrm_result: epoch) = {
     qrm_result := max
 }
@@ -162,15 +154,45 @@ action get_bool_max(result: epoch) returns(qrm_result: bool) = {
 }
 export get_bool_max
 
-action get_first returns(qrm_result: node) = {
-    qrm_result := first
+action get_le(e0: epoch, e1: epoch) returns(qrm_result: bool) = {
+    qrm_result := le(e0, e1)
 }
-export get_first
+export get_le
 
-action get_bool_first(result: node) returns(qrm_result: bool) = {
-    qrm_result := (first = result)
+action get_bool_le(e0: epoch, e1: epoch, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (le(e0, e1) = result)
 }
-export get_bool_first
+export get_bool_le
+
+action get_zero returns(qrm_result: epoch) = {
+    qrm_result := zero
+}
+export get_zero
+
+action get_bool_zero(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (zero = result)
+}
+export get_bool_zero
+
+action get_locked(e0: epoch, n1: node) returns(qrm_result: bool) = {
+    qrm_result := locked(e0, n1)
+}
+export get_locked
+
+action get_bool_locked(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (locked(e0, n1) = result)
+}
+export get_bool_locked
+
+action get_transfer(e0: epoch, n1: node) returns(qrm_result: bool) = {
+    qrm_result := transfer(e0, n1)
+}
+export get_transfer
+
+action get_bool_transfer(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (transfer(e0, n1) = result)
+}
+export get_bool_transfer
 
 action get_ep(n0: node) returns(qrm_result: epoch) = {
     qrm_result := ep(n0)
@@ -192,36 +214,6 @@ action get_bool_held(n0: node, result: bool) returns(qrm_result: bool) = {
 }
 export get_bool_held
 
-action get_transfer(e0: epoch, n1: node) returns(qrm_result: bool) = {
-    qrm_result := transfer(e0, n1)
-}
-export get_transfer
-
-action get_bool_transfer(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (transfer(e0, n1) = result)
-}
-export get_bool_transfer
-
-action get_locked(e0: epoch, n1: node) returns(qrm_result: bool) = {
-    qrm_result := locked(e0, n1)
-}
-export get_locked
-
-action get_bool_locked(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (locked(e0, n1) = result)
-}
-export get_bool_locked
-
-action get_le(e0: epoch, e1: epoch) returns(qrm_result: bool) = {
-    qrm_result := le(e0, e1)
-}
-export get_le
-
-action get_bool_le(e0: epoch, e1: epoch, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (le(e0, e1) = result)
-}
-export get_bool_le
-
 action get_firste returns(qrm_result: epoch) = {
     qrm_result := firste
 }
@@ -231,4 +223,14 @@ action get_bool_firste(result: epoch) returns(qrm_result: bool) = {
     qrm_result := (firste = result)
 }
 export get_bool_firste
+
+action get_first returns(qrm_result: node) = {
+    qrm_result := first
+}
+export get_first
+
+action get_bool_first(result: node) returns(qrm_result: bool) = {
+    qrm_result := (first = result)
+}
+export get_bool_first
 

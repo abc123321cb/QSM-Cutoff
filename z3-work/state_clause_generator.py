@@ -1,3 +1,7 @@
+from pathlib import Path
+import sys
+
+
 atoms = [
     'ep_epoch0_n0', 'ep_epoch1_n0', 'ep_epoch2_n0', 'ep_epoch3_n0', 
     'ep_epoch0_n1', 'ep_epoch1_n1', 'ep_epoch2_n1', 'ep_epoch3_n1', 
@@ -8,42 +12,28 @@ atoms = [
     'transfer_epoch2_n0', 'transfer_epoch2_n1', 'transfer_epoch3_n0', 'transfer_epoch3_n1'
 ]
 
-reachable_bitstrings = [
-    '01001000100010000000000000',
-    '10000100010001000000000000',
-    '01001000000010000000001000',
-    '10000100000001000000000100',
-    '00101000100010100000000000',
-    '10000010010001010000000000',
-    '00101000000010100000000010',
-    '10000010000001010000000001',
-    '00011000100010101000000000',
-    '10000001010001010100000000',
-    '00101000000010100000000001',
-    '10000010000001010000000010',
-    '00100001010010100100000000',
-    '00010010100001011000000000',
-    '01001000000010000000000010',
-    '10000100000001000000000001',
-    '00011000100010001000000000',
-    '10000001010001000100000000',
-    '01001000000010000000000100',
-    '10000100000001000000001000',
-    '01000010010010010000000000',
-    '00100100100001100000000000',
-    '01000010000010010000000010',
-    '00100100000001100000000001',
-    '00010010100010011000000000',
-    '00100001010001100100000000',
-    '01000010000010010000000001',
-    '00100100000001100000000010',
-    '01000001010010010100000000',
-    '00010100100001101000000000',
-    '01001000000010000000000001',
-    '10000100000001000000000010',
-    '01000001010010000100000000',
-    '00010100100001001000000000'
-]
+
+def load_reachable_bitstrings(file_path, expected_len):
+    bitstrings = []
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line_num, raw_line in enumerate(f, 1):
+            line = raw_line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if set(line) - {'0', '1'}:
+                raise ValueError(
+                    f"Invalid line {line_num} in {file_path}: expected only 0/1 characters"
+                )
+            if len(line) != expected_len:
+                raise ValueError(
+                    f"Invalid line {line_num} in {file_path}: expected length {expected_len}, got {len(line)}"
+                )
+            bitstrings.append(line)
+
+    if not bitstrings:
+        raise ValueError(f"No bitstrings found in {file_path}")
+
+    return bitstrings
 
 def bitstring_to_smt(bit_str, atoms_list, state_num):
     constraints = []
@@ -61,6 +51,11 @@ def bitstring_to_smt(bit_str, atoms_list, state_num):
             
     # Formats as S1 = (and ...), S2 = (and ...), etc.
     return f"(assert (= S{state_num} (and\n    " + "\n    ".join(constraints) + "\n)))"
+
+
+default_states_path = Path(__file__).with_name('simplified_states.txt')
+states_path = Path(sys.argv[1]) if len(sys.argv) > 1 else default_states_path
+reachable_bitstrings = load_reachable_bitstrings(states_path, len(atoms))
 
 # Generate assertions for all states
 for i, bitstring in enumerate(reachable_bitstrings, 1):

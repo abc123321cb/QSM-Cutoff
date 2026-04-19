@@ -121,6 +121,9 @@ class TransitionSystem():
 
         self.ordered_sorts = dict()
 
+        self.atom_equivalence_constraints = []
+        self.closed_atom_equivalence_constraints = set()
+
 
         self._initialize()
 

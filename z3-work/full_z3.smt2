@@ -1375,5 +1375,5 @@
 
 (assert (not (= R S) ))
 
-(check-sat-using (then simplify bit-blast smt))
+(check-sat)
 (get-model)

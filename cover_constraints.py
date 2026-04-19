@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Dict, List
 from pysat.solvers import Glucose4 as SatCounter 
 from pysat.solvers import Cadical153 as SatSolver
 from pysat.allies.approxmc import Counter
@@ -41,6 +41,7 @@ class CoverConstraints():
         self.instantiated_orbit_tseitin_clauses   = [] 
         self.clauses               = []
         self.coverage  : List[int] = [-1]*len(orbits) 
+        self.group_coverage: Dict[int, int] = {}
         
         self._init_vars(orbits)
         self._init_solvers(orbits)
@@ -257,6 +258,17 @@ class CoverConstraints():
     def reset_coverage(self) -> None:
         for (i, _) in enumerate(self.coverage):
             self.coverage[i] = -1
+        self.group_coverage.clear()
+
+    def is_blocked_by_axioms(self, orbit : PrimeOrbit) -> bool:
+        """Check if orbit is UNSAT due to axioms/definitions alone (no other orbits)."""
+        for repr_prime in orbit.suborbit_repr_primes:
+            assumptions = self.get_prime_literals(repr_prime)
+            # Only check with axioms - no orbit variables
+            result = self.sat_solver.solve(assumptions)
+            if result:
+                return False  # At least one suborbit is SAT with axioms
+        return True  # All suborbits are UNSAT with axioms
 
     def is_essential(self, orbit : PrimeOrbit, pending, solution) -> bool:
         result = False
@@ -269,6 +281,14 @@ class CoverConstraints():
                 if i != orbit.id:
                     assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
             result = self.sat_solver.solve(assumptions)
+            if result:
+                break
+        return result
+
+    def is_essential_group(self, group : OrbitGroup, pending, solution) -> bool:
+        result = False
+        for orbit in group.orbits:
+            result = self.is_essential(orbit, pending, solution)
             if result:
                 break
         return result
@@ -325,6 +345,51 @@ class CoverConstraints():
                 self.coverage[orbit.id]  += self._get_sharp_sat_count(assumptions)
             block_sub_vars.append(self.orbit_vars[orbit.id][sub_orbit_id])
         return self.coverage[orbit.id] 
+
+    def has_coverage(self, orbit : PrimeOrbit, solution) -> bool:
+        # Fast existence check used for pruning/covered tests.
+        # This avoids the expensive counting path entirely.
+        for repr_prime in orbit.suborbit_repr_primes:
+            assumptions = self.get_prime_literals(repr_prime)
+            for i in solution:
+                assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
+            if self.sat_solver.solve(assumptions):
+                return True
+        return False
+
+
+    def get_coverage_group(self, group : OrbitGroup, solution) -> int:
+        # Count union coverage across all orbits in the group.
+        # We reuse the same blocking suborbit assumptions while iterating,
+        # so overlapping states across different orbits are counted once.
+        coverage = 0
+        block_sub_vars = []
+        for orbit in group.orbits:
+            self.coverage[orbit.id] = 0
+            for sub_orbit_id, repr_prime in enumerate(orbit.suborbit_repr_primes):
+                assumptions = self.get_prime_literals(repr_prime)
+                for i in solution:
+                    assumptions += [sub_orbit_var for sub_orbit_var in self.orbit_vars[i]]
+                assumptions += [sub_orbit_var for sub_orbit_var in block_sub_vars]
+
+                if self.useMC == UseMC.sat:
+                    sat_count = self._get_sat_count(assumptions)
+                else:
+                    sat_count = self._get_sharp_sat_count(assumptions)
+
+                self.coverage[orbit.id] += sat_count
+                coverage += sat_count
+                block_sub_vars.append(self.orbit_vars[orbit.id][sub_orbit_id])
+
+        self.group_coverage[group.id] = coverage
+        return coverage
+
+    def has_coverage_group(self, group : OrbitGroup, solution) -> bool:
+        # Fast union-existence test for a group.
+        for orbit in group.orbits:
+            if self.has_coverage(orbit, solution):
+                return True
+        return False
 
     def is_definition_prime(self, orbit : PrimeOrbit) -> bool:
         assumptions = self.get_prime_literals(orbit.repr_prime)
