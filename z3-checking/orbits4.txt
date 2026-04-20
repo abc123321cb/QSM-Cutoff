@@ -1,0 +1,116 @@
+F1
+1: forall N. ~locked_epoch1(N)
+
+F2
+2: forall N. ~transfer_epoch0(N)
+3: forall N. ~transfer_epoch1(N)
+
+F3
+5: forall N. ~ep_epoch0(N) | ~ep_epoch1(N)
+6: forall N. ~ep_epoch0(N) | ~ep_epoch2(N)
+10: forall N. ~ep_epoch1(N) | ~ep_epoch2(N)
+7: forall N. ~ep_epoch0(N) | ~ep_epoch3(N)
+13: forall N. ~ep_epoch1(N) | ~ep_epoch3(N)
+17: forall N. ~ep_epoch2(N) | ~ep_epoch3(N)
+
+F4
+7: forall N. ~ep_epoch0(N) | ~held(N)
+
+F5
+8: forall N. ~ep_epoch0(N) | ~locked_epoch2(N)
+11: forall N. ~ep_epoch1(N) | ~locked_epoch2(N)
+10: forall N. ~ep_epoch0(N) | ~locked_epoch3(N)
+15; forall N. ~ep_epoch1(N) | ~locked_epoch3(N)
+19: forall N. ~ep_epoch2(N) | ~locked_epoch3(N)
+
+F6
+23: forall N1,N0. ~ep_epoch3(N0) | ~held(N1) | N0 = N1
+
+F7
+14: forall N1,N0. ~ep_epoch2(N0) | ~locked_epoch2(N1) | N0 = N1
+24: forall N1,N0. ~ep_epoch3(N0) | ~locked_epoch3(N1) | N0 = N1
+
+F8
+15: forall N1,N0. ~ep_epoch2(N0) | ~transfer_epoch2(N1)
+25: forall N1,N0. ~ep_epoch3(N0) | ~transfer_epoch2(N1)
+26: forall N1,N0. ~ep_epoch3(N0) | ~transfer_epoch3(N1)
+
+F9
+27: forall N. ~ep_epoch3(N) | held(N)
+
+F10
+17: forall N. ~ep_epoch2(N) | locked_epoch2(N)
+28: forall N. ~ep_epoch3(N) | locked_epoch3(N)
+
+F11
+30: forall N1,N0. ~held(N0) | ~locked_epoch3(N1) | N0 = N1
+
+F12
+20: forall N1,N0. ~held(N0) | ~transfer_epoch2(N1)
+32: forall N1,N0. ~held(N0) | ~transfer_epoch3(N1)
+
+F13
+22: forall N1,N0. ~locked_epoch2(N0) | ~transfer_epoch2(N1)
+36: forall N1,N0. ~locked_epoch3(N0) | ~transfer_epoch2(N1)
+37: forall N1,N0. ~locked_epoch3(N0) | ~transfer_epoch3(N1)
+
+F14
+38: forall N. ~locked_epoch3(N) | ep_epoch3(N)
+
+F15
+39: forall N. ~locked_epoch3(N) | held(N)
+
+F16
+41: forall N1,N0. ~transfer_epoch2(N0) | ~transfer_epoch3(N1)
+
+E1
+4: exists N. ~ep_epoch0(N)
+9: exists N. ~ep_epoch1(N)
+12: exists N. ~ep_epoch2(N)
+22: exists N. ~ep_epoch3(N)
+
+E2
+18: exists N. ~held(N)
+
+E3
+21: exists N. ~locked_epoch2(N)
+35: exists N. ~locked_epoch3(N)
+
+E4
+25: exists N. ~transfer_epoch2(N)
+42: exists N. ~transfer_epoch3(N)
+
+E5
+161: exists N. ep_epoch0(N) | ep_epoch1(N) | ep_epoch2(N)
+162: exists N. ep_epoch0(N) | ep_epoch1(N) | ep_epoch3(N)
+168: exists N. ep_epoch0(N) | ep_epoch2(N) | ep_epoch3(N)
+180: exists N. ep_epoch1(N) | ep_epoch2(N) | ep_epoch3(N)
+
+E6
+155: exists N. ep_epoch0(N) | ep_epoch1(N) | held(N)
+171: exists N. ep_epoch0(N) | ep_epoch2(N) | held(N)
+183: exists N. ep_epoch1(N) | ep_epoch2(N) | held(N)
+
+E7
+57: exists N. ep_epoch0(N) | locked_epoch2(N)
+63: exists N. ep_epoch1(N) | locked_epoch2(N)
+167: exists N. ep_epoch0(N) | ep_epoch1(N) | locked_epoch3(N)
+173: exists N. ep_epoch0(N) | ep_epoch2(N) | locked_epoch3(N)
+185: exists N. ep_epoch1(N) | ep_epoch2(N) | locked_epoch3(N)
+
+E8
+192: exists N. held(N) | transfer_epoch0(N) | transfer_epoch1(N) | transfer_epoch2(N) | transfer_epoch3(N)
+
+F17
+100:locked(epoch0,node0) => transfer(epoch0,node0)
+101:transfer(epoch0,node0) => locked(epoch0,node0)
+102:locked(epoch0,node1) => transfer(epoch0,node1)
+103:transfer(epoch0,node1) => locked(epoch0,node1)
+104:locked(epoch1,node0) => transfer(epoch1,node0)
+105:transfer(epoch1,node0) => locked(epoch1,node0)
+106:locked(epoch1,node1) => transfer(epoch1,node1)
+107:transfer(epoch1,node1) => locked(epoch1,node1)
+
+F18
+108: forall N0,N1. forall E0,E1. (held(N0) & ep(N0)=E0 & ep(N1)=E1) => le(E1,E0)
+

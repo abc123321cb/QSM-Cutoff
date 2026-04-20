@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import ast
 import itertools
 import re
@@ -17,6 +18,136 @@ except ImportError:
         And, Or, Not, BoolSort, EnumSort, Function, Const, Bool,
         Solver, substitute, sat, ExprRef, FuncDeclRef, SortRef,
     )
+
+
+def _collect_balanced_sexpr(lines: List[str], start_index: int) -> Tuple[str, int]:
+    """Collect a balanced SMT-LIB2 s-expression starting at lines[start_index].
+
+    Returns (sexpr_text, next_index_after_consumed).
+    """
+    depth = 0
+    collected: List[str] = []
+    i = start_index
+    while i < len(lines):
+        line = lines[i]
+        collected.append(line)
+        depth += line.count("(")
+        depth -= line.count(")")
+        i += 1
+        if depth == 0:
+            break
+    return "".join(collected), i
+
+
+def _tokenize_sexpr(s: str) -> List[str]:
+    # Minimal SMT-LIB2 S-expression tokenizer for Z3's `to_smt2()` output.
+    # Handles parentheses, symbols, numerals, and quoted strings (rare in our asserts).
+    out: List[str] = []
+    i = 0
+    n = len(s)
+    while i < n:
+        ch = s[i]
+        if ch.isspace():
+            i += 1
+            continue
+        if ch == ";":
+            # comment to end of line
+            while i < n and s[i] != "\n":
+                i += 1
+            continue
+        if ch in ("(", ")"):
+            out.append(ch)
+            i += 1
+            continue
+        if ch == '"':
+            j = i + 1
+            while j < n:
+                if s[j] == '"':
+                    j += 1
+                    break
+                # SMT-LIB escapes quotes by doubling them
+                if s[j] == '"' and j + 1 < n and s[j + 1] == '"':
+                    j += 2
+                    continue
+                j += 1
+            out.append(s[i:j])
+            i = j
+            continue
+
+        j = i
+        while j < n and (not s[j].isspace()) and s[j] not in ("(", ")", ";"):
+            j += 1
+        out.append(s[i:j])
+        i = j
+    return out
+
+
+def _parse_sexpr_tokens(tokens: List[str]) -> Any:
+    def parse_at(k: int) -> Tuple[Any, int]:
+        if k >= len(tokens):
+            raise ValueError("Unexpected end of tokens")
+        t = tokens[k]
+        if t == "(":
+            k += 1
+            items: List[Any] = []
+            while True:
+                if k >= len(tokens):
+                    raise ValueError("Unclosed '('")
+                if tokens[k] == ")":
+                    k += 1
+                    return items, k
+                item, k = parse_at(k)
+                items.append(item)
+        if t == ")":
+            raise ValueError("Unexpected ')'")
+        return t, k + 1
+
+    expr, next_k = parse_at(0)
+    if next_k != len(tokens):
+        raise ValueError("Extra tokens after s-expression")
+    return expr
+
+
+def _inline_lets(expr: Any, env: Optional[Dict[str, Any]] = None) -> Any:
+    """Inline/eliminate SMT-LIB2 (let ((x t)) body) bindings.
+
+    This is a best-effort inliner intended for Z3's pretty-printed `let` chains.
+    """
+    if env is None:
+        env = {}
+
+    if isinstance(expr, str):
+        return env.get(expr, expr)
+
+    if not isinstance(expr, list) or not expr:
+        return expr
+
+    head = expr[0]
+    if head == "let" and len(expr) == 3 and isinstance(expr[1], list):
+        bindings = expr[1]
+        body = expr[2]
+        new_env = dict(env)
+
+        # SMT-LIB2 let-bindings are (nominally) simultaneous: binding expressions
+        # should not see the newly-bound names, so we rewrite them using `env`.
+        for b in bindings:
+            if not (isinstance(b, list) and len(b) == 2 and isinstance(b[0], str)):
+                return [_inline_lets(x, env) for x in expr]
+            var, val = b[0], b[1]
+            new_env[var] = _inline_lets(val, env)
+
+        return _inline_lets(body, new_env)
+
+    return [_inline_lets(x, env) for x in expr]
+
+
+def _sexpr_to_oneline(expr: Any) -> str:
+    """Render an s-expression on a single line (no pretty indentation)."""
+    if isinstance(expr, str):
+        return expr
+    if not isinstance(expr, list):
+        return str(expr)
+    return "(" + " ".join(_sexpr_to_oneline(x) for x in expr) + ")"
 
 # ----------------------------
 # Parsing helpers
@@ -194,6 +325,11 @@ class Z3ClauseParser:
             return self.NodeSort
         if self.EpochSort is not None and (up.startswith("EPOCH") or name.lower().startswith("epoch")):
             return self.EpochSort
+        # Common short variable conventions in orbit files
+        if self.NodeSort is not None and re.fullmatch(r"N\d+", up) is not None:
+            return self.NodeSort
+        if self.EpochSort is not None and re.fullmatch(r"E\d+", up) is not None:
+            return self.EpochSort
         # Fallback: if it looks like nodeX or epochX, map to those
         if self.NodeSort is not None and re.match(r"^node\d+$", name, re.IGNORECASE):
             return self.NodeSort
@@ -217,15 +353,24 @@ class Z3ClauseParser:
 
         quant_blocks: List[Tuple[str, List[ExprRef]]] = []
         if self._peek() in ("forall", "exists"):
-            # Support mixed prefixes like: forall EPOCH0, exists NODE0.
+            # Support multiple quantifier blocks, either comma-separated or dot-separated, e.g.:
+            #   forall N0,N1. forall E0,E1. <body>
+            #   forall EPOCH0, exists NODE0. <body>
             while self._peek() in ("forall", "exists"):
                 q = self._pop()
                 vars_out = self._parse_varlist_until_quant_or_dot()
                 if not vars_out:
                     raise ParseError("Empty quantified variable list")
                 quant_blocks.append((q, vars_out))
-                self._accept(",")
-            self._expect(".")
+
+                if self._accept(","):
+                    continue
+                if self._accept("."):
+                    # If another quantifier immediately follows, keep reading quant blocks.
+                    if self._peek() in ("forall", "exists"):
+                        continue
+                    break
+                raise ParseError(f"Expected ',' or '.' after quantified variables, got '{self._peek()}'")
 
         body = self._parse_expr()
 
@@ -545,6 +690,42 @@ def model_to_bitstring(model, atoms_z3: List[ExprRef]) -> str:
         out.append("1" if str(v) == "True" else "0")
     return "".join(out)
 
+
+def _normalize_dump_path(dump_path: str, invariants_path: str) -> str:
+    """Normalize the user's requested SMT dump path.
+
+    Supports:
+    - Passing a directory path (existing dir or ending with a path separator): writes
+      to that directory using a default filename.
+    - Passing a bare filename: writes next to the invariants file for stability
+      regardless of current working directory.
+    - Avoids the common pitfall: running inside directory X and passing "X/out.smt2"
+      (which would otherwise create nested X/X/out.smt2).
+    """
+    default_name = "orbits_minus_reach.smt2"
+
+    # If user passed a directory (or indicated one with a trailing slash), write into it.
+    if dump_path.endswith(os.sep) or (os.path.exists(dump_path) and os.path.isdir(dump_path)):
+        return os.path.join(dump_path, default_name)
+
+    # If user passed something like "z3-checking/out.smt2" while already in "z3-checking",
+    # interpret it as "out.smt2" to avoid creating a nested directory.
+    if not os.path.isabs(dump_path):
+        parts = dump_path.split(os.sep)
+        if len(parts) >= 2:
+            cwd_base = os.path.basename(os.getcwd())
+            first = parts[0]
+            nested_dir = os.path.join(os.getcwd(), first)
+            if first == cwd_base and not os.path.exists(nested_dir):
+                dump_path = os.sep.join(parts[1:])
+
+    # If it's just a filename, put it next to the invariants file.
+    if not os.path.isabs(dump_path) and os.path.dirname(dump_path) == "":
+        inv_dir = os.path.dirname(os.path.abspath(invariants_path))
+        return os.path.join(inv_dir, dump_path)
+
+    return dump_path
+
 def main(
     invariants_path: str,
     states_path: str,
@@ -552,6 +733,7 @@ def main(
     debug_rewrite: bool = False,
     debug_rewrite_all: bool = False,
     debug_rewrite_limit: int = 200,
+    dump_orbits_minus_reach: Optional[str] = None,
 ) -> None:
     atoms, reachable_bits, interpreted_atoms = read_states_file(states_path)
     node_names, epoch_names = extract_domain_constants(atoms)
@@ -564,36 +746,63 @@ def main(
 
     # Fixed constraints from interpreted atoms (e.g., le(epochi,epochj), (zero=epoch0), ...)
     interpreted_constraints: List[ExprRef] = []
+    interpreted_meta: List[Tuple[str, str]] = []
     for atom_str, bit in interpreted_atoms.items():
         try:
             a = parser.parse_atom(atom_str)
         except Exception as e:
             raise ParseError(f"Could not parse interpreted atom '{atom_str}': {e}") from e
         interpreted_constraints.append(a if str(bit) == "1" else Not(a))
+        interpreted_meta.append((atom_str, str(bit)))
 
     # Parse and ground invariants
     parsed_invs: List[ParsedInvariant] = []
+    # Each parsed invariant corresponds to one SMT `(assert ...)` emitted by `base.to_smt2()`.
+    # We keep metadata so SMT dumps can comment which orbit line produced which assert.
+    # Format supports both legacy files (one formula per line) and grouped files like:
+    #   F3
+    #   10: forall N. ...
+    # Group headers are non-formula lines like "F1" or "E2".
+    inv_meta: List[Tuple[int, Optional[str], Optional[int], str, str, str]] = []
+    # (lineno, group, orbit_id, source_line, formula, rewritten)
     rewrite_printed = 0
+    current_group: Optional[str] = None
     with open(invariants_path, "r", encoding="utf-8") as f:
         for lineno, raw in enumerate(f, start=1):
-            original = raw.strip()
-            if not original or original.startswith("#"):
+            source_line = raw.strip()
+            if not source_line or source_line.startswith("#") or source_line.startswith(";"):
                 continue
 
-            line = rewrite_invariant_line(original)
+            # Group header line (e.g., "F1", "E2")
+            # Be conservative to avoid breaking legacy files that might contain a bare boolean constant.
+            if re.fullmatch(r"[A-Za-z]\d+", source_line) and source_line[0].upper() in ("F", "E"):
+                current_group = source_line
+                continue
 
-            if debug_rewrite and (debug_rewrite_all or line != original):
+            orbit_id: Optional[int] = None
+            formula = source_line
+
+            # Optional numeric prefix like "10: <formula>" or "10; <formula>".
+            m = re.match(r"^(\d+)\s*[:;]\s*(.+)$", source_line)
+            if m:
+                orbit_id = int(m.group(1))
+                formula = m.group(2).strip()
+
+            rewritten = rewrite_invariant_line(formula)
+            inv_meta.append((lineno, current_group, orbit_id, source_line, formula, rewritten))
+
+            if debug_rewrite and (debug_rewrite_all or rewritten != formula):
                 if debug_rewrite_limit < 0:
                     # treat negative as "no limit"
                     pass
                 if debug_rewrite_limit == 0 or rewrite_printed < debug_rewrite_limit:
-                    if line == original:
-                        print(f"[REWRITE:{lineno}] {line}")
+                    if rewritten == formula:
+                        print(f"[REWRITE:{lineno}] {rewritten}")
                     else:
-                        print(f"[REWRITE:{lineno}] {original}  ==>  {line}")
+                        print(f"[REWRITE:{lineno}] {formula}  ==>  {rewritten}")
                     rewrite_printed += 1
             try:
-                parsed_invs.append(parser.parse_invariant_line(line))
+                parsed_invs.append(parser.parse_invariant_line(rewritten))
             except ParseError as e:
                 raise ParseError(f"{invariants_path}:{lineno}: {e}\n  line: {raw.rstrip()}") from e
 
@@ -643,7 +852,7 @@ def main(
     print()
 
     # 2) Find spurious states: satisfy invariants but not in reachable list
-    if spurious_limit > 0:
+    if spurious_limit > 0 or dump_orbits_minus_reach is not None:
         base = Solver()
         base.add(invs_ground)
         if interpreted_constraints:
@@ -652,6 +861,207 @@ def main(
         # Exclude all known reachable valuations
         for bits in reachable_bits:
             base.add(exclude_bitstring(atoms_z3, bits))
+
+        if dump_orbits_minus_reach is not None:
+            dump_orbits_minus_reach = _normalize_dump_path(dump_orbits_minus_reach, invariants_path)
+            smt2 = base.to_smt2()
+            lines = smt2.splitlines(keepends=True)
+
+            out_lines: List[str] = []
+            asserted_orbits = 0
+            assert_count = 0
+            reach_header_written = False
+            interpreted_header_written = False
+            reach_start_assert_index = len(inv_meta) + len(interpreted_constraints)
+            last_group_emitted: Optional[str] = None
+            interpreted_start_assert_index = len(inv_meta)
+
+            pending_group: Optional[str] = None
+            pending_group_exprs: List[Any] = []
+            group_var_assert_lines: List[str] = []
+            group_var_asserts_emitted = False
+
+            def _flush_pending_group() -> None:
+                nonlocal pending_group, pending_group_exprs
+                if pending_group is None:
+                    return
+
+                def _flatten_and(exprs: List[Any]) -> List[Any]:
+                    flat: List[Any] = []
+                    for e in exprs:
+                        if isinstance(e, list) and len(e) >= 1 and e[0] == "and":
+                            flat.extend(e[1:])
+                        else:
+                            flat.append(e)
+                    return flat
+
+                group_label = pending_group if pending_group is not None else "(ungrouped)"
+                safe = re.sub(r"[^A-Za-z0-9_]", "_", group_label)
+                if not safe or safe[0].isdigit():
+                    safe = "G_" + safe
+                var = f"orbit_group_{safe}"
+
+                out_lines.append(f"(declare-fun {var} () Bool)\n")
+
+                exprs = _flatten_and(pending_group_exprs)
+                if len(exprs) == 1:
+                    body = exprs[0]
+                else:
+                    body = ["and", *exprs]
+                out_lines.append(_sexpr_to_oneline(["assert", ["=", var, body]]) + "\n")
+                group_var_assert_lines.append(_sexpr_to_oneline(["assert", var]) + "\n")
+
+                pending_group = None
+                pending_group_exprs = []
+
+            i = 0
+            while i < len(lines):
+                line = lines[i]
+
+                # Emit all group-variable asserts right before check-sat.
+                if (not group_var_asserts_emitted) and re.match(r"^\s*\(check-sat\b", line):
+                    _flush_pending_group()
+                    if group_var_assert_lines:
+                        if out_lines and out_lines[-1] != "\n":
+                            out_lines.append("\n")
+                        out_lines.append(
+                            f"; --- orbit-group variables asserted true: {len(group_var_assert_lines)} groups ---\n"
+                        )
+                        out_lines.extend(group_var_assert_lines)
+                        out_lines.append("\n")
+                    group_var_asserts_emitted = True
+
+                if re.match(r"^\s*\(assert\b", line):
+                    # The `to_smt2()` stream is:
+                    #   [orbit asserts] + [interpreted asserts] + [reachable exclusions] + (check-sat)
+                    # Before entering non-orbit sections, flush the last orbit group.
+                    if assert_count == interpreted_start_assert_index:
+                        _flush_pending_group()
+
+                    if (
+                        (not interpreted_header_written)
+                        and len(interpreted_constraints) > 0
+                        and assert_count == interpreted_start_assert_index
+                    ):
+                        if out_lines and out_lines[-1] != "\n":
+                            out_lines.append("\n")
+                        out_lines.append(
+                            f"; --- interpreted atoms begin: {len(interpreted_constraints)} constraints ---\n"
+                        )
+                        interpreted_header_written = True
+
+                    if (not reach_header_written) and assert_count == reach_start_assert_index:
+                        if out_lines and out_lines[-1] != "\n":
+                            out_lines.append("\n")
+                        out_lines.append(
+                            f"; --- reachable state exclusions begin: excluding {len(reachable_bits)} reachable states ---\n"
+                        )
+                        reach_header_written = True
+
+                    # Label reachable exclusions with their original reachable-state index.
+                    # These asserts are emitted after invariants + interpreted constraints.
+                    if assert_count >= reach_start_assert_index:
+                        reach_i = assert_count - reach_start_assert_index
+                        if 0 <= reach_i < len(reachable_bits):
+                            out_lines.append(f"; reachable[{reach_i}] bits: {reachable_bits[reach_i]}\n")
+
+                    # Label interpreted-atom asserts so it's easy to map them back to `reach.txt`.
+                    if len(interpreted_constraints) > 0 and interpreted_start_assert_index <= assert_count < reach_start_assert_index:
+                        interp_i = assert_count - interpreted_start_assert_index
+                        if 0 <= interp_i < len(interpreted_meta):
+                            atom_str, bit = interpreted_meta[interp_i]
+                            out_lines.append(f"; interpreted[{interp_i}] {atom_str} = {bit}\n")
+
+                    # ORBIT ASSERTS: collect into a per-group AND and assert that group variable.
+                    if assert_count < interpreted_start_assert_index:
+                        (
+                            src_lineno,
+                            group,
+                            orbit_id,
+                            source_line,
+                            formula,
+                            rewritten,
+                        ) = inv_meta[asserted_orbits]
+
+                        # Group changed -> flush previous group's variable definition/asserts.
+                        if group != pending_group and pending_group is not None:
+                            _flush_pending_group()
+
+                        # Emit a group header (with a blank line) when the group changes.
+                        if group != last_group_emitted:
+                            # Insert exactly one blank line *between* groups (not before the first).
+                            if last_group_emitted is not None:
+                                if out_lines and out_lines[-1] != "\n":
+                                    out_lines.append("\n")
+                            group_label = group if group is not None else "(ungrouped)"
+                            out_lines.append(f"; ===== Orbit Group {group_label} =====\n")
+                            last_group_emitted = group
+
+                        # Orbit comment format: just "#: <FOL statement>".
+                        if orbit_id is not None:
+                            out_lines.append(f"; {orbit_id}: {formula}\n")
+                        else:
+                            out_lines.append(f"; {asserted_orbits + 1}: {formula}\n")
+
+                        # Parse the assert, inline lets, and store its body into this group's AND.
+                        assert_text, next_i = _collect_balanced_sexpr(lines, i)
+                        try:
+                            tokens = _tokenize_sexpr(assert_text)
+                            sexpr = _parse_sexpr_tokens(tokens)
+                            sexpr_inlined = _inline_lets(sexpr)
+                            if isinstance(sexpr_inlined, list) and len(sexpr_inlined) == 2 and sexpr_inlined[0] == "assert":
+                                pending_group = group
+                                pending_group_exprs.append(sexpr_inlined[1])
+                            else:
+                                # Unexpected shape; fall back to emitting original.
+                                _flush_pending_group()
+                                out_lines.append(assert_text)
+                        except Exception:
+                            _flush_pending_group()
+                            out_lines.append(assert_text)
+
+                        asserted_orbits += 1
+                        i = next_i
+                        assert_count += 1
+                        continue
+
+                    # NON-ORBIT ASSERTS: emit as single-line (still with labels above).
+                    assert_text, next_i = _collect_balanced_sexpr(lines, i)
+                    try:
+                        tokens = _tokenize_sexpr(assert_text)
+                        sexpr = _parse_sexpr_tokens(tokens)
+                        sexpr_inlined = _inline_lets(sexpr)
+                        out_lines.append(_sexpr_to_oneline(sexpr_inlined) + "\n")
+                    except Exception:
+                        out_lines.append(assert_text)
+
+                    i = next_i
+                    assert_count += 1
+                    continue
+
+                out_lines.append(line)
+                i += 1
+
+            # If the SMT2 ended without transitioning to interpreted/reachable, flush any pending orbit group.
+            _flush_pending_group()
+
+            # If we never saw (check-sat), still emit group-variable asserts at the end.
+            if (not group_var_asserts_emitted) and group_var_assert_lines:
+                if out_lines and out_lines[-1] != "\n":
+                    out_lines.append("\n")
+                out_lines.append(
+                    f"; --- orbit-group variables asserted true: {len(group_var_assert_lines)} groups ---\n"
+                )
+                out_lines.extend(group_var_assert_lines)
+
+            out_dir = os.path.dirname(dump_orbits_minus_reach)
+            if out_dir:
+                os.makedirs(out_dir, exist_ok=True)
+            with open(dump_orbits_minus_reach, "w", encoding="utf-8") as out:
+                out.writelines(out_lines)
+            print(f"Wrote SMT2 to {dump_orbits_minus_reach}")
+            if spurious_limit <= 0:
+                return
 
         spurious: List[str] = []
         while len(spurious) < spurious_limit and base.check() == sat:
@@ -677,6 +1087,13 @@ if __name__ == "__main__":
     ap.add_argument("states_file", help="File containing 'state atoms: [...]' and bitstrings")
     ap.add_argument("--spurious-limit", type=int, default=10, help="How many spurious states to enumerate (0 disables)")
     ap.add_argument(
+        "--dump-orbits-minus-reach",
+        nargs="?",
+        const="orbits_minus_reach.smt2",
+        default=None,
+        help="Write SMT-LIB2 for (invariants ∧ interpreted ∧ ¬reachable) to this file",
+    )
+    ap.add_argument(
         "--debug-rewrite",
         action="store_true",
         help="Print invariant lines after rewrite/uncurrying (only when changed)",
@@ -701,4 +1118,5 @@ if __name__ == "__main__":
         debug_rewrite=args.debug_rewrite,
         debug_rewrite_all=args.debug_rewrite_all,
         debug_rewrite_limit=args.debug_rewrite_limit,
+        dump_orbits_minus_reach=args.dump_orbits_minus_reach,
     )
