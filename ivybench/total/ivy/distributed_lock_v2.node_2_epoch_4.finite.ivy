@@ -144,25 +144,15 @@ axiom max = epoch3
 axiom zero = epoch0
 
 ## Access actions ##
-action get_transfer(e0: epoch, n1: node) returns(qrm_result: bool) = {
-    qrm_result := transfer(e0, n1)
+action get_ep(n0: node) returns(qrm_result: epoch) = {
+    qrm_result := ep(n0)
 }
-export get_transfer
+export get_ep
 
-action get_bool_transfer(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (transfer(e0, n1) = result)
+action get_bool_ep(n0: node, result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (ep(n0) = result)
 }
-export get_bool_transfer
-
-action get_zero returns(qrm_result: epoch) = {
-    qrm_result := zero
-}
-export get_zero
-
-action get_bool_zero(result: epoch) returns(qrm_result: bool) = {
-    qrm_result := (zero = result)
-}
-export get_bool_zero
+export get_bool_ep
 
 action get_locked(e0: epoch, n1: node) returns(qrm_result: bool) = {
     qrm_result := locked(e0, n1)
@@ -174,6 +164,16 @@ action get_bool_locked(e0: epoch, n1: node, result: bool) returns(qrm_result: bo
 }
 export get_bool_locked
 
+action get_max returns(qrm_result: epoch) = {
+    qrm_result := max
+}
+export get_max
+
+action get_bool_max(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (max = result)
+}
+export get_bool_max
+
 action get_held(n0: node) returns(qrm_result: bool) = {
     qrm_result := held(n0)
 }
@@ -183,26 +183,6 @@ action get_bool_held(n0: node, result: bool) returns(qrm_result: bool) = {
     qrm_result := (held(n0) = result)
 }
 export get_bool_held
-
-action get_firste returns(qrm_result: epoch) = {
-    qrm_result := firste
-}
-export get_firste
-
-action get_bool_firste(result: epoch) returns(qrm_result: bool) = {
-    qrm_result := (firste = result)
-}
-export get_bool_firste
-
-action get_le(e0: epoch, e1: epoch) returns(qrm_result: bool) = {
-    qrm_result := le(e0, e1)
-}
-export get_le
-
-action get_bool_le(e0: epoch, e1: epoch, result: bool) returns(qrm_result: bool) = {
-    qrm_result := (le(e0, e1) = result)
-}
-export get_bool_le
 
 action get_first returns(qrm_result: node) = {
     qrm_result := first
@@ -214,23 +194,43 @@ action get_bool_first(result: node) returns(qrm_result: bool) = {
 }
 export get_bool_first
 
-action get_max returns(qrm_result: epoch) = {
-    qrm_result := max
+action get_zero returns(qrm_result: epoch) = {
+    qrm_result := zero
 }
-export get_max
+export get_zero
 
-action get_bool_max(result: epoch) returns(qrm_result: bool) = {
-    qrm_result := (max = result)
+action get_bool_zero(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (zero = result)
 }
-export get_bool_max
+export get_bool_zero
 
-action get_ep(n0: node) returns(qrm_result: epoch) = {
-    qrm_result := ep(n0)
+action get_firste returns(qrm_result: epoch) = {
+    qrm_result := firste
 }
-export get_ep
+export get_firste
 
-action get_bool_ep(n0: node, result: epoch) returns(qrm_result: bool) = {
-    qrm_result := (ep(n0) = result)
+action get_bool_firste(result: epoch) returns(qrm_result: bool) = {
+    qrm_result := (firste = result)
 }
-export get_bool_ep
+export get_bool_firste
+
+action get_transfer(e0: epoch, n1: node) returns(qrm_result: bool) = {
+    qrm_result := transfer(e0, n1)
+}
+export get_transfer
+
+action get_bool_transfer(e0: epoch, n1: node, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (transfer(e0, n1) = result)
+}
+export get_bool_transfer
+
+action get_le(e0: epoch, e1: epoch) returns(qrm_result: bool) = {
+    qrm_result := le(e0, e1)
+}
+export get_le
+
+action get_bool_le(e0: epoch, e1: epoch, result: bool) returns(qrm_result: bool) = {
+    qrm_result := (le(e0, e1) = result)
+}
+export get_bool_le
 

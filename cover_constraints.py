@@ -412,8 +412,10 @@ class CoverConstraints():
         return il.And(*literals)
 
     def init_minimization_check_solver(self, quantified_orbits, protocol : Protocol):
+        original_symbol2var_num = self.symbol2var_num.copy()
         top_var = self.top_var
         self.min_checker = SatSolver()   
+        print(f"Top var: {self.top_var}, Cache size: {len(self.symbol2var_num)}")
         self.instantiated_orbit_assume_clauses  = []
         self.instantiated_orbit_tseitin_clauses = []
         invariants = [self.instantiator.instantiate_quantifier(qorbit) for qorbit in quantified_orbits]
@@ -448,6 +450,8 @@ class CoverConstraints():
         for clause in self.instantiated_orbit_tseitin_clauses:
             self.min_checker.add_clause(clause)
         self.top_var = top_var
+        self.symbol2var_num = original_symbol2var_num
+        print(f"Clauses generated: {len(self.instantiated_orbit_tseitin_clauses)}")
 
     def get_minimization_check_minterm(self):
         result  = self.min_checker.solve()
@@ -501,6 +505,7 @@ class CoverConstraints():
         for clause in self.instantiated_orbit_tseitin_clauses:
             self.qinfer_checker.add_clause(clause)
         self.top_var = top_var
+        print(f"Clauses generated: {len(self.instantiated_orbit_tseitin_clauses)}")
             
     def quantifier_inference_check(self):
         result  = self.qinfer_checker.solve()

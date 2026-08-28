@@ -8,6 +8,8 @@ from finite_ivy_instantiate import FiniteIvyInstantiator
 from util import QrmOptions, PrimeGen
 from util import FormulaUtility as futil
 from verbose import *
+import json
+import os
 
 def make_key(values: List[str], protocol : Protocol) -> str:
     predicates = []
@@ -224,6 +226,8 @@ class OrbitGroup():
     def __init__(self) -> None:
         self.orbits     : List[PrimeOrbit] = []
         self.id         : int
+        self.group_num  : int
+        self.group_type : str
 
         # quantifier inference
         self.sig         :  tuple[int, ...]
@@ -246,16 +250,74 @@ class OrbitGroups():
         self.options = options
         self.protocol = protocol
         self.state_vars = [state_var.name for state_var in state_vars]
+        self.atom_literals = [lit.rstrip('=') for lit in list(zip(*protocol.atom_sig))[0]]
+        self.predicates = {k.rstrip('='): v for k, v in self.protocol.predicates.items()}
 
         self.sig_to_group = {}
+        self.forall_count = 0
+        self.exists_count = 0
+
+        self.sig_to_forall_group_num = {}
+        self.sig_to_exists_group_num = {}
+        if options.read_groups:
+            self.read_dict()
 
         self.init_groups(orbits)
+
+        self.write_dict()
         # self.group_singletons()
         self.sort_groups()
 
 
+    def _sig_to_json_key(self, sig: tuple[int, ...]) -> str:
+        # JSON object keys must be strings; encode directly as concatenated digits.
+        return ''.join(str(v) for v in sig)
+
+    def _json_key_to_sig(self, key: str) -> tuple[int, ...]:
+        if key == '':
+            return tuple()
+        # Parse key as a tuple of single-digit integers.
+        return tuple(int(ch) for ch in key)
+
+
+    def read_dict(self):
+        json_filename = self.options.instance_name + '.groups.json'
+        try:
+            with open(json_filename, 'r') as file:
+                data = json.load(file)
+                forall_data = data.get('forall', {})
+                exists_data = data.get('exists', {})
+                self.sig_to_forall_group_num = {
+                    self._json_key_to_sig(key): int(group_num)
+                    for key, group_num in forall_data.items()
+                }
+                self.sig_to_exists_group_num = {
+                    self._json_key_to_sig(key): int(group_num)
+                    for key, group_num in exists_data.items()
+                }
+        except Exception as e:
+            self.sig_to_forall_group_num = {}
+            self.sig_to_exists_group_num = {}
+    
+    def write_dict(self):
+        json_filename = self.options.instance_name + '.groups.json'
+        with open(json_filename, 'w') as file:
+            data = {
+                'forall': {
+                    self._sig_to_json_key(sig): group_num
+                    for sig, group_num in self.sig_to_forall_group_num.items()
+                },
+                'exists': {
+                    self._sig_to_json_key(sig): group_num
+                    for sig, group_num in self.sig_to_exists_group_num.items()
+                },
+            }
+            json.dump(data, file, indent=4)
+
     
     def init_groups(self, orbits: List[PrimeOrbit]):
+        used_forall_group_nums = set(self.sig_to_forall_group_num.values())
+        used_exists_group_nums = set(self.sig_to_exists_group_num.values())
         for orbit in orbits:
             sig = [0] * (len(self.state_vars) * 2 + 2)
 
@@ -266,7 +328,44 @@ class OrbitGroups():
                     var_name = self.protocol.atom_sig[atom_idx][0].rstrip('=')
                     sig_idx = self.state_vars.index(var_name) * 2
                     if value == '0': sig_idx += 1
-                    sig[sig_idx] += 1
+                    sig[sig_idx] = 1   
+            
+            # for var_idx, var_name in enumerate(self.state_vars):
+            #     left_atom_num = self.atom_literals.index(var_name)
+            #     right_atom_num = len(self.atom_literals) - 1 - self.atom_literals[::-1].index(var_name)
+            #     var_bit_string = orbit.repr_prime.values[left_atom_num:right_atom_num+1]
+            #     arity = len(self.protocol.atom_sig[left_atom_num])-1
+            #     dimensions = [len(self.protocol.sort_constants[self.protocol.sorts.index(sort)])
+            #                    for sort in self.predicates[var_name]]
+            #     assert(len(dimensions)) == arity
+            #     table = np.array(var_bit_string).reshape(dimensions)
+                
+            #     axis = 0
+            #     while axis < table.ndim:
+            #         # To get the 'first row' along the CURRENT axis:
+            #         # We need index 0 for all dimensions EXCEPT the current one.
+            #         # Example for 3D: if axis=1, we want table[0, :, 0]
+                    
+            #         selection = [0] * table.ndim
+            #         selection[axis] = slice(None) # This targets the 'row' along this axis
+            #         first_row = table[tuple(selection)]
+                    
+            #         if np.all(first_row == 1) or np.all(first_row == 0):
+            #             # The row is uniform. We collapse PERPENDICULAR to this row.
+            #             # This means we fix this axis at index 0 and keep all others.
+            #             table = np.take(table, indices=0, axis=axis)
+                        
+            #             # Do not increment axis; the next dimension is now at this index
+            #             print(f"Dimension collapsed. Remaining shape: {table.shape}")
+            #         else:
+            #             axis += 1
+            #     for value in table.flat:
+            #         if value != '-':
+            #             assert(value == '0' or value == '1')
+            #             sig_idx = var_idx*2
+            #             if value == '0': sig_idx += 1
+            #             sig[sig_idx] += 1
+            #     pass
             
             sig[-2] = orbit.num_forall
             sig[-1] = orbit.num_exists
@@ -284,9 +383,31 @@ class OrbitGroups():
                 new_orbit_group.num_literals = orbit.num_literals
                 if (new_orbit_group.num_forall >= 1):
                     new_orbit_group.pattern = sum(sig[:-2])
+                    new_orbit_group.group_type = 'F'
+                    if sig in self.sig_to_forall_group_num:
+                        new_orbit_group.group_num = self.sig_to_forall_group_num[sig]
+                    else:
+                        valid_num = False
+                        while not valid_num:
+                            self.forall_count += 1
+                            new_orbit_group.group_num =self.forall_count
+                            valid_num = new_orbit_group.group_num not in used_forall_group_nums
+                        self.sig_to_forall_group_num[sig] = new_orbit_group.group_num
+                    used_forall_group_nums.add(new_orbit_group.group_num)
                 else:
                     assert(new_orbit_group.num_exists >= 1)
                     new_orbit_group.pattern = sum(min(1, literal) for literal in sig[:-2])
+                    new_orbit_group.group_type = 'E'
+                    if sig in self.sig_to_exists_group_num:
+                        new_orbit_group.group_num = self.sig_to_exists_group_num[sig]
+                    else:
+                        valid_num = False
+                        while not valid_num:
+                            self.exists_count += 1
+                            new_orbit_group.group_num =self.exists_count
+                            valid_num = new_orbit_group.group_num not in used_exists_group_nums
+                        self.sig_to_exists_group_num[sig] = new_orbit_group.group_num
+                    used_exists_group_nums.add(new_orbit_group.group_num)
                 new_orbit_group.qcost = orbit.qcost
                 self.sig_to_group[sig] = new_orbit_group
             else:
@@ -308,7 +429,7 @@ class OrbitGroups():
     
     def sort_groups(self):
         self.groups = list(self.sig_to_group.values())
-        self.groups.sort(key=lambda group: (group.qcost, group.sig))
+        self.groups.sort(key=lambda group: (group.qcost, (group.num_exists>0), group.group_num))
         for idx, group in enumerate(self.groups):
             group.id = idx
 

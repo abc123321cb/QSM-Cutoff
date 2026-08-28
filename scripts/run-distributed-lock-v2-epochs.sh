@@ -13,7 +13,9 @@ for epoch in 3 4 5 6 7; do
         -l "${log_file}" \
         -y \
         -a \
-        -k; then
+        -k \
+        --csv \
+        --json; then
         echo "Epoch ${epoch} failed, continuing to next epoch"
     fi
 done

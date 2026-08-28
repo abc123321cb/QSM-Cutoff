@@ -2,15 +2,38 @@ from pathlib import Path
 import sys
 
 
-atoms = [
-    'ep_epoch0_n0', 'ep_epoch1_n0', 'ep_epoch2_n0', 'ep_epoch3_n0', 
-    'ep_epoch0_n1', 'ep_epoch1_n1', 'ep_epoch2_n1', 'ep_epoch3_n1', 
-    'held_n0', 'held_n1', 
-    'locked_epoch0_n0', 'locked_epoch0_n1', 'locked_epoch1_n0', 'locked_epoch1_n1', 
-    'locked_epoch2_n0', 'locked_epoch2_n1', 'locked_epoch3_n0', 'locked_epoch3_n1',
-    'transfer_epoch0_n0', 'transfer_epoch0_n1', 'transfer_epoch1_n0', 'transfer_epoch1_n1', 
-    'transfer_epoch2_n0', 'transfer_epoch2_n1', 'transfer_epoch3_n0', 'transfer_epoch3_n1'
-]
+atoms = ['(ep(node0)=epoch0)', '(ep(node0)=epoch1)', '(ep(node0)=epoch2)', '(ep(node0)=epoch3)', '(ep(node1)=epoch0)', '(ep(node1)=epoch1)', '(ep(node1)=epoch2)', '(ep(node1)=epoch3)', 'held(node0)', 'held(node1)', 'locked(epoch0,node0)', 'locked(epoch0,node1)', 'locked(epoch1,node0)', 'locked(epoch1,node1)', 'locked(epoch2,node0)', 'locked(epoch2,node1)', 'locked(epoch3,node0)', 'locked(epoch3,node1)', 'transfer(epoch0,node0)', 'transfer(epoch0,node1)', 'transfer(epoch1,node0)', 'transfer(epoch1,node1)', 'transfer(epoch2,node0)', 'transfer(epoch2,node1)', 'transfer(epoch3,node0)', 'transfer(epoch3,node1)']
+
+
+
+def normalize_atom(atom):
+    atom = atom.strip()
+
+    # Legacy format: (ep(node0)=epoch2)
+    if atom.startswith('(ep(') and atom.endswith(')') and ')=' in atom:
+        inner = atom[1:-1]  # ep(node0)=epoch2
+        left, epoch = inner.split(')=', 1)
+        node = left[left.find('(') + 1 :].replace('node', 'n')
+        return f"ep_{epoch}", node
+
+    # Legacy format: held(node0)
+    if atom.startswith('held(') and atom.endswith(')'):
+        node = atom[atom.find('(') + 1 : -1].replace('node', 'n')
+        return 'held', node
+
+    # Legacy format: locked(epoch2,node1) / transfer(epoch1,node0)
+    if (atom.startswith('locked(') or atom.startswith('transfer(')) and atom.endswith(')'):
+        pred = atom[:atom.find('(')]
+        inside = atom[atom.find('(') + 1 : -1]
+        epoch, node = [x.strip() for x in inside.split(',', 1)]
+        return f"{pred}_{epoch}", node.replace('node', 'n')
+
+    # Current format fallback: func_node
+    parts = atom.rsplit('_', 1)
+    if len(parts) == 2:
+        return parts[0], parts[1]
+
+    raise ValueError(f"Unsupported atom format: {atom}")
 
 
 def load_reachable_bitstrings(file_path, expected_len):
@@ -38,19 +61,15 @@ def load_reachable_bitstrings(file_path, expected_len):
 def bitstring_to_smt(bit_str, atoms_list, state_num):
     constraints = []
     for i, bit in enumerate(bit_str):
-        atom = atoms_list[i]
-        # Split 'locked_epoch0_n0' into ('locked_epoch0', 'n0')
-        parts = atom.rsplit('_', 1)
-        func_name = parts[0]
-        node_name = parts[1]
+        func_name, node_name = normalize_atom(atoms_list[i])
         
         if bit == '1':
             constraints.append(f"({func_name} {node_name})")
         else:
             constraints.append(f"(not ({func_name} {node_name}))")
             
-    # Formats as S1 = (and ...), S2 = (and ...), etc.
-    return f"(assert (= S{state_num} (and\n    " + "\n    ".join(constraints) + "\n)))"
+    # Formats as define-fun S1/S2/... returning Bool.
+    return f"(define-fun S{state_num} () Bool\n  (and\n    " + "\n    ".join(constraints) + "\n  ))"
 
 
 default_states_path = Path(__file__).with_name('simplified_states.txt')

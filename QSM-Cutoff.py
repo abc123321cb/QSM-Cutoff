@@ -33,6 +33,7 @@ def usage ():
     print('             write prime orbits to FILE.pis')
     print('             write quantified prime orbits to FILE.qpis')
     print('--csv        write orbit CSV output (default: off)')
+    print('--json       enable reading groups from JSON input (default: off)')
     print('--graph      Make a graph of the reachable states (default: off) (requires graphviz)')
     print('-h           usage')
 
@@ -48,7 +49,7 @@ def file_exist(filename) -> bool:
 
 def get_options(ivy_name, args, sys_args) -> QrmOptions:
     try:
-        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whny", ["graph", "csv"])
+        opts, args = getopt.getopt(args, "s:baretmkp:c:v:l:whny", ["graph", "csv", "json"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -70,6 +71,8 @@ def get_options(ivy_name, args, sys_args) -> QrmOptions:
             sys_args.remove(optc)
             sys_args.remove(optv)
         elif optc == '--csv':
+            pass
+        elif optc == '--json':
             pass
     return options
 

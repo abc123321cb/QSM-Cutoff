@@ -91,7 +91,7 @@ class Minimizer():
         self._last_inference_list : List[int] = []
 
 
-    def _remove_high_cost_from_pending(self):
+    def _remove_high_cost_from_pending(self) -> bool:
         max_pattern = 3
         # self.pending = [i for i, orbit in enumerate(self.orbits) if orbit.qcost <= self.max_orbit_qcost]
 
@@ -110,14 +110,22 @@ class Minimizer():
 
         sanity_result = True
         protocol = self.orbit_groups.protocol
+        invariants = [self.orbits[orbit_id].quantified_form for orbit_id in self.pending]
+        
+        if not getattr(self.cover, '_min_check_clauses_initialized', False):
+            self.cover.init_minimization_check_clauses()
+            self.cover._min_check_clauses_initialized = True
+
         if self.options.forward_mode == ForwardMode.Sym_DFS:
-            sanity_result = self._compare_symmetry_quotient(0, self.pending, protocol)
+            sanity_result = self._compare_symmetry_quotient(0, invariants, protocol)
         else:
-            sanity_result = self._equivalence_checking(0, self.pending, protocol)
+            sanity_result = self._equivalence_checking(0, invariants, protocol)
         
         if not sanity_result:
+            vprint(self.options, f'[MIN NOTE]: Pre-minimization sanity check FAIL: The allowed orbits do not cover the reachable states.', 3)
             return False
         
+        vprint(self.options, f'[MIN NOTE]: Pre-minimization sanity check PASS.', 3)
         return True
 
     #------------------------------------------------------------
@@ -424,6 +432,7 @@ class Minimizer():
                 'Bit String',
                 '# literals',
                 'Group',
+                'Group Type',
                 'Group Size',
                 'Sig',
                 'Number sig',
@@ -440,7 +449,8 @@ class Minimizer():
                 orbit = self.orbits[i]
                 bit_string = ''.join(orbit.repr_prime.values)
                 group = orbit_to_group.get(orbit.id)
-                group_id = group.id if group is not None else ''
+                group_num = group.group_num if group is not None else ''
+                group_type = group.group_type if group is not None else ''
                 pattern = group.pattern if group is not None else ''
                 group_size = len(group.orbits) if group is not None else ''
                 number_sig = ''.join(str(x) for x in orbit.sig) if orbit is not None else ''
@@ -451,7 +461,8 @@ class Minimizer():
                     orbit.qcost,
                     bit_string,
                     orbit.num_literals,
-                    group_id,
+                    group_num,
+                    group_type,
                     group_size,
                 ]
 
@@ -600,9 +611,10 @@ class Minimizer():
             mapping = sorted(self.orbit_to_group_id.items())
             vprint(self.options, f'orbit_to_group_id: {mapping}', 5)
 
-    def solve_rmin(self) -> List[str]:
+    def solve_rmin(self) -> bool:
         if self._use_group_bnb():
-            self._remove_high_cost_from_pending()
+            if not self._remove_high_cost_from_pending():
+                return False
             self.max_cost = 1 + sum([group.qcost for group in self.orbit_groups.groups])
             self.ubound = self.max_cost
         if self.options.all_solutions:
@@ -687,7 +699,9 @@ class Minimizer():
             return True
 
     def minimization_check(self, protocol : Protocol):
-        self.cover.init_minimization_check_clauses()
+        if not getattr(self.cover, '_min_check_clauses_initialized', False):
+            self.cover.init_minimization_check_clauses()
+            self.cover._min_check_clauses_initialized = True
         result = True
         for sol_id, solution in enumerate(self.optimal_solutions):
             invariants = [self.orbits[orbit_id].quantified_form for orbit_id in solution]

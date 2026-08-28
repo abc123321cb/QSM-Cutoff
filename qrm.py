@@ -46,6 +46,7 @@ def usage ():
     print('                 write prime orbits to FILE.pis')
     print('                 write quantified prime orbits to FILE.qpis')
     print('--csv        write orbit CSV output (default: off)')
+    print('--json       enable reading groups from JSON input (default: off)')
     print('-g           Make a graph of the reachable states (default: off) (requires graphviz)')
     print('-h           usage')
 
@@ -63,7 +64,7 @@ def file_exist(filename) -> bool:
 # large if else chain setting booleans
 def get_options(ivy_name, args):
     try:
-        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgny", ["graph", "csv"])
+        opts, args = getopt.getopt(args, "s:bf:uretamkp:c:v:l:whgny", ["graph", "csv", "json"])
     except getopt.GetoptError as err:
         print(err)
         usage_and_exit()
@@ -131,6 +132,8 @@ def get_options(ivy_name, args):
             options.make_graph = True
         elif optc == '--csv':
             options.write_orbit_csv = True
+        elif optc == '--json':
+            options.read_groups = True
         else:
             usage_and_exit()
     if options.writeLog:
@@ -245,9 +248,8 @@ def qrm(ivy_name, args):
 
     # minimization
     options.step_start(f'[MIN]: Minimization on [{options.ivy_filename}: {options.size_str}]')
-    result = minimizer.solve_rmin()
-    if not result:
-        raise QrmFail()
+    minimize_result = minimizer.solve_rmin()
+    qrm_result = qrm_result and minimize_result
     options.step_end()
 
     # minimization sanity check
